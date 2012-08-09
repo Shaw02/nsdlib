@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>目次</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+
+<h2>概要（Summary）</h2>
+
+<div class='block'>
+<p><strong>！！開発中！！</strong></p>
+<p>
+任天堂ファミリーコンピューターにて、ＢＧＭ、効果音（SE）を制御するための音源ドライバーです。<br>
+ライブラリとして開発されており、ユーザーのアプリケーションから制御することができます。<br>
+</p>
+<p>
+This is a sound driver for the Nintendo Entertainment System (NES).<br>
+This can playing the Back-Ground Music(BGM) and the Sound Effect(SE).<br>
+This is developed as object library, and user application can control it.<br>
+</p>
+</div>
+
+<div class='block'>
+<h3>特徴（Characteristic）</h3>
+<ul>
+<li>
+	Ｃ言語から呼び出し可能な、ライブラリ関数。<br>
+	※関数呼出規約は、CC65における <code>__fastcall__</code> です。<br>
+</li>
+<li>
+	ＭＭＬコンパイラーによる曲データの作成環境。<br>
+</li>
+<li>
+	限りあるＲＯＭ領域の圧迫を防ぐため、曲データサイズは小さくなるような設計とし、
+	音源ドライバー本体のサイズも小さくなるように設計。<br>	
+</li>
+<li>
+	且つ、様々な音楽表現を可能とすべく、多岐にわたる機能を実装。<br>
+</li>
+</ul>
+<ul>
+<li>
+	C-Langage source code can coll this library functions.<br>
+	* The calling conversion of this library functions are <code>__fastcall__</code> of `cc65'.<br>
+</li>
+<li>
+	MML Compiler can make the music data.<br>
+</li>
+<li>
+	This music data and sound driver code are designed to get samll data and code size.<br>
+	So, this desine has preventive occupation of ROM area.<br>
+</li>
+<li>
+	For the music expression, this sound driver has various music function.<br>
+</li>
+</ul>
+</div>
+
+</div>
+
+</BODY>
+</HTML>

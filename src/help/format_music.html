@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>BGM,SEデータフォーマット</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>BGM,SEデータフォーマット（Format of BGM and SE）</h2>
+
+<p>
+ポインターと記載された場合は、現アドレスからの相対アドレスを意味します。<br>
+</p>
+
+<p>
+<strong>α版・β版の段階では、仕様変更の可能性がございます。ご了承ください。</strong>
+</p>
+
+<div class='block'>
+<h3>ヘッダー（Header）</h3>
+<p>
+</p>
+<table>
+<tr><th>Address	</th><th>Size</th><th>Contents					</th></tr>
+<tr><td>0x0000	</td><td>BYTE	</td><td>Number of track (BGM:max=5, SE:max=2)	</td></tr>
+<tr><td>0x0001	</td><td>BYTE	</td><td>Undefined (reserve)			</td></tr>
+<tr><td>0x0002	</td><td>WORD[n]</td><td>曲データの先頭を基点としたオフセットアドレス。	</td></tr>
+<tr><td> -	</td><td> -	</td><td>Datas.					</td></tr>
+</table>
+</div>
+
+<div class='block'>
+<h3>シーケンス（sequence）</h3>
+<p>
+</p>
+<table>
+<tr><th>op-code		</th><th>value		</th><th>Contents							</th></tr>
+<tr><td>0x00		</td><td>			</td><td>End of Track / End of Subroutine	</td></tr>
+<tr><td>0x01		</td><td>n1 n2		</td><td>Jump (End of Track with loop)		<br>
+												n1::n2 = jumping pointer.			</td></tr>
+<tr><td>0x02		</td><td>n1 n2		</td><td>Sub-routine call					<br>
+												n1::n2 = Pointer of sub-routine.	</td></tr>
+<tr><td>0x03		</td><td>n1			</td><td>Repeat start.						<br>
+												n1 = repeat times					</td></tr>
+<tr><td>0x04		</td><td>n1 n2		</td><td>Repeat break.						<br>
+												n1::n2 = Pointer of break.			</td></tr>
+<tr><td>0x05		</td><td>n1 n2		</td><td>Repeat start.						<br>
+												n1::n2 = Pointer of repeat.			</td></tr>
+<tr><td>0x07		</td><td>n1 n2 n3	</td><td>Write data to memory.				<br>
+												n1::n2 = Address. / n3 = Writing data	</td></tr>
+<tr><td>0x08		</td><td>n1			</td><td>Tempo [BPM]						</td></tr>
+<tr><td>0x09		</td><td>n1			</td><td>Note length of 省略時	[Ticks]		</td></tr>
+<tr><td>0x0A		</td><td>n1			</td><td>Gate time (key-off timing from last)	</td></tr>
+<tr><td>0x0B		</td><td>n1			</td><td>Gate time (length of 発音)			</td></tr>
+<tr><td>0x0D		</td><td>			</td><td>Gate mode (no release. volume = 0)		</td></tr>
+<tr><td>0x0E		</td><td>			</td><td>Gate mode (release of command value)	</td></tr>
+<tr><td>0x0F		</td><td>			</td><td>Gate mode (release of envelop pattern)	</td></tr>
+<tr><td>0x10		</td><td>n1 n2		</td><td>Voice envelop.		<strong>未実装</strong>				<br>
+												n1::n2 = Pointer.					</td></tr>
+<tr><td>0x11		</td><td>n1 n2		</td><td>Volume envelop.	<strong>未実装</strong>				<br>
+												n1::n2 = Pointer.					</td></tr>
+<tr><td>0x12		</td><td>n1 n2		</td><td>Frequency envelop.	<strong>未実装</strong>				<br>
+												n1::n2 = Pointer.					</td></tr>
+<tr><td>0x13		</td><td>n1 n2		</td><td>Note envelop.		<strong>未実装</strong>				<br>
+												n1::n2 = Pointer.					</td></tr>
+<tr><td>0x14		</td><td>n1			</td><td>Detune (16 = 100 cent)				</td></tr>
+<tr><td>0x15		</td><td>n1			</td><td>Detune (Resister base)				</td></tr>
+<tr><td>0x16		</td><td>n1			</td><td>Sweep (Resister base)				</td></tr>
+<tr><td>0x17		</td><td>n1 n2 n3	</td><td>Portamento	(Frequency += n2, every n3 [VBlank])	<br>
+												n1 = Depth. (1 = 100 [cent])		<br>
+												n2 = Count (16 = 100 [cent])		<br>
+												n3 = Rate (1 = 1 VBlank)		</td></tr>
+<tr><td>0x20		</td><td>			</td><td>Volume down	(-1)				</td></tr>
+<tr><td>0x21		</td><td>			</td><td>Volume up		(+1)				</td></tr>
+<tr><td>0x28		</td><td>			</td><td>Octave down	(-1)				</td></tr>
+<tr><td>0x29		</td><td>			</td><td>Octave up		(+1)				</td></tr>
+<tr><td>0x2A		</td><td>n1			</td><td>Transpose (an absolute value)		</td></tr>
+<tr><td>0x2B		</td><td>n1			</td><td>Transpose (a relative value)		</td></tr>
+<tr><td>0x30-0x37	</td><td>n1			</td><td>Voice of release (after key-off)	</td></tr>
+<tr><td>0x38-0x3F	</td><td>			</td><td>Octave			(op-code lower 4bit is value)	</td></tr>
+<tr><td>0x40-0x4F	</td><td>			</td><td>Note length of 省略時	(op-code lower 4bit is value)	<br>
+								 0x00 : 96 tick	(l1)	<br>
+								 0x01 : 72 tick	(l2.)	<br>
+								 0x02 : 48 tick	(l2)	<br>
+								 0x03 : 36 tick	(l4.)	<br>
+								 0x04 : 32 tick	(l3)	<br>
+								 0x05 : 24 tick	(l4)	<br>
+								 0x06 : 18 tick	(l8.)	<br>
+								 0x07 : 16 tick	(l6)	<br>
+								 0x08 : 12 tick	(l8)	<br>
+								 0x09 :  9 tick	(l16.)	<br>
+								 0x0A :  8 tick	(l12)	<br>
+								 0x0B :  6 tick	(l16)	<br>
+								 0x0C :  4 tick	(l24)	<br>
+								 0x0D :  3 tick	(l32)	<br>
+								 0x0E :  2 tick	(l48)	<br>
+								 0x0F :  1 tick	(l96)	</td></tr>
+<tr><td>0x50-0x5F	</td><td>			</td><td>Gate time			(op-code lower 4bit is value)	</td></tr>
+<tr><td>0x60-0x6F	</td><td>			</td><td>Volume 			(op-code lower 4bit is value)	</td></tr>
+<tr><td>0x70-0x7F	</td><td>			</td><td>Volume of release	(op-code lower 4bit is value)	</td></tr>
+<tr><td>0x80-0xFF	</td><td>(n1) (n2)	</td><td>Note and Rest				<br>
+								op-code bit 7 = `H'			<br>
+								op-code bit 6 = flag of Gate Time (n2 [tick])	<br>
+								op-code bit 5 = flag of Length (n1 [tick])	<br>
+								op-code bit 4 = flag of Thai & Slur	<br>
+								op-code bit 3-0 = note	<br>
+								 0x00 : C			<br>
+								 0x01 : Cis / Des	<br>
+								 0x02 : D			<br>
+								 0x03 : Dis / Es	<br>
+								 0x04 : E			<br>
+								 0x05 : F			<br>
+								 0x06 : Fis / Ges	<br>
+								 0x07 : G			<br>
+								 0x08 : Gis / As	<br>
+								 0x09 : A			<br>
+								 0x0A : Ais / Bs (B)<br>
+								 0x0B : B (H)		<br>
+								 0x0C : undefined	<br>
+								 0x0D : r	(no release. volume = 0)		<br>
+								 0x0E : r	(release of command value)		<br>
+								 0x0F : r	(release of envelop pattern)	</td></tr>
+</table>
+</div>
+
+<div class='block'>
+<h3>エンベロープ（Envelop）</h3>
+
+<p>
+<strong>
+エンベロープ関連は、現在、未実装です。
+</strong>
+</p>
+
+<h4>データ構造（Struct）</h4>
+<table>
+<tr><th>Address	</th><th>Contents				</th></tr>
+<tr><td>0x00	</td><td>Pointer of release (after key-off)	<br>
+			 If setting `0', no release pattern.	</td></tr>
+<tr><td>0x01 -	</td><td>Envelop pattern			</td></tr>
+</table>
+<h4>パターン（Pattern）</h4>
+<table>
+<tr><th>op-code		</th><th>Contents				</th></tr>
+<tr><td>0xxx xxxx <2>	</td><td>xxx xxxx (7bit) = Envelop value	</td></tr>
+<tr><td>1000 xxxx <2>	</td><td>xxxx (4bit)     = Hold length (0=1Vblank, 1=2Vblank, ...)		</td></tr>
+<tr><td>11xx xxxx <2>	</td><td>xx xxxx (6bit)  = Address of jump	</td></tr>
+</table>
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

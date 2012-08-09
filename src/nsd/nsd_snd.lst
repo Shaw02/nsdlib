@@ -1,0 +1,1112 @@
+ca65 V2.13.3 - (C) Copyright 1998-2012 Ullrich von Bassewitz
+Main file   : nsd_snd.s
+Current file: nsd_snd.s
+
+000000r 1               
+000000r 1               	.setcpu		"6502"
+000000r 1               
+000000r 1               	.export		_nsd_snd_init
+000000r 1               	.export		_nsd_snd_voice
+000000r 1               	.export		_nsd_snd_volume
+000000r 1               	.export		_nsd_snd_sweep
+000000r 1               	.export		_nsd_snd_frequency
+000000r 1               	.export		_nsd_snd_keyon
+000000r 1               	.export		_nsd_snd_keyoff
+000000r 1               
+000000r 1               	.import		_nsd_div192
+000000r 1               
+000000r 1               	.import		nsd_work
+000000r 1               	.importzp	nsd_work_zp
+000000r 1               
+000000r 1               	.include	"nes.inc"
+000000r 2               ;
+000000r 2               ; NES definitions. By Groepaz/Hitmem.
+000000r 2               ;
+000000r 2               
+000000r 2               
+000000r 2               ;; FIXME: optimize zeropage usage
+000000r 2               
+000000r 2               SCREEN_PTR	= $62           ;2
+000000r 2               CRAM_PTR        = $64           ;2
+000000r 2               CHARCOLOR	= $66
+000000r 2               BGCOLOR		= $67
+000000r 2               RVS		= $68
+000000r 2               CURS_X		= $69
+000000r 2               CURS_Y		= $6a
+000000r 2               
+000000r 2               tickcount       = $6b           ;2
+000000r 2               
+000000r 2               VBLANK_FLAG	= $70
+000000r 2               
+000000r 2               ringbuff        = $0200
+000000r 2               ringwrite       = $71
+000000r 2               ringread        = $72
+000000r 2               ringcount       = $73
+000000r 2               
+000000r 2               ppuhi           = $74
+000000r 2               ppulo           = $75
+000000r 2               ppuval          = $76
+000000r 2               
+000000r 2               screenrows 	= (30-1)
+000000r 2               charsperline    = 32
+000000r 2               xsize           = charsperline
+000000r 2               
+000000r 2               ;; PPU defines
+000000r 2               
+000000r 2               PPU_CTRL1      	= $2000
+000000r 2               PPU_CTRL2	= $2001
+000000r 2               PPU_STATUS	= $2002
+000000r 2               PPU_SPR_ADDR	= $2003
+000000r 2               PPU_SPR_IO  	= $2004
+000000r 2               PPU_VRAM_ADDR1	= $2005
+000000r 2               PPU_VRAM_ADDR2	= $2006
+000000r 2               PPU_VRAM_IO	= $2007
+000000r 2               
+000000r 2               ;; APU defines
+000000r 2               
+000000r 2               APU_PULSE1CTRL  = $4000         ; Pulse #1 Control Register (W)
+000000r 2               APU_PULSE1RAMP  = $4001         ; Pulse #1 Ramp Control Register (W)
+000000r 2               APU_PULSE1FTUNE = $4002         ; Pulse #1 Fine Tune (FT) Register (W)
+000000r 2               APU_PULSE1CTUNE = $4003         ; Pulse #1 Coarse Tune (CT) Register (W)
+000000r 2               APU_PULSE2CTRL  = $4004         ; Pulse #2 Control Register (W)
+000000r 2               APU_PULSE2RAMP  = $4005         ; Pulse #2 Ramp Control Register (W)
+000000r 2               APU_PULSE2FTUNE = $4006         ; Pulse #2 Fine Tune Register (W)
+000000r 2               APU_PULSE2STUNE = $4007         ; Pulse #2 Coarse Tune Register (W)
+000000r 2               APU_TRICTRL1    = $4008         ; Triangle Control Register #1 (W)
+000000r 2               APU_TRICTRL2    = $4009         ; Triangle Control Register #2 (?)
+000000r 2               APU_TRIFREQ1    = $400A         ; Triangle Frequency Register #1 (W)
+000000r 2               APU_TRIFREQ2    = $400B         ; Triangle Frequency Register #2 (W)
+000000r 2               APU_NOISECTRL   = $400C         ; Noise Control Register #1 (W)
+000000r 2               ;;APU_ = $400D  ; Unused (???)
+000000r 2               APU_NOISEFREQ1  = $400E         ; Noise Frequency Register #1 (W)
+000000r 2               APU_NOISEFREQ2  = $400F         ; Noise Frequency Register #2 (W)
+000000r 2               APU_MODCTRL     = $4010         ; Delta Modulation Control Register (W)
+000000r 2               APU_MODDA       = $4011         ; Delta Modulation D/A Register (W)
+000000r 2               APU_MODADDR     = $4012         ; Delta Modulation Address Register (W)
+000000r 2               APU_MODLEN      = $4013         ; Delta Modulation Data Length Register (W)
+000000r 2               APU_SPR_DMA    	= $4014         ; Sprite DMA Register (W)
+000000r 2               APU_CHANCTRL   	= $4015         ; Sound/Vertical Clock Signal Register (R)
+000000r 2               APU_PAD1       	= $4016         ; Joypad #1 (RW)
+000000r 2               APU_PAD2	= $4017         ; Joypad #2/SOFTCLK (RW)
+000000r 2               
+000000r 2               
+000000r 2               CH_HLINE    	= 11
+000000r 2               CH_VLINE    	= 14
+000000r 2               CH_ULCORNER 	= 176
+000000r 2               CH_URCORNER 	= 174
+000000r 2               CH_LLCORNER 	= 173
+000000r 2               CH_LRCORNER 	= 189
+000000r 2               CH_TTEE	    	= 178
+000000r 2               CH_RTEE	    	= 179
+000000r 2               CH_BTEE	    	= 177
+000000r 2               CH_LTEE	    	= 171
+000000r 2               CH_CROSS    	= 123
+000000r 2               CH_CURS_UP     	= 145
+000000r 2               CH_CURS_DOWN	= 17
+000000r 2               CH_CURS_LEFT	= 157
+000000r 2               CH_CURS_RIGHT	= 29
+000000r 2               CH_PI		= 126
+000000r 2               CH_DEL		= 20
+000000r 2               CH_INS		= 148
+000000r 2               CH_ENTER        = 10
+000000r 2               CH_STOP         = 3
+000000r 2               CH_ESC          = 27
+000000r 2               
+000000r 2               
+000000r 1               	.include	"nsd.inc"
+000000r 2               
+000000r 2               .scope	nsd
+000000r 2               	BGM_Track	= 5
+000000r 2               	SE_Track	= 2
+000000r 2               	Track		= BGM_Track + SE_Track
+000000r 2               
+000000r 2               	TR_BGM1		= 0
+000000r 2               	TR_BGM2		= 2
+000000r 2               	TR_BGM3		= 4
+000000r 2               	TR_BGM4		= 6
+000000r 2               	TR_BGM5		= 8
+000000r 2               	TR_SE1		= BGM_Track * 2 + 0
+000000r 2               	TR_SE2		= BGM_Track * 2 + 2
+000000r 2               
+000000r 2               .endscope
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;	Working Struct define in Zero-page area
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               .Struct		NSD_Envelop
+000000r 2               	V		.byte		;Volume & Voice (ch3:Tempo / ch5:Tempo_ctr)
+000000r 2               	F		.byte		;Frequency & Note
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Length_Cnt
+000000r 2               	counter		.byte		;now length of note
+000000r 2               	gate		.byte		;length - u
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_work_zp
+000000r 2               	_ptr		.word					;00 General pointer value
+000000r 2               	_tmp		.word					;02 General value
+000000r 2               	flag		.byte					;04 flag
+000000r 2               	channel		.byte					;05 channel (y resister)
+000000r 2               	Sequence_ptr	.word			nsd::Track	;06 Address of playing sequence
+000000r 2               	Length		.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
+000000r 2               	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;	Working  Struct define in RAM area
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               
+000000r 2               .Struct		NSD_Flag
+000000r 2               	flag		.byte		;flag
+000000r 2               	gatemode	.byte		;gatemode
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_length
+000000r 2               	length		.byte		;l command value
+000000r 2               	tai		.byte		;Tai & Slur
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_gatetime
+000000r 2               	q		.byte		;q command value
+000000r 2               	u		.byte		;u command value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_note
+000000r 2               	note		.byte		;note command value (bit 7 = `H' : rest)
+000000r 2               	octave		.byte		;o command value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Detune
+000000r 2               	cent		.byte		;D command value
+000000r 2               	fine		.byte		;D% command value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Por_Lv
+000000r 2               	target		.byte		;target
+000000r 2               	inc		.byte		;add value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Por_Sp
+000000r 2               	decay		.byte		;
+000000r 2               	rate		.byte		;rate (speed)
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Por_Co
+000000r 2               	count		.byte		;rate control
+000000r 2               	lv		.byte		;now depth
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Rep_Trans
+000000r 2               	count		.byte		;counter of repeat
+000000r 2               	trans		.byte		;transpose
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_volume
+000000r 2               	volume		.byte		;v command value
+000000r 2               	volume_set	.byte		;deveice setting value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_voice
+000000r 2               	voice		.byte		;@ command value
+000000r 2               	voice_set	.byte		;deveice setting value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Env_V_Ptr
+000000r 2               	Volume		.byte					;Volume
+000000r 2               	Voice		.byte					;Voice
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Env_F_Ptr
+000000r 2               	Frequency	.byte					;Freeuqncy
+000000r 2               	Note		.byte					;Note
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_work
+000000r 2               	Flag		.tag	NSD_Flag	nsd::Track	;flag
+000000r 2               	Length		.tag	NSD_length	nsd::Track	;note length [tick]
+000000r 2               	Gatetime	.tag	NSD_gatetime	nsd::Track	;gate time [tick]
+000000r 2               	Note		.tag	NSD_note	nsd::Track	;octave and note command
+000000r 2               	Detune		.tag	NSD_Detune	nsd::Track	;detune
+000000r 2               	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
+000000r 2               	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
+000000r 2               	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
+000000r 2               	Rep_Trans	.tag	NSD_Rep_Trans	nsd::Track	;Repeat and Transpose
+000000r 2               	Volume		.tag	NSD_volume	nsd::Track	;volume
+000000r 2               	Voice		.tag	NSD_voice	nsd::Track	;voice
+000000r 2               	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
+000000r 2               	Frequency	.word			nsd::Track	;Setting frequency
+000000r 2               	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
+000000r 2               	Envelop_Volume	.word			nsd::Track	;Pointer of envelop
+000000r 2               	Envelop_Voice	.word			nsd::Track	;Pointer of envelop
+000000r 2               	Envelop_Freq	.word			nsd::Track	;Pointer of envelop
+000000r 2               	Envelop_Note	.word			nsd::Track	;Pointer of envelop
+000000r 2               	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;
+000000r 2               	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;	Defines for work structures
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               
+000000r 2               .scope	nsd_flag
+000000r 2               	BGM	= $01
+000000r 2               	SE	= $02
+000000r 2               .endscope
+000000r 2               
+000000r 2               ;Zero Page Works
+000000r 2               .define	__ptr		nsd_work_zp + NSD_work_zp::_ptr
+000000r 2               .define	__tmp		nsd_work_zp + NSD_work_zp::_tmp
+000000r 2               .define	__flag		nsd_work_zp + NSD_work_zp::flag
+000000r 2               .define	__channel	nsd_work_zp + NSD_work_zp::channel
+000000r 2               .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
+000000r 2               .define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
+000000r 2               .define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
+000000r 2               .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V
+000000r 2               .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F
+000000r 2               .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+000000r 2               .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+000000r 2               
+000000r 2               .scope	nsd_chflag
+000000r 2               	SE1	= $40
+000000r 2               	SE2	= $80
+000000r 2               .endscope
+000000r 2               
+000000r 2               ;RAM Works
+000000r 2               .define	__chflag	nsd_work + NSD_work::Flag + NSD_Flag::flag
+000000r 2               .define	__gatemode	nsd_work + NSD_work::Flag + NSD_Flag::gatemode
+000000r 2               .define	__tai		nsd_work + NSD_work::Length + NSD_length::tai
+000000r 2               .define	__length	nsd_work + NSD_work::Length + NSD_length::length
+000000r 2               .define	__gate_q	nsd_work + NSD_work::Gatetime + NSD_gatetime::q
+000000r 2               .define	__gate_u	nsd_work + NSD_work::Gatetime + NSD_gatetime::u
+000000r 2               .define __note		nsd_work + NSD_work::Note + NSD_note::note
+000000r 2               .define	__octave	nsd_work + NSD_work::Note + NSD_note::octave
+000000r 2               .define	__detune_cent	nsd_work + NSD_work::Detune + NSD_Detune::cent
+000000r 2               .define	__detune_fine	nsd_work + NSD_work::Detune + NSD_Detune::fine
+000000r 2               .define	__por_target	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::target
+000000r 2               .define	__por_inc	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::inc
+000000r 2               .define	__por_decay	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::decay
+000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
+000000r 2               .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
+000000r 2               .define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
+000000r 2               .define	__trans		nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::trans
+000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::count
+000000r 2               .define	__volume	nsd_work + NSD_work::Volume + NSD_volume::volume
+000000r 2               .define	__volume_set	nsd_work + NSD_work::Volume + NSD_volume::volume_set
+000000r 2               .define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
+000000r 2               .define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set
+000000r 2               .define	__frequency	nsd_work + NSD_work::Frequency
+000000r 2               .define	__frequency_set	nsd_work + NSD_work::Frequency_Set
+000000r 2               .define	__subroutine	nsd_work + NSD_work::SubRoutine
+000000r 2               .define	__env_volume	nsd_work + NSD_work::Envelop_Volume
+000000r 2               .define	__env_voice	nsd_work + NSD_work::Envelop_Voice
+000000r 2               .define	__env_frequency	nsd_work + NSD_work::Envelop_Freq
+000000r 2               .define	__env_note	nsd_work + NSD_work::Envelop_Note
+000000r 2               .define	__env_vol_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Volume
+000000r 2               .define	__env_voi_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Voice
+000000r 2               .define	__env_freq_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency
+000000r 2               .define	__env_note_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;	Macros
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               
+000000r 2               .MACPACK generic
+000000r 2               
+000000r 2               .macro  ldax    arg
+000000r 2               	.if (.match (.left (1, {arg}), #))
+000000r 2               		; immediate mode
+000000r 2               		lda     #<(.right (.tcount ({arg})-1, {arg}))
+000000r 2               		ldx     #>(.right (.tcount ({arg})-1, {arg}))
+000000r 2               	.else
+000000r 2               		; assume absolute or zero page
+000000r 2               		lda     arg
+000000r 2               		ldx     1+(arg)
+000000r 2               	.endif
+000000r 2               .endmacro
+000000r 2               
+000000r 2               .macro  addw    Arg
+000000r 2               	clc
+000000r 2               	.if (.match (.left (1, {arg}), #))
+000000r 2               		; immediate mode
+000000r 2               		adc     #<(.right (.tcount ({arg})-1, {arg}))
+000000r 2               		adc     #>(.right (.tcount ({arg})-1, {arg}))
+000000r 2               	.else
+000000r 2               		; assume absolute or zero page
+000000r 2               		adc     arg
+000000r 2               		adc     1+(arg)
+000000r 2               	.endif
+000000r 2               .endmacro
+000000r 2               
+000000r 2               .macro  subw    Arg
+000000r 2               	sec
+000000r 2               	.if (.match (.left (1, {arg}), #))
+000000r 2               		; immediate mode
+000000r 2               		sbc     #<(.right (.tcount ({arg})-1, {arg}))
+000000r 2               		sbc     #>(.right (.tcount ({arg})-1, {arg}))
+000000r 2               	.else
+000000r 2               		; assume absolute or zero page
+000000r 2               		sbc     arg
+000000r 2               		sbc     1+(arg)
+000000r 2               	.endif
+000000r 2               .endmacro
+000000r 2               
+000000r 2               .macro	shl	arg, c
+000000r 2               	.repeat	c
+000000r 2               		asl	arg
+000000r 2               	.endrepeat
+000000r 2               .endmacro
+000000r 2               
+000000r 2               .macro	shr	arg, c
+000000r 2               	.repeat	c
+000000r 2               		lsr	arg
+000000r 2               	.endrepeat
+000000r 2               .endmacro
+000000r 2               
+000000r 2               
+000000r 1               
+000000r 1               ;=======================================================================
+000000r 1               ;	void	__fastcall__	nsd_snd_init(void);
+000000r 1               ;-----------------------------------------------------------------------
+000000r 1               ;<<Contents>>
+000000r 1               ;	Initaraize of the sound device
+000000r 1               ;<<Input>>
+000000r 1               ;	nothing
+000000r 1               ;<<Output>>
+000000r 1               ;	nothing
+000000r 1               ;=======================================================================
+000000r 1               .proc	_nsd_snd_init
+000000r 1               .code
+000000r 1  4C rr rr     	jmp	_nsd_nes_init
+000003r 1               
+000003r 1               Exit:
+000003r 1               .endproc
+000003r 1               
+000003r 1               ;=======================================================================
+000003r 1               ;	void	__fastcall__	_nsd_snd_keyon(void);
+000003r 1               ;-----------------------------------------------------------------------
+000003r 1               ;<<Contents>>
+000003r 1               ;	Key on the device
+000003r 1               ;<<Input>>
+000003r 1               ;	nothing
+000003r 1               ;<<Output>>
+000003r 1               ;	nothing
+000003r 1               ;=======================================================================
+000003r 1               .proc	_nsd_snd_keyon
+000003r 1               .rodata
+000000r 1  rr rr        JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
+000002r 1  rr rr        	.addr	_nsd_nes_keyon		;BGM ch2 Pulse
+000004r 1  rr rr        	.addr	_nsd_ch3_keyon		;BGM ch3 Triangle
+000006r 1  rr rr        	.addr	_nsd_nes_keyon		;BGM ch4 Noize
+000008r 1  rr rr        	.addr	Exit			;BGM ch5 DPCM
+00000Ar 1  rr rr        	.addr	_nsd_nes_keyon		;SE  ch1 Pulse
+00000Cr 1  rr rr        	.addr	_nsd_nes_keyon		;SE  ch2 Noize
+00000Er 1               .code
+000003r 1  A6 rr        	ldx	__channel
+000005r 1               @Set:	;Set	(Don't need SE check)
+000005r 1  BC rr rr     	ldy	JMPTBL,x
+000008r 1  84 rr        	sty	__ptr
+00000Ar 1  BC rr rr     	ldy	JMPTBL + 1,x
+00000Dr 1  84 rr        	sty	__ptr + 1
+00000Fr 1  6C rr rr     	jmp	(__ptr)
+000012r 1               Exit:
+000012r 1  60           	rts
+000013r 1               .endproc
+000013r 1               
+000013r 1               ;=======================================================================
+000013r 1               ;	void	__fastcall__	_nsd_snd_keyoff(void);
+000013r 1               ;-----------------------------------------------------------------------
+000013r 1               ;<<Contents>>
+000013r 1               ;	Key on the device
+000013r 1               ;<<Input>>
+000013r 1               ;	nothing
+000013r 1               ;<<Output>>
+000013r 1               ;	nothing
+000013r 1               ;=======================================================================
+000013r 1               .proc	_nsd_snd_keyoff
+000013r 1               .rodata
+00000Er 1  rr rr        JMPTBL:	.addr	Exit			;BGM ch1 Pulse
+000010r 1  rr rr        	.addr	Exit			;BGM ch2 Pulse
+000012r 1  rr rr        	.addr	_nsd_ch3_keyoff		;BGM ch3 Triangle	-- no process --
+000014r 1  rr rr        	.addr	Exit			;BGM ch4 Noize		-- no process --
+000016r 1  rr rr        	.addr	Exit			;BGM ch5 DPCM		-- no process --
+000018r 1  rr rr        	.addr	Exit			;SE  ch1 Pulse
+00001Ar 1  rr rr        	.addr	Exit			;SE  ch2 Noize		-- no process --
+00001Cr 1               .code
+000013r 1  A6 rr        	ldx	__channel
+000015r 1               @Set:	;Set	(Don't need SE check)
+000015r 1  BC rr rr     	ldy	JMPTBL,x
+000018r 1  84 rr        	sty	__ptr
+00001Ar 1  BC rr rr     	ldy	JMPTBL + 1,x
+00001Dr 1  84 rr        	sty	__ptr + 1
+00001Fr 1  6C rr rr     	jmp	(__ptr)
+000022r 1               Exit:
+000022r 1  60           	rts
+000023r 1               .endproc
+000023r 1               
+000023r 1               ;=======================================================================
+000023r 1               ;	void	__fastcall__	nsd_snd_voice(char voi);
+000023r 1               ;-----------------------------------------------------------------------
+000023r 1               ;<<Contents>>
+000023r 1               ;	Ser the voice (instruction)
+000023r 1               ;<<Input>>
+000023r 1               ;	a	voice number
+000023r 1               ;<<Output>>
+000023r 1               ;	nothing
+000023r 1               ;=======================================================================
+000023r 1               .proc	_nsd_snd_voice
+000023r 1               .rodata
+00001Cr 1  rr rr        JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
+00001Er 1  rr rr        	.addr	_nsd_nes_voice		;BGM ch2 Pulse
+000020r 1  rr rr        	.addr	Exit			;BGM ch3 Triangle	-- no process --
+000022r 1  rr rr        	.addr	_nsd_noise_voice	;BGM ch4 Noize
+000024r 1  rr rr        	.addr	_nsd_dpcm_voice		;BGM ch5 DPCM
+000026r 1  rr rr        	.addr	_nsd_nes_voice		;SE  ch1 Pulse
+000028r 1  rr rr        	.addr	_nsd_noise_voice	;SE  ch2 Noize
+00002Ar 1               .code
+000023r 1  A6 rr        	ldx	__channel
+000025r 1               @Set:	;Set	(Don't need SE check)
+000025r 1  BC rr rr     	ldy	JMPTBL,x
+000028r 1  84 rr        	sty	__ptr
+00002Ar 1  BC rr rr     	ldy	JMPTBL + 1,x
+00002Dr 1  84 rr        	sty	__ptr + 1
+00002Fr 1  6C rr rr     	jmp	(__ptr)
+000032r 1               Exit:
+000032r 1  60           	rts
+000033r 1               .endproc
+000033r 1               ;=======================================================================
+000033r 1               ;	void	__fastcall__	nsd_snd_volume(char vol);
+000033r 1               ;-----------------------------------------------------------------------
+000033r 1               ;<<Contents>>
+000033r 1               ;	Ser the volume
+000033r 1               ;<<Input>>
+000033r 1               ;	a	volume ( 0 to 255 )
+000033r 1               ;<<Output>>
+000033r 1               ;	nothing
+000033r 1               ;=======================================================================
+000033r 1               .proc	_nsd_snd_volume
+000033r 1               .rodata
+00002Ar 1  rr rr        JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
+00002Cr 1  rr rr        	.addr	_nsd_ch2_volume		;BGM ch2 Pulse
+00002Er 1  rr rr        	.addr	Exit			;BGM ch3 Triangle	-- no process --
+000030r 1  rr rr        	.addr	_nsd_ch4_volume		;BGM ch4 Noize
+000032r 1  rr rr        	.addr	Exit			;BGM ch5 DPCM		-- no process --
+000034r 1  rr rr        	.addr	_nsd_ch2_volume		;SE  ch1 Pulse
+000036r 1  rr rr        	.addr	_nsd_ch4_volume		;SE  ch2 Noize
+000038r 1               .code
+000033r 1               	;always jmp except This ch's SE is enabale
+000033r 1  A6 rr        	ldx	__channel
+000035r 1               	;SE check
+000035r 1  E0 02        @C2:	cpx	#nsd::TR_BGM2
+000037r 1  D0 07        	bne	@C6
+000039r 1  A4 rr        	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+00003Br 1  D0 18        	bne	Exit
+00003Dr 1  4C rr rr     	jmp	@Set
+000040r 1  E0 06        @C6:	cpx	#nsd::TR_BGM4
+000042r 1  D0 04        	bne	@Set
+000044r 1  A4 rr        	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
+000046r 1  D0 0D        	bne	Exit
+000048r 1               @Set:
+000048r 1  BC rr rr     	ldy	JMPTBL,x
+00004Br 1  84 rr        	sty	__ptr
+00004Dr 1  BC rr rr     	ldy	JMPTBL + 1,x
+000050r 1  84 rr        	sty	__ptr + 1
+000052r 1  6C rr rr     	jmp	(__ptr)
+000055r 1               Exit:
+000055r 1  60           	rts
+000056r 1               .endproc
+000056r 1               ;=======================================================================
+000056r 1               ;	void	__fastcall__	nsd_snd_sweep(char vol);
+000056r 1               ;-----------------------------------------------------------------------
+000056r 1               ;<<Contents>>
+000056r 1               ;	Ser the volume
+000056r 1               ;<<Input>>
+000056r 1               ;	a	volume ( 0 to 255 )
+000056r 1               ;<<Output>>
+000056r 1               ;	nothing
+000056r 1               ;=======================================================================
+000056r 1               .proc	_nsd_snd_sweep
+000056r 1               .rodata
+000038r 1  rr rr        JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
+00003Ar 1  rr rr        	.addr	_nsd_ch2_sweep		;BGM ch2 Pulse
+00003Cr 1  rr rr        	.addr	Exit			;BGM ch3 Triangle	-- no process --
+00003Er 1  rr rr        	.addr	Exit			;BGM ch4 Noize		-- no process --
+000040r 1  rr rr        	.addr	Exit			;BGM ch5 DPCM		-- no process --
+000042r 1  rr rr        	.addr	_nsd_ch2_sweep		;SE  ch1 Pulse
+000044r 1  rr rr        	.addr	Exit			;SE  ch2 Noize		-- no process --
+000046r 1               .code
+000056r 1               	;always jmp except This ch's SE is enabale
+000056r 1  A6 rr        	ldx	__channel
+000058r 1               	;SE check
+000058r 1  E0 02        @C2:	cpx	#nsd::TR_BGM2
+00005Ar 1  D0 07        	bne	@C6
+00005Cr 1  A4 rr        	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+00005Er 1  D0 18        	bne	Exit
+000060r 1  4C rr rr     	jmp	@Set
+000063r 1  E0 06        @C6:	cpx	#nsd::TR_BGM4
+000065r 1  D0 04        	bne	@Set
+000067r 1  A4 rr        	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
+000069r 1  D0 0D        	bne	Exit
+00006Br 1               @Set:
+00006Br 1  BC rr rr     	ldy	JMPTBL,x
+00006Er 1  84 rr        	sty	__ptr
+000070r 1  BC rr rr     	ldy	JMPTBL + 1,x
+000073r 1  84 rr        	sty	__ptr + 1
+000075r 1  6C rr rr     	jmp	(__ptr)
+000078r 1               Exit:
+000078r 1  60           	rts
+000079r 1               .endproc
+000079r 1               ;=======================================================================
+000079r 1               ;	void	__fastcall__	nsd_snd_frequency(int freq);
+000079r 1               ;-----------------------------------------------------------------------
+000079r 1               ;<<Contents>>
+000079r 1               ;	Ser the voice (instruction)
+000079r 1               ;<<Input>>
+000079r 1               ;	ax	frequency (16 = 100 cent, o0c = 0x0000)
+000079r 1               ;<<Output>>
+000079r 1               ;	nothing
+000079r 1               ;=======================================================================
+000079r 1               .proc	_nsd_snd_frequency
+000079r 1               .rodata
+000046r 1  rr rr        JMPTBL:	.addr	_nsd_nes_frequency	;BGM ch1 Pulse
+000048r 1  rr rr        	.addr	_nsd_nes_frequency	;BGM ch2 Pulse
+00004Ar 1  rr rr        	.addr	_nsd_nes_frequency	;BGM ch3 Triangle
+00004Cr 1  rr rr        	.addr	_nsd_noise_frequency	;BGM ch4 Noise
+00004Er 1  rr rr        	.addr	_nsd_dpcm_frequency	;BGM ch5 DPCM
+000050r 1  rr rr        	.addr	_nsd_nes_frequency	;SE  ch1 Pulse
+000052r 1  rr rr        	.addr	_nsd_noise_frequency	;SE  ch2 Noise
+000054r 1               .code
+000079r 1  86 rr        	stx	__tmp
+00007Br 1  A6 rr        	ldx	__channel
+00007Dr 1               	;SE check
+00007Dr 1  E0 02        @C2:	cpx	#nsd::TR_BGM2
+00007Fr 1  D0 07        	bne	@C6
+000081r 1  A4 rr        	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+000083r 1  D0 1A        	bne	Exit
+000085r 1  4C rr rr     	jmp	@Set
+000088r 1  E0 06        @C6:	cpx	#nsd::TR_BGM4
+00008Ar 1  D0 04        	bne	@Set
+00008Cr 1  A4 rr        	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
+00008Er 1  D0 0F        	bne	Exit
+000090r 1               @Set:
+000090r 1  BC rr rr     	ldy	JMPTBL,x
+000093r 1  84 rr        	sty	__ptr
+000095r 1  BC rr rr     	ldy	JMPTBL + 1,x
+000098r 1  84 rr        	sty	__ptr + 1
+00009Ar 1  A6 rr        	ldx	__tmp
+00009Cr 1  6C rr rr     	jmp	(__ptr)
+00009Fr 1               Exit:
+00009Fr 1  60           	rts
+0000A0r 1               .endproc
+0000A0r 1               
+0000A0r 1               ;=======================================================================
+0000A0r 1               ;	void	__fastcall__	nsd_nes_init(void);
+0000A0r 1               ;-----------------------------------------------------------------------
+0000A0r 1               ;<<Contents>>
+0000A0r 1               ;	NES Sound device:	Initaraize
+0000A0r 1               ;<<Input>>
+0000A0r 1               ;	nothing
+0000A0r 1               ;<<Output>>
+0000A0r 1               ;	nothing
+0000A0r 1               ;=======================================================================
+0000A0r 1               .proc	_nsd_nes_init
+0000A0r 1               .code
+0000A0r 1  A9 00        	lda	#$00
+0000A2r 1  8D 00 40     	sta	APU_PULSE1CTRL		; Pulse #1 Control Register (W)
+0000A5r 1  8D 04 40     	sta	APU_PULSE2CTRL		; Pulse #2 Control Register (W)
+0000A8r 1  8D 08 40     	sta	APU_TRICTRL1		; Triangle Control Register (W)
+0000ABr 1  8D 0C 40     	sta	APU_NOISECTRL		; Noise Control Register #1 (W)
+0000AEr 1  8D 10 40     	sta	APU_MODCTRL		; Delta Modulation Control Register (W)
+0000B1r 1               
+0000B1r 1  A9 08        	lda	#$08
+0000B3r 1  8D 01 40     	sta	APU_PULSE1RAMP		; Pulse #1 Ramp Control Register (W)
+0000B6r 1  8D 05 40     	sta	APU_PULSE2RAMP		; Pulse #2 Ramp Control Register (W)
+0000B9r 1               
+0000B9r 1               ;	sta	APU_PULSE1FTUNE		; Pulse #1 Fine Tune (FT) Register (W)
+0000B9r 1               ;	sta	APU_PULSE1CTUNE		; Pulse #1 Coarse Tune (CT) Register (W)
+0000B9r 1               ;	sta	APU_PULSE2FTUNE		; Pulse #2 Fine Tune Register (W)
+0000B9r 1               ;	sta	APU_PULSE2STUNE		; Pulse #2 Coarse Tune Register (W)
+0000B9r 1               ;	sta	APU_TRIFREQ1		; Triangle Frequency Register #1 (W)
+0000B9r 1               ;	sta	APU_TRIFREQ2		; Triangle Frequency Register #2 (W)
+0000B9r 1               ;	sta	APU_NOISEFREQ1		; Noise Frequency Register #1 (W)
+0000B9r 1               ;	sta	APU_NOISEFREQ2		; Noise Frequency Register #2 (W)
+0000B9r 1               
+0000B9r 1               ;	sta	APU_MODDA		; Delta Modulation D/A Register (W)
+0000B9r 1               ;	sta	APU_MODADDR		; Delta Modulation Address Register (W)
+0000B9r 1               ;	sta	APU_MODLEN		; Delta Modulation Data Length Register (W)
+0000B9r 1               
+0000B9r 1  A9 0F        	lda	#$0F			;
+0000BBr 1  8D 15 40     	sta	APU_CHANCTRL		; Sound/Vertical Clock Signal Register (R)
+0000BEr 1               
+0000BEr 1  A9 80        	lda	#$80
+0000C0r 1  8D 17 40     	sta	APU_PAD2		; SOFTCLK (RW)
+0000C3r 1               
+0000C3r 1  60           	rts
+0000C4r 1               .endproc
+0000C4r 1               
+0000C4r 1               ;=======================================================================
+0000C4r 1               ;	void	__fastcall__	_nsd_nes_keyon(void);
+0000C4r 1               ;-----------------------------------------------------------------------
+0000C4r 1               ;<<Contents>>
+0000C4r 1               ;	Key on the device
+0000C4r 1               ;<<Input>>
+0000C4r 1               ;	nothing
+0000C4r 1               ;<<Output>>
+0000C4r 1               ;	nothing
+0000C4r 1               ;=======================================================================
+0000C4r 1               .proc	_nsd_nes_keyon
+0000C4r 1               
+0000C4r 1               	;For hardware Key on
+0000C4r 1  A9 FF        	lda	#$FF
+0000C6r 1  9D rr rr     	sta	__frequency,x
+0000C9r 1  9D rr rr     	sta	__frequency + 1,x
+0000CCr 1  A9 00        	lda	#$00
+0000CEr 1  9D rr rr     	sta	__frequency_set,x
+0000D1r 1  9D rr rr     	sta	__frequency_set + 1,x
+0000D4r 1               
+0000D4r 1  60           	rts
+0000D5r 1               .endproc
+0000D5r 1               
+0000D5r 1               .proc	_nsd_ch3_keyon
+0000D5r 1               
+0000D5r 1               	;For hardware Key on
+0000D5r 1  A9 FF        	lda	#$FF
+0000D7r 1  9D rr rr     	sta	__frequency,x
+0000DAr 1  9D rr rr     	sta	__frequency + 1,x
+0000DDr 1  A9 00        	lda	#$00
+0000DFr 1  9D rr rr     	sta	__frequency_set,x
+0000E2r 1  9D rr rr     	sta	__frequency_set + 1,x
+0000E5r 1               
+0000E5r 1  A9 FF        	lda	#$FF
+0000E7r 1  8D 08 40     	sta	APU_TRICTRL1
+0000EAr 1               
+0000EAr 1  60           	rts
+0000EBr 1               .endproc
+0000EBr 1               
+0000EBr 1               .proc	_nsd_ch3_keyoff
+0000EBr 1  A9 80        	lda	#$80
+0000EDr 1  8D 08 40     	sta	APU_TRICTRL1
+0000F0r 1               
+0000F0r 1  60           	rts
+0000F1r 1               .endproc
+0000F1r 1               
+0000F1r 1               ;=======================================================================
+0000F1r 1               ;	void	__fastcall__	nsd_nes_voice(char voice);
+0000F1r 1               ;-----------------------------------------------------------------------
+0000F1r 1               ;<<Contents>>
+0000F1r 1               ;	NES Sound device:	Set voice
+0000F1r 1               ;<<Input>>
+0000F1r 1               ;	a	voice	(0:12.5% / 1:25% / 2:50% / 3:75%)
+0000F1r 1               ;	x	channel
+0000F1r 1               ;<<Output>>
+0000F1r 1               ;	nsd_work.Voice.voice_set  =  (voice << 6) | 0x30
+0000F1r 1               ;=======================================================================
+0000F1r 1               .proc	_nsd_nes_voice
+0000F1r 1               .code
+0000F1r 1               	;-------------------------------
+0000F1r 1               	; *** Calculate the voice
+0000F1r 1  0A 0A 0A 0A  	shl	a, 6	;a <<= 6
+0000F5r 1  0A 0A        
+0000F7r 1  29 C0        	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
+0000F9r 1               
+0000F9r 1               	;-------------------------------
+0000F9r 1               	; *** Set the voice to work
+0000F9r 1  9D rr rr     	sta	__voice_set,x
+0000FCr 1               
+0000FCr 1               	;-------------------------------
+0000FCr 1               	; *** Exit
+0000FCr 1               exit:
+0000FCr 1  60           	rts
+0000FDr 1               .endproc
+0000FDr 1               
+0000FDr 1               .proc	_nsd_noise_voice
+0000FDr 1               .code
+0000FDr 1               	;-------------------------------
+0000FDr 1               	; *** Calculate the voice
+0000FDr 1  0A 0A 0A 0A  	shl	a, 7	;a <<= 7
+000101r 1  0A 0A 0A     
+000104r 1  29 80        	and	#$80	;a &= 0x80	;for OR to frequency(lower 4bit)
+000106r 1               
+000106r 1               	;-------------------------------
+000106r 1               	; *** Set the voice to work
+000106r 1  9D rr rr     	sta	__voice_set,x
+000109r 1               
+000109r 1               	;-------------------------------
+000109r 1               	; *** Exit
+000109r 1               exit:
+000109r 1  60           	rts
+00010Ar 1               .endproc
+00010Ar 1               
+00010Ar 1               .proc	_nsd_dpcm_voice
+00010Ar 1               
+00010Ar 1               ;
+00010Ar 1               ;	to do
+00010Ar 1               ;
+00010Ar 1               
+00010Ar 1               	;-------------------------------
+00010Ar 1               	; *** Exit
+00010Ar 1               exit:
+00010Ar 1  60           	rts
+00010Br 1               .endproc
+00010Br 1               
+00010Br 1               ;=======================================================================
+00010Br 1               ;	void	__fastcall__	nsd_nes_volume(char volume);
+00010Br 1               ;-----------------------------------------------------------------------
+00010Br 1               ;<<Contents>>
+00010Br 1               ;	NES Sound device:	Set volume
+00010Br 1               ;<<Input>>
+00010Br 1               ;	a	volume	(0 to 255)	(volume is upper 4bit)
+00010Br 1               ;	x	channel
+00010Br 1               ;<<Output>>
+00010Br 1               ;	nothing
+00010Br 1               ;=======================================================================
+00010Br 1               .proc	_nsd_ch1_volume
+00010Br 1               .code
+00010Br 1               	;-------------------------------
+00010Br 1               	; *** Calculate the volume
+00010Br 1               	;a >>= 4
+00010Br 1  4A 4A 4A 4A  	shr	a, 4
+00010Fr 1               
+00010Fr 1               	;-------------------------------
+00010Fr 1               	; *** Mix voice and volume
+00010Fr 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+00010Fr 1  29 0F        	and	#$0F
+000111r 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+000113r 1  1D rr rr     	ora	__voice_set,x
+000116r 1               
+000116r 1               	;-------------------------------
+000116r 1               	; *** Output to NES sound device
+000116r 1               	;y = x << 1
+000116r 1  8D 00 40     	sta	APU_PULSE1CTRL
+000119r 1               
+000119r 1               	;-------------------------------
+000119r 1               	; *** Exit
+000119r 1               exit:
+000119r 1  60           	rts
+00011Ar 1               .endproc
+00011Ar 1               
+00011Ar 1               .proc	_nsd_ch2_volume
+00011Ar 1               .code
+00011Ar 1               	;-------------------------------
+00011Ar 1               	; *** Calculate the volume
+00011Ar 1               	;a >>= 4
+00011Ar 1  4A 4A 4A 4A  	shr	a, 4
+00011Er 1               
+00011Er 1               	;-------------------------------
+00011Er 1               	; *** Mix voice and volume
+00011Er 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+00011Er 1  29 0F        	and	#$0F
+000120r 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+000122r 1  1D rr rr     	ora	__voice_set,x
+000125r 1               
+000125r 1               	;-------------------------------
+000125r 1               	; *** Output to NES sound device
+000125r 1               	;y = x << 1
+000125r 1  8D 04 40     	sta	APU_PULSE2CTRL
+000128r 1               
+000128r 1               	;-------------------------------
+000128r 1               	; *** Exit
+000128r 1               exit:
+000128r 1  60           	rts
+000129r 1               .endproc
+000129r 1               
+000129r 1               .proc	_nsd_ch4_volume
+000129r 1               .code
+000129r 1               	;-------------------------------
+000129r 1               	; *** Calculate the volume
+000129r 1               	;a >>= 4
+000129r 1  4A 4A 4A 4A  	shr	a, 4
+00012Dr 1               
+00012Dr 1               	;-------------------------------
+00012Dr 1               	; *** Mix voice and volume
+00012Dr 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+00012Dr 1  29 0F        	and	#$0F
+00012Fr 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+000131r 1               
+000131r 1               	;-------------------------------
+000131r 1               	; *** Output to NES sound device
+000131r 1               	;y = x << 1
+000131r 1  8D 0C 40     	sta	APU_NOISECTRL
+000134r 1               
+000134r 1               	;-------------------------------
+000134r 1               	; *** Exit
+000134r 1               exit:
+000134r 1  60           	rts
+000135r 1               .endproc
+000135r 1               ;=======================================================================
+000135r 1               ;	void	__fastcall__	nsd_nes_volume(char volume);
+000135r 1               ;-----------------------------------------------------------------------
+000135r 1               ;<<Contents>>
+000135r 1               ;	NES Sound device:	Set volume
+000135r 1               ;<<Input>>
+000135r 1               ;	a	volume	(0 to 255)	(volume is upper 4bit)
+000135r 1               ;	x	channel
+000135r 1               ;<<Output>>
+000135r 1               ;	nothing
+000135r 1               ;=======================================================================
+000135r 1               .proc	_nsd_ch1_sweep
+000135r 1               .code
+000135r 1  8D 01 40     	sta	APU_PULSE1RAMP
+000138r 1  60           	rts
+000139r 1               .endproc
+000139r 1               
+000139r 1               .proc	_nsd_ch2_sweep
+000139r 1               .code
+000139r 1  8D 05 40     	sta	APU_PULSE2RAMP
+00013Cr 1  60           	rts
+00013Dr 1               .endproc
+00013Dr 1               
+00013Dr 1               ;=======================================================================
+00013Dr 1               ;	void	__fastcall__	nsd_nes_frequency(int freq);
+00013Dr 1               ;-----------------------------------------------------------------------
+00013Dr 1               ;<<Contents>>
+00013Dr 1               ;	NES Sound device:	Set frequency
+00013Dr 1               ;<<Input>>
+00013Dr 1               ;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
+00013Dr 1               ;<<Output>>
+00013Dr 1               ;	nothing
+00013Dr 1               ;=======================================================================
+00013Dr 1               .proc	_nsd_nes_frequency
+00013Dr 1               
+00013Dr 1               .rodata
+000054r 1               Freq:	;Frequency table
+000054r 1  4D 0D        	.word	$0D4D	;C
+000056r 1  34 0D        	.word	$0D34
+000058r 1  1C 0D        	.word	$0D1C
+00005Ar 1  04 0D        	.word	$0D04
+00005Cr 1  EC 0C        	.word	$0CEC
+00005Er 1  D4 0C        	.word	$0CD4
+000060r 1  BD 0C        	.word	$0CBD
+000062r 1  A5 0C        	.word	$0CA5
+000064r 1  8E 0C        	.word	$0C8E	;Cis
+000066r 1  77 0C        	.word	$0C77
+000068r 1  60 0C        	.word	$0C60
+00006Ar 1  49 0C        	.word	$0C49
+00006Cr 1  32 0C        	.word	$0C32
+00006Er 1  1C 0C        	.word	$0C1C
+000070r 1  06 0C        	.word	$0C06
+000072r 1  EF 0B        	.word	$0BEF
+000074r 1  D9 0B        	.word	$0BD9
+000076r 1  C4 0B        	.word	$0BC4
+000078r 1  AE 0B        	.word	$0BAE
+00007Ar 1  98 0B        	.word	$0B98
+00007Cr 1  83 0B        	.word	$0B83
+00007Er 1  6E 0B        	.word	$0B6E
+000080r 1  59 0B        	.word	$0B59
+000082r 1  44 0B        	.word	$0B44
+000084r 1  2F 0B        	.word	$0B2F
+000086r 1  1B 0B        	.word	$0B1B
+000088r 1  06 0B        	.word	$0B06
+00008Ar 1  F2 0A        	.word	$0AF2
+00008Cr 1  DE 0A        	.word	$0ADE
+00008Er 1  CA 0A        	.word	$0ACA
+000090r 1  B6 0A        	.word	$0AB6
+000092r 1  A2 0A        	.word	$0AA2
+000094r 1  8E 0A        	.word	$0A8E
+000096r 1  7B 0A        	.word	$0A7B
+000098r 1  68 0A        	.word	$0A68
+00009Ar 1  54 0A        	.word	$0A54
+00009Cr 1  41 0A        	.word	$0A41
+00009Er 1  2F 0A        	.word	$0A2F
+0000A0r 1  1C 0A        	.word	$0A1C
+0000A2r 1  09 0A        	.word	$0A09
+0000A4r 1  F7 09        	.word	$09F7
+0000A6r 1  E4 09        	.word	$09E4
+0000A8r 1  D2 09        	.word	$09D2
+0000AAr 1  C0 09        	.word	$09C0
+0000ACr 1  AE 09        	.word	$09AE
+0000AEr 1  9C 09        	.word	$099C
+0000B0r 1  8B 09        	.word	$098B
+0000B2r 1  79 09        	.word	$0979
+0000B4r 1  68 09        	.word	$0968
+0000B6r 1  56 09        	.word	$0956
+0000B8r 1  45 09        	.word	$0945
+0000BAr 1  34 09        	.word	$0934
+0000BCr 1  23 09        	.word	$0923
+0000BEr 1  12 09        	.word	$0912
+0000C0r 1  01 09        	.word	$0901
+0000C2r 1  F1 08        	.word	$08F1
+0000C4r 1  E0 08        	.word	$08E0
+0000C6r 1  D0 08        	.word	$08D0
+0000C8r 1  C0 08        	.word	$08C0
+0000CAr 1  B0 08        	.word	$08B0
+0000CCr 1  A0 08        	.word	$08A0
+0000CEr 1  90 08        	.word	$0890
+0000D0r 1  80 08        	.word	$0880
+0000D2r 1  70 08        	.word	$0870
+0000D4r 1  61 08        	.word	$0861
+0000D6r 1  51 08        	.word	$0851
+0000D8r 1  42 08        	.word	$0842
+0000DAr 1  33 08        	.word	$0833
+0000DCr 1  24 08        	.word	$0824
+0000DEr 1  15 08        	.word	$0815
+0000E0r 1  06 08        	.word	$0806
+0000E2r 1  F7 07        	.word	$07F7
+0000E4r 1  E8 07        	.word	$07E8
+0000E6r 1  DA 07        	.word	$07DA
+0000E8r 1  CB 07        	.word	$07CB
+0000EAr 1  BD 07        	.word	$07BD
+0000ECr 1  AF 07        	.word	$07AF
+0000EEr 1  A1 07        	.word	$07A1
+0000F0r 1  93 07        	.word	$0793
+0000F2r 1  85 07        	.word	$0785
+0000F4r 1  77 07        	.word	$0777
+0000F6r 1  69 07        	.word	$0769
+0000F8r 1  5B 07        	.word	$075B
+0000FAr 1  4E 07        	.word	$074E
+0000FCr 1  40 07        	.word	$0740
+0000FEr 1  33 07        	.word	$0733
+000100r 1  26 07        	.word	$0726
+000102r 1  19 07        	.word	$0719
+000104r 1  0B 07        	.word	$070B
+000106r 1  FE 06        	.word	$06FE
+000108r 1  F2 06        	.word	$06F2
+00010Ar 1  E5 06        	.word	$06E5
+00010Cr 1  D8 06        	.word	$06D8
+00010Er 1  CC 06        	.word	$06CC
+000110r 1  BF 06        	.word	$06BF
+000112r 1  B3 06        	.word	$06B3
+000114r 1               
+000114r 1               .code
+00013Dr 1               	;-----------
+00013Dr 1               	;check the old frequency
+00013Dr 1  A4 rr        	ldy	__channel
+00013Fr 1  D9 rr rr     	cmp	__frequency,y
+000142r 1  F0 0A        	beq	@L
+000144r 1  99 rr rr     	sta	__frequency,y
+000147r 1  8A           	txa
+000148r 1  99 rr rr     	sta	__frequency + 1,y
+00014Br 1  4C rr rr     	jmp	Set_Frequency
+00014Er 1  8A           @L:	txa
+00014Fr 1  D9 rr rr     	cmp	__frequency + 1,y
+000152r 1  F0 7E        	beq	Exit
+000154r 1  99 rr rr     	sta	__frequency + 1,y
+000157r 1  AA           	tax
+000158r 1               Set_Frequency:
+000158r 1  B9 rr rr     	lda	__frequency,y
+00015Br 1  20 rr rr     	jsr	_nsd_div192		;
+00015Er 1  29 FE        	and	#$FE			; x =  ax  /  192
+000160r 1  A8           	tay				; y = (ax mod 192) & 0xFE
+000161r 1               
+000161r 1               	;-------------------------------
+000161r 1               	; *** Get frequency from table
+000161r 1               	; nsd_work_zp._tmp <- frequency
+000161r 1  B9 rr rr     	lda	Freq + 1,y
+000164r 1  85 rr        	sta	__tmp + 1
+000166r 1  B9 rr rr     	lda	Freq,y
+000169r 1               
+000169r 1               	;-------------------------------
+000169r 1               	; *** Octave caluclate  and  overflow check
+000169r 1               Octave_Proc:
+000169r 1               	;if (octave == 0) {
+000169r 1  E0 00        	cpx	#0
+00016Br 1  D0 16        	bne	Octave_Loop
+00016Dr 1  85 rr        	sta	__tmp
+00016Fr 1  A5 rr        	lda	__tmp + 1
+000171r 1  C9 08        	cmp	#$08				;if (frequency >= 0x0800) {
+000173r 1  90 09        	bcc	@E
+000175r 1  A9 07        	lda	#$07
+000177r 1  85 rr        	sta	__tmp + 1
+000179r 1  A9 FF        	lda	#$FF				;	frequency = 0x07FF
+00017Br 1  4C rr rr     	jmp	Octave_Exit			; } else {
+00017Er 1  A5 rr        @E:	lda	__tmp
+000180r 1  4C rr rr     	jmp	DEC_Freq
+000183r 1               	; } } else { while (octave > 0) {
+000183r 1               Octave_Loop:
+000183r 1  46 rr        	lsr	__tmp + 1	; frequency >>= 1
+000185r 1  6A           	ror	a
+000186r 1  CA           	dex			; octave--;
+000187r 1  D0 FA        	bne	Octave_Loop
+000189r 1               	; } }
+000189r 1               DEC_Freq:
+000189r 1  38 E9 01     	sub	#1
+00018Cr 1  B0 02        	bcs	Octave_Exit
+00018Er 1  C6 rr        	dec	__tmp + 1	; frequency -= 1
+000190r 1               Octave_Exit:
+000190r 1               
+000190r 1               Detune:
+000190r 1  A6 rr        	ldx	__channel
+000192r 1  85 rr        	sta	__tmp
+000194r 1  BD rr rr     	lda	__detune_fine,x
+000197r 1  30 05        	bmi	@L
+000199r 1  A0 00        	ldy	#$00
+00019Br 1  4C rr rr     	jmp	@E
+00019Er 1  A0 FF        @L:	ldy	#$FF			; ay = __detune_fine (sign expand)
+0001A0r 1  18 65 rr     @E:	add	__tmp
+0001A3r 1  9D rr rr     	sta	__frequency_set,x
+0001A6r 1  98           	tya
+0001A7r 1  65 rr        	adc	__tmp + 1
+0001A9r 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
+0001ABr 1               
+0001ABr 1               	;-------------------------------
+0001ABr 1               	; *** Output to NES sound device
+0001ABr 1               Set_Device:
+0001ABr 1  8A           	txa
+0001ACr 1  C9 0A        	cmp	#nsd::TR_SE1
+0001AEr 1  F0 09        	beq	@S1
+0001B0r 1  C9 0C        	cmp	#nsd::TR_SE2
+0001B2r 1  D0 07        	bne	@E
+0001B4r 1  A9 06        @S2:	lda	#nsd::TR_BGM4	;SE (Noise ch)
+0001B6r 1  4C rr rr     	jmp	@E
+0001B9r 1  A9 02        @S1:	lda	#nsd::TR_BGM2	;SE (Pulse ch)
+0001BBr 1  0A           @E:	asl	a
+0001BCr 1  A8           	tay
+0001BDr 1               
+0001BDr 1  BD rr rr     	lda	__frequency_set,x
+0001C0r 1  99 02 40     	sta	APU_PULSE1FTUNE,y
+0001C3r 1  A5 rr        	lda	__tmp + 1
+0001C5r 1  09 08        	ora	#$08
+0001C7r 1  DD rr rr     	cmp	__frequency_set + 1,x
+0001CAr 1  F0 06        	beq	Exit
+0001CCr 1  99 03 40     	sta	APU_PULSE1CTUNE,y
+0001CFr 1  9D rr rr     	sta	__frequency_set + 1,x
+0001D2r 1               
+0001D2r 1               	;-------------------------------
+0001D2r 1               	; *** Exit
+0001D2r 1               Exit:
+0001D2r 1  60           	rts
+0001D3r 1               .endproc
+0001D3r 1               
+0001D3r 1               .proc	_nsd_noise_frequency
+0001D3r 1               .code
+0001D3r 1               	;-------------------------------
+0001D3r 1               	; *** Get the note number lower 4bit
+0001D3r 1               	;a >>= 4
+0001D3r 1  49 FF        	eor	#$FF
+0001D5r 1  4A 4A 4A 4A  	shr	a,4
+0001D9r 1               
+0001D9r 1               	;-------------------------------
+0001D9r 1               	; *** Mix voice and frequency
+0001D9r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+0001D9r 1  A6 rr        	ldx	__channel
+0001DBr 1  29 0F        	and	#$0F
+0001DDr 1  1D rr rr     	ora	__voice_set,x
+0001E0r 1               
+0001E0r 1               	;-------------------------------
+0001E0r 1               	; *** Output to NES sound device
+0001E0r 1  8D 0E 40     	sta	APU_NOISEFREQ1
+0001E3r 1               	; to do note on?
+0001E3r 1  A9 08        	lda	#$08
+0001E5r 1  DD rr rr     	cmp	__frequency_set + 1,x	;for flag
+0001E8r 1  F0 06        	beq	Exit
+0001EAr 1  8D 0F 40     	sta	APU_NOISEFREQ2
+0001EDr 1  9D rr rr     	sta	__frequency_set + 1,x
+0001F0r 1               
+0001F0r 1               	;-------------------------------
+0001F0r 1               	; *** Exit
+0001F0r 1               Exit:
+0001F0r 1  60           	rts
+0001F1r 1               .endproc
+0001F1r 1               
+0001F1r 1               .proc	_nsd_dpcm_frequency
+0001F1r 1               .code
+0001F1r 1               ;
+0001F1r 1               ;	to do
+0001F1r 1               ;
+0001F1r 1               
+0001F1r 1               	;-------------------------------
+0001F1r 1               	; *** Exit
+0001F1r 1               Exit:
+0001F1r 1  60           	rts
+0001F2r 1               .endproc
+0001F2r 1               

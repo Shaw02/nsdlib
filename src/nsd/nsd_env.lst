@@ -1,0 +1,523 @@
+ca65 V2.13.3 - (C) Copyright 1998-2012 Ullrich von Bassewitz
+Main file   : nsd_env.s
+Current file: nsd_env.s
+
+000000r 1               
+000000r 1               	.setcpu		"6502"
+000000r 1               
+000000r 1               	.export		nsd_envelop
+000000r 1               
+000000r 1               	.import		_nsd_snd_voice
+000000r 1               	.import		_nsd_snd_volume
+000000r 1               	.import		_nsd_snd_frequency
+000000r 1               	.import		_nsd_mul
+000000r 1               	.import		nsd_work
+000000r 1               	.importzp	nsd_work_zp
+000000r 1               
+000000r 1               	.include	"nes.inc"
+000000r 2               ;
+000000r 2               ; NES definitions. By Groepaz/Hitmem.
+000000r 2               ;
+000000r 2               
+000000r 2               
+000000r 2               ;; FIXME: optimize zeropage usage
+000000r 2               
+000000r 2               SCREEN_PTR	= $62           ;2
+000000r 2               CRAM_PTR        = $64           ;2
+000000r 2               CHARCOLOR	= $66
+000000r 2               BGCOLOR		= $67
+000000r 2               RVS		= $68
+000000r 2               CURS_X		= $69
+000000r 2               CURS_Y		= $6a
+000000r 2               
+000000r 2               tickcount       = $6b           ;2
+000000r 2               
+000000r 2               VBLANK_FLAG	= $70
+000000r 2               
+000000r 2               ringbuff        = $0200
+000000r 2               ringwrite       = $71
+000000r 2               ringread        = $72
+000000r 2               ringcount       = $73
+000000r 2               
+000000r 2               ppuhi           = $74
+000000r 2               ppulo           = $75
+000000r 2               ppuval          = $76
+000000r 2               
+000000r 2               screenrows 	= (30-1)
+000000r 2               charsperline    = 32
+000000r 2               xsize           = charsperline
+000000r 2               
+000000r 2               ;; PPU defines
+000000r 2               
+000000r 2               PPU_CTRL1      	= $2000
+000000r 2               PPU_CTRL2	= $2001
+000000r 2               PPU_STATUS	= $2002
+000000r 2               PPU_SPR_ADDR	= $2003
+000000r 2               PPU_SPR_IO  	= $2004
+000000r 2               PPU_VRAM_ADDR1	= $2005
+000000r 2               PPU_VRAM_ADDR2	= $2006
+000000r 2               PPU_VRAM_IO	= $2007
+000000r 2               
+000000r 2               ;; APU defines
+000000r 2               
+000000r 2               APU_PULSE1CTRL  = $4000         ; Pulse #1 Control Register (W)
+000000r 2               APU_PULSE1RAMP  = $4001         ; Pulse #1 Ramp Control Register (W)
+000000r 2               APU_PULSE1FTUNE = $4002         ; Pulse #1 Fine Tune (FT) Register (W)
+000000r 2               APU_PULSE1CTUNE = $4003         ; Pulse #1 Coarse Tune (CT) Register (W)
+000000r 2               APU_PULSE2CTRL  = $4004         ; Pulse #2 Control Register (W)
+000000r 2               APU_PULSE2RAMP  = $4005         ; Pulse #2 Ramp Control Register (W)
+000000r 2               APU_PULSE2FTUNE = $4006         ; Pulse #2 Fine Tune Register (W)
+000000r 2               APU_PULSE2STUNE = $4007         ; Pulse #2 Coarse Tune Register (W)
+000000r 2               APU_TRICTRL1    = $4008         ; Triangle Control Register #1 (W)
+000000r 2               APU_TRICTRL2    = $4009         ; Triangle Control Register #2 (?)
+000000r 2               APU_TRIFREQ1    = $400A         ; Triangle Frequency Register #1 (W)
+000000r 2               APU_TRIFREQ2    = $400B         ; Triangle Frequency Register #2 (W)
+000000r 2               APU_NOISECTRL   = $400C         ; Noise Control Register #1 (W)
+000000r 2               ;;APU_ = $400D  ; Unused (???)
+000000r 2               APU_NOISEFREQ1  = $400E         ; Noise Frequency Register #1 (W)
+000000r 2               APU_NOISEFREQ2  = $400F         ; Noise Frequency Register #2 (W)
+000000r 2               APU_MODCTRL     = $4010         ; Delta Modulation Control Register (W)
+000000r 2               APU_MODDA       = $4011         ; Delta Modulation D/A Register (W)
+000000r 2               APU_MODADDR     = $4012         ; Delta Modulation Address Register (W)
+000000r 2               APU_MODLEN      = $4013         ; Delta Modulation Data Length Register (W)
+000000r 2               APU_SPR_DMA    	= $4014         ; Sprite DMA Register (W)
+000000r 2               APU_CHANCTRL   	= $4015         ; Sound/Vertical Clock Signal Register (R)
+000000r 2               APU_PAD1       	= $4016         ; Joypad #1 (RW)
+000000r 2               APU_PAD2	= $4017         ; Joypad #2/SOFTCLK (RW)
+000000r 2               
+000000r 2               
+000000r 2               CH_HLINE    	= 11
+000000r 2               CH_VLINE    	= 14
+000000r 2               CH_ULCORNER 	= 176
+000000r 2               CH_URCORNER 	= 174
+000000r 2               CH_LLCORNER 	= 173
+000000r 2               CH_LRCORNER 	= 189
+000000r 2               CH_TTEE	    	= 178
+000000r 2               CH_RTEE	    	= 179
+000000r 2               CH_BTEE	    	= 177
+000000r 2               CH_LTEE	    	= 171
+000000r 2               CH_CROSS    	= 123
+000000r 2               CH_CURS_UP     	= 145
+000000r 2               CH_CURS_DOWN	= 17
+000000r 2               CH_CURS_LEFT	= 157
+000000r 2               CH_CURS_RIGHT	= 29
+000000r 2               CH_PI		= 126
+000000r 2               CH_DEL		= 20
+000000r 2               CH_INS		= 148
+000000r 2               CH_ENTER        = 10
+000000r 2               CH_STOP         = 3
+000000r 2               CH_ESC          = 27
+000000r 2               
+000000r 2               
+000000r 1               	.include	"nsd.inc"
+000000r 2               
+000000r 2               .scope	nsd
+000000r 2               	BGM_Track	= 5
+000000r 2               	SE_Track	= 2
+000000r 2               	Track		= BGM_Track + SE_Track
+000000r 2               
+000000r 2               	TR_BGM1		= 0
+000000r 2               	TR_BGM2		= 2
+000000r 2               	TR_BGM3		= 4
+000000r 2               	TR_BGM4		= 6
+000000r 2               	TR_BGM5		= 8
+000000r 2               	TR_SE1		= BGM_Track * 2 + 0
+000000r 2               	TR_SE2		= BGM_Track * 2 + 2
+000000r 2               
+000000r 2               .endscope
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;	Working Struct define in Zero-page area
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               .Struct		NSD_Envelop
+000000r 2               	V		.byte		;Volume & Voice (ch3:Tempo / ch5:Tempo_ctr)
+000000r 2               	F		.byte		;Frequency & Note
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Length_Cnt
+000000r 2               	counter		.byte		;now length of note
+000000r 2               	gate		.byte		;length - u
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_work_zp
+000000r 2               	_ptr		.word					;00 General pointer value
+000000r 2               	_tmp		.word					;02 General value
+000000r 2               	flag		.byte					;04 flag
+000000r 2               	channel		.byte					;05 channel (y resister)
+000000r 2               	Sequence_ptr	.word			nsd::Track	;06 Address of playing sequence
+000000r 2               	Length		.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
+000000r 2               	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;	Working  Struct define in RAM area
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               
+000000r 2               .Struct		NSD_Flag
+000000r 2               	flag		.byte		;flag
+000000r 2               	gatemode	.byte		;gatemode
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_length
+000000r 2               	length		.byte		;l command value
+000000r 2               	tai		.byte		;Tai & Slur
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_gatetime
+000000r 2               	q		.byte		;q command value
+000000r 2               	u		.byte		;u command value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_note
+000000r 2               	note		.byte		;note command value (bit 7 = `H' : rest)
+000000r 2               	octave		.byte		;o command value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Detune
+000000r 2               	cent		.byte		;D command value
+000000r 2               	fine		.byte		;D% command value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Por_Lv
+000000r 2               	target		.byte		;target
+000000r 2               	inc		.byte		;add value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Por_Sp
+000000r 2               	decay		.byte		;
+000000r 2               	rate		.byte		;rate (speed)
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Por_Co
+000000r 2               	count		.byte		;rate control
+000000r 2               	lv		.byte		;now depth
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Rep_Trans
+000000r 2               	count		.byte		;counter of repeat
+000000r 2               	trans		.byte		;transpose
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_volume
+000000r 2               	volume		.byte		;v command value
+000000r 2               	volume_set	.byte		;deveice setting value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_voice
+000000r 2               	voice		.byte		;@ command value
+000000r 2               	voice_set	.byte		;deveice setting value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Env_V_Ptr
+000000r 2               	Volume		.byte					;Volume
+000000r 2               	Voice		.byte					;Voice
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Env_F_Ptr
+000000r 2               	Frequency	.byte					;Freeuqncy
+000000r 2               	Note		.byte					;Note
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_work
+000000r 2               	Flag		.tag	NSD_Flag	nsd::Track	;flag
+000000r 2               	Length		.tag	NSD_length	nsd::Track	;note length [tick]
+000000r 2               	Gatetime	.tag	NSD_gatetime	nsd::Track	;gate time [tick]
+000000r 2               	Note		.tag	NSD_note	nsd::Track	;octave and note command
+000000r 2               	Detune		.tag	NSD_Detune	nsd::Track	;detune
+000000r 2               	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
+000000r 2               	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
+000000r 2               	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
+000000r 2               	Rep_Trans	.tag	NSD_Rep_Trans	nsd::Track	;Repeat and Transpose
+000000r 2               	Volume		.tag	NSD_volume	nsd::Track	;volume
+000000r 2               	Voice		.tag	NSD_voice	nsd::Track	;voice
+000000r 2               	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
+000000r 2               	Frequency	.word			nsd::Track	;Setting frequency
+000000r 2               	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
+000000r 2               	Envelop_Volume	.word			nsd::Track	;Pointer of envelop
+000000r 2               	Envelop_Voice	.word			nsd::Track	;Pointer of envelop
+000000r 2               	Envelop_Freq	.word			nsd::Track	;Pointer of envelop
+000000r 2               	Envelop_Note	.word			nsd::Track	;Pointer of envelop
+000000r 2               	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;
+000000r 2               	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;	Defines for work structures
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               
+000000r 2               .scope	nsd_flag
+000000r 2               	BGM	= $01
+000000r 2               	SE	= $02
+000000r 2               .endscope
+000000r 2               
+000000r 2               ;Zero Page Works
+000000r 2               .define	__ptr		nsd_work_zp + NSD_work_zp::_ptr
+000000r 2               .define	__tmp		nsd_work_zp + NSD_work_zp::_tmp
+000000r 2               .define	__flag		nsd_work_zp + NSD_work_zp::flag
+000000r 2               .define	__channel	nsd_work_zp + NSD_work_zp::channel
+000000r 2               .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
+000000r 2               .define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
+000000r 2               .define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
+000000r 2               .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V
+000000r 2               .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F
+000000r 2               .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+000000r 2               .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+000000r 2               
+000000r 2               .scope	nsd_chflag
+000000r 2               	SE1	= $40
+000000r 2               	SE2	= $80
+000000r 2               	KeyOff	= $03		;00	Key Off	: Vol = 0
+000000r 2               				;01	Key Off	: Release command
+000000r 2               				;10	Key Off	:  envelop
+000000r 2               				;11	Note On	: (envelop)
+000000r 2               .endscope
+000000r 2               
+000000r 2               ;RAM Works
+000000r 2               .define	__chflag	nsd_work + NSD_work::Flag + NSD_Flag::flag
+000000r 2               .define	__gatemode	nsd_work + NSD_work::Flag + NSD_Flag::gatemode
+000000r 2               .define	__tai		nsd_work + NSD_work::Length + NSD_length::tai
+000000r 2               .define	__length	nsd_work + NSD_work::Length + NSD_length::length
+000000r 2               .define	__gate_q	nsd_work + NSD_work::Gatetime + NSD_gatetime::q
+000000r 2               .define	__gate_u	nsd_work + NSD_work::Gatetime + NSD_gatetime::u
+000000r 2               .define __note		nsd_work + NSD_work::Note + NSD_note::note
+000000r 2               .define	__octave	nsd_work + NSD_work::Note + NSD_note::octave
+000000r 2               .define	__detune_cent	nsd_work + NSD_work::Detune + NSD_Detune::cent
+000000r 2               .define	__detune_fine	nsd_work + NSD_work::Detune + NSD_Detune::fine
+000000r 2               .define	__por_target	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::target
+000000r 2               .define	__por_inc	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::inc
+000000r 2               .define	__por_decay	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::decay
+000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
+000000r 2               .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
+000000r 2               .define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
+000000r 2               .define	__trans		nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::trans
+000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::count
+000000r 2               .define	__volume	nsd_work + NSD_work::Volume + NSD_volume::volume
+000000r 2               .define	__volume_set	nsd_work + NSD_work::Volume + NSD_volume::volume_set
+000000r 2               .define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
+000000r 2               .define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set
+000000r 2               .define	__frequency	nsd_work + NSD_work::Frequency
+000000r 2               .define	__frequency_set	nsd_work + NSD_work::Frequency_Set
+000000r 2               .define	__subroutine	nsd_work + NSD_work::SubRoutine
+000000r 2               .define	__env_volume	nsd_work + NSD_work::Envelop_Volume
+000000r 2               .define	__env_voice	nsd_work + NSD_work::Envelop_Voice
+000000r 2               .define	__env_frequency	nsd_work + NSD_work::Envelop_Freq
+000000r 2               .define	__env_note	nsd_work + NSD_work::Envelop_Note
+000000r 2               .define	__env_vol_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Volume
+000000r 2               .define	__env_voi_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Voice
+000000r 2               .define	__env_freq_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency
+000000r 2               .define	__env_note_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;	Macros
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               
+000000r 2               .MACPACK generic
+000000r 2               
+000000r 2               .macro  ldax    arg
+000000r 2               	.if (.match (.left (1, {arg}), #))
+000000r 2               		; immediate mode
+000000r 2               		lda     #<(.right (.tcount ({arg})-1, {arg}))
+000000r 2               		ldx     #>(.right (.tcount ({arg})-1, {arg}))
+000000r 2               	.else
+000000r 2               		; assume absolute or zero page
+000000r 2               		lda     arg
+000000r 2               		ldx     1+(arg)
+000000r 2               	.endif
+000000r 2               .endmacro
+000000r 2               
+000000r 2               .macro  addw    Arg
+000000r 2               	clc
+000000r 2               	.if (.match (.left (1, {arg}), #))
+000000r 2               		; immediate mode
+000000r 2               		adc     #<(.right (.tcount ({arg})-1, {arg}))
+000000r 2               		adc     #>(.right (.tcount ({arg})-1, {arg}))
+000000r 2               	.else
+000000r 2               		; assume absolute or zero page
+000000r 2               		adc     arg
+000000r 2               		adc     1+(arg)
+000000r 2               	.endif
+000000r 2               .endmacro
+000000r 2               
+000000r 2               .macro  subw    Arg
+000000r 2               	sec
+000000r 2               	.if (.match (.left (1, {arg}), #))
+000000r 2               		; immediate mode
+000000r 2               		sbc     #<(.right (.tcount ({arg})-1, {arg}))
+000000r 2               		sbc     #>(.right (.tcount ({arg})-1, {arg}))
+000000r 2               	.else
+000000r 2               		; assume absolute or zero page
+000000r 2               		sbc     arg
+000000r 2               		sbc     1+(arg)
+000000r 2               	.endif
+000000r 2               .endmacro
+000000r 2               
+000000r 2               .macro	shl	arg, c
+000000r 2               	.repeat	c
+000000r 2               		asl	arg
+000000r 2               	.endrepeat
+000000r 2               .endmacro
+000000r 2               
+000000r 2               .macro	shr	arg, c
+000000r 2               	.repeat	c
+000000r 2               		lsr	arg
+000000r 2               	.endrepeat
+000000r 2               .endmacro
+000000r 2               
+000000r 2               
+000000r 1               
+000000r 1               .code
+000000r 1               
+000000r 1               ;=======================================================================
+000000r 1               ;	void	nsd_sequence(void);
+000000r 1               ;-----------------------------------------------------------------------
+000000r 1               ;<<Contents>>
+000000r 1               ;
+000000r 1               ;<<Input>>
+000000r 1               ;	x	Channel * 2
+000000r 1               ;<<Output>>
+000000r 1               ;	nothing
+000000r 1               ;=======================================================================
+000000r 1               .proc	nsd_envelop
+000000r 1               
+000000r 1  86 rr        	stx	__channel
+000002r 1               
+000002r 1               	;-------------------------------
+000002r 1               	;Frequency (note)
+000002r 1               Frequency:
+000002r 1  BD rr rr     	lda	__chflag,x
+000005r 1  29 03        	and	#nsd_chflag::KeyOff
+000007r 1  D0 05        	bne	@L
+000009r 1  A9 00        	lda	#0			; if (rest with vol=0){
+00000Br 1  4C rr rr     	jmp	_nsd_snd_volume		;	volume = 0
+00000Er 1               @L:					; } else {
+00000Er 1  BD rr rr     	lda	__note,x
+000011r 1  18 7D rr rr  	add	__trans,x
+000015r 1  85 rr        	sta	__tmp + 1
+000017r 1  0A 0A 0A 0A  	shl	a, 4
+00001Br 1  85 rr        	sta	__tmp
+00001Dr 1  A5 rr        	lda	__tmp + 1
+00001Fr 1  4A 4A 4A 4A  	shr	a, 4
+000023r 1  85 rr        	sta	__tmp + 1		;__tmp = (int)(__note << 4)
+000025r 1  4C rr rr     	jmp	debug
+000028r 1               
+000028r 1               	;-----------
+000028r 1               	;Detune
+000028r 1  BD rr rr     Detune:	lda	__detune_cent,x
+00002Br 1  30 05        	bmi	@L
+00002Dr 1  A0 00        	ldy	#$00
+00002Fr 1  4C rr rr     	jmp	@E
+000032r 1  A0 FF        @L:	ldy	#$FF			; ay = __detune_cent (sign expand)
+000034r 1  18 65 rr     @E:	add	__tmp
+000037r 1  85 rr        	sta	__tmp
+000039r 1  98           	tya
+00003Ar 1  65 rr        	adc	__tmp + 1
+00003Cr 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
+00003Er 1               
+00003Er 1               	;-----------
+00003Er 1               	;Envelop Frequency
+00003Er 1  BD rr rr     F_Env:	lda	__env_frequency + 1,x
+000041r 1  F0 0E        	beq	@Freq_Exit
+000043r 1  85 rr        	sta	__ptr + 1
+000045r 1  BD rr rr     	lda	__env_frequency,x
+000048r 1  85 rr        	sta	__ptr
+00004Ar 1  BC rr rr     	ldy	__env_freq_ptr,x
+00004Dr 1               	;
+00004Dr 1               	;¡¡	to do envelop process
+00004Dr 1               	;
+00004Dr 1  98           	tya
+00004Er 1  9D rr rr     	sta	__env_freq_ptr,x
+000051r 1               
+000051r 1               @Freq_Exit:
+000051r 1               
+000051r 1               	;-----------
+000051r 1               	;Envelop Note
+000051r 1  BD rr rr     	lda	__env_note + 1,x
+000054r 1  F0 0E        	beq	@Note_Exit
+000056r 1  85 rr        	sta	__ptr + 1
+000058r 1  BD rr rr     	lda	__env_note,x
+00005Br 1  85 rr        	sta	__ptr
+00005Dr 1  BC rr rr     	ldy	__env_note_ptr,x
+000060r 1               	;
+000060r 1               	;¡¡	to do envelop process
+000060r 1               	;
+000060r 1  98           	tya
+000061r 1  9D rr rr     	sta	__env_note_ptr,x
+000064r 1               
+000064r 1               @Note_Exit:
+000064r 1               
+000064r 1               	;-----------
+000064r 1               	;Setting device (APU)
+000064r 1               debug:
+000064r 1  A5 rr        	lda	__tmp
+000066r 1  A6 rr        	ldx	__tmp + 1
+000068r 1  20 rr rr     	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
+00006Br 1  A6 rr        	ldx	__channel
+00006Dr 1               
+00006Dr 1               	;-------------------------------
+00006Dr 1               	;Voice & Volume
+00006Dr 1  E0 04        	cpx	#nsd::TR_BGM3
+00006Fr 1  F0 5E        	beq	exit
+000071r 1  E0 08        	cpx	#nsd::TR_BGM5
+000073r 1  F0 5A        	beq	exit
+000075r 1               
+000075r 1               	;-------------------------------
+000075r 1               	;Voice
+000075r 1               Voice:
+000075r 1  BD rr rr     	lda	__chflag,x
+000078r 1  29 02        	and	#$02
+00007Ar 1  D0 0A        	bne	@Envelop
+00007Cr 1  BD rr rr     	lda	__voice,x
+00007Fr 1  4A 4A 4A 4A  	shr	a, 4			; a = release voice
+000083r 1  4C rr rr     	jmp	Set_Voice
+000086r 1               @Envelop:
+000086r 1  BD rr rr     	lda	__env_voice + 1,x
+000089r 1  D0 04        	bne	@L
+00008Br 1  A9 02        	lda	#$02
+00008Dr 1  D0 0E        	bne	Set_Voice
+00008Fr 1  85 rr        @L:	sta	__ptr + 1
+000091r 1  BD rr rr     	lda	__env_voice,x
+000094r 1  85 rr        	sta	__ptr
+000096r 1  BC rr rr     	ldy	__env_voi_ptr,x
+000099r 1               	;
+000099r 1               	;¡¡	to do envelop process
+000099r 1               	;
+000099r 1  98           	tya
+00009Ar 1  9D rr rr     	sta	__env_voi_ptr,x
+00009Dr 1               
+00009Dr 1               Set_Voice:
+00009Dr 1  20 rr rr     	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
+0000A0r 1               Exit_Voice:
+0000A0r 1               
+0000A0r 1               	;-------------------------------
+0000A0r 1               	;Volume
+0000A0r 1               Volume:
+0000A0r 1  BD rr rr     	lda	__chflag,x
+0000A3r 1  29 02        	and	#$02
+0000A5r 1  D0 08        	bne	@Envelop
+0000A7r 1  BD rr rr     	lda	__volume,x
+0000AAr 1  29 F0        	and	#$F0
+0000ACr 1  4C rr rr     	jmp	Set_Volume
+0000AFr 1               @Envelop:
+0000AFr 1  BD rr rr     	lda	__env_volume + 1,x
+0000B2r 1  D0 0A        	bne	@L
+0000B4r 1  BD rr rr     	lda	__volume,x
+0000B7r 1  0A 0A 0A 0A  	shl	a, 4
+0000BBr 1  4C rr rr     	jmp	Set_Volume
+0000BEr 1  85 rr        @L:	sta	__ptr + 1
+0000C0r 1  BD rr rr     	lda	__env_volume,x
+0000C3r 1  85 rr        	sta	__ptr
+0000C5r 1  BC rr rr     	ldy	__env_vol_ptr,x
+0000C8r 1               	;
+0000C8r 1               	;¡¡	to do envelop process
+0000C8r 1               	;
+0000C8r 1  98           	tya
+0000C9r 1  9D rr rr     	sta	__env_vol_ptr,x
+0000CCr 1               
+0000CCr 1               Set_Volume:
+0000CCr 1  20 rr rr     	jsr	_nsd_snd_volume		;nsd_snd_volume(a);
+0000CFr 1               
+0000CFr 1               exit:
+0000CFr 1  60           	rts
+0000D0r 1               .endproc
+0000D0r 1               
+0000D0r 1               

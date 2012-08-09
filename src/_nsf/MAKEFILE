@@ -1,0 +1,42 @@
+#==============================================================================
+#	NES Sound Driver Libraly
+#		Make file
+#				A.Waranabe (S.W.)
+#==============================================================================
+
+.SUFFIXES :
+.SUFFIXES : .s .c
+
+ASM = ca65
+AFLAG = -t none --listing --list-bytes 255
+
+CC = cl65
+CFLAG = -t none -Oi -Os -Or -c -l -o
+
+LINKER = ld65
+LFLAG = -C config.cfg -m $(PROJ).map -vm -o
+
+LIBER = ar65
+LIBFLAG = a
+
+PROJ = nsf_test
+
+LIB_FILES = ../nsd/nsd.lib
+
+INC_FILES = 
+
+FILES = crt0.o main.o
+
+clean: $(PROJ).nsf
+	@del *.bak
+
+all: $(PROJ).nsf
+
+$(PROJ).nsf : $(FILES) $(INC_FILES) $(LIB_FILES)
+	@$(LINKER) $(LFLAG) $(PROJ).nsf $(FILES) $(LIB_FILES) nes.lib
+
+.c.o :
+	@$(CC) $(CFLAG) $*.o $<
+
+.s.o :
+	@$(ASM) $(AFLAG) $<

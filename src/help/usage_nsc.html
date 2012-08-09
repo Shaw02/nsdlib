@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MMLコンパイラ（nsc.exe）</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MMLコンパイラ（nsc.exe）</h2>
+
+<div class='block'>
+<h3>コマンドラインオプション（Command line option）</h3>
+<p>
+<strong>仕様策定中</strong><br>
+テキストで記述されたMMLファイルを、本音源ドライバーNSD.Lib用のデータに変換します。<br>
+デフォルトでは、cc65に付属のクロスアセンブラ`ca65'用のアセンブリ言語ソースを出力します。<br>
+出力するアセンブリ言語ソースは、単体でオブジェクトファイルにアセンブル可能となっていますので、
+ユーザーアプリケーションのビルドの際に、当該オブジェクトファイルをリンクして下さい。<br>
+</p>
+<p>
+また、NSFファイルの簡易生成も可能です。<br>
+複数の曲に対応していますが、コンパイラにてNSFを生成する場合は、
+曲データは合計で16kByte以内となります。<br>
+</p>
+<code><pre>
+	nsc <var>-option</var> <var>MML-file name</var>
+</pre></code>
+<dl>
+<dt>-h</dt><dd>Print the help.</dd>
+<dt>-n</dt><dd>Output the NSF. (*.nsf) </dd>
+<dt>-s</dt><dd>Output the assembly language source file for cc65. (*.s) (default)</dd>
+<dt>-b</dt><dd>Output the Binary file. (*.bin)</dd>
+<dt>-fn<var>filename</var></dt><dd>Set the file name of NSF.</dd>
+<dt>-fs<var>filename</var></dt><dd>Set the file name of assembly source file.</dd>
+<dt>-fb<var>filename</var></dt><dd>Set the file name of binary file.</dd>
+</dl>
+
+<h3>ＭＭＬリファレンス（MML reference）</h3>
+<p>
+	<strong>仕様策定中</strong><br>
+</p>
+</div>
+
+<div class='block'>
+<h3>アセンブリ言語ソースの仕様</h3>
+<h4>曲データのシンボル（ラベル）</h4>
+<p>
+曲データのシンボルは、<var>_nsd_ファイル名_番号</var>となります。<br>
+（Ｃ言語から参照する場合は、<var>nsd_ファイル名_番号</var>となります。）<br>
+このシンボルのアドレスを引数に、<a href="func_nsd_play_bgm.html">nsd_play_bgm()関数</a>を呼び出すことで、
+その曲データが再生されます。<br>
+</p>
+<p>
+例えば、ファイル名が<var>foo</var>で、MMLファイル中の２番目の曲データは、
+<code>_nsd_foo_2</code>と命名され、<code>.export</code>宣言されます。<br>
+ユーザーアプリケーション側からは、このシンボル名を<code>.import</code>することで、参照が可能になります。<br>
+</p>
+<h4>曲データのセグメント</h4>
+<p>
+<code>.rodata</code>セグメントに配置されます。<br>
+曲データ、効果音データ共にROM中に配置されていても再生可能ですので、
+別途、RAM領域に転送したり、<code>.data</code>セグメントに書き換える必要はありません。<br>
+</p>
+</div>
+
+</div>
+
+</BODY>
+</HTML>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>サウンドドライバー（nsd.lib）</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>サウンドドライバー（nsd.lib）</h2>
+
+<div class='block'>
+<p>
+本サウンドドライバーは、6502用Ｃ言語／アセンブリ言語開発環境のオブジェクトライブラリ`*.lib'として開発しています。<br>
+ユーザーアプリケーションからは、ライブラリ中の関数を呼ぶことにより、本サウンドドライバーを制御することが可能です。<br>
+</p>
+<p>
+ドライバー本体からは、cc65の付属のライブラリ`nes.lib'内の関数を一切呼び出しておらず、Ｃ言語用の領域にもアクセスしておりません。<br>
+従い、別の開発環境で記述されたコードから呼び出しても動作するとは思いますが、
+その際は、ライブラリのフォーマットが、cc65のものと互換性を持っている必要があります。<br>
+</p>
+</div>
+
+<div class='block'>
+<h3>関数リファレンス（Function reference）</h3>
+<p>
+以下に記載のライブラリ関数について、関数呼出規約は全てcc65の <code> __fastcall__ </code> となります。
+</p>
+
+<h4>ライブラリ関数一覧</h4>
+<table>
+<tr><th>return value	</th><th>Function name		</th><th>Contents		</th></tr>
+<tr><td>void	</td><td><a href="func_nsd_main.html">nsd_main(void)</a>		</td><td>Driver main routine. Please call by one V-blank.</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_init.html">nsd_init(void)</a>		</td><td>Initraize the driver.	</td></tr>
+<tr><td>void	</td><td>nsd_set_dpcm(nsd_dpcm* dpcm)	</td><td>Set the dpcm information.	<strong>未実装</strong>	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_play_bgm.html">nsd_play_bgm(void *bgm)</a>	</td><td>Start the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_stop_bgm.html">nsd_stop_bgm(void)</a>	</td><td>Stop  the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_play_se.html">nsd_play_se(void *se)</a>	</td><td>Start the SE.	<strong>未実装</strong>	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_stop_se.html">nsd_stop_se(void)</a>		</td><td>Stop  the SE.	<strong>未実装</strong>	</td></tr>
+</table>
+
+<h3>関数呼出規約 __fastcall__ について（About the calling conversion __fastcall__ ）</h3>
+
+<h4>引数（Inputs）</h4>
+<p>
+関数の一番右の引数はレジスターで渡されます。<br>
+</p>
+<dl>
+<dt>1 byte value</dt><dd>a register</dd>
+<dt>2 byte value</dt><dd>a (LSB) and x (MSB) register</dd>
+</dl>
+<p>
+cc65では、一番右の引数以外は、ソフトウェアスタック（zeropage内の変数spによりＣ言語で制御される）に格納されますが、
+本サウンドドライバーではライブラリ関数の引数は必ず１つ以内とし、ソフトウェアスタックの使用を避けております。<br>
+これにより、cc65に付属のランタイムライブラリ`nes.lib'をリンクしないでも、動作する設計となっています。<br>
+</p>
+
+<h4>戻り値（Outputs）</h4>
+<p>
+戻り値はレジスターに格納されます。<br>
+戻り値がない場合は、レジスターの値は不定となります。<br>
+yレジスターの値は常に不定です。<br>
+</p>
+<dl>
+<dt>1 byte value</dt><dd>a register</dd>
+<dt>2 byte value</dt><dd>a (LSB) and x (MSB) register</dd>
+</dl>
+
+<h4>関数のシンボル名（Function symbol name）</h4>
+<p>
+アセンブリ言語から呼び出す場合は、シンボル名にアンダーバー('_')を追加して下さい。<br>
+たとえば、アセンブリ言語から<code>nsd_main(void)</code>を呼び出す場合は、<code>jsr _nsd_main</code>と記述します。<br>
+</p>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>nsd_main()</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>Function reference: nsd_main()</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        void    __fastcall__    nsd_main(void );
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+<p>
+	無し（no input）
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>戻り値（Outputs）</h3>
+<p>
+	無し（no output）
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+音源ドライバーのメインルーチンです。<br>
+1/60秒毎に呼び出してください。<br>
+</p>
+<p>
+
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+一般的な手法としては、VBlank割り込み（NMI）ルーチンから呼び出します。<br>
+ただし、NMIの割り込みベクタに本関数`nes_main'のポインタを直接書かないで下さい。<br>
+本関数では、a,x,yレジスタの保存および、`rti'命令による割り込みの復帰は行っていません。<br>
+また、VBlank割り込み（NMI）を用いる場合は、ユーザーアプリケーション側にて、
+<code><a href="func_nsd_init.html">nsd_init()</a></code>関数を呼び出し後に、VBlank割り込みを`有効'にPPUを設定してください。<br>
+</p>
+<p>
+
+</p>
+<h4>nsd_main(void)関数の呼び出し例</h4>
+<code><pre>
+        .import         _nsd_main
+.segment        "CODE"
+NMI_Start:
+        pha
+        txa
+        pha
+        tya
+        pha
+        
+        jsr     _nsd_main
+        
+        pla
+        tay
+        pla
+        tax
+        pla
+        rti
+</pre></code>
+</div>
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+
