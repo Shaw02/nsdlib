@@ -35,8 +35,7 @@
 	lda	__Tempo_ctr
 	add	__Tempo
 	sta	__Tempo_ctr
-	bcc	BGM_Exit
-
+	bcc	BGM_SEQ_Exit
 
 	;-------------------------------
 	;BGM
@@ -51,6 +50,8 @@ BGM_Begin:
 	sta	__Tempo_ctr
 	cmp	#106
 	bcc	BGM_Begin
+
+BGM_SEQ_Exit:
 
 	;-------
 	;Envelop

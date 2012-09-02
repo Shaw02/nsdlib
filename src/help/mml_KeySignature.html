@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Key Signature</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MML reference: Key Signature</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        K{<var>signature</var>}
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>signature</h4>
+<dl>
+<dt># … </dt><dd>以降に示すノートを半音上げます</dd>
+<dt>+ … </dt><dd>以降に示すノートを半音上げます</dd>
+<dt>- … </dt><dd>以降に示すノートを半音下げます</dd>
+<dt>= … </dt><dd>以降に示すノートの調号を無しにします。</dd>
+<dt>a … </dt><dd>A, La, ラ</dd>
+<dt>b … </dt><dd>H, Si, シ</dd>
+<dt>c … </dt><dd>C, Do, ド</dd>
+<dt>d … </dt><dd>D, Re, レ</dd>
+<dt>e … </dt><dd>E, Mi, ミ</dd>
+<dt>f … </dt><dd>F, Fa, ファ</dd>
+<dt>g … </dt><dd>G, Sol, ソ</dd>
+</dl>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+現在のトラックの調号を指定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+ＭＭＬコンパイラーの疑似命令です。<br>
+次にK{}コマンドが来るまで、本コマンドで指定された音階に、自動で臨時記号が付加されてコンパイルされます。<br>
+</p>
+<p>
+各記述ブロック（Sub, BGM, SE）では、デフォルトは調号無しとなります。<br>
+従い、サブルーチンコールする場合は、サブルーチン先も調号を指定して下さい。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    K{#fc}   defgab>cd    <span style="color:green;">/* D-Dur scale */</span>
+    K{=fc}   cdefgab>c    <span style="color:green;">/* C-Dur scale */</span>
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

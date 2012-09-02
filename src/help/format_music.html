@@ -45,18 +45,19 @@
 												n1::n2 = jumping pointer.			</td></tr>
 <tr><td>0x02		</td><td>n1 n2		</td><td>Sub-routine call					<br>
 												n1::n2 = Pointer of sub-routine.	</td></tr>
-<tr><td>0x03		</td><td>n1			</td><td>Repeat start.						<br>
+<tr><td>0x03		</td><td>n1			</td><td>Repeat(A) Start point.					<br>
 												n1 = repeat times					</td></tr>
-<tr><td>0x04		</td><td>n1 n2		</td><td>Repeat break.						<br>
-												n1::n2 = Pointer of break.			</td></tr>
-<tr><td>0x05		</td><td>n1 n2		</td><td>Repeat start.						<br>
-												n1::n2 = Pointer of repeat.			</td></tr>
+<tr><td>0x04		</td><td>n1 n2		</td><td>Repeat(A) Branch point						<br>
+												n1::n2 = Pointer of exit.			</td></tr>
+<tr><td>0x05		</td><td>n1 n2		</td><td>Repeat(A) End point.						<br>
+												n1::n2 = Pointer of start.			</td></tr>
 <tr><td>0x07		</td><td>n1 n2 n3	</td><td>Write data to memory.				<br>
 												n1::n2 = Address. / n3 = Writing data	</td></tr>
 <tr><td>0x08		</td><td>n1			</td><td>Tempo [BPM]						</td></tr>
 <tr><td>0x09		</td><td>n1			</td><td>Note length of è»ó™éû	[Ticks]		</td></tr>
 <tr><td>0x0A		</td><td>n1			</td><td>Gate time (key-off timing from last)	</td></tr>
 <tr><td>0x0B		</td><td>n1			</td><td>Gate time (length of î≠âπ)			</td></tr>
+<tr><td>0x0C		</td><td>n1			</td><td>Relative Tempo [BPM]				</td></tr>
 <tr><td>0x0D		</td><td>			</td><td>Gate mode (no release. volume = 0)		</td></tr>
 <tr><td>0x0E		</td><td>			</td><td>Gate mode (release of command value)	</td></tr>
 <tr><td>0x0F		</td><td>			</td><td>Gate mode (release of envelop pattern)	</td></tr>
@@ -71,16 +72,24 @@
 <tr><td>0x14		</td><td>n1			</td><td>Detune (16 = 100 cent)				</td></tr>
 <tr><td>0x15		</td><td>n1			</td><td>Detune (Resister base)				</td></tr>
 <tr><td>0x16		</td><td>n1			</td><td>Sweep (Resister base)				</td></tr>
-<tr><td>0x17		</td><td>n1 n2 n3	</td><td>Portamento	(Frequency += n2, every n3 [VBlank])	<br>
+<tr><td>0x17		</td><td>n1 n2 n3	</td><td>Portamento	(Frequency += n2, every n3 [VBlank])	<strong>ñ¢é¿ëï</strong><br>
 												n1 = Depth. (1 = 100 [cent])		<br>
 												n2 = Count (16 = 100 [cent])		<br>
-												n3 = Rate (1 = 1 VBlank)		</td></tr>
+												n3 = Rate (1 = 1 VBlank)			</td></tr>
+<tr><td>0x18		</td><td>			</td><td>Repeat(B) Start point					</td></tr>
+<tr><td>0x19		</td><td>			</td><td>Repeat(B) Branch point					</td></tr>
+<tr><td>0x1A		</td><td>n1 n2		</td><td>Repeat(B) End point<br>
+												n1::n2 = Pointer of start.			</td></tr>
+<tr><td>0x1B		</td><td>n1			</td><td>Voice (Voice Envelop Off)			</td></tr>
 <tr><td>0x20		</td><td>			</td><td>Volume down	(-1)				</td></tr>
 <tr><td>0x21		</td><td>			</td><td>Volume up		(+1)				</td></tr>
 <tr><td>0x28		</td><td>			</td><td>Octave down	(-1)				</td></tr>
 <tr><td>0x29		</td><td>			</td><td>Octave up		(+1)				</td></tr>
 <tr><td>0x2A		</td><td>n1			</td><td>Transpose (an absolute value)		</td></tr>
 <tr><td>0x2B		</td><td>n1			</td><td>Transpose (a relative value)		</td></tr>
+<tr><td>0x2C		</td><td>			</td><td>Octave down (only next note)		</td></tr>
+<tr><td>0x2D		</td><td>			</td><td>Octave up   (only next note)		</td></tr>
+<tr><td>0x2E		</td><td>n1			</td><td>One time transpose	(a relative value)</td></tr>
 <tr><td>0x30-0x37	</td><td>n1			</td><td>Voice of release (after key-off)	</td></tr>
 <tr><td>0x38-0x3F	</td><td>			</td><td>Octave			(op-code lower 4bit is value)	</td></tr>
 <tr><td>0x40-0x4F	</td><td>			</td><td>Note length of è»ó™éû	(op-code lower 4bit is value)	<br>

@@ -1,7 +1,16 @@
 
 .scope	nsd
-	BGM_Track	= 5
-	SE_Track	= 2
+	APU_Track	= 5		;
+	FDS_Track	= 1		;
+	VRC6_Track	= 3		;
+	VRC7_Track	= 6		;
+	MMC5_Track	= 2		; (without DPCM)
+	N163_Track	= 8		;
+	PSG_Track	= 3		;
+
+	BGM_Track	= APU_Track
+	SE_Track	= 2		;
+
 	Track		= BGM_Track + SE_Track
 
 	TR_BGM1		= 0
@@ -37,38 +46,40 @@
 	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
 .Endstruct
 
+; 6 + ( 6 [Byte] * 28 [ch] ) = 174
+
 ;=======================================================================
 ;	Working  Struct define in RAM area
 ;-----------------------------------------------------------------------
 
 .Struct		NSD_Flag
 	flag		.byte		;flag
-	gatemode	.byte		;gatemode
+	gatemode	.byte		;gate mode
 .Endstruct
 
 .Struct		NSD_length
-	length		.byte		;l command value
-	tai		.byte		;Tai & Slur
+	length		.byte		;`l' command value
+	tai		.byte		;flag of Tai & Slur
 .Endstruct
 
 .Struct		NSD_gatetime
-	q		.byte		;q command value
-	u		.byte		;u command value
+	q		.byte		;`q' command value
+	u		.byte		;`u' command value
 .Endstruct
 
 .Struct		NSD_note
-	note		.byte		;note command value (bit 7 = `H' : rest)
-	octave		.byte		;o command value
+	note		.byte		;`note' command value (bit 7 = `H' : rest)
+	octave		.byte		;`o' command value
 .Endstruct
 
 .Struct		NSD_Detune
-	cent		.byte		;D command value
-	fine		.byte		;D% command value
+	cent		.byte		;`D' command value
+	fine		.byte		;`D%' command value
 .Endstruct
 
 .Struct		NSD_Por_Lv
-	target		.byte		;target
-	inc		.byte		;add value
+	target		.byte		;`P' target
+	inc		.byte		;`P' add value
 .Endstruct
 
 .Struct		NSD_Por_Sp
@@ -81,29 +92,39 @@
 	lv		.byte		;now depth
 .Endstruct
 
-.Struct		NSD_Rep_Trans
-	count		.byte		;counter of repeat
-	trans		.byte		;transpose
+.Struct		NSD_Trans
+	trans		.byte		;`_' command value
+	onetime		.byte		;`'', `"' command value
+.Endstruct
+
+.Struct		NSD_Repeat
+	count1		.byte		;counter of repeat(A)
+	count2		.byte		;counter of repeat(B)
 .Endstruct
 
 .Struct		NSD_volume
-	volume		.byte		;v command value
-	volume_set	.byte		;deveice setting value
+	volume		.byte		;`v' & `vR' command value
+	volume_env	.byte		;now envelop volume
 .Endstruct
 
 .Struct		NSD_voice
-	voice		.byte		;@ command value
+	voice		.byte		;`@R' command value (upper 4bit)
 	voice_set	.byte		;deveice setting value
 .Endstruct
 
 .Struct		NSD_Env_V_Ptr
-	Volume		.byte					;Volume
-	Voice		.byte					;Voice
+	Volume		.byte		;Volume
+	Voice		.byte		;Voice
 .Endstruct
 
 .Struct		NSD_Env_F_Ptr
-	Frequency	.byte					;Freeuqncy
-	Note		.byte					;Note
+	Frequency	.byte		;Freeuqncy
+	Note		.byte		;Note
+.Endstruct
+
+.Struct		NSD_Env_F_Now
+	Frequency	.byte		;now envelop Freeuqncy
+	Note		.byte		;now envelop Note
 .Endstruct
 
 .Struct		NSD_work
@@ -115,18 +136,21 @@
 	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
 	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
 	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
-	Rep_Trans	.tag	NSD_Rep_Trans	nsd::Track	;Repeat and Transpose
+	Trans		.tag	NSD_Trans	nsd::Track	;Repeat and Transpose
+	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat and Transpose
 	Volume		.tag	NSD_volume	nsd::Track	;volume
 	Voice		.tag	NSD_voice	nsd::Track	;voice
-	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
-	Frequency	.word			nsd::Track	;Setting frequency
-	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
+	Env_F_Now	.tag	NSD_Env_F_Now	nsd::Track	;Now value of envelop
+	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;Address of envelop
+	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;Address of envelop
 	Envelop_Volume	.word			nsd::Track	;Pointer of envelop
 	Envelop_Voice	.word			nsd::Track	;Pointer of envelop
 	Envelop_Freq	.word			nsd::Track	;Pointer of envelop
 	Envelop_Note	.word			nsd::Track	;Pointer of envelop
-	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;
-	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;
+	Frequency	.word			nsd::Track	;Setting frequency
+	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
+	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
+	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
 .Endstruct
 
 ;=======================================================================
@@ -177,15 +201,17 @@
 .define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
 .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
 .define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
-.define	__trans		nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::trans
-.define	__repeat_ctr	nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::count
+.define	__trans		nsd_work + NSD_work::Trans + NSD_Trans::trans
+.define	__trans_one	nsd_work + NSD_work::Trans + NSD_Trans::onetime
+.define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
+.define	__repeat_ctr2	nsd_work + NSD_work::Repeat + NSD_Repeat::count2
 .define	__volume	nsd_work + NSD_work::Volume + NSD_volume::volume
-.define	__volume_set	nsd_work + NSD_work::Volume + NSD_volume::volume_set
 .define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
 .define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set
 .define	__frequency	nsd_work + NSD_work::Frequency
 .define	__frequency_set	nsd_work + NSD_work::Frequency_Set
 .define	__subroutine	nsd_work + NSD_work::SubRoutine
+.define	__repeat2	nsd_work + NSD_work::Repeat2
 .define	__env_volume	nsd_work + NSD_work::Envelop_Volume
 .define	__env_voice	nsd_work + NSD_work::Envelop_Voice
 .define	__env_frequency	nsd_work + NSD_work::Envelop_Freq
@@ -194,6 +220,10 @@
 .define	__env_voi_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Voice
 .define	__env_freq_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency
 .define	__env_note_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note
+;	voiceに関しては、その後の演算は無いので、更新されない場合はエンベロープ処理を終了する。
+.define	__env_vol_now	nsd_work + NSD_work::Volume + NSD_volume::volume_env
+.define	__env_freq_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
+.define	__env_note_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
 
 ;=======================================================================
 ;	Macros

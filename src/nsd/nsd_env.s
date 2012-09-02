@@ -16,10 +16,58 @@
 .code
 
 ;=======================================================================
-;	void	nsd_sequence(void);
+;	void	nsd_envelop_proc(void);
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;		
+;	Process of envelop
+;<<Input>>
+;	__ptr	Pointer of envelop pattern
+;	y	Address
+;<<Output>>
+;	a	Next Address
+;	__ptr	Value
+;=======================================================================
+.macro	ENV	Address, Counter
+
+
+	lda	Counter,x
+	beq	Loop
+
+	dec	Counter,x
+;	lda	現在値
+	jmp	Exit
+
+
+Loop:
+	ldy	Address,x		;   y  = 
+
+	lda	(__ptr),y
+	bpl	COM
+
+	iny
+	jmp	Exit
+COM:
+
+	;
+	;■■	to do envelop process
+	;
+
+
+	jmp	Exit
+
+
+
+Exit:
+	pha
+	tya
+	sta	Address,x
+	pla
+.endmacro
+;=======================================================================
+;	void	nsd_envelop(void);
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Envelop & LFO main routine
 ;<<Input>>
 ;	x	Channel * 2
 ;<<Output>>
@@ -29,7 +77,7 @@
 
 	stx	__channel
 
-	;-------------------------------
+	;=======================================
 	;Frequency (note)
 Frequency:
 	lda	__chflag,x
@@ -38,6 +86,22 @@ Frequency:
 	lda	#0			; if (rest with vol=0){
 	jmp	_nsd_snd_volume		;	volume = 0
 @L:					; } else {
+
+	;-------------------------------
+	;Envelop of Note
+	lda	__env_note + 1,x
+	beq	@Note_Exit
+	sta	__ptr + 1
+	lda	__env_note,x
+	sta	__ptr
+	ldy	__env_note_ptr,x
+	;
+	;■■	to do envelop process
+	;
+	sta	__env_note_ptr,x
+
+@Note_Exit:
+
 	lda	__note,x
 	add	__trans,x
 	sta	__tmp + 1
@@ -46,10 +110,24 @@ Frequency:
 	lda	__tmp + 1
 	shr	a, 4
 	sta	__tmp + 1		;__tmp = (int)(__note << 4)
-	jmp	debug
 
-	;-----------
-	;Detune
+	;-------------------------------
+	;Envelop of Frequency
+F_Env:	lda	__env_frequency + 1,x
+	beq	@Freq_Exit
+	sta	__ptr + 1
+	lda	__env_frequency,x
+	sta	__ptr
+	ldy	__env_freq_ptr,x
+	;
+	;■■	to do envelop process
+	;
+	sta	__env_freq_ptr,x
+
+@Freq_Exit:
+
+	;-------------------------------
+	;Detune of cent unit
 Detune:	lda	__detune_cent,x
 	bmi	@L
 	ldy	#$00
@@ -61,88 +139,68 @@ Detune:	lda	__detune_cent,x
 	adc	__tmp + 1
 	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
 
-	;-----------
-	;Envelop Frequency
-F_Env:	lda	__env_frequency + 1,x
-	beq	@Freq_Exit
-	sta	__ptr + 1
-	lda	__env_frequency,x
-	sta	__ptr
-	ldy	__env_freq_ptr,x
-	;
-	;■■	to do envelop process
-	;
-	tya
-	sta	__env_freq_ptr,x
-
-@Freq_Exit:
-
-	;-----------
-	;Envelop Note
-	lda	__env_note + 1,x
-	beq	@Note_Exit
-	sta	__ptr + 1
-	lda	__env_note,x
-	sta	__ptr
-	ldy	__env_note_ptr,x
-	;
-	;■■	to do envelop process
-	;
-	tya
-	sta	__env_note_ptr,x
-
-@Note_Exit:
-
-	;-----------
+	;-----------------------
 	;Setting device (APU)
-debug:
 	lda	__tmp
 	ldx	__tmp + 1
 	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
-	ldx	__channel
 
-	;-------------------------------
+
+
+	;=======================================
 	;Voice & Volume
+	ldx	__channel
 	cpx	#nsd::TR_BGM3
 	beq	exit
 	cpx	#nsd::TR_BGM5
 	beq	exit
 
 	;-------------------------------
-	;Voice
+	;Envelop of Voice
 Voice:
 	lda	__chflag,x
-	and	#$02
-	bne	@Envelop
-	lda	__voice,x
+	lda	__chflag,x
+	and	#$03
+	cmp	#$03
+	beq	@Envelop	;mode = 3 だったら、エンベロープへ
+	cmp	#$01
+	beq	@R		;mode = 1 で、リリース音色
+	lda	__env_volume + 1,x
+	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
+@R:	lda	__voice,x
 	shr	a, 4			; a = release voice
 	jmp	Set_Voice
 @Envelop:
 	lda	__env_voice + 1,x
 	bne	@L
-	lda	#$02
-	bne	Set_Voice
+	lda	__env_voice,x
+	jmp	Set_Voice
 @L:	sta	__ptr + 1
 	lda	__env_voice,x
-	sta	__ptr
-	ldy	__env_voi_ptr,x
+	sta	__ptr			;__ptr = pointer of envelop pattern
+	ldy	__env_voi_ptr,x		;   y  = 
 	;
 	;■■	to do envelop process
 	;
-	tya
 	sta	__env_voi_ptr,x
 
+	;-----------------------
+	;Setting device (APU)
 Set_Voice:
 	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
-Exit_Voice:
 
 	;-------------------------------
-	;Volume
+	;Envelop of Volume
 Volume:
 	lda	__chflag,x
-	and	#$02
-	bne	@Envelop
-	lda	__volume,x
+	and	#$03
+	cmp	#$03
+	beq	@Envelop	;mode = 3 だったら、エンベロープへ
+	cmp	#$01
+	beq	@R		;mode = 1 で、リリース音量
+	lda	__env_volume + 1,x
+	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
+@R:	lda	__volume,x
 	and	#$F0
 	jmp	Set_Volume
 @Envelop:
@@ -158,11 +216,14 @@ Volume:
 	;
 	;■■	to do envelop process
 	;
-	tya
 	sta	__env_vol_ptr,x
 
+	;-----------------------
+	;Setting device (APU)
 Set_Volume:
 	jsr	_nsd_snd_volume		;nsd_snd_volume(a);
+
+
 
 exit:
 	rts

@@ -112,8 +112,17 @@ Current file: nsd_env.s
 000000r 1               	.include	"nsd.inc"
 000000r 2               
 000000r 2               .scope	nsd
-000000r 2               	BGM_Track	= 5
-000000r 2               	SE_Track	= 2
+000000r 2               	APU_Track	= 5		;
+000000r 2               	FDS_Track	= 1		;
+000000r 2               	VRC6_Track	= 3		;
+000000r 2               	VRC7_Track	= 6		;
+000000r 2               	MMC5_Track	= 2		; (without DPCM)
+000000r 2               	N163_Track	= 8		;
+000000r 2               	PSG_Track	= 3		;
+000000r 2               
+000000r 2               	BGM_Track	= APU_Track
+000000r 2               	SE_Track	= 2		;
+000000r 2               
 000000r 2               	Track		= BGM_Track + SE_Track
 000000r 2               
 000000r 2               	TR_BGM1		= 0
@@ -149,38 +158,40 @@ Current file: nsd_env.s
 000000r 2               	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
 000000r 2               .Endstruct
 000000r 2               
+000000r 2               ; 6 + ( 6 [Byte] * 28 [ch] ) = 174
+000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Working  Struct define in RAM area
 000000r 2               ;-----------------------------------------------------------------------
 000000r 2               
 000000r 2               .Struct		NSD_Flag
 000000r 2               	flag		.byte		;flag
-000000r 2               	gatemode	.byte		;gatemode
+000000r 2               	gatemode	.byte		;gate mode
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_length
-000000r 2               	length		.byte		;l command value
-000000r 2               	tai		.byte		;Tai & Slur
+000000r 2               	length		.byte		;`l' command value
+000000r 2               	tai		.byte		;flag of Tai & Slur
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_gatetime
-000000r 2               	q		.byte		;q command value
-000000r 2               	u		.byte		;u command value
+000000r 2               	q		.byte		;`q' command value
+000000r 2               	u		.byte		;`u' command value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_note
-000000r 2               	note		.byte		;note command value (bit 7 = `H' : rest)
-000000r 2               	octave		.byte		;o command value
+000000r 2               	note		.byte		;`note' command value (bit 7 = `H' : rest)
+000000r 2               	octave		.byte		;`o' command value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Detune
-000000r 2               	cent		.byte		;D command value
-000000r 2               	fine		.byte		;D% command value
+000000r 2               	cent		.byte		;`D' command value
+000000r 2               	fine		.byte		;`D%' command value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Por_Lv
-000000r 2               	target		.byte		;target
-000000r 2               	inc		.byte		;add value
+000000r 2               	target		.byte		;`P' target
+000000r 2               	inc		.byte		;`P' add value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Por_Sp
@@ -193,29 +204,39 @@ Current file: nsd_env.s
 000000r 2               	lv		.byte		;now depth
 000000r 2               .Endstruct
 000000r 2               
-000000r 2               .Struct		NSD_Rep_Trans
-000000r 2               	count		.byte		;counter of repeat
-000000r 2               	trans		.byte		;transpose
+000000r 2               .Struct		NSD_Trans
+000000r 2               	trans		.byte		;`_' command value
+000000r 2               	onetime		.byte		;`'', `"' command value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Repeat
+000000r 2               	count1		.byte		;counter of repeat(A)
+000000r 2               	count2		.byte		;counter of repeat(B)
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_volume
-000000r 2               	volume		.byte		;v command value
-000000r 2               	volume_set	.byte		;deveice setting value
+000000r 2               	volume		.byte		;`v' & `vR' command value
+000000r 2               	volume_env	.byte		;now envelop volume
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_voice
-000000r 2               	voice		.byte		;@ command value
+000000r 2               	voice		.byte		;`@R' command value (upper 4bit)
 000000r 2               	voice_set	.byte		;deveice setting value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Env_V_Ptr
-000000r 2               	Volume		.byte					;Volume
-000000r 2               	Voice		.byte					;Voice
+000000r 2               	Volume		.byte		;Volume
+000000r 2               	Voice		.byte		;Voice
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Env_F_Ptr
-000000r 2               	Frequency	.byte					;Freeuqncy
-000000r 2               	Note		.byte					;Note
+000000r 2               	Frequency	.byte		;Freeuqncy
+000000r 2               	Note		.byte		;Note
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Env_F_Now
+000000r 2               	Frequency	.byte		;now envelop Freeuqncy
+000000r 2               	Note		.byte		;now envelop Note
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_work
@@ -227,18 +248,21 @@ Current file: nsd_env.s
 000000r 2               	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
 000000r 2               	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
 000000r 2               	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
-000000r 2               	Rep_Trans	.tag	NSD_Rep_Trans	nsd::Track	;Repeat and Transpose
+000000r 2               	Trans		.tag	NSD_Trans	nsd::Track	;Repeat and Transpose
+000000r 2               	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat and Transpose
 000000r 2               	Volume		.tag	NSD_volume	nsd::Track	;volume
 000000r 2               	Voice		.tag	NSD_voice	nsd::Track	;voice
-000000r 2               	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
-000000r 2               	Frequency	.word			nsd::Track	;Setting frequency
-000000r 2               	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
+000000r 2               	Env_F_Now	.tag	NSD_Env_F_Now	nsd::Track	;Now value of envelop
+000000r 2               	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;Address of envelop
+000000r 2               	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;Address of envelop
 000000r 2               	Envelop_Volume	.word			nsd::Track	;Pointer of envelop
 000000r 2               	Envelop_Voice	.word			nsd::Track	;Pointer of envelop
 000000r 2               	Envelop_Freq	.word			nsd::Track	;Pointer of envelop
 000000r 2               	Envelop_Note	.word			nsd::Track	;Pointer of envelop
-000000r 2               	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;
-000000r 2               	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;
+000000r 2               	Frequency	.word			nsd::Track	;Setting frequency
+000000r 2               	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
+000000r 2               	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
+000000r 2               	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               ;=======================================================================
@@ -289,15 +313,17 @@ Current file: nsd_env.s
 000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
 000000r 2               .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
 000000r 2               .define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
-000000r 2               .define	__trans		nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::trans
-000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::count
+000000r 2               .define	__trans		nsd_work + NSD_work::Trans + NSD_Trans::trans
+000000r 2               .define	__trans_one	nsd_work + NSD_work::Trans + NSD_Trans::onetime
+000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
+000000r 2               .define	__repeat_ctr2	nsd_work + NSD_work::Repeat + NSD_Repeat::count2
 000000r 2               .define	__volume	nsd_work + NSD_work::Volume + NSD_volume::volume
-000000r 2               .define	__volume_set	nsd_work + NSD_work::Volume + NSD_volume::volume_set
 000000r 2               .define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
 000000r 2               .define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set
 000000r 2               .define	__frequency	nsd_work + NSD_work::Frequency
 000000r 2               .define	__frequency_set	nsd_work + NSD_work::Frequency_Set
 000000r 2               .define	__subroutine	nsd_work + NSD_work::SubRoutine
+000000r 2               .define	__repeat2	nsd_work + NSD_work::Repeat2
 000000r 2               .define	__env_volume	nsd_work + NSD_work::Envelop_Volume
 000000r 2               .define	__env_voice	nsd_work + NSD_work::Envelop_Voice
 000000r 2               .define	__env_frequency	nsd_work + NSD_work::Envelop_Freq
@@ -306,6 +332,10 @@ Current file: nsd_env.s
 000000r 2               .define	__env_voi_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Voice
 000000r 2               .define	__env_freq_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency
 000000r 2               .define	__env_note_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note
+000000r 2               ;	voiceに関しては、その後の演算は無いので、更新されない場合はエンベロープ処理を終了する。
+000000r 2               .define	__env_vol_now	nsd_work + NSD_work::Volume + NSD_volume::volume_env
+000000r 2               .define	__env_freq_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
+000000r 2               .define	__env_note_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
 000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Macros
@@ -368,10 +398,58 @@ Current file: nsd_env.s
 000000r 1               .code
 000000r 1               
 000000r 1               ;=======================================================================
-000000r 1               ;	void	nsd_sequence(void);
+000000r 1               ;	void	nsd_envelop_proc(void);
 000000r 1               ;-----------------------------------------------------------------------
 000000r 1               ;<<Contents>>
-000000r 1               ;
+000000r 1               ;	Process of envelop
+000000r 1               ;<<Input>>
+000000r 1               ;	__ptr	Pointer of envelop pattern
+000000r 1               ;	y	Address
+000000r 1               ;<<Output>>
+000000r 1               ;	a	Next Address
+000000r 1               ;	__ptr	Value
+000000r 1               ;=======================================================================
+000000r 1               .macro	ENV	Address, Counter
+000000r 1               
+000000r 1               
+000000r 1               	lda	Counter,x
+000000r 1               	beq	Loop
+000000r 1               
+000000r 1               	dec	Counter,x
+000000r 1               ;	lda	現在値
+000000r 1               	jmp	Exit
+000000r 1               
+000000r 1               
+000000r 1               Loop:
+000000r 1               	ldy	Address,x		;   y  =
+000000r 1               
+000000r 1               	lda	(__ptr),y
+000000r 1               	bpl	COM
+000000r 1               
+000000r 1               	iny
+000000r 1               	jmp	Exit
+000000r 1               COM:
+000000r 1               
+000000r 1               	;
+000000r 1               	;■■	to do envelop process
+000000r 1               	;
+000000r 1               
+000000r 1               
+000000r 1               	jmp	Exit
+000000r 1               
+000000r 1               
+000000r 1               
+000000r 1               Exit:
+000000r 1               	pha
+000000r 1               	tya
+000000r 1               	sta	Address,x
+000000r 1               	pla
+000000r 1               .endmacro
+000000r 1               ;=======================================================================
+000000r 1               ;	void	nsd_envelop(void);
+000000r 1               ;-----------------------------------------------------------------------
+000000r 1               ;<<Contents>>
+000000r 1               ;	Envelop & LFO main routine
 000000r 1               ;<<Input>>
 000000r 1               ;	x	Channel * 2
 000000r 1               ;<<Output>>
@@ -381,7 +459,7 @@ Current file: nsd_env.s
 000000r 1               
 000000r 1  86 rr        	stx	__channel
 000002r 1               
-000002r 1               	;-------------------------------
+000002r 1               	;=======================================
 000002r 1               	;Frequency (note)
 000002r 1               Frequency:
 000002r 1  BD rr rr     	lda	__chflag,x
@@ -390,134 +468,147 @@ Current file: nsd_env.s
 000009r 1  A9 00        	lda	#0			; if (rest with vol=0){
 00000Br 1  4C rr rr     	jmp	_nsd_snd_volume		;	volume = 0
 00000Er 1               @L:					; } else {
-00000Er 1  BD rr rr     	lda	__note,x
-000011r 1  18 7D rr rr  	add	__trans,x
-000015r 1  85 rr        	sta	__tmp + 1
-000017r 1  0A 0A 0A 0A  	shl	a, 4
-00001Br 1  85 rr        	sta	__tmp
-00001Dr 1  A5 rr        	lda	__tmp + 1
-00001Fr 1  4A 4A 4A 4A  	shr	a, 4
-000023r 1  85 rr        	sta	__tmp + 1		;__tmp = (int)(__note << 4)
-000025r 1  4C rr rr     	jmp	debug
-000028r 1               
-000028r 1               	;-----------
-000028r 1               	;Detune
-000028r 1  BD rr rr     Detune:	lda	__detune_cent,x
-00002Br 1  30 05        	bmi	@L
-00002Dr 1  A0 00        	ldy	#$00
-00002Fr 1  4C rr rr     	jmp	@E
-000032r 1  A0 FF        @L:	ldy	#$FF			; ay = __detune_cent (sign expand)
-000034r 1  18 65 rr     @E:	add	__tmp
-000037r 1  85 rr        	sta	__tmp
-000039r 1  98           	tya
-00003Ar 1  65 rr        	adc	__tmp + 1
-00003Cr 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
-00003Er 1               
-00003Er 1               	;-----------
-00003Er 1               	;Envelop Frequency
-00003Er 1  BD rr rr     F_Env:	lda	__env_frequency + 1,x
-000041r 1  F0 0E        	beq	@Freq_Exit
-000043r 1  85 rr        	sta	__ptr + 1
-000045r 1  BD rr rr     	lda	__env_frequency,x
-000048r 1  85 rr        	sta	__ptr
-00004Ar 1  BC rr rr     	ldy	__env_freq_ptr,x
-00004Dr 1               	;
-00004Dr 1               	;■■	to do envelop process
-00004Dr 1               	;
-00004Dr 1  98           	tya
-00004Er 1  9D rr rr     	sta	__env_freq_ptr,x
-000051r 1               
-000051r 1               @Freq_Exit:
-000051r 1               
-000051r 1               	;-----------
-000051r 1               	;Envelop Note
-000051r 1  BD rr rr     	lda	__env_note + 1,x
-000054r 1  F0 0E        	beq	@Note_Exit
-000056r 1  85 rr        	sta	__ptr + 1
-000058r 1  BD rr rr     	lda	__env_note,x
-00005Br 1  85 rr        	sta	__ptr
-00005Dr 1  BC rr rr     	ldy	__env_note_ptr,x
-000060r 1               	;
-000060r 1               	;■■	to do envelop process
-000060r 1               	;
-000060r 1  98           	tya
-000061r 1  9D rr rr     	sta	__env_note_ptr,x
-000064r 1               
-000064r 1               @Note_Exit:
-000064r 1               
-000064r 1               	;-----------
-000064r 1               	;Setting device (APU)
-000064r 1               debug:
-000064r 1  A5 rr        	lda	__tmp
-000066r 1  A6 rr        	ldx	__tmp + 1
-000068r 1  20 rr rr     	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
-00006Br 1  A6 rr        	ldx	__channel
-00006Dr 1               
-00006Dr 1               	;-------------------------------
-00006Dr 1               	;Voice & Volume
-00006Dr 1  E0 04        	cpx	#nsd::TR_BGM3
-00006Fr 1  F0 5E        	beq	exit
-000071r 1  E0 08        	cpx	#nsd::TR_BGM5
-000073r 1  F0 5A        	beq	exit
-000075r 1               
-000075r 1               	;-------------------------------
-000075r 1               	;Voice
-000075r 1               Voice:
-000075r 1  BD rr rr     	lda	__chflag,x
-000078r 1  29 02        	and	#$02
-00007Ar 1  D0 0A        	bne	@Envelop
-00007Cr 1  BD rr rr     	lda	__voice,x
-00007Fr 1  4A 4A 4A 4A  	shr	a, 4			; a = release voice
-000083r 1  4C rr rr     	jmp	Set_Voice
-000086r 1               @Envelop:
-000086r 1  BD rr rr     	lda	__env_voice + 1,x
-000089r 1  D0 04        	bne	@L
-00008Br 1  A9 02        	lda	#$02
-00008Dr 1  D0 0E        	bne	Set_Voice
-00008Fr 1  85 rr        @L:	sta	__ptr + 1
-000091r 1  BD rr rr     	lda	__env_voice,x
-000094r 1  85 rr        	sta	__ptr
-000096r 1  BC rr rr     	ldy	__env_voi_ptr,x
-000099r 1               	;
-000099r 1               	;■■	to do envelop process
-000099r 1               	;
-000099r 1  98           	tya
-00009Ar 1  9D rr rr     	sta	__env_voi_ptr,x
-00009Dr 1               
-00009Dr 1               Set_Voice:
-00009Dr 1  20 rr rr     	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
-0000A0r 1               Exit_Voice:
-0000A0r 1               
-0000A0r 1               	;-------------------------------
-0000A0r 1               	;Volume
-0000A0r 1               Volume:
-0000A0r 1  BD rr rr     	lda	__chflag,x
-0000A3r 1  29 02        	and	#$02
-0000A5r 1  D0 08        	bne	@Envelop
-0000A7r 1  BD rr rr     	lda	__volume,x
-0000AAr 1  29 F0        	and	#$F0
-0000ACr 1  4C rr rr     	jmp	Set_Volume
-0000AFr 1               @Envelop:
-0000AFr 1  BD rr rr     	lda	__env_volume + 1,x
-0000B2r 1  D0 0A        	bne	@L
-0000B4r 1  BD rr rr     	lda	__volume,x
-0000B7r 1  0A 0A 0A 0A  	shl	a, 4
-0000BBr 1  4C rr rr     	jmp	Set_Volume
-0000BEr 1  85 rr        @L:	sta	__ptr + 1
-0000C0r 1  BD rr rr     	lda	__env_volume,x
-0000C3r 1  85 rr        	sta	__ptr
-0000C5r 1  BC rr rr     	ldy	__env_vol_ptr,x
-0000C8r 1               	;
-0000C8r 1               	;■■	to do envelop process
-0000C8r 1               	;
-0000C8r 1  98           	tya
-0000C9r 1  9D rr rr     	sta	__env_vol_ptr,x
-0000CCr 1               
-0000CCr 1               Set_Volume:
-0000CCr 1  20 rr rr     	jsr	_nsd_snd_volume		;nsd_snd_volume(a);
-0000CFr 1               
-0000CFr 1               exit:
-0000CFr 1  60           	rts
-0000D0r 1               .endproc
-0000D0r 1               
-0000D0r 1               
+00000Er 1               
+00000Er 1               	;-------------------------------
+00000Er 1               	;Envelop of Note
+00000Er 1  BD rr rr     	lda	__env_note + 1,x
+000011r 1  F0 0D        	beq	@Note_Exit
+000013r 1  85 rr        	sta	__ptr + 1
+000015r 1  BD rr rr     	lda	__env_note,x
+000018r 1  85 rr        	sta	__ptr
+00001Ar 1  BC rr rr     	ldy	__env_note_ptr,x
+00001Dr 1               	;
+00001Dr 1               	;■■	to do envelop process
+00001Dr 1               	;
+00001Dr 1  9D rr rr     	sta	__env_note_ptr,x
+000020r 1               
+000020r 1               @Note_Exit:
+000020r 1               
+000020r 1  BD rr rr     	lda	__note,x
+000023r 1  18 7D rr rr  	add	__trans,x
+000027r 1  85 rr        	sta	__tmp + 1
+000029r 1  0A 0A 0A 0A  	shl	a, 4
+00002Dr 1  85 rr        	sta	__tmp
+00002Fr 1  A5 rr        	lda	__tmp + 1
+000031r 1  4A 4A 4A 4A  	shr	a, 4
+000035r 1  85 rr        	sta	__tmp + 1		;__tmp = (int)(__note << 4)
+000037r 1               
+000037r 1               	;-------------------------------
+000037r 1               	;Envelop of Frequency
+000037r 1  BD rr rr     F_Env:	lda	__env_frequency + 1,x
+00003Ar 1  F0 0D        	beq	@Freq_Exit
+00003Cr 1  85 rr        	sta	__ptr + 1
+00003Er 1  BD rr rr     	lda	__env_frequency,x
+000041r 1  85 rr        	sta	__ptr
+000043r 1  BC rr rr     	ldy	__env_freq_ptr,x
+000046r 1               	;
+000046r 1               	;■■	to do envelop process
+000046r 1               	;
+000046r 1  9D rr rr     	sta	__env_freq_ptr,x
+000049r 1               
+000049r 1               @Freq_Exit:
+000049r 1               
+000049r 1               	;-------------------------------
+000049r 1               	;Detune of cent unit
+000049r 1  BD rr rr     Detune:	lda	__detune_cent,x
+00004Cr 1  30 05        	bmi	@L
+00004Er 1  A0 00        	ldy	#$00
+000050r 1  4C rr rr     	jmp	@E
+000053r 1  A0 FF        @L:	ldy	#$FF			; ay = __detune_cent (sign expand)
+000055r 1  18 65 rr     @E:	add	__tmp
+000058r 1  85 rr        	sta	__tmp
+00005Ar 1  98           	tya
+00005Br 1  65 rr        	adc	__tmp + 1
+00005Dr 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
+00005Fr 1               
+00005Fr 1               	;-----------------------
+00005Fr 1               	;Setting device (APU)
+00005Fr 1  A5 rr        	lda	__tmp
+000061r 1  A6 rr        	ldx	__tmp + 1
+000063r 1  20 rr rr     	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
+000066r 1               
+000066r 1               
+000066r 1               
+000066r 1               	;=======================================
+000066r 1               	;Voice & Volume
+000066r 1  A6 rr        	ldx	__channel
+000068r 1  E0 04        	cpx	#nsd::TR_BGM3
+00006Ar 1  F0 77        	beq	exit
+00006Cr 1  E0 08        	cpx	#nsd::TR_BGM5
+00006Er 1  F0 73        	beq	exit
+000070r 1               
+000070r 1               	;-------------------------------
+000070r 1               	;Envelop of Voice
+000070r 1               Voice:
+000070r 1  BD rr rr     	lda	__chflag,x
+000073r 1  BD rr rr     	lda	__chflag,x
+000076r 1  29 03        	and	#$03
+000078r 1  C9 03        	cmp	#$03
+00007Ar 1  F0 13        	beq	@Envelop	;mode = 3 だったら、エンベロープへ
+00007Cr 1  C9 01        	cmp	#$01
+00007Er 1  F0 05        	beq	@R		;mode = 1 で、リリース音色
+000080r 1  BD rr rr     	lda	__env_volume + 1,x
+000083r 1  D0 0A        	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
+000085r 1  BD rr rr     @R:	lda	__voice,x
+000088r 1  4A 4A 4A 4A  	shr	a, 4			; a = release voice
+00008Cr 1  4C rr rr     	jmp	Set_Voice
+00008Fr 1               @Envelop:
+00008Fr 1  BD rr rr     	lda	__env_voice + 1,x
+000092r 1  D0 06        	bne	@L
+000094r 1  BD rr rr     	lda	__env_voice,x
+000097r 1  4C rr rr     	jmp	Set_Voice
+00009Ar 1  85 rr        @L:	sta	__ptr + 1
+00009Cr 1  BD rr rr     	lda	__env_voice,x
+00009Fr 1  85 rr        	sta	__ptr			;__ptr = pointer of envelop pattern
+0000A1r 1  BC rr rr     	ldy	__env_voi_ptr,x		;   y  =
+0000A4r 1               	;
+0000A4r 1               	;■■	to do envelop process
+0000A4r 1               	;
+0000A4r 1  9D rr rr     	sta	__env_voi_ptr,x
+0000A7r 1               
+0000A7r 1               	;-----------------------
+0000A7r 1               	;Setting device (APU)
+0000A7r 1               Set_Voice:
+0000A7r 1  20 rr rr     	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
+0000AAr 1               
+0000AAr 1               	;-------------------------------
+0000AAr 1               	;Envelop of Volume
+0000AAr 1               Volume:
+0000AAr 1  BD rr rr     	lda	__chflag,x
+0000ADr 1  29 03        	and	#$03
+0000AFr 1  C9 03        	cmp	#$03
+0000B1r 1  F0 11        	beq	@Envelop	;mode = 3 だったら、エンベロープへ
+0000B3r 1  C9 01        	cmp	#$01
+0000B5r 1  F0 05        	beq	@R		;mode = 1 で、リリース音量
+0000B7r 1  BD rr rr     	lda	__env_volume + 1,x
+0000BAr 1  D0 08        	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
+0000BCr 1  BD rr rr     @R:	lda	__volume,x
+0000BFr 1  29 F0        	and	#$F0
+0000C1r 1  4C rr rr     	jmp	Set_Volume
+0000C4r 1               @Envelop:
+0000C4r 1  BD rr rr     	lda	__env_volume + 1,x
+0000C7r 1  D0 0A        	bne	@L
+0000C9r 1  BD rr rr     	lda	__volume,x
+0000CCr 1  0A 0A 0A 0A  	shl	a, 4
+0000D0r 1  4C rr rr     	jmp	Set_Volume
+0000D3r 1  85 rr        @L:	sta	__ptr + 1
+0000D5r 1  BD rr rr     	lda	__env_volume,x
+0000D8r 1  85 rr        	sta	__ptr
+0000DAr 1  BC rr rr     	ldy	__env_vol_ptr,x
+0000DDr 1               	;
+0000DDr 1               	;■■	to do envelop process
+0000DDr 1               	;
+0000DDr 1  9D rr rr     	sta	__env_vol_ptr,x
+0000E0r 1               
+0000E0r 1               	;-----------------------
+0000E0r 1               	;Setting device (APU)
+0000E0r 1               Set_Volume:
+0000E0r 1  20 rr rr     	jsr	_nsd_snd_volume		;nsd_snd_volume(a);
+0000E3r 1               
+0000E3r 1               
+0000E3r 1               
+0000E3r 1               exit:
+0000E3r 1  60           	rts
+0000E4r 1               .endproc
+0000E4r 1               
+0000E4r 1               

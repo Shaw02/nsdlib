@@ -83,7 +83,7 @@ exit:
 ;	void	__fastcall__	_nsd_mul(unsigned char a, unsigned char x);
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	Mul a x
+;	multiplication	8bit = 4bit * 4bit
 ;<<Input>>
 ;	a	value 1 (lower 4bit)	volume side
 ;	x	value 2 (lower 4bit)	envelop
@@ -91,7 +91,7 @@ exit:
 ;	a =	a Å~ (x Å{ 1)
 ;=======================================================================
 .proc	_nsd_mul
-	.code
+.code
 
 	shl	a, 4
 	sta	__tmp + 1

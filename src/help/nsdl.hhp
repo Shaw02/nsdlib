@@ -5,7 +5,7 @@ Contents file=nsdl.hhc
 Default topic=index.html
 Display compile progress=No
 Index file=nsdl.hhk
-Language=0x411 “ú–{Œê (“ú–{)
+Language=0x411 “ú–{Œê
 Title=NES Sound Driver Libraly
 
 
@@ -19,11 +19,33 @@ func_nsd_play_se.html
 func_nsd_stop_bgm.html
 func_nsd_stop_se.html
 index.html
+mml.html
+mml_detune.html
+mml_gate.html
+mml_KeySignature.html
+mml_length.html
+mml_loop.html
+mml_note.html
+mml_octave.html
+mml_poke.html
+mml_relative_octave.html
+mml_relative_volume.html
+mml_release.html
+mml_repeatA.html
+mml_repeatB.html
+mml_rest.html
+mml_sub.html
+mml_sweep.html
+mml_tempo.html
+mml_tie.html
+mml_transpose.html
+mml_TR.html
+mml_volume.html
+mml_voice.html
+redistribution.html
 revision.html
 usage.html
 usage_nsc.html
 usage_nsd.html
-redistribution.html
-
 [INFOTYPES]
 

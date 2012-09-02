@@ -169,6 +169,7 @@ body {
 /*		•\		*/
 /*--------------*/
 #contents table {
+	margin-left: 1em;
 	border: 1px solid green;
 	border-collapse: collapse;
 	font-size: small;

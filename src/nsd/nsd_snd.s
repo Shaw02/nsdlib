@@ -265,21 +265,18 @@ Exit:
 .code
 	lda	#$00
 	sta	APU_PULSE1CTRL		; Pulse #1 Control Register (W)
-	sta	APU_PULSE2CTRL		; Pulse #2 Control Register (W)
-	sta	APU_TRICTRL1		; Triangle Control Register (W)
-	sta	APU_NOISECTRL		; Noise Control Register #1 (W)
-	sta	APU_MODCTRL		; Delta Modulation Control Register (W)
-
-	lda	#$08
-	sta	APU_PULSE1RAMP		; Pulse #1 Ramp Control Register (W)
-	sta	APU_PULSE2RAMP		; Pulse #2 Ramp Control Register (W)
-
 ;	sta	APU_PULSE1FTUNE		; Pulse #1 Fine Tune (FT) Register (W)
 ;	sta	APU_PULSE1CTUNE		; Pulse #1 Coarse Tune (CT) Register (W)
+
+	sta	APU_PULSE2CTRL		; Pulse #2 Control Register (W)
 ;	sta	APU_PULSE2FTUNE		; Pulse #2 Fine Tune Register (W)
 ;	sta	APU_PULSE2STUNE		; Pulse #2 Coarse Tune Register (W)
+
+	sta	APU_TRICTRL1		; Triangle Control Register (W)
 ;	sta	APU_TRIFREQ1		; Triangle Frequency Register #1 (W)
 ;	sta	APU_TRIFREQ2		; Triangle Frequency Register #2 (W)
+
+	sta	APU_NOISECTRL		; Noise Control Register #1 (W)
 ;	sta	APU_NOISEFREQ1		; Noise Frequency Register #1 (W)
 ;	sta	APU_NOISEFREQ2		; Noise Frequency Register #2 (W)
 
@@ -287,11 +284,18 @@ Exit:
 ;	sta	APU_MODADDR		; Delta Modulation Address Register (W)
 ;	sta	APU_MODLEN		; Delta Modulation Data Length Register (W)
 
+	lda	#$10
+	sta	APU_MODCTRL		; Delta Modulation Control Register (W)
+
+	lda	#$08
+	sta	APU_PULSE1RAMP		; Pulse #1 Ramp Control Register (W)
+	sta	APU_PULSE2RAMP		; Pulse #2 Ramp Control Register (W)
+
 	lda	#$0F			; 
 	sta	APU_CHANCTRL		; Sound/Vertical Clock Signal Register (R)
 
-	lda	#$80
-	sta	APU_PAD2		; SOFTCLK (RW)
+;	lda	#$80
+;	sta	APU_PAD2		; SOFTCLK (RW)
 
 	rts
 .endproc

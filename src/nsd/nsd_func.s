@@ -17,10 +17,10 @@
 .code
 
 ;=======================================================================
-;	void    __fastcall__    nsd_init(void );
+;	void	__fastcall__	nsd_init(void );
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	Init
+;	Initialize the sound driver
 ;<<Input>>
 ;	nothing
 ;<<Output>>
@@ -36,10 +36,10 @@
 .endproc
 
 ;=======================================================================
-;	void    __fastcall__    nsd_play_bgm(void* bgm );
+;	void	__fastcall__	nsd_play_bgm(void* bgm );
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	Start BGM
+;	Play start the BGM
 ;<<Input>>
 ;	ax	pointer of BGM
 ;<<Output>>
@@ -50,7 +50,7 @@
 	sta	__ptr
 	stx	__ptr + 1
 
-	jsr	_nsd_stop_bgm
+	jsr	_nsd_stop_bgm		;stop the BGM (disable BGM)
 
 	ldy	#0
 
@@ -75,7 +75,7 @@ Loop:
 	lda	(__ptr),y
 	plp
 	adc	__ptr + 1
-	sta	__Sequence_ptr + 1,x
+	sta	__Sequence_ptr + 1,x	;__Sequence_ptr = __ptr + (__ptr),y
 	iny
 	lda	#0
 	jmp	@E
@@ -112,9 +112,10 @@ Loop:
 	sta	__env_volume,x
 	sta	__env_volume + 1,x
 	sta	__env_vol_ptr,x
-	sta	__env_voice,x
 	sta	__env_voice + 1,x
 	sta	__env_voi_ptr,x
+	lda	#$02
+	sta	__env_voice,x
 	lda	#$00
 	sta	__voice,x
 	lda	#$2F
@@ -156,10 +157,10 @@ Loop_End:
 .endproc
 
 ;=======================================================================
-;	void    __fastcall__    nsd_stop_bgm(void );
+;	void	__fastcall__	nsd_stop_bgm(void );
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	Init
+;	Stop the BGM
 ;<<Input>>
 ;	nothing
 ;<<Output>>
@@ -180,7 +181,7 @@ Loop:
 	lda	#$00
 	sta	__Sequence_ptr,x
 	sta	__Sequence_ptr + 1,x
-	lda	#$FD
+	lda	#$FF
 	sta	__note,x
 
 	inx
@@ -192,10 +193,10 @@ Loop:
 .endproc
 
 ;=======================================================================
-;	void    __fastcall__    nsd_stop_se(void );
+;	void	__fastcall__	nsd_stop_se(void );
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	Init
+;	Stop the SE
 ;<<Input>>
 ;	nothing
 ;<<Output>>
@@ -216,7 +217,7 @@ Loop:
 	lda	#$00
 	sta	__Sequence_ptr,x
 	sta	__Sequence_ptr + 1,x
-	lda	#$FD
+	lda	#$FF
 	sta	__note,x
 
 	inx

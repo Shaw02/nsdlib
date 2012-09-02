@@ -29,14 +29,14 @@
 	and	#$02
 	bne	exit
 
-	;Hardware key on
-	jsr	_nsd_snd_keyon
-
 	;Software envelop Key on
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
 	ora	#nsd_chflag::KeyOff
 	sta	__chflag,x
+
+	;Hardware key on
+	jsr	_nsd_snd_keyon
 
 	sta	__Envelop_F,x
 	sta	__env_freq_ptr,x
@@ -68,16 +68,23 @@ exit:	rts
 	; to do	tai check
 	lda	__tai,x
 	and	#$01
-	bne	exit
+	bne	@E
 
-	;Hardware key off
-	jsr	_nsd_snd_keyoff
+	lda	__chflag,x
+	and	#nsd_chflag::KeyOff
+	cmp	#nsd_chflag::KeyOff
+	beq	@L			;Key Onの時のみ、処理。
 
+@E:	rts
+@L:
 	;Software key Off
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
 	ora	__gatemode,x
 	sta	__chflag,x
+
+	;Hardware key off
+	jsr	_nsd_snd_keyoff
 
 	lda	#$00
 	tay
@@ -265,23 +272,20 @@ opaddr:	.addr	nsd_op00
 	lda	__Sequence_ptr + 1,x
 	beq	exit
 
-	;channel <- x
-	stx	__channel
-
-	;length--
-	dec	__Length_ctr,x
+	stx	__channel		;channel <- x
 
 	;-------------------------------
-	;Gatetime control	(length > 0)
+	;Gatetime control
 
 	;length == gatetime q ?
+	dec	__Length_ctr,x		;length--
 	lda	__Length_ctr,x
 	cmp	__Gate,x
-	bne	GateTime_Exit
-	jsr	nsd_keyoff
-GateTime_Exit:
+	bne	GateTime_Exit		; if(__Length_ctr == __Gate){
+	jsr	nsd_keyoff		; 	nsd_keyoff();
+GateTime_Exit:				; }
 	lda	__Length_ctr,x
-	beq	Sequence
+	beq	Sequence		; if(__Length_ctr != 0){ return(); };
 exit:
 	rts
 
@@ -305,7 +309,7 @@ Control:
 	sta	__ptr
 	lda	opaddr + 1,y
 	sta	__ptr + 1
-	jmp	(__ptr)
+	jmp	(__ptr)			;jump for each op-code
 
 	;---------------
 	;op-code = 0x40 - 0x7F
@@ -321,7 +325,7 @@ op40:	cmp	#$50
 	;Set default length
 	tay
 	lda	length,y
-	sta	__length,x
+	sta	__length,x		;__length = length[a & 0x0F];
 	jmp	Sequence
 	;---------------
 	;0x50 - 0x5F
@@ -329,7 +333,7 @@ op50:	cmp	#$60
 	bcs	op60
 	and	#$0F
 	;Set gate time (1)
-	sta	__gate_q,x
+	sta	__gate_q,x		;__gate_q = a & 0x0F;
 	jmp	Sequence
 	;---------------
 	;0x60 - 0x6F
@@ -341,7 +345,7 @@ op60:	cmp	#$70
 	lda	__volume,x
 	and	#$F0
 	ora	__tmp
-	sta	__volume,x
+	sta	__volume,x		;__volume = (__volume & 0xF0) | (a & 0x0F);
 	jmp	Sequence
 	;---------------
 	;0x70 - 0x7F
@@ -351,7 +355,7 @@ op70:	;Ser release volume
 	lda	__volume,x
 	and	#$0F
 	ora	__tmp
-	sta	__volume,x
+	sta	__volume,x		;__volume = (__volume & 0x0F) | (a << 4);
 	jmp	Sequence
 	;-----------------------
 	;op-code = 0x80 - 0xFF
@@ -409,16 +413,25 @@ Calc_Note_Number:
 	cmp	#12
 	bcs	@Rest
 	add	__octave,x
+	add	__trans_one,x
 	sta	__note,x
+	lda	#0
+	sta	__trans_one,x	;0 reset
 	jmp	nsd_keyon
 @Rest:
 	and	#$0F
-	sub	#$0C
+	sub	#$0D
 	sta	__tmp
+
+	lda	__tai,x
+	and	#$02
+	bne	@Exit		;If tai then exit
+
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
 	ora	__tmp
 	sta	__chflag,x
+@Exit:
 	rts
 
 ;=======================================================================
@@ -451,9 +464,11 @@ nsd_op00:
 ;-----------------------------------------------------------------------
 nsd_op02:
 	lda	__Sequence_ptr,x
+	add	#2
 	sta	__subroutine,x
 	lda	__Sequence_ptr + 1,x
-	sta	__subroutine + 1,x
+	adc	#0
+	sta	__subroutine + 1,x		;2byte先のポインタを記憶する。
 
 ;=======================================================================
 ;		opcode	0x01:	Jump (End of Track with loop) 
@@ -503,11 +518,47 @@ nsd_op04:
 ;-----------------------------------------------------------------------
 nsd_op05:
 	dec	__repeat_ctr,x
-	beq	Jump
+	bne	Jump
 	jsr	nsd_load_sequence
 	jsr	nsd_load_sequence
 nsd_op06:
 	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x18:	Repeat start.
+;-----------------------------------------------------------------------
+nsd_op18:
+	lda	#0			;counter <= 0
+	sta	__repeat_ctr2,x
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x19:	repeat 1 time point
+;-----------------------------------------------------------------------
+nsd_op19:
+	lda	__repeat_ctr2,x
+	beq	@exit			;counter == 0 だったら何もしない。
+	lda	__repeat2,x
+	sta	__Sequence_ptr,x
+	lda	__repeat2 + 1,x
+	sta	__Sequence_ptr + 1,x	;それ以外は、 :| の次にジャンプ
+@exit:
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x1A:	Repeat end.
+;-----------------------------------------------------------------------
+nsd_op1A:
+	inc	__repeat_ctr2,x		;counter ++
+
+	lda	__Sequence_ptr,x
+	add	#2
+	sta	__repeat2,x
+	lda	__Sequence_ptr + 1,x
+	adc	#0
+	sta	__repeat2 + 1,x		;2byte先のポインタを記憶する。
+
+	jmp	Jump			;相対ジャンプへ
 
 ;=======================================================================
 ;		opcode	0x07:	Write data to memory.
@@ -528,13 +579,24 @@ nsd_op07:
 nsd_op08:
 	lda	__chflag,x
 	and	#nsd_chflag::SE1 + nsd_chflag::SE2
-	bne	@se
+	bne	Set_Tempo_SE
 	jsr	nsd_load_sequence
+Set_Tempo:
 	sta	__Tempo
 	jmp	Sequence
-@se:
+Set_Tempo_SE:
 	jsr	nsd_load_sequence
 	jmp	Sequence
+;=======================================================================
+;		opcode	0x0C:	Relative Tempo [BPM]
+;-----------------------------------------------------------------------
+nsd_op0C:
+	lda	__chflag,x
+	and	#nsd_chflag::SE1 + nsd_chflag::SE2
+	bne	Set_Tempo_SE
+	jsr	nsd_load_sequence
+	add	__Tempo
+	jmp	Set_Tempo
 ;=======================================================================
 ;		opcode	0x09:	Note length of 省略時 [Ticks] 
 ;-----------------------------------------------------------------------
@@ -557,7 +619,6 @@ nsd_op0A:
 nsd_op0B:
 	jsr	nsd_load_sequence
 	sta	__gate_u,x
-nsd_op0C:
 	jmp	Sequence
 
 ;=======================================================================
@@ -586,19 +647,44 @@ nsd_op0F:
 ;		opcode	0x10:	Voice envelop. 
 ;-----------------------------------------------------------------------
 nsd_op10:
+	ldy	__Sequence_ptr,x
+	sty	__ptr			;
+	ldy	__Sequence_ptr + 1,x
+	sty	__ptr + 1		;__ptr = __Sequence_ptr
+
 	jsr	nsd_load_sequence
+	sta	__tmp
+	jsr	nsd_load_sequence
+	sta	__tmp + 1		;__tmp = value
+
+	lda	__ptr
+	add	__tmp
 	sta	__env_voice,x
-	jsr	nsd_load_sequence
-	sta	__env_voice + 1,x
+	lda	__ptr + 1
+	adc	__tmp + 1
+	sta	__env_voice + 1,x	;__env_voice = __ptr + __tmp
+
 	jmp	Sequence
 
 ;=======================================================================
 ;		opcode	0x11:	Volume envelop.
 ;-----------------------------------------------------------------------
 nsd_op11:
+	ldy	__Sequence_ptr,x
+	sty	__ptr			;
+	ldy	__Sequence_ptr + 1,x
+	sty	__ptr + 1		;__ptr = __Sequence_ptr
+
 	jsr	nsd_load_sequence
+	sta	__tmp
+	jsr	nsd_load_sequence
+	sta	__tmp + 1		;__tmp = value
+
+	lda	__ptr
+	add	__tmp
 	sta	__env_volume,x
-	jsr	nsd_load_sequence
+	lda	__ptr + 1
+	adc	__tmp + 1
 	sta	__env_volume + 1,x
 	jmp	Sequence
 
@@ -606,9 +692,21 @@ nsd_op11:
 ;		opcode	0x12:	Frequency envelop. 
 ;-----------------------------------------------------------------------
 nsd_op12:
+	ldy	__Sequence_ptr,x
+	sty	__ptr			;
+	ldy	__Sequence_ptr + 1,x
+	sty	__ptr + 1		;__ptr = __Sequence_ptr
+
 	jsr	nsd_load_sequence
+	sta	__tmp
+	jsr	nsd_load_sequence
+	sta	__tmp + 1		;__tmp = value
+
+	lda	__ptr
+	add	__tmp
 	sta	__env_frequency,x
-	jsr	nsd_load_sequence
+	lda	__ptr + 1
+	adc	__tmp + 1
 	sta	__env_frequency + 1,x
 	jmp	Sequence
 
@@ -616,9 +714,21 @@ nsd_op12:
 ;		opcode	0x13:	Note envelop. 
 ;-----------------------------------------------------------------------
 nsd_op13:
+	ldy	__Sequence_ptr,x
+	sty	__ptr			;
+	ldy	__Sequence_ptr + 1,x
+	sty	__ptr + 1		;__ptr = __Sequence_ptr
+
 	jsr	nsd_load_sequence
+	sta	__tmp
+	jsr	nsd_load_sequence
+	sta	__tmp + 1		;__tmp = value
+
+	lda	__ptr
+	add	__tmp
 	sta	__env_note,x
-	jsr	nsd_load_sequence
+	lda	__ptr + 1
+	adc	__tmp + 1
 	sta	__env_note + 1,x
 	jmp	Sequence
 
@@ -659,10 +769,16 @@ nsd_op17:
 	sta	__por_ctr,x
 	lda	#0
 	sta	__por_lv,x
-nsd_op18:
-nsd_op19:
-nsd_op1A:
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x1B:	Voice
+;-----------------------------------------------------------------------
 nsd_op1B:
+	lda	#0
+	sta	__env_voice + 1,x
+	jsr	nsd_load_sequence
+	sta	__env_voice,x
 nsd_op1C:
 nsd_op1D:
 nsd_op1E:
@@ -715,9 +831,26 @@ nsd_op2B:
 	add	__trans,x
 	jmp	nsd_Set_Trans
 
+;=======================================================================
+;		opcode	0x2C:	One time octave down (-1) 
+;-----------------------------------------------------------------------
 nsd_op2C:
+	lda	#-12
+	bne	nsd_Set_Trans_One
+;=======================================================================
+;		opcode	0x2D:	One time octave up (+1) 
+;-----------------------------------------------------------------------
 nsd_op2D:
+	lda	#+12
+	bne	nsd_Set_Trans_One
+;=======================================================================
+;		opcode	0x2E:	One time transpose (a relative value) 
+;-----------------------------------------------------------------------
 nsd_op2E:
+	jsr	nsd_load_sequence
+nsd_Set_Trans_One:
+	add	__trans_one,x
+	sta	__trans_one,x
 nsd_op2F:
 	jmp	Sequence
 

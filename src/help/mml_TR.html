@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: TR</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MML reference: TR</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        TR<var>track</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<p>
+<var>track</var>番号は、BGM記述ブロックとSE記述ブロックで値が異なります。<br>
+</p>
+
+<h4>BGM記述ブロック</h4>
+<dl>
+<dt>1 … </dt><dd>パルス波 ch1</dd>
+<dt>2 … </dt><dd>パルス波 ch2</dd>
+<dt>3 … </dt><dd>三角波</dd>
+<dt>4 … </dt><dd>ノイズ</dd>
+<dt>5 … </dt><dd>⊿ＰＣＭ</dd>
+<dt>6～ … </dt><dd>予約　（今後、拡張音源を実装予定）</dd>
+</dl>
+
+<h4>SE記述ブロック</h4>
+<dl>
+<dt>1 … </dt><dd>パルス波 ch2</dd>
+<dt>2 … </dt><dd>ノイズ</dd>
+</dl>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+以後のシーケンスデータのトラックを指定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+サブルーチン記述ブロックでは無効です。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+BGM(1){
+    TR1     l4o4 reee  reee  rfff rddd  e1
+    TR2     l4o3 rggg &gt;rccc&lt; raaa rbbb &gt;c1
+    TR3     l4o3 c2r2 &lt;a2r2&gt; d2r2 g2r2  c1
+}
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

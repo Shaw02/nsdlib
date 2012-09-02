@@ -60,8 +60,9 @@
 <code><a href="func_nsd_init.html">nsd_init()</a></code>関数を呼び出し後に、VBlank割り込みを`有効'にPPUを設定してください。<br>
 </p>
 <p>
-
+本関数を呼ぶ前に、ＲＯＭは曲データ及び効果音データがあるバンクに切り替えて置いてください。<br>
 </p>
+
 <h4>nsd_main(void)関数の呼び出し例</h4>
 <code><pre>
         .import         _nsd_main
@@ -72,9 +73,12 @@ NMI_Start:
         pha
         tya
         pha
-        
-        jsr     _nsd_main
-        
+
+        lda     #music_bank
+        jsr     _bank_change            <span style="color:green;">;   bank_change(music_bank);</span>
+
+        jsr     _nsd_main               <span style="color:green;">;   nsd_main();</span>
+
         pla
         tay
         pla

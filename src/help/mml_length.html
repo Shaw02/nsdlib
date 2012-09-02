@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Length</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MML reference: Length</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        l<var>length</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>Length</h4>
+<p>
+音符・休符にて音長を省略時の音長を<var>length</var>分音符とします。<br>
+<code>.</code>を付与することで付点の音長を表現可能です。<br>
+この<code>.</code>は複数指定可能です。<br>
+</p>
+<p>
+数値の頭に<code>%</code>を記述した場合は、<var>length</var>[Tick]の長さとなります。<br>
+なお、timebase（４分音符の分割数）は24固定です。<br>
+</p>
+<p>
+また、演算子 <code>+</code> 及び <code>-</code> を用いて音長の加減算が可能です。
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+音長を省略した時に適用する音長を設定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+<var>length</var>は、1～255[tick]の間に収めてください。<br>
+また、<var>length</var>に<code>0</code>を指定しないでください。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    l4     <span style="color:green;">/* a quarter note or rest */</span>
+
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

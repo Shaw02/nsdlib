@@ -16,16 +16,16 @@
 <div class='block'>
 <h3>コマンドラインオプション（Command line option）</h3>
 <p>
-<strong>仕様策定中</strong><br>
 テキストで記述されたMMLファイルを、本音源ドライバーNSD.Lib用のデータに変換します。<br>
-デフォルトでは、cc65に付属のクロスアセンブラ`ca65'用のアセンブリ言語ソースを出力します。<br>
+デフォルトでは、cc65に付属のクロスアセンブラ`ca65'用のアセンブリ言語ソースを出力します<strong>（未実装）</strong>。<br>
 出力するアセンブリ言語ソースは、単体でオブジェクトファイルにアセンブル可能となっていますので、
-ユーザーアプリケーションのビルドの際に、当該オブジェクトファイルをリンクして下さい。<br>
+ユーザーアプリケーションのビルドの際に、当該オブジェクトファイルをリンクして下さい<strong>（未実装）</strong>。<br>
 </p>
 <p>
 また、NSFファイルの簡易生成も可能です。<br>
 複数の曲に対応していますが、コンパイラにてNSFを生成する場合は、
 曲データは合計で16kByte以内となります。<br>
+<strong>現状は、ＮＳＦへのコンパイルのみ対応しています。</strong>
 </p>
 <code><pre>
 	nsc <var>-option</var> <var>MML-file name</var>
@@ -33,21 +33,39 @@
 <dl>
 <dt>-h</dt><dd>Print the help.</dd>
 <dt>-n</dt><dd>Output the NSF. (*.nsf) </dd>
-<dt>-s</dt><dd>Output the assembly language source file for cc65. (*.s) (default)</dd>
-<dt>-b</dt><dd>Output the Binary file. (*.bin)</dd>
+<dt>-c</dt><dd>Output the C language source file for cc65. (*.c)<strong>未実装</strong></dd>
+<dt>-s</dt><dd>Output the assembly language source file for ca65. (*.s) (default)<strong>未実装</strong></dd>
+<dt>-b</dt><dd>Output the Binary file. (*.bin)<strong>未実装</strong></dd>
 <dt>-fn<var>filename</var></dt><dd>Set the file name of NSF.</dd>
-<dt>-fs<var>filename</var></dt><dd>Set the file name of assembly source file.</dd>
+<dt>-fc<var>filename</var></dt><dd>Set the file name of C language source file.</dd>
+<dt>-fs<var>filename</var></dt><dd>Set the file name of assembly language source file.</dd>
 <dt>-fb<var>filename</var></dt><dd>Set the file name of binary file.</dd>
 </dl>
-
-<h3>ＭＭＬリファレンス（MML reference）</h3>
-<p>
-	<strong>仕様策定中</strong><br>
-</p>
 </div>
 
 <div class='block'>
+<h3>ＭＭＬ文法（Syntax of MML）</h3>
+<h4><a href="mml.html#construction">全体の構文</a></h4>
+<p>
+MMLの構文は、`#'で始まる定義命令・疑似命令及び、<br>
+データ（エンベロープパターン、シーケンスデータ）を記述する記述ブロックで構成されます。
+</p>
+<h4><a href="mml.html#envelop">エンベロープパターン</a></h4>
+<p>
+音色、音量、周波数、音程の推移パターンを定義します。<br>
+</p>
+<h4><a href="mml.html#sequence">シーケンスデータ</a></h4>
+<p>
+BGM,SE,サブルーチンの演奏パターンを定義します。<br>
+</p>
+</div>
+
+
+<div class='block'>
 <h3>アセンブリ言語ソースの仕様</h3>
+<p>
+<strong>未実装！</strong>
+</p>
 <h4>曲データのシンボル（ラベル）</h4>
 <p>
 曲データのシンボルは、<var>_nsd_ファイル名_番号</var>となります。<br>

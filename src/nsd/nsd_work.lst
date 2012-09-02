@@ -106,8 +106,17 @@ Current file: nsd_work.s
 000000r 1               	.include	"nsd.inc"
 000000r 2               
 000000r 2               .scope	nsd
-000000r 2               	BGM_Track	= 5
-000000r 2               	SE_Track	= 2
+000000r 2               	APU_Track	= 5		;
+000000r 2               	FDS_Track	= 1		;
+000000r 2               	VRC6_Track	= 3		;
+000000r 2               	VRC7_Track	= 6		;
+000000r 2               	MMC5_Track	= 2		; (without DPCM)
+000000r 2               	N163_Track	= 8		;
+000000r 2               	PSG_Track	= 3		;
+000000r 2               
+000000r 2               	BGM_Track	= APU_Track
+000000r 2               	SE_Track	= 2		;
+000000r 2               
 000000r 2               	Track		= BGM_Track + SE_Track
 000000r 2               
 000000r 2               	TR_BGM1		= 0
@@ -143,38 +152,40 @@ Current file: nsd_work.s
 000000r 2               	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
 000000r 2               .Endstruct
 000000r 2               
+000000r 2               ; 6 + ( 6 [Byte] * 28 [ch] ) = 174
+000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Working  Struct define in RAM area
 000000r 2               ;-----------------------------------------------------------------------
 000000r 2               
 000000r 2               .Struct		NSD_Flag
 000000r 2               	flag		.byte		;flag
-000000r 2               	gatemode	.byte		;gatemode
+000000r 2               	gatemode	.byte		;gate mode
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_length
-000000r 2               	length		.byte		;l command value
-000000r 2               	tai		.byte		;Tai & Slur
+000000r 2               	length		.byte		;`l' command value
+000000r 2               	tai		.byte		;flag of Tai & Slur
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_gatetime
-000000r 2               	q		.byte		;q command value
-000000r 2               	u		.byte		;u command value
+000000r 2               	q		.byte		;`q' command value
+000000r 2               	u		.byte		;`u' command value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_note
-000000r 2               	note		.byte		;note command value (bit 7 = `H' : rest)
-000000r 2               	octave		.byte		;o command value
+000000r 2               	note		.byte		;`note' command value (bit 7 = `H' : rest)
+000000r 2               	octave		.byte		;`o' command value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Detune
-000000r 2               	cent		.byte		;D command value
-000000r 2               	fine		.byte		;D% command value
+000000r 2               	cent		.byte		;`D' command value
+000000r 2               	fine		.byte		;`D%' command value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Por_Lv
-000000r 2               	target		.byte		;target
-000000r 2               	inc		.byte		;add value
+000000r 2               	target		.byte		;`P' target
+000000r 2               	inc		.byte		;`P' add value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Por_Sp
@@ -187,29 +198,39 @@ Current file: nsd_work.s
 000000r 2               	lv		.byte		;now depth
 000000r 2               .Endstruct
 000000r 2               
-000000r 2               .Struct		NSD_Rep_Trans
-000000r 2               	count		.byte		;counter of repeat
-000000r 2               	trans		.byte		;transpose
+000000r 2               .Struct		NSD_Trans
+000000r 2               	trans		.byte		;`_' command value
+000000r 2               	onetime		.byte		;`'', `"' command value
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Repeat
+000000r 2               	count1		.byte		;counter of repeat(A)
+000000r 2               	count2		.byte		;counter of repeat(B)
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_volume
-000000r 2               	volume		.byte		;v command value
-000000r 2               	volume_set	.byte		;deveice setting value
+000000r 2               	volume		.byte		;`v' & `vR' command value
+000000r 2               	volume_env	.byte		;now envelop volume
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_voice
-000000r 2               	voice		.byte		;@ command value
+000000r 2               	voice		.byte		;`@R' command value (upper 4bit)
 000000r 2               	voice_set	.byte		;deveice setting value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Env_V_Ptr
-000000r 2               	Volume		.byte					;Volume
-000000r 2               	Voice		.byte					;Voice
+000000r 2               	Volume		.byte		;Volume
+000000r 2               	Voice		.byte		;Voice
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Env_F_Ptr
-000000r 2               	Frequency	.byte					;Freeuqncy
-000000r 2               	Note		.byte					;Note
+000000r 2               	Frequency	.byte		;Freeuqncy
+000000r 2               	Note		.byte		;Note
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               .Struct		NSD_Env_F_Now
+000000r 2               	Frequency	.byte		;now envelop Freeuqncy
+000000r 2               	Note		.byte		;now envelop Note
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_work
@@ -221,18 +242,21 @@ Current file: nsd_work.s
 000000r 2               	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
 000000r 2               	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
 000000r 2               	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
-000000r 2               	Rep_Trans	.tag	NSD_Rep_Trans	nsd::Track	;Repeat and Transpose
+000000r 2               	Trans		.tag	NSD_Trans	nsd::Track	;Repeat and Transpose
+000000r 2               	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat and Transpose
 000000r 2               	Volume		.tag	NSD_volume	nsd::Track	;volume
 000000r 2               	Voice		.tag	NSD_voice	nsd::Track	;voice
-000000r 2               	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
-000000r 2               	Frequency	.word			nsd::Track	;Setting frequency
-000000r 2               	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
+000000r 2               	Env_F_Now	.tag	NSD_Env_F_Now	nsd::Track	;Now value of envelop
+000000r 2               	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;Address of envelop
+000000r 2               	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;Address of envelop
 000000r 2               	Envelop_Volume	.word			nsd::Track	;Pointer of envelop
 000000r 2               	Envelop_Voice	.word			nsd::Track	;Pointer of envelop
 000000r 2               	Envelop_Freq	.word			nsd::Track	;Pointer of envelop
 000000r 2               	Envelop_Note	.word			nsd::Track	;Pointer of envelop
-000000r 2               	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;
-000000r 2               	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;
+000000r 2               	Frequency	.word			nsd::Track	;Setting frequency
+000000r 2               	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
+000000r 2               	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
+000000r 2               	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               ;=======================================================================
@@ -260,6 +284,10 @@ Current file: nsd_work.s
 000000r 2               .scope	nsd_chflag
 000000r 2               	SE1	= $40
 000000r 2               	SE2	= $80
+000000r 2               	KeyOff	= $03		;00	Key Off	: Vol = 0
+000000r 2               				;01	Key Off	: Release command
+000000r 2               				;10	Key Off	:  envelop
+000000r 2               				;11	Note On	: (envelop)
 000000r 2               .endscope
 000000r 2               
 000000r 2               ;RAM Works
@@ -279,15 +307,17 @@ Current file: nsd_work.s
 000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
 000000r 2               .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
 000000r 2               .define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
-000000r 2               .define	__trans		nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::trans
-000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Rep_Trans + NSD_Rep_Trans::count
+000000r 2               .define	__trans		nsd_work + NSD_work::Trans + NSD_Trans::trans
+000000r 2               .define	__trans_one	nsd_work + NSD_work::Trans + NSD_Trans::onetime
+000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
+000000r 2               .define	__repeat_ctr2	nsd_work + NSD_work::Repeat + NSD_Repeat::count2
 000000r 2               .define	__volume	nsd_work + NSD_work::Volume + NSD_volume::volume
-000000r 2               .define	__volume_set	nsd_work + NSD_work::Volume + NSD_volume::volume_set
 000000r 2               .define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
 000000r 2               .define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set
 000000r 2               .define	__frequency	nsd_work + NSD_work::Frequency
 000000r 2               .define	__frequency_set	nsd_work + NSD_work::Frequency_Set
 000000r 2               .define	__subroutine	nsd_work + NSD_work::SubRoutine
+000000r 2               .define	__repeat2	nsd_work + NSD_work::Repeat2
 000000r 2               .define	__env_volume	nsd_work + NSD_work::Envelop_Volume
 000000r 2               .define	__env_voice	nsd_work + NSD_work::Envelop_Voice
 000000r 2               .define	__env_frequency	nsd_work + NSD_work::Envelop_Freq
@@ -296,6 +326,10 @@ Current file: nsd_work.s
 000000r 2               .define	__env_voi_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Voice
 000000r 2               .define	__env_freq_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency
 000000r 2               .define	__env_note_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note
+000000r 2               ;	voiceに関しては、その後の演算は無いので、更新されない場合はエンベロープ処理を終了する。
+000000r 2               .define	__env_vol_now	nsd_work + NSD_work::Volume + NSD_volume::volume_env
+000000r 2               .define	__env_freq_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
+000000r 2               .define	__env_note_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
 000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Macros
@@ -439,5 +473,5 @@ Current file: nsd_work.s
 0000F4r 1  xx xx xx xx  
 0000F8r 1  xx xx xx xx  
 0000FCr 1  xx xx xx     
-000118r 1               
-000118r 1               
+000142r 1               
+000142r 1               
