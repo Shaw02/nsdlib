@@ -348,6 +348,10 @@ int		MMLfile::GetInt(void)
 	//16進数
 	if(cData == '$'){
 		cData = cRead();
+		if(cData == '+'){
+			neg = false;
+			cData	 = cRead();
+		}
 		if(cData == '-'){
 			neg = true;
 			cData	 = cRead();
@@ -378,7 +382,11 @@ int		MMLfile::GetInt(void)
 		}
 
 	//10進数
-	} else if(((cData >= '0') && (cData <= '9')) || (cData == '-')){
+	} else if(((cData >= '0') && (cData <= '9')) || (cData == '-') || (cData == '+')){
+		if(cData == '+'){
+			neg = false;
+			cData	 = cRead();
+		}
 		if(cData == '-'){
 			neg = true;
 			cData	 = cRead();
@@ -426,7 +434,7 @@ int	MMLfile::readLength(void){
 	cData = GetChar();
 
 	//Length
-	if((cData > '0') && (cData < '9')){
+	if((cData >= '0') && (cData <= '9')){
 		//ポインタを１つ戻す
 		Back();							//StreamPointerAdd(-1);
 		i = GetInt();

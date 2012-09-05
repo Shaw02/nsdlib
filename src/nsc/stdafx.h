@@ -36,6 +36,8 @@ typedef struct {
 
 #include "MusicItem.h"
 
+#include "Envelop.h"
+
 #include "MusicEvent.h"			//各イベント
 #include "mml_general.h"		//汎用
 #include "mml_poke.h"			//メモリ書き込み

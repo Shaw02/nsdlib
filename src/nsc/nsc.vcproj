@@ -156,6 +156,9 @@
 				Name="Music"
 				Filter="">
 				<File
+					RelativePath=".\Envelop.cpp">
+				</File>
+				<File
 					RelativePath=".\MusicFile.cpp">
 				</File>
 				<File
@@ -227,6 +230,9 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath=".\BGM.h">
+			</File>
+			<File
+				RelativePath=".\Envelop.h">
 			</File>
 			<File
 				RelativePath=".\FileInput.h">

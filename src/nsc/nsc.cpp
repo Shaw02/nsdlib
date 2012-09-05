@@ -19,6 +19,7 @@
 //==============================================================
 int	__cdecl	_tmain(int argc, _TCHAR* argv[])
 {
+	unsigned	int	i;
 
 	//==================================
 	//ƒNƒ‰ƒX‚Ìì¬
@@ -34,7 +35,8 @@ int	__cdecl	_tmain(int argc, _TCHAR* argv[])
 	if(cOptionSW->cDebug & 0x02){
 		cout << "\n============ [ 2nd phase : Address Setting ] ============\n" << endl;
 	}
-	cSND->SetOffset(0);
+	i = cSND->SetOffset(0);
+	cout << "Music Size = " << i << endl;
 	cSND->Fix_Address();
 
 	//==================================

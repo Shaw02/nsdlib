@@ -27,41 +27,51 @@
 ;	a	Next Address
 ;	__ptr	Value
 ;=======================================================================
-.macro	ENV	Address, Counter
-
+.macro	ENV	Address, Pointer, Now, Counter, n
 
 	lda	Counter,x
-	beq	Loop
+	.if	(n = 0)
+		and	#$0F			;
+		beq	@Done			;
+		lda	Counter,x		;
+		sub	#$01			;	
+	.else
+		and	#$F0			;
+		beq	@Done			;if(counter != 0){
+		lda	Counter,x		;
+		sub	#$10			;  counter--
+	.endif
+	sta	Counter,x		;
+	jmp	@Decay			;} else {
 
-	dec	Counter,x
-;	lda	現在値
-	jmp	Exit
+@Done:	lda	Address,x
+	sta	__ptr			;  __ptr = (table address of envelop)
+	ldy	Pointer,x		;  y     = (_envelop pointer)
+@Loop:	lda	(__ptr),y		;  do{
+	bpl	@Value			;  a = __ptr[y]
+	cmp	#$C0			;    if( a >= 0x80 ){
+	bcc	@SetDecay		;      if( a >= 0xc0){
+	and	#$3F			;        y = a & 0x3F;  //continue
+	tay				;      } else {
+	jmp	@Loop			;        (decay counter) = a<<4 | (decay counter);
 
+@SetDecay:				;        break;
+	.if	(n = 4)
+		shl	a, n		;      }
+	.else
+		and	#$0F
+	.endif
+	ora	Counter,x		;    } else { 
+	sta	Counter,x		;      (now value) = a;
+	jmp	@SetY			;      break;
+					;    }
+@Value:	sta	Now,x			;  } while(1);
+@SetY:	iny				;  (_envelop pointer) = y + 1;
+	tya				;}
+	sta	Pointer,x		;a = (now value)
+@Decay:	lda	Now,x			;
+@Set:	
 
-Loop:
-	ldy	Address,x		;   y  = 
-
-	lda	(__ptr),y
-	bpl	COM
-
-	iny
-	jmp	Exit
-COM:
-
-	;
-	;■■	to do envelop process
-	;
-
-
-	jmp	Exit
-
-
-
-Exit:
-	pha
-	tya
-	sta	Address,x
-	pla
 .endmacro
 ;=======================================================================
 ;	void	nsd_envelop(void);
@@ -90,40 +100,46 @@ Frequency:
 	;-------------------------------
 	;Envelop of Note
 	lda	__env_note + 1,x
-	beq	@Note_Exit
 	sta	__ptr + 1
-	lda	__env_note,x
-	sta	__ptr
-	ldy	__env_note_ptr,x
-	;
-	;■■	to do envelop process
-	;
-	sta	__env_note_ptr,x
-
+	beq	@NOENV				;envelop is disable?
+	ENV	__env_note, __env_note_ptr, __env_note_now, __Envelop_F, 4
+	cmp	#$40
+	bcc	@Sigh
+	ora	#$80
+@Sigh:	add	__note,x
+	jmp	@Note_Exit
+@NOENV:
+	lda	__note,x
 @Note_Exit:
 
-	lda	__note,x
+	;-------------------------------
+	; __tmp = (__note,x + __trans,x) << 4;
 	add	__trans,x
 	sta	__tmp + 1
 	shl	a, 4
 	sta	__tmp
 	lda	__tmp + 1
 	shr	a, 4
-	sta	__tmp + 1		;__tmp = (int)(__note << 4)
+	sta	__tmp + 1
 
 	;-------------------------------
 	;Envelop of Frequency
 F_Env:	lda	__env_frequency + 1,x
-	beq	@Freq_Exit
 	sta	__ptr + 1
-	lda	__env_frequency,x
-	sta	__ptr
-	ldy	__env_freq_ptr,x
-	;
-	;■■	to do envelop process
-	;
-	sta	__env_freq_ptr,x
-
+	beq	@Freq_Exit
+	ENV	__env_frequency, __env_freq_ptr, __env_freq_now, __Envelop_F, 0
+	cmp	#$40
+	bcc	@Sigh
+	ora	#$80
+	add	__tmp
+	sta	__tmp
+	lda	#$FF
+	bne	@SetH
+@Sigh:	add	__tmp
+	sta	__tmp
+	lda	#$0
+@SetH:	adc	__tmp+1
+	sta	__tmp+1
 @Freq_Exit:
 
 	;-------------------------------
@@ -153,41 +169,67 @@ Detune:	lda	__detune_cent,x
 	cpx	#nsd::TR_BGM3
 	beq	exit
 	cpx	#nsd::TR_BGM5
-	beq	exit
+	bne	Voice
+exit:	rts
 
 	;-------------------------------
 	;Envelop of Voice
 Voice:
 	lda	__chflag,x
 	lda	__chflag,x
-	and	#$03
-	cmp	#$03
-	beq	@Envelop	;mode = 3 だったら、エンベロープへ
-	cmp	#$01
-	beq	@R		;mode = 1 で、リリース音色
-	lda	__env_volume + 1,x
-	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
-@R:	lda	__voice,x
+	and	#$02
+	bne	@L
+
+	lda	__voice,x
 	shr	a, 4			; a = release voice
 	jmp	Set_Voice
-@Envelop:
-	lda	__env_voice + 1,x
-	bne	@L
+
+@L:	lda	__env_voice + 1,x
+	bne	@Envelop
 	lda	__env_voice,x
 	jmp	Set_Voice
-@L:	sta	__ptr + 1
-	lda	__env_voice,x
-	sta	__ptr			;__ptr = pointer of envelop pattern
-	ldy	__env_voi_ptr,x		;   y  = 
-	;
-	;■■	to do envelop process
-	;
-	sta	__env_voi_ptr,x
 
+@Envelop:
+	sta	__ptr + 1
+	lda	__Envelop_V,x
+	and	#$F0			;
+	beq	@Done			;if(counter != 0){
+	lda	__Envelop_V,x		;
+	sub	#$10			;  counter--
+	sta	__Envelop_V,x		;
+	jmp	Voice_Exit		;} else {
+
+@Done:	lda	__env_voice,x
+	sta	__ptr			;  __ptr = (table address of envelop)
+	ldy	__env_voi_ptr,x		;  y     = (_envelop pointer)
+@Loop:	lda	(__ptr),y		;  do{
+	bpl	@Value			;  a = __ptr[y]
+	cmp	#$C0			;    if( a >= 0x80 ){
+	bcc	@SetDecay		;      if( a >= 0xc0){
+	and	#$3F			;        y = a & 0x3F;  //continue
+	tay				;      } else {
+	jmp	@Loop			;        (decay counter) = a<<4 | (decay counter);
+
+@SetDecay:				;
+	shl	a, 4			;
+	ora	__Envelop_V,x		;
+	sta	__Envelop_V,x		;
+	iny				;
+	tya				;
+	sta	__env_voi_ptr,x		;
+	jmp	Voice_Exit
+
+@Value:
+	pha
+	iny
+	tya
+	sta	__env_voi_ptr,x
+	pla
 	;-----------------------
 	;Setting device (APU)
 Set_Voice:
 	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
+Voice_Exit:
 
 	;-------------------------------
 	;Envelop of Volume
@@ -195,37 +237,36 @@ Volume:
 	lda	__chflag,x
 	and	#$03
 	cmp	#$03
-	beq	@Envelop	;mode = 3 だったら、エンベロープへ
+	beq	@L3	;mode = 3 だったら、エンベロープへ
 	cmp	#$01
-	beq	@R		;mode = 1 で、リリース音量
-	lda	__env_volume + 1,x
+	beq	@L1		;mode = 1 で、リリース音量
+
+@L2:	lda	__env_volume + 1,x
 	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
-@R:	lda	__volume,x
+@L1:	lda	__volume,x
 	and	#$F0
 	jmp	Set_Volume
-@Envelop:
-	lda	__env_volume + 1,x
-	bne	@L
+
+@L3:	lda	__env_volume + 1,x
+	bne	@Envelop
 	lda	__volume,x
 	shl	a, 4
 	jmp	Set_Volume
-@L:	sta	__ptr + 1
-	lda	__env_volume,x
-	sta	__ptr
-	ldy	__env_vol_ptr,x
-	;
-	;■■	to do envelop process
-	;
-	sta	__env_vol_ptr,x
+
+@Envelop:
+	sta	__ptr + 1
+	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
+
+	sta	__tmp
+	lda	__volume,x
+	ldx	__tmp
+	jsr	_nsd_mul
+	ldx	__channel
 
 	;-----------------------
 	;Setting device (APU)
 Set_Volume:
-	jsr	_nsd_snd_volume		;nsd_snd_volume(a);
+	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
 
-
-
-exit:
-	rts
 .endproc
 

@@ -22,44 +22,44 @@ test.o:
     ZEROPAGE          Offs = 000000   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../../lib/nsd.lib(nsd_seq.o):
-    CODE              Offs = 00016E   Size = 0003DC
+    CODE              Offs = 00016E   Size = 00044D
     RODATA            Offs = 000027   Size = 000090
     BSS               Offs = 000000   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000000   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../../lib/nsd.lib(nsd_env.o):
-    CODE              Offs = 00054A   Size = 0000E8
+    CODE              Offs = 0005BB   Size = 0000E4
     RODATA            Offs = 0000B7   Size = 000000
     BSS               Offs = 000000   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000000   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../../lib/nsd.lib(nsd_snd.o):
-    CODE              Offs = 000632   Size = 0001EF
+    CODE              Offs = 00069F   Size = 0001EF
     RODATA            Offs = 0000B7   Size = 000114
     BSS               Offs = 000000   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000000   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../../lib/nsd.lib(nsd_math.o):
-    CODE              Offs = 000821   Size = 000071
+    CODE              Offs = 00088E   Size = 000071
     RODATA            Offs = 0001CB   Size = 000000
     BSS               Offs = 000000   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000000   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../../lib/nsd.lib(nsd_work.o):
-    CODE              Offs = 000892   Size = 000000
+    CODE              Offs = 0008FF   Size = 000000
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000000   Size = 000134
+    BSS               Offs = 000000   Size = 000142
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000000   Size = 000030
     NULL              Offs = 000000   Size = 000000
 C:\Program Files\cc65/lib/nes.lib(crt0.o):
-    CODE              Offs = 000892   Size = 000000
+    CODE              Offs = 0008FF   Size = 000000
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000134   Size = 000000
+    BSS               Offs = 000142   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000030   Size = 000000
     NULL              Offs = 000000   Size = 000000
@@ -68,60 +68,60 @@ C:\Program Files\cc65/lib/nes.lib(crt0.o):
     VECTORS           Offs = 000000   Size = 00000C
     CHARS             Offs = 000000   Size = 001000
 C:\Program Files\cc65/lib/nes.lib(ppubuf.o):
-    CODE              Offs = 000892   Size = 0000B0
+    CODE              Offs = 0008FF   Size = 0000B0
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000134   Size = 000001
+    BSS               Offs = 000142   Size = 000001
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000030   Size = 000000
     NULL              Offs = 000000   Size = 000000
 C:\Program Files\cc65/lib/nes.lib(waitvblank.o):
-    CODE              Offs = 000942   Size = 000006
+    CODE              Offs = 0009AF   Size = 000006
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000135   Size = 000000
+    BSS               Offs = 000143   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000030   Size = 000000
     NULL              Offs = 000000   Size = 000000
 C:\Program Files\cc65/lib/nes.lib(copydata.o):
-    CODE              Offs = 000948   Size = 00002D
+    CODE              Offs = 0009B5   Size = 00002D
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000135   Size = 000000
+    BSS               Offs = 000143   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000030   Size = 000000
     NULL              Offs = 000000   Size = 000000
 C:\Program Files\cc65/lib/nes.lib(zerobss.o):
-    CODE              Offs = 000975   Size = 000000
+    CODE              Offs = 0009E2   Size = 000000
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000135   Size = 000000
+    BSS               Offs = 000143   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000030   Size = 000000
     NULL              Offs = 000000   Size = 000000
     INIT              Offs = 000000   Size = 000023
 C:\Program Files\cc65/lib/nes.lib(callmain.o):
-    CODE              Offs = 000975   Size = 000017
+    CODE              Offs = 0009E2   Size = 000017
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000135   Size = 000004
+    BSS               Offs = 000143   Size = 000004
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000030   Size = 000000
     NULL              Offs = 000000   Size = 000000
 C:\Program Files\cc65/lib/nes.lib(condes.o):
-    CODE              Offs = 00098C   Size = 00000C
+    CODE              Offs = 0009F9   Size = 00000C
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000139   Size = 000000
+    BSS               Offs = 000147   Size = 000000
     DATA              Offs = 000000   Size = 000025
     ZEROPAGE          Offs = 000030   Size = 000000
     NULL              Offs = 000000   Size = 000000
     INIT              Offs = 000023   Size = 00000C
 C:\Program Files\cc65/lib/nes.lib(pushax.o):
-    CODE              Offs = 000998   Size = 00001A
+    CODE              Offs = 000A05   Size = 00001A
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000139   Size = 000000
+    BSS               Offs = 000147   Size = 000000
     DATA              Offs = 000025   Size = 000000
     ZEROPAGE          Offs = 000030   Size = 000000
     NULL              Offs = 000000   Size = 000000
 C:\Program Files\cc65/lib/nes.lib(zeropage.o):
-    CODE              Offs = 0009B2   Size = 000000
+    CODE              Offs = 000A1F   Size = 000000
     RODATA            Offs = 0001CB   Size = 000000
-    BSS               Offs = 000139   Size = 000000
+    BSS               Offs = 000147   Size = 000000
     DATA              Offs = 000025   Size = 000000
     ZEROPAGE          Offs = 000030   Size = 00001A
     NULL              Offs = 000000   Size = 000000
@@ -138,54 +138,54 @@ HEADER                000000  00000F  000010
 NULL                  000000  000000  000000
 ZEROPAGE              000002  00004B  00004A
 DATA                  006000  006024  000025
-BSS                   006025  00615D  000139
+BSS                   006025  00616B  000147
 STARTUP               008000  00805C  00005D
 INIT                  00805D  00808C  000030
-CODE                  00808D  008A3E  0009B2
-RODATA                008A3F  008C0A  0001CC
+CODE                  00808D  008AAB  000A1F
+RODATA                008AAC  008C77  0001CC
 VECTORS               00FFF6  010001  00000C
 
 
 Exports list:
 -------------
 __BSS_LOAD__              006025  LA    __BSS_RUN__               006025 RLA    
-__BSS_SIZE__              000139 REA    __CODE_LOAD__             00808D  LA    
-__CODE_RUN__              00808D  LA    __CODE_SIZE__             0009B2  EA    
+__BSS_SIZE__              000147 REA    __CODE_LOAD__             00808D  LA    
+__CODE_RUN__              00808D  LA    __CODE_SIZE__             000A1F  EA    
 __CONSTRUCTOR_COUNT__     000000 REA    __CONSTRUCTOR_TABLE__     00808D RLA    
-__DATA_LOAD__             008C0B RLA    __DATA_RUN__              006000 RLA    
+__DATA_LOAD__             008C78 RLA    __DATA_RUN__              006000 RLA    
 __DATA_SIZE__             000025 REA    __DESTRUCTOR_COUNT__      000000 REA    
-__DESTRUCTOR_TABLE__      008C0B RLA    __INIT_LOAD__             00805D  LA    
+__DESTRUCTOR_TABLE__      008C78 RLA    __INIT_LOAD__             00805D  LA    
 __INIT_RUN__              00805D  LA    __INIT_SIZE__             000030  EA    
-__RAM_LAST__              00615E  LA    __RAM_SIZE__              002000  EA    
-__RAM_START__             006000  LA    __RODATA_LOAD__           008A3F  LA    
-__RODATA_RUN__            008A3F  LA    __RODATA_SIZE__           0001CC  EA    
-__ROM0_LAST__             008C30  LA    __ROM0_SIZE__             007FF4  EA    
+__RAM_LAST__              00616C  LA    __RAM_SIZE__              002000  EA    
+__RAM_START__             006000  LA    __RODATA_LOAD__           008AAC  LA    
+__RODATA_RUN__            008AAC  LA    __RODATA_SIZE__           0001CC  EA    
+__ROM0_LAST__             008C9D  LA    __ROM0_SIZE__             007FF4  EA    
 __ROM0_START__            008000  LA    __SRAM_LAST__             000500  LA    
 __SRAM_SIZE__             000300 REA    __SRAM_START__            000500 RLA    
 __STACKSIZE__             000300  EA    __STARTUP_LOAD__          008000  LA    
 __STARTUP_RUN__           008000  LA    __STARTUP_SIZE__          00005D  EA    
 __STARTUP__               000001 REA    __ZP_LAST__               00004C  LA    
 __ZP_SIZE__               000060  EA    __ZP_START__              000002  LA    
-__argc                    00615A  LA    __argv                    00615C  LA    
+__argc                    006168  LA    __argv                    00616A  LA    
 _exit                     00802F  LA    _main                     00808D RLA    
-_nsd_div192               0088AE RLA    _nsd_init                 0080A0 RLA    
-_nsd_main                 008194 RLA    _nsd_mul                  0088EE  LA    
-_nsd_play_bgm             0080AA RLA    _nsd_snd_frequency        008738 RLA    
-_nsd_snd_init             0086BF RLA    _nsd_snd_keyoff           0086D2 RLA    
-_nsd_snd_keyon            0086C2 RLA    _nsd_snd_sweep            008715 RLA    
-_nsd_snd_voice            0086E2 RLA    _nsd_snd_volume           0086F2 RLA    
+_nsd_div192               00891B RLA    _nsd_init                 0080A0 RLA    
+_nsd_main                 008194 RLA    _nsd_mul                  00895B  LA    
+_nsd_play_bgm             0080AA RLA    _nsd_snd_frequency        0087A5 RLA    
+_nsd_snd_init             00872C RLA    _nsd_snd_keyoff           00873F RLA    
+_nsd_snd_keyon            00872F RLA    _nsd_snd_sweep            008782 RLA    
+_nsd_snd_voice            00874F RLA    _nsd_snd_volume           00875F RLA    
 _nsd_stop_bgm             008160  LA    _nsd_stop_se              00817A  LA    
-_waitvblank               0089CF RLA    callmain                  008A02 RLA    
-condes                    006000  LA    copydata                  0089D5 RLA    
-donelib                   008A19 RLA    initlib                   008080 RLA    
-nsd_envelop               0085D7 RLA    nsd_sequence              0082BB RLA    
+_waitvblank               008A3C RLA    callmain                  008A6F RLA    
+condes                    006000  LA    copydata                  008A42 RLA    
+donelib                   008A86 RLA    initlib                   008080 RLA    
+nsd_envelop               008648 RLA    nsd_sequence              0082BB RLA    
 nsd_work                  006025 RLA    nsd_work_zp               000002 RLZ    
-ppubuf_flush              00894B RLA    ppubuf_put                00892B  LA    
-ppubuf_wait               008924  LA    ppubuf_waitempty          00891F  LA    
+ppubuf_flush              0089B8 RLA    ppubuf_put                008998  LA    
+ppubuf_wait               008991  LA    ppubuf_waitempty          00898C  LA    
 ptr1                      00003A RLZ    ptr2                      00003C RLZ    
 ptr3                      00003E  LZ    ptr4                      000040  LZ    
-push0                     008A25  LA    pusha0                    008A27  LA    
-pushax                    008A29 RLA    regbank                   000046  LZ    
+push0                     008A92  LA    pusha0                    008A94  LA    
+pushax                    008A96 RLA    regbank                   000046  LZ    
 regsave                   000036  LZ    sp                        000032 RLZ    
 sreg                      000034  LZ    tmp1                      000042 RLZ    
 tmp2                      000043  LZ    tmp3                      000044  LZ    

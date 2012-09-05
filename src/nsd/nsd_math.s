@@ -93,13 +93,14 @@ exit:
 .proc	_nsd_mul
 .code
 
-	shl	a, 4
-	sta	__tmp + 1
+	and	#$0F
+	shl	a, 3
+	sta	__tmp + 1		; = volume << 3
 
 	inx
 	txa
 	eor	#$FF
-	sta	__tmp
+	sta	__tmp			; = ^ (envelop+1)
 
 	lda	#0
 	lsr	__tmp
@@ -127,5 +128,6 @@ exit:
 	adc	__tmp + 1
 @L5:
 exit:
+	shl	a,1
 	rts
 .endproc

@@ -59,5 +59,5 @@ void	mml_Address::set_Address(unsigned int _addr)
 //==============================================================
 unsigned	int	mml_Address::get_Address(void)
 {
-	return(code[1] + (code[2]<<8) );
+	return((unsigned char)code[1] + ((unsigned char)code[2]<<8) );
 }

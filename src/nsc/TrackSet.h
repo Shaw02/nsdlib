@@ -24,7 +24,7 @@ public:
 				TrackSet(MMLfile* MML, bool _sub, const char _strName[] = "==== [ Track Set ]====");
 				~TrackSet(void);
 
-		void	Fix_Address(map<	int, Sub*		>*	ptcSub);
+		void	Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnvelop);
 
 	MusicTrack*	makeTrack(int _track);
 	MusicTrack*	getTrack(int _track);

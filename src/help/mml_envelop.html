@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Envelope</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MML reference: Envelope</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        E@<var>voice_envelope</var>
+        Ev<var>volume_envelope</var>
+        Em<var>frequency_envelope</var>
+        En<var>note_envelope</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>voice_envelope</h4>
+<p>
+音色エンベロープのパターン番号を指定して下さい。<br>
+音色エンベロープを無効にする場合は、<a href="mml_voice.html">`@'コマンド</a>を使ってください。<br>
+</p>
+
+<h4>volume_envelope</h4>
+<p>
+音量エンベロープのパターン番号を指定して下さい。<br>
+数値の替わりに <code>*</code>を記述する事で、エンベロープを無効にできます。
+</p>
+
+<h4>frequency_envelope</h4>
+<p>
+ピッチ・エンベロープのパターン番号を指定して下さい。<br>
+数値の替わりに <code>*</code>を記述する事で、エンベロープを無効にできます。
+</p>
+
+<h4>note_envelope</h4>
+<p>
+ノート・エンベロープのパターン番号を指定して下さい。<br>
+数値の替わりに <code>*</code>を記述する事で、エンベロープを無効にできます。
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+Envelop()記述ブロックにて定義したエンベロープパターンを指定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+<span style="color:green;">// frequency envelop "Volume table"</span>
+Envelop(0){ 15 D10 14 13 12  L 11 11 10 10 9 9 10 10 R 9 8 7 6 5 L 4 4 3 3 2 2 3 3 }
+
+<span style="color:green;">// frequency envelop "LFO"</span>
+Envelop(100){ L 0 1 2 3 3 2 1 0  -1 -2 -3 -3 -2 -1 }
+
+<span style="color:green;">// for Voice Envelop</span>
+Envelop(200){ L 2 1 R L 2 }
+
+<span style="color:green;">// for Mote Envelop "Major code"</span>
+Envelop(1000){ L 0 4 7 }
+
+BGM(0){
+    l1 o4 v15 u2.	Ev0	Em100 En1000 E@200	cdefgab> En*	Em*	Ev*	c1,2
+}
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

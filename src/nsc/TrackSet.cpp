@@ -188,7 +188,7 @@ const	static	Command_Info	Command[] = {
 		}
 
 		//１つ戻る
-		MML->StreamPointerAdd(-1);
+		MML->Back();
 
 
 		//各コマンド毎の処理
@@ -302,39 +302,39 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Gate_u):
-				nowTrack->SetGatetime_q(MML);
+				nowTrack->SetGatetime_u(MML);
 				break;
 
 			case(mml_Envelop_Voice):
-				//■ to do 
+				nowTrack->SetEnvelop(nsd_Envelop_Voice, MML);
 				break;
 
 			case(mml_Envelop_Volume):
-				//■ to do 
+				nowTrack->SetEnvelop(nsd_Envelop_Volume, MML);
 				break;
 
 			case(mml_Envelop_Frequency):
-				//■ to do 
+				nowTrack->SetEnvelop(nsd_Envelop_Frequency, MML);
 				break;
 
 			case(mml_Envelop_Note):
-				//■ to do 
+				nowTrack->SetEnvelop(nsd_Envelop_Note, MML);
 				break;
 
 			case(mml_Envelop_Off_Voice):
-				//■ to do 
+				MML->Err("音色エンベロープは、@コマンドで無効にできます。");
 				break;
 
 			case(mml_Envelop_Off_Volume):
-				//■ to do 
+				nowTrack->SetEvent(new mml_Address(nsd_Envelop_Volume));
 				break;
 
 			case(mml_Envelop_Off_Frequency):
-				//■ to do 
+				nowTrack->SetEvent(new mml_Address(nsd_Envelop_Frequency));
 				break;
 
 			case(mml_Envelop_Off_Note):
-				//■ to do 
+				nowTrack->SetEvent(new mml_Address(nsd_Envelop_Note));
 				break;
 
 			case(mml_Release_mdoe):
@@ -477,11 +477,11 @@ TrackSet::~TrackSet(void)
 //	●返値
 //				無し
 //==============================================================
-void	TrackSet::Fix_Address(map<int, Sub*>*	ptcSub)
+void	TrackSet::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnvelop)
 {
 	iTrack = 0;
 	while(iTrack <= maxTrack){
-		ptcTrack[iTrack]->Fix_Address(ptcSub);
+		ptcTrack[iTrack]->Fix_Address(ptcSub, ptcEnvelop);
 		iTrack++;
 	}
 
@@ -521,8 +521,8 @@ MusicTrack*	TrackSet::makeTrack(int _track)
 //==============================================================
 MusicTrack*	TrackSet::getTrack(int _track)
 {
-	unsigned	int	i			 = maxTrack;	// i = 今ある、最終トラックの番号
-	MusicTrack*		_getTrack;
+			int	i			 = maxTrack;	// i = 今ある、最終トラックの番号
+	MusicTrack*	_getTrack;
 
 	//最終トラック番号が指定値未満だったら、繰り返す。
 	while(i < _track){

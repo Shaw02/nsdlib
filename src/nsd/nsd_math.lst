@@ -279,8 +279,8 @@ Current file: nsd_math.s
 000000r 2               .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
 000000r 2               .define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
 000000r 2               .define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
-000000r 2               .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V
-000000r 2               .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F
+000000r 2               .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
+000000r 2               .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
 000000r 2               .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
 000000r 2               .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 000000r 2               
@@ -475,40 +475,42 @@ Current file: nsd_math.s
 000040r 1               .proc	_nsd_mul
 000040r 1               .code
 000040r 1               
-000040r 1  0A 0A 0A 0A  	shl	a, 4
-000044r 1  85 rr        	sta	__tmp + 1
-000046r 1               
-000046r 1  E8           	inx
-000047r 1  8A           	txa
-000048r 1  49 FF        	eor	#$FF
-00004Ar 1  85 rr        	sta	__tmp
-00004Cr 1               
-00004Cr 1  A9 00        	lda	#0
-00004Er 1  46 rr        	lsr	__tmp
-000050r 1  B0 02        	bcs	@L1
-000052r 1  65 rr        	adc	__tmp + 1
-000054r 1               @L1:
-000054r 1  4A           	lsr	a
-000055r 1  46 rr        	lsr	__tmp
-000057r 1  B0 02        	bcs	@L2
-000059r 1  65 rr        	adc	__tmp + 1
-00005Br 1               @L2:
-00005Br 1  4A           	lsr	a
-00005Cr 1  46 rr        	lsr	__tmp
-00005Er 1  B0 02        	bcs	@L3
-000060r 1  65 rr        	adc	__tmp + 1
-000062r 1               @L3:
-000062r 1  4A           	lsr	a
-000063r 1  46 rr        	lsr	__tmp
-000065r 1  B0 02        	bcs	@L4
-000067r 1  65 rr        	adc	__tmp + 1
-000069r 1               @L4:
-000069r 1  4A           	lsr	a
-00006Ar 1  46 rr        	lsr	__tmp
-00006Cr 1  B0 02        	bcs	@L5
-00006Er 1  65 rr        	adc	__tmp + 1
-000070r 1               @L5:
-000070r 1               exit:
-000070r 1  60           	rts
-000071r 1               .endproc
-000071r 1               
+000040r 1  29 0F        	and	#$0F
+000042r 1  0A 0A 0A     	shl	a, 3
+000045r 1  85 rr        	sta	__tmp + 1		; = volume << 3
+000047r 1               
+000047r 1  E8           	inx
+000048r 1  8A           	txa
+000049r 1  49 FF        	eor	#$FF
+00004Br 1  85 rr        	sta	__tmp			; = ^ (envelop+1)
+00004Dr 1               
+00004Dr 1  A9 00        	lda	#0
+00004Fr 1  46 rr        	lsr	__tmp
+000051r 1  B0 02        	bcs	@L1
+000053r 1  65 rr        	adc	__tmp + 1
+000055r 1               @L1:
+000055r 1  4A           	lsr	a
+000056r 1  46 rr        	lsr	__tmp
+000058r 1  B0 02        	bcs	@L2
+00005Ar 1  65 rr        	adc	__tmp + 1
+00005Cr 1               @L2:
+00005Cr 1  4A           	lsr	a
+00005Dr 1  46 rr        	lsr	__tmp
+00005Fr 1  B0 02        	bcs	@L3
+000061r 1  65 rr        	adc	__tmp + 1
+000063r 1               @L3:
+000063r 1  4A           	lsr	a
+000064r 1  46 rr        	lsr	__tmp
+000066r 1  B0 02        	bcs	@L4
+000068r 1  65 rr        	adc	__tmp + 1
+00006Ar 1               @L4:
+00006Ar 1  4A           	lsr	a
+00006Br 1  46 rr        	lsr	__tmp
+00006Dr 1  B0 02        	bcs	@L5
+00006Fr 1  65 rr        	adc	__tmp + 1
+000071r 1               @L5:
+000071r 1               exit:
+000071r 1  0A           	shl	a,1
+000072r 1  60           	rts
+000073r 1               .endproc
+000073r 1               

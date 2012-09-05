@@ -75,6 +75,10 @@
 				<param name="Local" value="mml.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="最適化のためのヒント">
+				<param name="Local" value="mml_tips.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="MMLリファレンス">
 				</OBJECT>
 			<UL>
@@ -121,6 +125,10 @@
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="L：無限ループ">
 					<param name="Local" value="mml_loop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="E@,Ev,Em,En：エンベロープ">
+					<param name="Local" value="mml_envelop.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="K{}：調号">

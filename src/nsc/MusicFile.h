@@ -35,7 +35,7 @@ private:
 //static	const	Command_Info	Command[];
 
 			MusicHeader			Header;		//Header			
-//	map<	int, Envelop*	>	ptcEnvelop;	//Envelop
+	map<	int, Envelop*	>	ptcEnv;		//Envelop
 	map<	int, BGM*		>	ptcBGM;		//BGM
 	map<	int, SE*		>	ptcSE;		//SE 
 	map<	int, Sub*		>	ptcSub;		//Subroutine Sequence

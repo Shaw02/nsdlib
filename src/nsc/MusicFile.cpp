@@ -71,14 +71,15 @@ const	static	Command_Info	Command[] = {
 		{	"se",				id_SE			},
 	};
 
-	unsigned	int		i;
-	unsigned	char	cData;
-				BGM*	_bgm;
-				SE*		_se;
-				Sub*	_sub;
+	unsigned	int			i;
+	unsigned	char		cData;
+				Envelop*	_env;
+				BGM*		_bgm;
+				SE*			_se;
+				Sub*		_sub;
 	string		msg;
 
-//	map<	int,	Envelop*	>::iterator	itEnvelop;
+	map<	int,	Envelop*	>::iterator	itEnvelop;
 	map<	int,	BGM*		>::iterator	itBGM;
 	map<	int,	SE*			>::iterator	itSE;
 	map<	int,	Sub*		>::iterator	itSub;
@@ -127,8 +128,17 @@ const	static	Command_Info	Command[] = {
 			case(id_se_num):
 				Header.Set_Number_SE(MML);
 				break;
-//			case(id_Envelop):
-//				break;
+			case(id_Envelop):
+				i = MML->GetNum();
+				//重複チェック
+				if(ptcEnv.count(i) != 0){
+					MML->Err("Envelop()ブロックで同じ番号が指定されました。");
+				}
+				_env = new Envelop(MML);
+				ptcItem.push_back(_env);
+				ptcEnv[i] = _env;
+				iSize += _env->getSize();	//BGMのサイズを更新
+				break;
 			case(id_Sub):
 				i = MML->GetNum();
 				//重複チェック
@@ -224,18 +234,27 @@ MusicFile::~MusicFile(void)
 //==============================================================
 void	MusicFile::Fix_Address(void)
 {
+	map<int,Sub*	>::iterator	itSub;
+
 	unsigned	int			iBGM	= 0;
 	unsigned	int			iSE		= 0;
 
 	while(iBGM < Header.iBGM){
-		ptcBGM[iBGM]->Fix_Address(&ptcSub);
+		ptcBGM[iBGM]->Fix_Address(&ptcSub, &ptcEnv);
 		iBGM++;
 	}
 	while(iSE < Header.iSE){
-		ptcSE[iSE]->Fix_Address(&ptcSub);
+		ptcSE[iSE]->Fix_Address(&ptcSub, &ptcEnv);
 		iSE++;
 	}
 
+	if(!ptcSub.empty()){
+		itSub = ptcSub.begin();
+		while(itSub != ptcSub.end()){
+			itSub->second->Fix_Address(&ptcSub, &ptcEnv);
+			itSub++;
+		}
+	}
 }
 
 //==============================================================

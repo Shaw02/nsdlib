@@ -182,12 +182,15 @@ Current file: crt0.s
 000000r 1               
 000000r 1  00 00        _tmp:	.word	0		;Temp
 000002r 1  00 00        _ptr:	.word	0		;Pointer
-000004r 1  00           _eff:	.byte	0		;SE start number
-000005r 1               
-000005r 1               ; ------------------------------------------------------------------------
-000005r 1               ; Place the startup code in a special segment.
-000005r 1               ; ------------------------------------------------------------------------
-000005r 1               .segment	"STARTUP"
+000004r 1               
+000004r 1               .bss
+000000r 1               
+000000r 1  00           _eff:	.byte	0		;SE start number
+000001r 1               
+000001r 1               ; ------------------------------------------------------------------------
+000001r 1               ; Place the startup code in a special segment.
+000001r 1               ; ------------------------------------------------------------------------
+000001r 1               .segment	"STARTUP"
 000000r 1               
 000000r 1               start:
 000000r 1  78           	sei
@@ -351,58 +354,58 @@ Current file: crt0.s
 0000D3r 1  A0 00        	ldy	#0
 0000D5r 1  B1 rr        	lda	(_ptr),y
 0000D7r 1  C8           	iny			;ax = BGM and SE's qty
-0000D8r 1  85 rr        	sta	_eff
-0000DAr 1               
-0000DAr 1  B1 rr        	lda	(_ptr),y
-0000DCr 1  C8           	iny
-0000DDr 1  85 rr        	sta	_tmp
-0000DFr 1  B1 rr        	lda	(_ptr),y
-0000E1r 1  AA           	tax			;ax = Pointer of ⊿PCM infomation Struct
-0000E2r 1  A5 rr        	lda	_tmp
-0000E4r 1               
-0000E4r 1               	;■■■	to do	⊿PCMのロード
-0000E4r 1               
-0000E4r 1  60           	rts
-0000E5r 1               .endproc
+0000D8r 1  8D rr rr     	sta	_eff
+0000DBr 1               
+0000DBr 1  B1 rr        	lda	(_ptr),y
+0000DDr 1  C8           	iny
+0000DEr 1  85 rr        	sta	_tmp
+0000E0r 1  B1 rr        	lda	(_ptr),y
+0000E2r 1  AA           	tax			;ax = Pointer of ⊿PCM infomation Struct
+0000E3r 1  A5 rr        	lda	_tmp
 0000E5r 1               
-0000E5r 1               ; ------------------------------------------------------------------------
-0000E5r 1               ;
-0000E5r 1               ; ------------------------------------------------------------------------
-0000E5r 1               .proc	_play_music
+0000E5r 1               	;■■■	to do	⊿PCMのロード
 0000E5r 1               
-0000E5r 1  48           	pha
-0000E6r 1  A9 rr        	lda	#<(__ROM0_START__)
-0000E8r 1  85 rr        	sta	_ptr
-0000EAr 1  A9 rr        	lda	#>(__ROM0_START__)
-0000ECr 1  85 rr        	sta	_ptr+1		;_ptr = __ROM0_START__
-0000EEr 1  68           	pla
-0000EFr 1               
-0000EFr 1  C5 rr        	cmp	_eff
-0000F1r 1  08           	php
-0000F2r 1  18           	clc
-0000F3r 1  69 02        	adc	#2
-0000F5r 1  0A           	asl	a
-0000F6r 1  A8           	tay			; y = _mus * 2
-0000F7r 1  B1 rr        	lda	(_ptr),y
-0000F9r 1  85 rr        	sta	_tmp
-0000FBr 1  C8           	iny
-0000FCr 1  B1 rr        	lda	(_ptr),y	; ax = Pointer of BGM/SE
-0000FEr 1  AA           	tax
-0000FFr 1  A5 rr        	lda	_tmp
-000101r 1  28           	plp
-000102r 1               
-000102r 1               ;	bcc	@L
-000102r 1  20 rr rr     	jsr	_nsd_play_bgm
-000105r 1               ;@L:	jmp	_nsd_play_se
-000105r 1  60           	rts
-000106r 1               .endproc
-000106r 1               
-000106r 1               
-000106r 1               ; ------------------------------------------------------------------------
-000106r 1               ; hardware vectors
-000106r 1               ; ------------------------------------------------------------------------
-000106r 1               
-000106r 1               .segment "VECTORS"
+0000E5r 1  60           	rts
+0000E6r 1               .endproc
+0000E6r 1               
+0000E6r 1               ; ------------------------------------------------------------------------
+0000E6r 1               ;
+0000E6r 1               ; ------------------------------------------------------------------------
+0000E6r 1               .proc	_play_music
+0000E6r 1               
+0000E6r 1  48           	pha
+0000E7r 1  A9 rr        	lda	#<(__ROM0_START__)
+0000E9r 1  85 rr        	sta	_ptr
+0000EBr 1  A9 rr        	lda	#>(__ROM0_START__)
+0000EDr 1  85 rr        	sta	_ptr+1		;_ptr = __ROM0_START__
+0000EFr 1  68           	pla
+0000F0r 1               
+0000F0r 1  CD rr rr     	cmp	_eff
+0000F3r 1  08           	php
+0000F4r 1  18           	clc
+0000F5r 1  69 02        	adc	#2
+0000F7r 1  0A           	asl	a
+0000F8r 1  A8           	tay			; y = _mus * 2
+0000F9r 1  B1 rr        	lda	(_ptr),y
+0000FBr 1  85 rr        	sta	_tmp
+0000FDr 1  C8           	iny
+0000FEr 1  B1 rr        	lda	(_ptr),y	; ax = Pointer of BGM/SE
+000100r 1  AA           	tax
+000101r 1  A5 rr        	lda	_tmp
+000103r 1  28           	plp
+000104r 1               
+000104r 1               ;	bcc	@L
+000104r 1  20 rr rr     	jsr	_nsd_play_bgm
+000107r 1               ;@L:	jmp	_nsd_play_se
+000107r 1  60           	rts
+000108r 1               .endproc
+000108r 1               
+000108r 1               
+000108r 1               ; ------------------------------------------------------------------------
+000108r 1               ; hardware vectors
+000108r 1               ; ------------------------------------------------------------------------
+000108r 1               
+000108r 1               .segment "VECTORS"
 000000r 1  rr rr        	.word	_nsf_init	; $fff0		MMLコンパイラが参照して、NSFヘッダーに埋め込む。
 000002r 1  rr rr        	.word	_nsf_main	; $fff2		MMLコンパイラが参照して、NSFヘッダーに埋め込む。
 000004r 1  rr rr        	.word	irq2		; $fff4 ?

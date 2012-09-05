@@ -20,7 +20,9 @@ func_nsd_stop_bgm.html
 func_nsd_stop_se.html
 index.html
 mml.html
+mml_tips.html
 mml_detune.html
+mml_envelop.html
 mml_gate.html
 mml_KeySignature.html
 mml_length.html

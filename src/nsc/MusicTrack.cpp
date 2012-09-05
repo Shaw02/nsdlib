@@ -11,12 +11,13 @@
 //==============================================================
 MusicTrack::MusicTrack(const char _strName[]):
 	MusicItem(_strName),
-	offset_now(0),
-	offset_loop(0),			//無限ループ
+	offset_now(0),				//
+	offset_loop(0),				//無限ループ
 	offset_repeat_a_s(0),		//リピートＡ
 	offset_repeat_a_b(0),		//リピートＡ
 	offset_repeat_b_s(0),		//リピートＢ
-	offset_repeat_b_b(0)		//リピートＢ
+	offset_repeat_b_b(0),		//リピートＢ
+	loop_flag(false)
 {
 	//調号
 	KeySignature[0]	= 0;
@@ -51,6 +52,7 @@ MusicTrack::~MusicTrack(void)
 void	MusicTrack::SetLoop()
 {
 	offset_loop = offset_now;
+	loop_flag	= true;
 }
 
 //==============================================================
@@ -191,6 +193,27 @@ void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 //	●返値
 //				無し
 //==============================================================
+void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML)
+{
+	mml_Address*		_event = new mml_Address(_opcode, "Envelop");
+	unsigned	int		_no = MML->GetInt();
+
+	if((_no<0) || (_no>65535)){
+		MML->Err("エンベロープ番号は、0～65535の範囲で指定してください。");
+	}
+	_event->set_Address( _no & 0xFFFF );
+	SetEvent(_event);
+	ptcEnvelop.push_back(_event);
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
 void	MusicTrack::SetSubroutine(MMLfile* MML)
 {
 	mml_Address*		_event = new mml_Address(nsd_Call, "Subroutine");
@@ -212,29 +235,46 @@ void	MusicTrack::SetSubroutine(MMLfile* MML)
 //	●返値
 //				無し
 //==============================================================
-void	MusicTrack::Fix_Address(map<int, Sub*>*	ptcSub)
+void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv)
 {
 	//----------------------
 	//Local変数
-	vector<	mml_Address*	>::iterator	itItem;
+	vector<	mml_Address*	>::iterator	itSub;
+	vector<	mml_Address*	>::iterator	itEnv;
 	unsigned	int	_no;
 	unsigned	int	_sub_offset;
 	unsigned	int	_com_offset;
 
 	//----------------------
-	//Delete Class
+	//
 	if(!ptcSubroutine.empty()){
-		itItem = ptcSubroutine.begin();
-		while(itItem != ptcSubroutine.end()){
-			_no			= (*itItem)->get_Address();		//サブルーチンNo.の取得
-			_com_offset	= (*itItem)->getOffset();
+		itSub = ptcSubroutine.begin();
+		while(itSub != ptcSubroutine.end()){
+			_no			= (*itSub)->get_Address();		//サブルーチンNo.の取得
+			_com_offset	= (*itSub)->getOffset();
 			if( ptcSub->count(_no) == 0){
 				printf("サブルーチン %d 番が存在しません。",_no);
 				exit(-1);
 			}
 			_sub_offset = (*ptcSub)[_no]->getOffset();	//指定サブルーチンが存在するオフセット
-			(*itItem)->set_Address(_sub_offset - _com_offset - 1);
-			itItem++;
+			(*itSub)->set_Address(_sub_offset - _com_offset - 1);
+			itSub++;
+		}
+	}
+
+	//
+	if(!ptcEnvelop.empty()){
+		itEnv = ptcEnvelop.begin();
+		while(itEnv != ptcEnvelop.end()){
+			_no			= (*itEnv)->get_Address();		//エンベロープNo.の取得
+			_com_offset	= (*itEnv)->getOffset();
+			if( ptcEnv->count(_no) == 0){
+				printf("エンベロープ %d 番が存在しません。",_no);
+				exit(-1);
+			}
+			_sub_offset = (*ptcEnv)[_no]->getOffset();	//指定エンベロープが存在するオフセット
+			(*itEnv)->set_Address(_sub_offset - _com_offset - 1);
+			itEnv++;
 		}
 	}
 }
@@ -462,10 +502,10 @@ void	MusicTrack::SetOctave(MMLfile* MML)
 {
 	unsigned	int	iOctave = MML->GetInt();
 
-	if( (iOctave <= 8) && (iOctave >= 1) ){
-		SetEvent(new mml_general(nsd_Octave + iOctave - 1, "Octave"));
+	if( (iOctave <= 9) && (iOctave >=2) ){
+		SetEvent(new mml_general(nsd_Octave + iOctave - 2, "Octave"));
 	} else {
-		MML->Err("オクターブは1～8の範囲で指定してください。o0の領域は、相対オクターブをご利用ください。");
+		MML->Err("オクターブは2～9の範囲で指定してください。o1の領域は、相対オクターブをご利用ください。");
 	}
 }
 
@@ -498,11 +538,21 @@ void	MusicTrack::SetGatetime(MMLfile* MML)
 //	●返値
 //		無し
 //==============================================================
-void	MusicTrack::SetGatetime_q(MMLfile* MML)
+void	MusicTrack::SetGatetime_u(MMLfile* MML)
 {
-	unsigned	int	i = MML->GetLength();
+	unsigned		int	i;
+	unsigned		char	cData;
 
+	//休符のモード
+	cData = MML->GetChar();
+	if(cData == '0'){
+		i = 0;
+	} else {
+		MML->Back();
+		i = MML->GetLength();
+	}
 	SetEvent(new mml_general(nsd_GateTime_u, i & 0xFF , "GateTime(u)"));
+	
 }
 
 //==============================================================
@@ -805,7 +855,7 @@ unsigned	int	MusicTrack::SetEnd(void)
 {
 	mml_Address*	_event;
 
-	if(offset_loop == 0){
+	if(loop_flag == false){
 		SetEvent(new mml_general(nsd_EndOfTrack,"End of Track"));
 	} else {
 		_event = new mml_Address(nsd_Jump, "End of Track with LOOP");

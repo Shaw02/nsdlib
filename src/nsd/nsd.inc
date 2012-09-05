@@ -170,8 +170,8 @@
 .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
 .define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
 .define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
-.define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V
-.define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F
+.define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
+.define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
 .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
 .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 

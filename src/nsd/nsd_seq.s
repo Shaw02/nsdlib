@@ -38,7 +38,9 @@
 	;Hardware key on
 	jsr	_nsd_snd_keyon
 
+	lda	#$00
 	sta	__Envelop_F,x
+	lda	#$01
 	sta	__env_freq_ptr,x
 	sta	__env_note_ptr,x
 
@@ -46,7 +48,10 @@
 	beq	exit
 	cpx	#nsd::TR_BGM5
 	beq	exit
+
+	lda	#$00
 	sta	__Envelop_V,x
+	lda	#$01
 	sta	__env_voi_ptr,x
 	sta	__env_vol_ptr,x
 
@@ -270,7 +275,7 @@ opaddr:	.addr	nsd_op00
 	;-------------------------------
 	;now play?	(check: Sequence_ptr == 0 ?)	** upper 1 byte only **
 	lda	__Sequence_ptr + 1,x
-	beq	exit
+	beq	Exit
 
 	stx	__channel		;channel <- x
 
@@ -285,9 +290,7 @@ opaddr:	.addr	nsd_op00
 	jsr	nsd_keyoff		; 	nsd_keyoff();
 GateTime_Exit:				; }
 	lda	__Length_ctr,x
-	beq	Sequence		; if(__Length_ctr != 0){ return(); };
-exit:
-	rts
+	bne	Exit		; if(__Length_ctr != 0){ return(); };
 
 	;-------------------------------
 	;Sequence		(length == 0)
@@ -295,7 +298,86 @@ Sequence:
 	jsr	nsd_load_sequence
 
 	cmp	#$80
-	bcs	Note			;a >= 80 ?
+	bcc	Control			;a >= 80 ?
+
+	;-----------------------
+	;op-code = 0x80 - 0xFF
+Note:
+	tay	;save a to y
+
+	;-------
+	;bit 4 check (Slur)
+Chk_Slur:
+	clc
+	and	#$10
+	beq	@L
+	sec
+@L:	rol	__tai,x
+
+	;-------
+	;bit 5 check (Length )
+Chk_Length:
+	tya
+	and	#$20
+	beq	@L
+	jsr	nsd_load_sequence
+	jmp	@E
+@L:	lda	__length,x
+@E:	sta	__Length_ctr,x
+
+	;-------
+	;bit 6 check (Gate Time)
+Chk_GateTime:
+	tya
+	and	#$40
+	beq	@L
+	jsr	nsd_load_sequence
+	sta	__tmp
+	lda	__Length_ctr,x
+	sub	__tmp			; a = __Length_ctr - __Gate;
+	bcs	@gateset		; if(a < 0){
+	lda	#$0			;    a = 0x0; //no gate
+	beq	@gateset		; }	// relative jump because "0"
+@L:
+	lda	__gate_u,x		;if (__gate_u,x == 0) then @q
+	beq	@q			;
+	lda	__Length_ctr,x
+	sub	__gate_u,x		; a = __Length_ctr - __Gate
+	bcc	@q			; if (a < 0) then @q
+	cmp	__gate_q,x		;
+	bcs	@gateset		; if( a < __gate_q){
+@q:	lda	__gate_q,x		;    a = __gate_q;
+@gateset:				; }
+	sta	__Gate,x
+
+Calc_Note_Number:
+	tya
+	and	#$0F
+	cmp	#12
+	bcc	NoteSet
+
+@Rest:	and	#$0F
+	sub	#$0D
+	sta	__tmp
+	lda	__tai,x
+	and	#$02
+	bne	Exit		;If tai then exit
+	lda	__chflag,x
+	and	#~nsd_chflag::KeyOff
+	ora	__tmp
+	sta	__chflag,x
+Exit:
+	rts
+
+NoteSet:
+	add	__octave,x
+	add	__trans_one,x
+	sta	__note,x
+	lda	#0
+	sta	__trans_one,x	;0 reset
+	jmp	nsd_keyon
+
+
 	;-----------------------
 	;op-code = 0x00 - 0x7F
 Control:
@@ -357,82 +439,6 @@ op70:	;Ser release volume
 	ora	__tmp
 	sta	__volume,x		;__volume = (__volume & 0x0F) | (a << 4);
 	jmp	Sequence
-	;-----------------------
-	;op-code = 0x80 - 0xFF
-Note:
-	tay	;save a to y
-
-	;-------
-	;bit 4 check (Slur)
-Chk_Slur:
-	clc
-	and	#$10
-	beq	@L
-	sec
-@L:	rol	__tai,x
-
-	;-------
-	;bit 5 check (Length )
-Chk_Length:
-	tya
-	and	#$20
-	bne	@L
-	lda	__length,x
-	jmp	@E
-@L:	jsr	nsd_load_sequence
-@E:	sta	__Length_ctr,x
-
-	;-------
-	;bit 6 check (Gate Time)
-Chk_GateTime:
-	tya
-	and	#$40
-	beq	@L
-	jsr	nsd_load_sequence
-	sta	__tmp
-	lda	__Length_ctr,x
-	sub	__tmp			; a = __Length_ctr - __Gate;
-	bcs	@gateset		; if(a < 0){
-	lda	#$0			;    a = 0x0; //no gate
-	jmp	@gateset		; }
-@L:
-	lda	__gate_u,x		;if (__gate_u,x == 0) then @q
-	beq	@q			;
-	lda	__Length_ctr,x
-	sub	__gate_u,x		; a = __Length_ctr - __Gate
-	bcc	@q			; if (a < 0) then @q
-	cmp	__gate_q,x		;
-	bcs	@gateset		; if( a < __gate_q){
-@q:	lda	__gate_q,x		;    a = __gate_q;
-@gateset:				; }
-	sta	__Gate,x
-
-Calc_Note_Number:
-	tya
-	and	#$0F
-	cmp	#12
-	bcs	@Rest
-	add	__octave,x
-	add	__trans_one,x
-	sta	__note,x
-	lda	#0
-	sta	__trans_one,x	;0 reset
-	jmp	nsd_keyon
-@Rest:
-	and	#$0F
-	sub	#$0D
-	sta	__tmp
-
-	lda	__tai,x
-	and	#$02
-	bne	@Exit		;If tai then exit
-
-	lda	__chflag,x
-	and	#~nsd_chflag::KeyOff
-	ora	__tmp
-	sta	__chflag,x
-@Exit:
-	rts
 
 ;=======================================================================
 ;		opcode	0x00:	End of Track / End of Subroutine
@@ -662,7 +668,10 @@ nsd_op10:
 	sta	__env_voice,x
 	lda	__ptr + 1
 	adc	__tmp + 1
-	sta	__env_voice + 1,x	;__env_voice = __ptr + __tmp
+@Zero:	sta	__env_voice + 1,x	;__env_voice = __ptr + __tmp
+
+	lda	#$01
+	sta	__env_voi_ptr,x
 
 	jmp	Sequence
 
@@ -679,13 +688,19 @@ nsd_op11:
 	sta	__tmp
 	jsr	nsd_load_sequence
 	sta	__tmp + 1		;__tmp = value
+	ora	__tmp
+	beq	@Zero
 
 	lda	__ptr
 	add	__tmp
 	sta	__env_volume,x
 	lda	__ptr + 1
 	adc	__tmp + 1
-	sta	__env_volume + 1,x
+@Zero:	sta	__env_volume + 1,x
+
+	lda	#$01
+	sta	__env_vol_ptr,x
+
 	jmp	Sequence
 
 ;=======================================================================
@@ -701,13 +716,19 @@ nsd_op12:
 	sta	__tmp
 	jsr	nsd_load_sequence
 	sta	__tmp + 1		;__tmp = value
+	ora	__tmp
+	beq	@Zero
 
 	lda	__ptr
 	add	__tmp
 	sta	__env_frequency,x
 	lda	__ptr + 1
 	adc	__tmp + 1
-	sta	__env_frequency + 1,x
+@Zero:	sta	__env_frequency + 1,x
+
+	lda	#$01
+	sta	__env_freq_ptr,x
+
 	jmp	Sequence
 
 ;=======================================================================
@@ -723,13 +744,19 @@ nsd_op13:
 	sta	__tmp
 	jsr	nsd_load_sequence
 	sta	__tmp + 1		;__tmp = value
+	ora	__tmp
+	beq	@Zero
 
 	lda	__ptr
 	add	__tmp
 	sta	__env_note,x
 	lda	__ptr + 1
 	adc	__tmp + 1
-	sta	__env_note + 1,x
+@Zero:	sta	__env_note + 1,x
+
+	lda	#$01
+	sta	__env_note_ptr,x
+
 	jmp	Sequence
 
 ;=======================================================================
@@ -901,8 +928,7 @@ nsd_op37:
 nsd_op29:
 	lda	__octave,x
 	add	#12
-	cmp	#$80
-	bcc	nsd_Set_Octave
+	bpl	nsd_Set_Octave
 	jmp	Sequence
 
 ;=======================================================================
@@ -911,7 +937,7 @@ nsd_op29:
 nsd_op28:
 	lda	__octave,x
 	sub	#12
-	bcc	nsd_op28_Exit
+	bmi	nsd_op28_Exit
 nsd_Set_Octave:
 	sta	__octave,x
 nsd_op28_Exit:

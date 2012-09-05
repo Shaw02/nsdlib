@@ -61,6 +61,9 @@
 
 _tmp:	.word	0		;Temp
 _ptr:	.word	0		;Pointer
+
+.bss
+
 _eff:	.byte	0		;SE start number
 
 ; ------------------------------------------------------------------------
