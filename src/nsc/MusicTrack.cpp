@@ -320,7 +320,7 @@ void	MusicTrack::SetNote(MMLfile*	MML,int note)
 	}
 
 	cData = MML->GetChar();
-	if(((cData > '0') && (cData < '9')) || (cData == '%')){
+	if(((cData >= '0') && (cData <= '9')) || (cData == '%')){
 		MML->Back();
 		Length = MML->GetLength();
 	} else {
@@ -329,7 +329,13 @@ void	MusicTrack::SetNote(MMLfile*	MML,int note)
 
 	cData = MML->GetChar();
 	if(cData == ','){
-		GateTime = MML->GetLength();
+		cData = MML->GetChar();
+		if(cData == '0'){
+			GateTime = 0;
+		} else {
+			MML->Back();
+			GateTime = MML->GetLength();
+		}
 	} else if(cData == '&') {
 		Slur = true;
 	} else {
@@ -386,7 +392,7 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 
 	//長さ
 	cData = MML->GetChar();
-	if(((cData > '0') && (cData < '9')) || (cData == '%')){
+	if(((cData >= '0') && (cData <= '9')) || (cData == '%')){
 		MML->Back();
 		Length = MML->GetLength();
 	} else {
@@ -396,7 +402,13 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 	//ゲートタイム or タイ
 	cData = MML->GetChar();
 	if(cData == ','){
-		GateTime = MML->GetLength();
+		cData = MML->GetChar();
+		if(cData == '0'){
+			GateTime = 0;
+		} else {
+			MML->Back();
+			GateTime = MML->GetLength();
+		}
 	} else if(cData == '&') {
 		Slur = true;
 	} else {

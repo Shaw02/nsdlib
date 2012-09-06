@@ -17,14 +17,17 @@
 <h3>コマンドラインオプション（Command line option）</h3>
 <p>
 テキストで記述されたMMLファイルを、本音源ドライバーNSD.Lib用のデータに変換します。<br>
-デフォルトでは、cc65に付属のクロスアセンブラ`ca65'用のアセンブリ言語ソースを出力します<strong>（未実装）</strong>。<br>
-出力するアセンブリ言語ソースは、単体でオブジェクトファイルにアセンブル可能となっていますので、
-ユーザーアプリケーションのビルドの際に、当該オブジェクトファイルをリンクして下さい<strong>（未実装）</strong>。<br>
+デフォルトでは、何も出力しません。何か、コマンドラインオプションを指定して下さい。<br>
 </p>
 <p>
-また、NSFファイルの簡易生成も可能です。<br>
-複数の曲に対応していますが、コンパイラにてNSFを生成する場合は、
-曲データは合計で16kByte以内となります。<br>
+アセンブリ言語・Ｃ言語用のソース（配列変数定義）で出力したファイルは、
+単体でオブジェクトファイルに、コンパイル ＆ アセンブル可能となっています<strong>（未実装）</strong>。<br>
+ユーザー・アプリケーションのビルドの際に、そのオブジェクト・ファイルをリンクして下さい。<br>
+</p>
+<p>
+また、NSFファイルへのコンパイルも可能です。<br>
+複数の曲に対応していますが、コンパイラで直接ＮＳＦを生成する場合は、
+曲データは合計で24kByte以内、⊿ＰＣＭを使う場合は16kByte以内となります。<br>
 <strong>現状は、ＮＳＦへのコンパイルのみ対応しています。</strong>
 </p>
 <code><pre>
@@ -35,7 +38,7 @@
 <dt>-n</dt><dd>Output the NSF. (*.nsf) </dd>
 <dt>-c</dt><dd>Output the C language source file for cc65. (*.c)<strong>未実装</strong></dd>
 <dt>-s</dt><dd>Output the assembly language source file for ca65. (*.s) (default)<strong>未実装</strong></dd>
-<dt>-b</dt><dd>Output the Binary file. (*.bin)<strong>未実装</strong></dd>
+<dt>-b</dt><dd>Output the Binary file. (*.bin)</dd>
 <dt>-fn<var>filename</var></dt><dd>Set the file name of NSF.</dd>
 <dt>-fc<var>filename</var></dt><dd>Set the file name of C language source file.</dd>
 <dt>-fs<var>filename</var></dt><dd>Set the file name of assembly language source file.</dd>
@@ -62,27 +65,42 @@ BGM,SE,サブルーチンの演奏パターンを定義します。<br>
 
 
 <div class='block'>
-<h3>アセンブリ言語ソースの仕様</h3>
+<h3>バイナリファイル・ＮＳＦの配置仕様</h3>
+<p>
+データは、6502のアドレス空間 0x8000 番地を先頭に配置されることを想定しています。<br>
+ＮＳＦヘッダーをのぞき、ファイル先頭に、以下テーブルの情報がファイル先頭にあります。<br>
+</p>
+<table>
+<tr><th>Address			</th><th>内容					</td></tr>
+<tr><td>0x8000			</td><td>BGMデータ数			</td></tr>
+<tr><td>0x8001			</td><td>SE データ数			</td></tr>
+<tr><td>0x8002～0x8003	</td><td>⊿PCM構造体のアドレス（）	</td></tr>
+<tr><td>0x8004～0x8005	</td><td>BGM(0)番の先頭アドレス		</td></tr>
+<tr><td>・・・			</td><td>・・・						</td></tr>
+<tr><td>・・・			</td><td>SE(0)番の先頭アドレス		</td></tr>
+<tr><td>～0xBFFF		</td><td>データ実体					</td></tr>
+<tr><td>0xC000～0xDFFF	</td><td>⊿PCMデータ実体			</td></tr>
+<tr><td>0xE000～0xFFFF	</td><td>実行コード ＆ 割り込みベクタ</td></tr>
+</table>
+</div>
+
+
+<div class='block'>
+<h3>Ｃ言語・アセンブリ言語ソースの仕様</h3>
 <p>
 <strong>未実装！</strong>
 </p>
 <h4>曲データのシンボル（ラベル）</h4>
 <p>
 曲データのシンボルは、<var>_nsd_ファイル名_番号</var>となります。<br>
-（Ｃ言語から参照する場合は、<var>nsd_ファイル名_番号</var>となります。）<br>
-このシンボルのアドレスを引数に、<a href="func_nsd_play_bgm.html">nsd_play_bgm()関数</a>を呼び出すことで、
-その曲データが再生されます。<br>
+（Ｃ言語の場合は、<var>nsd_ファイル名_番号</var>となります。）<br>
+このシンボルのポインタを引数に、<a href="func_nsd_play_bgm.html">nsd_play_bgm()関数</a>を呼び出すことで、その曲データが再生されます。<br>
+曲データは、6502のメモリ空間にさえ存在していれば（バンクがセレクトされていれば）、どこに配置されていても再生可能です。<br>
 </p>
 <p>
 例えば、ファイル名が<var>foo</var>で、MMLファイル中の２番目の曲データは、
 <code>_nsd_foo_2</code>と命名され、<code>.export</code>宣言されます。<br>
 ユーザーアプリケーション側からは、このシンボル名を<code>.import</code>することで、参照が可能になります。<br>
-</p>
-<h4>曲データのセグメント</h4>
-<p>
-<code>.rodata</code>セグメントに配置されます。<br>
-曲データ、効果音データ共にROM中に配置されていても再生可能ですので、
-別途、RAM領域に転送したり、<code>.data</code>セグメントに書き換える必要はありません。<br>
 </p>
 </div>
 

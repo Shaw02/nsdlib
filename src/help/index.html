@@ -31,15 +31,16 @@ This is developed as object library, and user application can control it.<br>
 <h3>特徴（Characteristic）</h3>
 <ul>
 <li>
-	Ｃ言語から呼び出し可能な、ライブラリ関数。<br>
+	音源ドライバー本体は、アセンブリ言語にてＣＰＵ負荷・コードサイズ共に最適化して開発。<br>
+	また、曲データサイズについても、ＭＭＬの記述次第で小さくなるように設計。<br>
+	これにより、限りあるＲＯＭ領域の圧迫を防ぎます。<br>
+</li>
+<li>
+	アセンブリ言語及びＣ言語から呼び出し可能な、ライブラリ関数。<br>
 	※関数呼出規約は、CC65における <code>__fastcall__</code> です。<br>
 </li>
 <li>
 	ＭＭＬコンパイラーによる曲データの作成環境。<br>
-</li>
-<li>
-	限りあるＲＯＭ領域の圧迫を防ぐため、曲データサイズは小さくなるような設計とし、
-	音源ドライバー本体のサイズも小さくなるように設計。<br>	
 </li>
 <li>
 	且つ、様々な音楽表現を可能とすべく、多岐にわたる機能を実装。<br>
@@ -47,15 +48,16 @@ This is developed as object library, and user application can control it.<br>
 </ul>
 <ul>
 <li>
+	The sound driver are optimized for code size and processing speed by asembly langage.<br>
+	Moreover, this music data is designed to get samll data and code size.<br>
+	So, this desine has preventive occupation of ROM area.<br>
+</li>
+<li>
 	C-Langage source code can coll this library functions.<br>
 	* The calling conversion of this library functions are <code>__fastcall__</code> of `cc65'.<br>
 </li>
 <li>
 	MML Compiler can make the music data.<br>
-</li>
-<li>
-	This music data and sound driver code are designed to get samll data and code size.<br>
-	So, this desine has preventive occupation of ROM area.<br>
 </li>
 <li>
 	For the music expression, this sound driver has various music function.<br>

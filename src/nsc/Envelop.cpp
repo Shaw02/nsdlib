@@ -45,6 +45,7 @@ const	static	Command_Info	Command[] = {
 		{	"{",	Env_Sweep	},
 		{	"d",	Env_Hold	},
 		{	"D",	Env_Hold	},
+		{	"|",	Env_Loop	},
 		{	"l",	Env_Loop	},
 		{	"L",	Env_Loop	},
 		{	"r",	Env_Release	},

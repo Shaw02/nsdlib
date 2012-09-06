@@ -9,18 +9,26 @@
 
 //	frequency envelop "Volume table"
 Envelop(0){		8 10 12 13 14 15 D10 14 D3 13 D1 12 11 L 10 10 9 9 8 8 9 9 R 8 8 7 7 6 6 5 5 L 4 4 3 3 2 2 3 3 	}
+Envelop(10){	15 12 8 6 5 4 3 3 2 D3 1 D7 L 0	}
 
 //	frequency envelop "LFO"
 Envelop(100){	L 0 1 2 3 3 2 1 0  -1 -2 -3 -3 -2 -1 	}
 
+//	Voice envelop
 Envelop(200){	L 2 1 R L 2 	}
+Envelop(210){	1 L 0	}
 
 //	for Mote Envelop "Major code"
 Envelop(1000){	L 0 4 7 }
 
+Envelop(300){	4 3 2 1 L 0}
+
+
+Sub(1000){	l4 o5 cc+ dd+ e ff+ gg+ aa+ b > cc+ dd+ e1	}
 
 BGM(6){
-	l1 o5 v15 u2	E@200 Ev0 Em100 En1000 	c d e f g a b > En*	Em*	Ev* @2	c1,2
+	TR1	l1 o5 v15 u2	E@200 Ev0 Em100 En1000 	c d e f g a b > En*	Em*	Ev* @2	c1,2
+	TR4	Ev10	S1000
 }
 
 bgm(5){

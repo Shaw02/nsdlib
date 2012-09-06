@@ -510,7 +510,7 @@ int		MMLfile::GetLength(void)	//
 	};
 	Back();							//StreamPointerAdd(-1);
 
-	if((iLength < 0) || (iLength > 255)){
+	if((iLength < 1) || (iLength > 255)){
 		Err("音長は、%1（96）～%255（1+1+2+8）の間で指定して下さい。255[tick]を超える場合はタイ`&', `^'を使って下さい。");
 	}
 

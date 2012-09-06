@@ -17,11 +17,11 @@
 <h3><a href="usage_nsd.html">サウンドドライバー（nsd.lib）</a></h3>
 <p>
 サウンドドライバー本体です。<br>
-オブジェクトライブラリとして開発しています。<br>
+開発環境cc65用のオブジェクトライブラリとして開発しています。<br>
 </p>
 <p>
 This is sound driver.<br>
-It was developed as object library.<br>
+It was developed as object library for cc65.<br>
 </p>
 </div>
 
@@ -30,10 +30,15 @@ It was developed as object library.<br>
 <p>
 MMLコンパイラーです。<br>
 MMLで記述されたBGM, SEを、本サウンドドライバーで再生可能なデータに変換します。<br>
+アセンブリ言語・Ｃ言語のデータ配列への出力のほか<strong>（未実装）</strong>、
+NSFフォーマット（プレイヤー用のデータフォーマット）への出力に対応しています。<br>
 </p>
 <p>
 This is MML compiler.<br>
 It can convert the MML(Music Macro Langage) to the deta for this sound driver.<br>
+An output formats are as followss.<br>
+ * An array variable for the C-language and Assembly language <strong>(Now developping)</strong> .<br>
+ * NSF format that is music format for some nsf player.<br>
 </p>
 </div>
 

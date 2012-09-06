@@ -30,12 +30,12 @@ mml_note::mml_note(int _code, int length, int gatetime, bool slur, const char _s
 		opcode |= nsd_Note_Slur;
 	}
 
-	if(length > 0){
+	if(length != -1){
 		opcode |= nsd_Note_Length;
 		iSize++;
 	}
 
-	if(gatetime > 0){
+	if(gatetime != -1){
 		opcode |= nsd_Note_Gate;
 		iSize++;
 	}
@@ -44,11 +44,11 @@ mml_note::mml_note(int _code, int length, int gatetime, bool slur, const char _s
 	code[i] = opcode;
 	i++;
 
-	if(length > 0){
+	if(length != -1){
 		code[i] = length;
 		i++;
 	}
-	if(gatetime > 0){
+	if(gatetime != -1){
 		code[i] = gatetime;
 		i++;
 	}

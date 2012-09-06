@@ -81,6 +81,7 @@
 <p>
 ゲートタイム（実際に発音する長さ）を指定します。<br>
 指定した場合、<a href="mml_gate.html">q, uコマンド</a>のゲートタイムに優先されます。<br>
+０はゲートタイム無効で、<var>length</var>の長さで発音します。<br>
 </p>
 <p>
 引数<var>length</var>と同様の指定が可能です。
@@ -93,14 +94,38 @@
 <p>
 音符を意味します。
 </p>
+<h4>ノイズチェンネルの仕様</h4>
+<p>
+ノートナンバーの下位4bitが音階として適用されます。<br>
+具体的には以下表の通りです。<br>
+</p>
+<table>
+<tr><th>note</th><th>note number</th><th>noise frequency</th>
+<tr><td>o5c	</td><td>0x30		</td><td>o1a	</td></tr>
+<tr><td>o5c+</td><td>0x31		</td><td>o2a	</td></tr>
+<tr><td>o5d	</td><td>0x32		</td><td>o3a	</td></tr>
+<tr><td>o5d+</td><td>0x33		</td><td>o4d	</td></tr>
+<tr><td>o5e	</td><td>0x34		</td><td>o4a	</td></tr>
+<tr><td>o5f	</td><td>0x35		</td><td>o5d	</td></tr>
+<tr><td>o5f+</td><td>0x36		</td><td>o5a	</td></tr>
+<tr><td>o5g	</td><td>0x37		</td><td>o6c	</td></tr>
+<tr><td>o5g+</td><td>0x38		</td><td>o6f	</td></tr>
+<tr><td>o5a	</td><td>0x39		</td><td>o6a	</td></tr>
+<tr><td>o5a+</td><td>0x3A		</td><td>o7d	</td></tr>
+<tr><td>o5b	</td><td>0x3B		</td><td>o7a	</td></tr>
+<tr><td>o6c	</td><td>0x3C		</td><td>o8a	</td></tr>
+<tr><td>o6c+</td><td>0x3D		</td><td>o9a	</td></tr>
+<tr><td>o6d	</td><td>0x3E		</td><td>o10a	</td></tr>
+<tr><td>o6d+</td><td>0x3F		</td><td>o11a	</td></tr>
+</table>
 </div>
 
 <!-- ──────────────── -->
 <div class='block'>
 <h3>注意（Notes）</h3>
 <p>
-<var>length</var>及び<var>Gatetime</var>は、1～255[tick]の間に収めてください。<br>
-また、<var>length</var>及び<var>Gatetime</var>に<code>0</code>を指定しないでください。<br>
+<var>length</var>は、1～255[tick]の間に収めてください。<br>
+また、<var>length</var>に<code>0</code>を指定しないでください。<br>
 </p>
 </div>
 
