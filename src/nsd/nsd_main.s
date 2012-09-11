@@ -78,7 +78,7 @@ BGM_Exit:
 	;-------
 	;Envelop
 	.repeat	nsd::SE_Track, I
-		ldx	#I*2
+		ldx	#I * 2 + nsd::BGM_Track * 2
 		jsr	nsd_envelop
 	.endrepeat
 

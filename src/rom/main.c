@@ -1,4 +1,6 @@
 
+#include	"..\..\include\nsd.h"
+
 void	main()
 {
 	//No process.

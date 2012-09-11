@@ -16,7 +16,6 @@ TrackSet::TrackSet(MMLfile* MML, bool _sub, const char _strName[]):
 	//----------------------
 	//Local•Ï”
 
-
 //	’è”’è‹`
 enum	Command_ID_mml {
 	mml_Track,

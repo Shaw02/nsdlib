@@ -8,10 +8,11 @@ Current file: nsd_func.s
 000000r 1               	.export		_nsd_init
 000000r 1               	.export		_nsd_play_bgm
 000000r 1               	.export		_nsd_stop_bgm
-000000r 1               ;	.export		_nsd_play_se
+000000r 1               	.export		_nsd_play_se
 000000r 1               	.export		_nsd_stop_se
 000000r 1               
 000000r 1               	.import		_nsd_snd_init
+000000r 1               	.import		_nsd_snd_sweep
 000000r 1               	.import		nsd_work
 000000r 1               	.importzp	nsd_work_zp
 000000r 1               
@@ -114,14 +115,50 @@ Current file: nsd_func.s
 000000r 2               
 000000r 2               .scope	nsd
 000000r 2               	APU_Track	= 5		;
-000000r 2               	FDS_Track	= 1		;
-000000r 2               	VRC6_Track	= 3		;
-000000r 2               	VRC7_Track	= 6		;
-000000r 2               	MMC5_Track	= 2		; (without DPCM)
-000000r 2               	N163_Track	= 8		;
-000000r 2               	PSG_Track	= 3		;
 000000r 2               
-000000r 2               	BGM_Track	= APU_Track
+000000r 2               	TR_FDS		= APU_Track
+000000r 2               	.ifdef	FDS
+000000r 2               		FDS_Track	= 1		;
+000000r 2               	.else
+000000r 2               		FDS_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_VRC6		= TR_FDS + FDS_Track
+000000r 2               	.ifdef	VRC6
+000000r 2               		VRC6_Track	= 3		;
+000000r 2               	.else
+000000r 2               		VRC6_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_VRC7		= TR_VRC6 + VRC6_Track
+000000r 2               	.ifdef	VRC7
+000000r 2               		VRC7_Track	= 6		;
+000000r 2               	.else
+000000r 2               		VRC7_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_MMC5		= TR_VRC7 + VRC7_Track
+000000r 2               	.ifdef	MMC5
+000000r 2               		MMC5_Track	= 2		; (without DPCM)
+000000r 2               	.else
+000000r 2               		MMC5_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_N163		= TR_MMC5 + MMC5_Track
+000000r 2               	.ifdef	N163
+000000r 2               		N163_Track	= 8		;
+000000r 2               	.else
+000000r 2               		N163_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_PSG		= TR_N163 + N163_Track
+000000r 2               	.ifdef	PSG
+000000r 2               		PSG_Track	= 3		;
+000000r 2               	.else
+000000r 2               		PSG_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + MMC5_Track + N163_Track + PSG_Track
 000000r 2               	SE_Track	= 2		;
 000000r 2               
 000000r 2               	Track		= BGM_Track + SE_Track
@@ -283,8 +320,8 @@ Current file: nsd_func.s
 000000r 2               .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
 000000r 2               .define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
 000000r 2               .define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
-000000r 2               .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V
-000000r 2               .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F
+000000r 2               .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
+000000r 2               .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
 000000r 2               .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
 000000r 2               .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 000000r 2               
@@ -337,6 +374,9 @@ Current file: nsd_func.s
 000000r 2               .define	__env_vol_now	nsd_work + NSD_work::Volume + NSD_volume::volume_env
 000000r 2               .define	__env_freq_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
 000000r 2               .define	__env_note_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
+000000r 2               
+000000r 2               .define	__sweep_ch1	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM3
+000000r 2               .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Macros
@@ -447,167 +487,253 @@ Current file: nsd_func.s
 00001Ar 1  A2 00        	ldx	#nsd::TR_BGM1
 00001Cr 1               
 00001Cr 1               Loop:
-00001Cr 1  E4 rr        	cpx	__tmp
-00001Er 1  B0 16        	bcs	@L
-000020r 1  B1 rr        	lda	(__ptr),y
-000022r 1  18 65 rr     	add	__ptr
-000025r 1  08           	php
-000026r 1  95 rr        	sta	__Sequence_ptr,x
-000028r 1  C8           	iny
-000029r 1  B1 rr        	lda	(__ptr),y
-00002Br 1  28           	plp
-00002Cr 1  65 rr        	adc	__ptr + 1
-00002Er 1  95 rr        	sta	__Sequence_ptr + 1,x	;__Sequence_ptr = __ptr + (__ptr),y
-000030r 1  C8           	iny
-000031r 1  A9 00        	lda	#0
-000033r 1  4C rr rr     	jmp	@E
-000036r 1               @L:
-000036r 1  A9 00        	lda	#0
-000038r 1  95 rr        	sta	__Sequence_ptr,x
-00003Ar 1  95 rr        	sta	__Sequence_ptr + 1,x
-00003Cr 1               @E:
-00003Cr 1  9D rr rr     	sta	__chflag,x		;Å°Å°Å° to do for SE
-00003Fr 1  9D rr rr     	sta	__tai,x
-000042r 1  95 rr        	sta	__Gate,x
-000044r 1  9D rr rr     	sta	__gate_q,x
-000047r 1  9D rr rr     	sta	__gate_u,x
-00004Ar 1  9D rr rr     	sta	__detune_cent,x
-00004Dr 1  9D rr rr     	sta	__detune_fine,x
-000050r 1  9D rr rr     	sta	__por_target,x
-000053r 1  9D rr rr     	sta	__trans,x
-000056r 1  9D rr rr     	sta	__subroutine,x
-000059r 1  9D rr rr     	sta	__subroutine + 1,x
+00001Cr 1  A9 00        	lda	#00
+00001Er 1  9D rr rr     	sta	__chflag,x
+000021r 1  20 rr rr     	jsr	play
+000024r 1               
+000024r 1  E8           	inx
+000025r 1  E8           	inx
+000026r 1  E0 0A        	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
+000028r 1  B0 03        	bcs	Loop_End
+00002Ar 1  4C rr rr     	jmp	Loop
+00002Dr 1               Loop_End:
+00002Dr 1               
+00002Dr 1               	;-----------------------
+00002Dr 1               	;common
+00002Dr 1  A9 08        	lda	#$08
+00002Fr 1  8D 01 40     	sta	APU_PULSE1RAMP
+000032r 1  8D 05 40     	sta	APU_PULSE2RAMP
+000035r 1  8D rr rr     	sta	__sweep_ch1
+000038r 1  8D rr rr     	sta	__sweep_ch2
+00003Br 1               
+00003Br 1  A9 78        	lda	#120
+00003Dr 1  85 rr        	sta	__Tempo
+00003Fr 1               
+00003Fr 1  A9 FE        	lda	#~nsd_flag::BGM
+000041r 1  25 rr        	and	__flag
+000043r 1  85 rr        	sta	__flag			;BGM Enable
+000045r 1               
+000045r 1  60           	rts
+000046r 1               .endproc
+000046r 1               
+000046r 1               ;=======================================================================
+000046r 1               ;	void	__fastcall__	nsd_stop_bgm(void );
+000046r 1               ;-----------------------------------------------------------------------
+000046r 1               ;<<Contents>>
+000046r 1               ;	Stop the BGM
+000046r 1               ;<<Input>>
+000046r 1               ;	nothing
+000046r 1               ;<<Output>>
+000046r 1               ;	nothing
+000046r 1               ;=======================================================================
+000046r 1               .proc	_nsd_stop_bgm: near
+000046r 1               
+000046r 1               	;-----------------------
+000046r 1               	;common
+000046r 1  A9 01        	lda	#nsd_flag::BGM
+000048r 1  05 rr        	ora	__flag
+00004Ar 1  85 rr        	sta	__flag			;BGM Disable
+00004Cr 1               
+00004Cr 1               	;-----------------------
+00004Cr 1               	;Init the channel structure
+00004Cr 1  A2 00        	ldx	#nsd::TR_BGM1
+00004Er 1               Loop:
+00004Er 1  20 rr rr     	jsr	stop
+000051r 1               
+000051r 1  E8           	inx
+000052r 1  E8           	inx
+000053r 1  E0 0A        	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
+000055r 1  90 F7        	bcc	Loop
+000057r 1               
+000057r 1  60           	rts
+000058r 1               .endproc
+000058r 1               
+000058r 1               ;=======================================================================
+000058r 1               ;	void	__fastcall__	nsd_play_se(void* se );
+000058r 1               ;-----------------------------------------------------------------------
+000058r 1               ;<<Contents>>
+000058r 1               ;	Play start the BGM
+000058r 1               ;<<Input>>
+000058r 1               ;	ax	pointer of BGM
+000058r 1               ;<<Output>>
+000058r 1               ;	nothing
+000058r 1               ;=======================================================================
+000058r 1               .proc	_nsd_play_se: near
+000058r 1               
+000058r 1  85 rr        	sta	__ptr
+00005Ar 1  86 rr        	stx	__ptr + 1
 00005Cr 1               
-00005Cr 1  9D rr rr     	sta	__env_frequency,x
-00005Fr 1  9D rr rr     	sta	__env_frequency + 1,x
-000062r 1  9D rr rr     	sta	__env_freq_ptr,x
-000065r 1  9D rr rr     	sta	__env_note,x
-000068r 1  9D rr rr     	sta	__env_note + 1,x
-00006Br 1  9D rr rr     	sta	__env_note_ptr,x
-00006Er 1               
-00006Er 1               	;Ch3(Tri) or Ch5(DPCM) ?
-00006Er 1  E0 04        	cpx	#nsd::TR_BGM3
-000070r 1  F0 22        	beq	Step
-000072r 1  E0 08        	cpx	#nsd::TR_BGM5
-000074r 1  F0 1E        	beq	Step
-000076r 1               
-000076r 1  9D rr rr     	sta	__env_volume,x
-000079r 1  9D rr rr     	sta	__env_volume + 1,x
-00007Cr 1  9D rr rr     	sta	__env_vol_ptr,x
-00007Fr 1  9D rr rr     	sta	__env_voice + 1,x
-000082r 1  9D rr rr     	sta	__env_voi_ptr,x
-000085r 1  A9 02        	lda	#$02
-000087r 1  9D rr rr     	sta	__env_voice,x
-00008Ar 1  A9 00        	lda	#$00
-00008Cr 1  9D rr rr     	sta	__voice,x
-00008Fr 1  A9 2F        	lda	#$2F
-000091r 1  9D rr rr     	sta	__volume,x
-000094r 1               Step:
-000094r 1               
-000094r 1  A9 01        	lda	#1
-000096r 1  95 rr        	sta	__Length_ctr,x
-000098r 1               
-000098r 1  A9 18        	lda	#24
-00009Ar 1  9D rr rr     	sta	__length,x
+00005Cr 1  20 rr rr     	jsr	_nsd_stop_se		;stop the BGM (disable BGM)
+00005Fr 1               
+00005Fr 1  A0 00        	ldy	#0
+000061r 1               
+000061r 1  B1 rr        	lda	(__ptr),y		; a = number of track
+000063r 1  0A           	shl	a, 1
+000064r 1  18 69 0A     	add	#nsd::TR_SE1
+000067r 1  85 rr        	sta	__tmp
+000069r 1  C8           	iny
+00006Ar 1  C8           	iny
+00006Br 1               
+00006Br 1               	;-----------------------
+00006Br 1               	;Init the channel structure
+00006Br 1  A2 0A        	ldx	#nsd::TR_SE1
+00006Dr 1  A9 40        	lda	#nsd_chflag::SE1
+00006Fr 1  9D rr rr     	sta	__chflag,x
+000072r 1  20 rr rr     	jsr	play
+000075r 1               
+000075r 1  A2 0C        	ldx	#nsd::TR_SE2
+000077r 1  A9 80        	lda	#nsd_chflag::SE2
+000079r 1  9D rr rr     	sta	__chflag,x
+00007Cr 1  20 rr rr     	jsr	play
+00007Fr 1               
+00007Fr 1               	;-----------------------
+00007Fr 1               	;common
+00007Fr 1  A9 08        	lda	#$08
+000081r 1  8D 05 40     	sta	APU_PULSE2RAMP		;ch 2 only
+000084r 1               
+000084r 1               	;Tempo is none
+000084r 1               
+000084r 1  A9 FD        	lda	#~nsd_flag::SE
+000086r 1  25 rr        	and	__flag
+000088r 1  85 rr        	sta	__flag			;SE Enable
+00008Ar 1               
+00008Ar 1  60           	rts
+00008Br 1               .endproc
+00008Br 1               
+00008Br 1               ;=======================================================================
+00008Br 1               ;	void	__fastcall__	nsd_stop_se(void );
+00008Br 1               ;-----------------------------------------------------------------------
+00008Br 1               ;<<Contents>>
+00008Br 1               ;	Stop the SE
+00008Br 1               ;<<Input>>
+00008Br 1               ;	nothing
+00008Br 1               ;<<Output>>
+00008Br 1               ;	nothing
+00008Br 1               ;=======================================================================
+00008Br 1               .proc	_nsd_stop_se: near
+00008Br 1               
+00008Br 1               	;-----------------------
+00008Br 1               	;common
+00008Br 1  A9 02        	lda	#nsd_flag::SE
+00008Dr 1  05 rr        	ora	__flag
+00008Fr 1  85 rr        	sta	__flag			;SE Disable
+000091r 1               
+000091r 1               	;-----------------------
+000091r 1               	;Init the channel structure
+000091r 1  A2 0A        	ldx	#nsd::TR_SE1
+000093r 1               Loop:
+000093r 1  20 rr rr     	jsr	stop
+000096r 1  E8           	inx
+000097r 1  E8           	inx
+000098r 1  E0 0E        	cpx	#nsd::TR_SE1 + nsd::SE_Track * 2
+00009Ar 1  90 F7        	bcc	Loop
+00009Cr 1               
+00009Cr 1  60           	rts
+00009Dr 1               .endproc
 00009Dr 1               
-00009Dr 1  A9 30        	lda	#48
-00009Fr 1  9D rr rr     	sta	__octave,x
-0000A2r 1               
-0000A2r 1  A9 FF        	lda	#$FF
-0000A4r 1  9D rr rr     	sta	__note,x
-0000A7r 1  A9 02        	lda	#$2
-0000A9r 1  9D rr rr     	sta	__gatemode,x
-0000ACr 1               
-0000ACr 1  E8           	inx
-0000ADr 1  E8           	inx
-0000AEr 1  E0 0A        	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
-0000B0r 1  B0 03        	bcs	Loop_End
-0000B2r 1  4C rr rr     	jmp	Loop
-0000B5r 1               Loop_End:
-0000B5r 1               
-0000B5r 1               	;-----------------------
-0000B5r 1               	;common
-0000B5r 1               
-0000B5r 1  A9 78        	lda	#120
-0000B7r 1  85 rr        	sta	__Tempo
-0000B9r 1               
-0000B9r 1  A9 FE        	lda	#~nsd_flag::BGM
-0000BBr 1  25 rr        	and	__flag
-0000BDr 1  85 rr        	sta	__flag			;BGM Enable
-0000BFr 1               
-0000BFr 1  60           	rts
-0000C0r 1               .endproc
-0000C0r 1               
-0000C0r 1               ;=======================================================================
-0000C0r 1               ;	void	__fastcall__	nsd_stop_bgm(void );
-0000C0r 1               ;-----------------------------------------------------------------------
-0000C0r 1               ;<<Contents>>
-0000C0r 1               ;	Stop the BGM
-0000C0r 1               ;<<Input>>
-0000C0r 1               ;	nothing
-0000C0r 1               ;<<Output>>
-0000C0r 1               ;	nothing
-0000C0r 1               ;=======================================================================
-0000C0r 1               .proc	_nsd_stop_bgm: near
-0000C0r 1               
-0000C0r 1               	;-----------------------
-0000C0r 1               	;common
-0000C0r 1  A9 01        	lda	#nsd_flag::BGM
-0000C2r 1  05 rr        	ora	__flag
-0000C4r 1  85 rr        	sta	__flag			;BGM Disable
-0000C6r 1               
-0000C6r 1               	;-----------------------
-0000C6r 1               	;Init the channel structure
-0000C6r 1  A2 00        	ldx	#nsd::TR_BGM1
-0000C8r 1               Loop:
-0000C8r 1  A9 00        	lda	#$00
-0000CAr 1  95 rr        	sta	__Sequence_ptr,x
-0000CCr 1  95 rr        	sta	__Sequence_ptr + 1,x
-0000CEr 1  A9 FF        	lda	#$FF
-0000D0r 1  9D rr rr     	sta	__note,x
-0000D3r 1               
-0000D3r 1  E8           	inx
-0000D4r 1  E8           	inx
-0000D5r 1  E0 0A        	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
-0000D7r 1  90 EF        	bcc	Loop
-0000D9r 1               
-0000D9r 1  60           	rts
-0000DAr 1               .endproc
+00009Dr 1               ;=======================================================================
+00009Dr 1               ;	Play
+00009Dr 1               ;-----------------------------------------------------------------------
+00009Dr 1               ;<<Contents>>
+00009Dr 1               ;	Play
+00009Dr 1               ;<<Input>>
+00009Dr 1               ;	__ptr	pointer
+00009Dr 1               ;	__tmp	channel
+00009Dr 1               ;<<Output>>
+00009Dr 1               ;	nothing
+00009Dr 1               ;=======================================================================
+00009Dr 1               .proc	play
+00009Dr 1               
+00009Dr 1  E4 rr        	cpx	__tmp
+00009Fr 1  B0 16        	bcs	@L
+0000A1r 1  B1 rr        	lda	(__ptr),y
+0000A3r 1  18 65 rr     	add	__ptr
+0000A6r 1  08           	php
+0000A7r 1  95 rr        	sta	__Sequence_ptr,x
+0000A9r 1  C8           	iny
+0000AAr 1  B1 rr        	lda	(__ptr),y
+0000ACr 1  28           	plp
+0000ADr 1  65 rr        	adc	__ptr + 1
+0000AFr 1  95 rr        	sta	__Sequence_ptr + 1,x	;__Sequence_ptr = __ptr + (__ptr),y
+0000B1r 1  C8           	iny
+0000B2r 1  A9 00        	lda	#0
+0000B4r 1  4C rr rr     	jmp	@E
+0000B7r 1               @L:
+0000B7r 1  A9 00        	lda	#0
+0000B9r 1  95 rr        	sta	__Sequence_ptr,x
+0000BBr 1  95 rr        	sta	__Sequence_ptr + 1,x
+0000BDr 1               @E:
+0000BDr 1  9D rr rr     	sta	__tai,x
+0000C0r 1  95 rr        	sta	__Gate,x
+0000C2r 1  9D rr rr     	sta	__gate_q,x
+0000C5r 1  9D rr rr     	sta	__gate_u,x
+0000C8r 1  9D rr rr     	sta	__detune_cent,x
+0000CBr 1  9D rr rr     	sta	__detune_fine,x
+0000CEr 1  9D rr rr     	sta	__por_target,x
+0000D1r 1  9D rr rr     	sta	__trans,x
+0000D4r 1  9D rr rr     	sta	__subroutine,x
+0000D7r 1  9D rr rr     	sta	__subroutine + 1,x
 0000DAr 1               
-0000DAr 1               ;=======================================================================
-0000DAr 1               ;	void	__fastcall__	nsd_stop_se(void );
-0000DAr 1               ;-----------------------------------------------------------------------
-0000DAr 1               ;<<Contents>>
-0000DAr 1               ;	Stop the SE
-0000DAr 1               ;<<Input>>
-0000DAr 1               ;	nothing
-0000DAr 1               ;<<Output>>
-0000DAr 1               ;	nothing
-0000DAr 1               ;=======================================================================
-0000DAr 1               .proc	_nsd_stop_se: near
-0000DAr 1               
-0000DAr 1               	;-----------------------
-0000DAr 1               	;common
-0000DAr 1  A9 02        	lda	#nsd_flag::SE
-0000DCr 1  05 rr        	ora	__flag
-0000DEr 1  85 rr        	sta	__flag			;SE Disable
-0000E0r 1               
-0000E0r 1               	;-----------------------
-0000E0r 1               	;Init the channel structure
-0000E0r 1  A2 0A        	ldx	#nsd::TR_SE1
-0000E2r 1               Loop:
-0000E2r 1  A9 00        	lda	#$00
-0000E4r 1  95 rr        	sta	__Sequence_ptr,x
-0000E6r 1  95 rr        	sta	__Sequence_ptr + 1,x
-0000E8r 1  A9 FF        	lda	#$FF
-0000EAr 1  9D rr rr     	sta	__note,x
-0000EDr 1               
-0000EDr 1  E8           	inx
-0000EEr 1  E8           	inx
-0000EFr 1  E0 0E        	cpx	#nsd::TR_SE1 + nsd::SE_Track * 2
-0000F1r 1  90 EF        	bcc	Loop
-0000F3r 1               
-0000F3r 1  60           	rts
-0000F4r 1               .endproc
+0000DAr 1  9D rr rr     	sta	__env_frequency,x
+0000DDr 1  9D rr rr     	sta	__env_frequency + 1,x
+0000E0r 1  9D rr rr     	sta	__env_freq_ptr,x
+0000E3r 1  9D rr rr     	sta	__env_note,x
+0000E6r 1  9D rr rr     	sta	__env_note + 1,x
+0000E9r 1  9D rr rr     	sta	__env_note_ptr,x
+0000ECr 1               
+0000ECr 1               	;Ch3(Tri) or Ch5(DPCM) ?
+0000ECr 1  E0 04        	cpx	#nsd::TR_BGM3
+0000EEr 1  F0 22        	beq	Step
+0000F0r 1  E0 08        	cpx	#nsd::TR_BGM5
+0000F2r 1  F0 1E        	beq	Step
 0000F4r 1               
-0000F4r 1               
+0000F4r 1  9D rr rr     	sta	__env_volume,x
+0000F7r 1  9D rr rr     	sta	__env_volume + 1,x
+0000FAr 1  9D rr rr     	sta	__env_vol_ptr,x
+0000FDr 1  9D rr rr     	sta	__env_voice + 1,x
+000100r 1  9D rr rr     	sta	__env_voi_ptr,x
+000103r 1  A9 02        	lda	#$02
+000105r 1  9D rr rr     	sta	__env_voice,x
+000108r 1  A9 00        	lda	#$00
+00010Ar 1  9D rr rr     	sta	__voice,x
+00010Dr 1  A9 2F        	lda	#$2F
+00010Fr 1  9D rr rr     	sta	__volume,x
+000112r 1               Step:
+000112r 1               
+000112r 1  A9 01        	lda	#1
+000114r 1  95 rr        	sta	__Length_ctr,x
+000116r 1               
+000116r 1  A9 18        	lda	#24
+000118r 1  9D rr rr     	sta	__length,x
+00011Br 1               
+00011Br 1  A9 30        	lda	#48
+00011Dr 1  9D rr rr     	sta	__octave,x
+000120r 1               
+000120r 1  A9 FF        	lda	#$FF
+000122r 1  9D rr rr     	sta	__note,x
+000125r 1  A9 02        	lda	#$2
+000127r 1  9D rr rr     	sta	__gatemode,x
+00012Ar 1               
+00012Ar 1  60           	rts
+00012Br 1               .endproc
+00012Br 1               
+00012Br 1               ;=======================================================================
+00012Br 1               ;	Stop
+00012Br 1               ;-----------------------------------------------------------------------
+00012Br 1               ;<<Contents>>
+00012Br 1               ;	Stop
+00012Br 1               ;<<Input>>
+00012Br 1               ;	nothing
+00012Br 1               ;<<Output>>
+00012Br 1               ;	nothing
+00012Br 1               ;=======================================================================
+00012Br 1               .proc	stop
+00012Br 1  A9 00        	lda	#$00
+00012Dr 1  95 rr        	sta	__Sequence_ptr,x
+00012Fr 1  95 rr        	sta	__Sequence_ptr + 1,x
+000131r 1  A9 FF        	lda	#$FF
+000133r 1  9D rr rr     	sta	__note,x
+000136r 1               
+000136r 1  60           	rts
+000137r 1               .endproc
+000137r 1               

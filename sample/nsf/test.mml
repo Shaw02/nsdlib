@@ -3,8 +3,8 @@
 
 #Code		"../../bin/nsd.bin"
 
-#BGM		7
-#SE			0
+#BGM		8
+#SE			2
 
 
 //	frequency envelop "Volume table"
@@ -25,6 +25,11 @@ Envelop(300){	4 3 2 1 L 0}
 
 
 Sub(1000){	l4 o5 cc+ dd+ e ff+ gg+ aa+ b > cc+ dd+ e1	}
+
+bgm(7){
+	TR1	l8 c.d.e f.g.a b.>c.d e.f.g
+	TR3	l2 c     f     b      e  
+}
 
 BGM(6){
 	TR1	l1 o5 v15 u2	E@200 Ev0 Em100 En1000 	c d e f g a b > En*	Em*	Ev* @2	c1,2
@@ -125,5 +130,13 @@ bgm(3){
 //ˆÚ’²ƒeƒXƒg
 bgm(4){
 	TR1	t180	l4	_-4 c __1 c __1 c __1 c __1 c _12 c
+}
+
+se(0){
+	TR1	t255	v11	Ev1	Em101	E@201	l4	c.d.e f.g.a 
+}
+
+se(1){
+	TR2	t255	v15	Ev10	[8	c4	]
 }
 

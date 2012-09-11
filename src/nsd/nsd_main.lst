@@ -112,14 +112,50 @@ Current file: nsd_main.s
 000000r 2               
 000000r 2               .scope	nsd
 000000r 2               	APU_Track	= 5		;
-000000r 2               	FDS_Track	= 1		;
-000000r 2               	VRC6_Track	= 3		;
-000000r 2               	VRC7_Track	= 6		;
-000000r 2               	MMC5_Track	= 2		; (without DPCM)
-000000r 2               	N163_Track	= 8		;
-000000r 2               	PSG_Track	= 3		;
 000000r 2               
-000000r 2               	BGM_Track	= APU_Track
+000000r 2               	TR_FDS		= APU_Track
+000000r 2               	.ifdef	FDS
+000000r 2               		FDS_Track	= 1		;
+000000r 2               	.else
+000000r 2               		FDS_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_VRC6		= TR_FDS + FDS_Track
+000000r 2               	.ifdef	VRC6
+000000r 2               		VRC6_Track	= 3		;
+000000r 2               	.else
+000000r 2               		VRC6_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_VRC7		= TR_VRC6 + VRC6_Track
+000000r 2               	.ifdef	VRC7
+000000r 2               		VRC7_Track	= 6		;
+000000r 2               	.else
+000000r 2               		VRC7_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_MMC5		= TR_VRC7 + VRC7_Track
+000000r 2               	.ifdef	MMC5
+000000r 2               		MMC5_Track	= 2		; (without DPCM)
+000000r 2               	.else
+000000r 2               		MMC5_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_N163		= TR_MMC5 + MMC5_Track
+000000r 2               	.ifdef	N163
+000000r 2               		N163_Track	= 8		;
+000000r 2               	.else
+000000r 2               		N163_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	TR_PSG		= TR_N163 + N163_Track
+000000r 2               	.ifdef	PSG
+000000r 2               		PSG_Track	= 3		;
+000000r 2               	.else
+000000r 2               		PSG_Track	= 0		;
+000000r 2               	.endif
+000000r 2               
+000000r 2               	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + MMC5_Track + N163_Track + PSG_Track
 000000r 2               	SE_Track	= 2		;
 000000r 2               
 000000r 2               	Track		= BGM_Track + SE_Track
@@ -281,8 +317,8 @@ Current file: nsd_main.s
 000000r 2               .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
 000000r 2               .define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
 000000r 2               .define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
-000000r 2               .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V
-000000r 2               .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F
+000000r 2               .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
+000000r 2               .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
 000000r 2               .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
 000000r 2               .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 000000r 2               
@@ -335,6 +371,9 @@ Current file: nsd_main.s
 000000r 2               .define	__env_vol_now	nsd_work + NSD_work::Volume + NSD_volume::volume_env
 000000r 2               .define	__env_freq_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
 000000r 2               .define	__env_note_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
+000000r 2               
+000000r 2               .define	__sweep_ch1	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM3
+000000r 2               .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Macros
@@ -473,10 +512,10 @@ Current file: nsd_main.s
 00005Cr 1               
 00005Cr 1               	;-------
 00005Cr 1               	;Envelop
-00005Cr 1  A2 00 20 rr  	.repeat	nsd::SE_Track, I
-000060r 1  rr A2 02 20  
+00005Cr 1  A2 0A 20 rr  	.repeat	nsd::SE_Track, I
+000060r 1  rr A2 0C 20  
 000064r 1  rr rr        
-000066r 1               		ldx	#I*2
+000066r 1               		ldx	#I * 2 + nsd::BGM_Track * 2
 000066r 1               		jsr	nsd_envelop
 000066r 1               	.endrepeat
 000066r 1               

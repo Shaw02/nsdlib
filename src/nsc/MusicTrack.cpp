@@ -17,6 +17,7 @@ MusicTrack::MusicTrack(const char _strName[]):
 	offset_repeat_a_b(0),		//リピートＡ
 	offset_repeat_b_s(0),		//リピートＢ
 	offset_repeat_b_b(0),		//リピートＢ
+	DefaultLength(24),
 	loop_flag(false)
 {
 	//調号
@@ -320,9 +321,9 @@ void	MusicTrack::SetNote(MMLfile*	MML,int note)
 	}
 
 	cData = MML->GetChar();
-	if(((cData >= '0') && (cData <= '9')) || (cData == '%')){
+	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.')){
 		MML->Back();
-		Length = MML->GetLength();
+		Length = MML->GetLength(DefaultLength);
 	} else {
 		MML->Back();
 	}
@@ -334,7 +335,7 @@ void	MusicTrack::SetNote(MMLfile*	MML,int note)
 			GateTime = 0;
 		} else {
 			MML->Back();
-			GateTime = MML->GetLength();
+			GateTime = MML->GetLength(DefaultLength);
 		}
 	} else if(cData == '&') {
 		Slur = true;
@@ -392,9 +393,9 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 
 	//長さ
 	cData = MML->GetChar();
-	if(((cData >= '0') && (cData <= '9')) || (cData == '%')){
+	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.')){
 		MML->Back();
-		Length = MML->GetLength();
+		Length = MML->GetLength(DefaultLength);
 	} else {
 		MML->Back();
 	}
@@ -407,7 +408,7 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 			GateTime = 0;
 		} else {
 			MML->Back();
-			GateTime = MML->GetLength();
+			GateTime = MML->GetLength(DefaultLength);
 		}
 	} else if(cData == '&') {
 		Slur = true;
@@ -443,10 +444,10 @@ void	MusicTrack::SetTai(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetLength(MMLfile* MML)
 {
-	unsigned	int	iLength = MML->GetLength();
+	DefaultLength = MML->GetLength(DefaultLength);
 	mml_general*	_event;
 
-	switch(iLength){
+	switch(DefaultLength){
 		case(96):
 			_event = new mml_general(nsd_Length_96, "Length 96");
 			break;
@@ -496,7 +497,7 @@ void	MusicTrack::SetLength(MMLfile* MML)
 			_event = new mml_general(nsd_Length_1,  "Length 1");
 			break;
 		default:
-			_event = new mml_general(nsd_Length, (iLength & 0xFF), "Length");
+			_event = new mml_general(nsd_Length, (DefaultLength & 0xFF), "Length");
 			break;
 	}
 	SetEvent(_event);
@@ -561,7 +562,7 @@ void	MusicTrack::SetGatetime_u(MMLfile* MML)
 		i = 0;
 	} else {
 		MML->Back();
-		i = MML->GetLength();
+		i = MML->GetLength(DefaultLength);
 	}
 	SetEvent(new mml_general(nsd_GateTime_u, i & 0xFF , "GateTime(u)"));
 	

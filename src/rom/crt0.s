@@ -42,17 +42,7 @@
 	.include	"zeropage.inc"
 	.include	"nes.inc"
 
-; ------------------------------------------------------------------------
-; Define for sound driver
-; ------------------------------------------------------------------------
-
-	;Sound driver function
-	.import		_nsd_main
-	.import		_nsd_init
-	.import		_nsd_play_bgm
-	.import		_nsd_stop_bgm
-;	.import		_nsd_play_se
-	.import		_nsd_stop_se
+	.include	"..\..\include\nsd.inc"
 
 ; ------------------------------------------------------------------------
 ; ïœêî
@@ -273,10 +263,9 @@ irq:
 	lda	_tmp
 	plp
 
-;	bcc	@L
-	jsr	_nsd_play_bgm
-;@L:	jmp	_nsd_play_se
-	rts
+	bcs	@L
+	jmp	_nsd_play_bgm
+@L:	jmp	_nsd_play_se
 .endproc
 
 

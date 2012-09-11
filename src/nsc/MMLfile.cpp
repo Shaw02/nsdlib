@@ -422,7 +422,7 @@ int		MMLfile::GetInt(void)
 //	●処理
 //		音長を読み込む（付点付き）
 //==============================================================
-int	MMLfile::readLength(void){
+int	MMLfile::readLength(unsigned int DefaultLength){
 
 	char	cData;				//読み込み用
 	int		iLength;			//音長 [tick]
@@ -434,15 +434,20 @@ int	MMLfile::readLength(void){
 	cData = GetChar();
 
 	//Length
-	if((cData >= '0') && (cData <= '9')){
+	if(((cData >= '0') && (cData <= '9')) || (cData == '.')){
 		//ポインタを１つ戻す
 		Back();							//StreamPointerAdd(-1);
-		i = GetInt();
-		iLength = (MML_timebase * 4) / i;
-		iMod	= (MML_timebase * 4) % i;
-		if(iMod != 0){
-			Warning("音長の計算で割り切れませんでした。小数点は切捨てします。");
+		if((cData >= '0') && (cData <= '9')){
+			i = GetInt();
+			iLength = (MML_timebase * 4) / i;
+			iMod	= (MML_timebase * 4) % i;
+			if(iMod != 0){
+				Warning("音長の計算で割り切れませんでした。小数点は切捨てします。");
+			}
+		} else {
+			iLength = DefaultLength;
 		}
+
 		iDot	= iLength;
 		//付点
 		while((cData = cRead()) == '.'){
@@ -454,6 +459,8 @@ int	MMLfile::readLength(void){
 			iLength += iDot;
 		};
 		Back();							//StreamPointerAdd(-1);
+
+
 
 	//Tick
 	} else if (cData == '%'){
@@ -475,7 +482,7 @@ int	MMLfile::readLength(void){
 //			int		読み込んだ数値
 //					音長がかかれてない場合は、 -1 を返す。
 //==============================================================
-int		MMLfile::GetLength(void)	//
+int		MMLfile::GetLength(unsigned int DefaultLength)	//
 {
 	char	cData;				//読み込み用
 	int		iLength;			//音長 [tick]
@@ -483,7 +490,7 @@ int		MMLfile::GetLength(void)	//
 	bool	add;
 
 	//音長読み込み
-	iLength = readLength();
+	iLength = readLength(DefaultLength);
 	if(iLength == -1){
 		return(iLength);
 	}
@@ -497,7 +504,7 @@ int		MMLfile::GetLength(void)	//
 		} else {
 			add = false;
 		}
-		iCalc = readLength();
+		iCalc = readLength(DefaultLength);
 		if(iCalc == -1){
 			Err("音長の加減算値に数値以外が指定されています。");
 		}

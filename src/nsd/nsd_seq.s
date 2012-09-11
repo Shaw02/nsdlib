@@ -459,10 +459,23 @@ nsd_op00:
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
 	sta	__chflag,x
+;
+;	SweepÇÃèÛë‘Çå≥Ç…ñﬂÇ∑ÅB
+;
+@SE1:	;lda	__chflag,x
+	and	#nsd_chflag::SE1
+	beq	@SE2
+	lda	__sweep_ch1
+	jsr	_nsd_snd_sweep
+	jmp	@Exit
 
-	;
-	;Å°Å°Å°	to do	when effect
-	;
+@SE2:	lda	__chflag,x
+	and	#nsd_chflag::SE2
+	beq	@Exit
+	lda	__sweep_ch2
+	jsr	_nsd_snd_sweep
+
+@Exit:
 	rts
 
 ;=======================================================================
@@ -663,6 +676,11 @@ nsd_op10:
 	jsr	nsd_load_sequence
 	sta	__tmp + 1		;__tmp = value
 
+	cpx	#nsd::TR_BGM3
+	beq	@Exit
+	cpx	#nsd::TR_BGM5
+	beq	@Exit
+
 	lda	__ptr
 	add	__tmp
 	sta	__env_voice,x
@@ -672,7 +690,7 @@ nsd_op10:
 
 	lda	#$01
 	sta	__env_voi_ptr,x
-
+@Exit:
 	jmp	Sequence
 
 ;=======================================================================
@@ -688,6 +706,12 @@ nsd_op11:
 	sta	__tmp
 	jsr	nsd_load_sequence
 	sta	__tmp + 1		;__tmp = value
+
+	cpx	#nsd::TR_BGM3
+	beq	@Exit
+	cpx	#nsd::TR_BGM5
+	beq	@Exit
+
 	ora	__tmp
 	beq	@Zero
 
@@ -700,7 +724,7 @@ nsd_op11:
 
 	lda	#$01
 	sta	__env_vol_ptr,x
-
+@Exit:
 	jmp	Sequence
 
 ;=======================================================================
@@ -716,6 +740,7 @@ nsd_op12:
 	sta	__tmp
 	jsr	nsd_load_sequence
 	sta	__tmp + 1		;__tmp = value
+
 	ora	__tmp
 	beq	@Zero
 
@@ -728,7 +753,7 @@ nsd_op12:
 
 	lda	#$01
 	sta	__env_freq_ptr,x
-
+@Exit:
 	jmp	Sequence
 
 ;=======================================================================
@@ -744,6 +769,7 @@ nsd_op13:
 	sta	__tmp
 	jsr	nsd_load_sequence
 	sta	__tmp + 1		;__tmp = value
+
 	ora	__tmp
 	beq	@Zero
 
@@ -756,7 +782,7 @@ nsd_op13:
 
 	lda	#$01
 	sta	__env_note_ptr,x
-
+@Exit:
 	jmp	Sequence
 
 ;=======================================================================

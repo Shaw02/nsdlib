@@ -1,14 +1,50 @@
 
 .scope	nsd
 	APU_Track	= 5		;
-	FDS_Track	= 1		;
-	VRC6_Track	= 3		;
-	VRC7_Track	= 6		;
-	MMC5_Track	= 2		; (without DPCM)
-	N163_Track	= 8		;
-	PSG_Track	= 3		;
 
-	BGM_Track	= APU_Track
+	TR_FDS		= APU_Track
+	.ifdef	FDS
+		FDS_Track	= 1		;
+	.else
+		FDS_Track	= 0		;
+	.endif
+
+	TR_VRC6		= TR_FDS + FDS_Track
+	.ifdef	VRC6
+		VRC6_Track	= 3		;
+	.else
+		VRC6_Track	= 0		;
+	.endif
+
+	TR_VRC7		= TR_VRC6 + VRC6_Track
+	.ifdef	VRC7
+		VRC7_Track	= 6		;
+	.else
+		VRC7_Track	= 0		;
+	.endif
+
+	TR_MMC5		= TR_VRC7 + VRC7_Track
+	.ifdef	MMC5
+		MMC5_Track	= 2		; (without DPCM)
+	.else
+		MMC5_Track	= 0		;
+	.endif
+
+	TR_N163		= TR_MMC5 + MMC5_Track
+	.ifdef	N163
+		N163_Track	= 8		;
+	.else
+		N163_Track	= 0		;
+	.endif
+
+	TR_PSG		= TR_N163 + N163_Track
+	.ifdef	PSG
+		PSG_Track	= 3		;
+	.else
+		PSG_Track	= 0		;
+	.endif
+
+	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + MMC5_Track + N163_Track + PSG_Track
 	SE_Track	= 2		;
 
 	Track		= BGM_Track + SE_Track
@@ -224,6 +260,9 @@
 .define	__env_vol_now	nsd_work + NSD_work::Volume + NSD_volume::volume_env
 .define	__env_freq_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
 .define	__env_note_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
+
+.define	__sweep_ch1	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM3
+.define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 
 ;=======================================================================
 ;	Macros

@@ -4,9 +4,7 @@
 #include <nes.h>
 #include <conio.h>
 
-void	__fastcall__	nsd_main(void);
-void	__fastcall__	nsd_init(void);
-void	__fastcall__	nsd_play_bgm(void* ptr);
+#include	"..\..\include\nsd.h"
 
 void	main()
 {

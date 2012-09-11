@@ -1,2 +1,2 @@
-
-..\..\bin\nsc -n test >err.log
+@..\..\bin\nsc -n %~n1
+@pause

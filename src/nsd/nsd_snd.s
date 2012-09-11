@@ -51,8 +51,44 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	_nsd_ch3_keyon		;BGM ch3 Triangle
 	.addr	_nsd_nes_keyon		;BGM ch4 Noize
 	.addr	Exit			;BGM ch5 DPCM
+.ifdef	FDS
+;	.addr	
+.endif
+.ifdef	VRC6
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	VRC7
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	MMC5
+;	.addr	
+;	.addr	
+.endif
+.ifdef	N163
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	PSG
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
 	.addr	_nsd_nes_keyon		;SE  ch1 Pulse
 	.addr	_nsd_nes_keyon		;SE  ch2 Noize
+
 .code
 	ldx	__channel
 @Set:	;Set	(Don't need SE check)
@@ -82,8 +118,44 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 	.addr	_nsd_ch3_keyoff		;BGM ch3 Triangle	-- no process --
 	.addr	Exit			;BGM ch4 Noize		-- no process --
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
+.ifdef	FDS
+;	.addr	
+.endif
+.ifdef	VRC6
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	VRC7
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	MMC5
+;	.addr	
+;	.addr	
+.endif
+.ifdef	N163
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	PSG
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
 	.addr	Exit			;SE  ch1 Pulse
 	.addr	Exit			;SE  ch2 Noize		-- no process --
+
 .code
 	ldx	__channel
 @Set:	;Set	(Don't need SE check)
@@ -113,8 +185,44 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	Exit			;BGM ch3 Triangle	-- no process --
 	.addr	_nsd_noise_voice	;BGM ch4 Noize
 	.addr	_nsd_dpcm_voice		;BGM ch5 DPCM
+.ifdef	FDS
+;	.addr	
+.endif
+.ifdef	VRC6
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	VRC7
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	MMC5
+;	.addr	
+;	.addr	
+.endif
+.ifdef	N163
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	PSG
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
 	.addr	_nsd_nes_voice		;SE  ch1 Pulse
 	.addr	_nsd_noise_voice	;SE  ch2 Noize
+
 .code
 	ldx	__channel
 @Set:	;Set	(Don't need SE check)
@@ -143,6 +251,41 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	.addr	Exit			;BGM ch3 Triangle	-- no process --
 	.addr	_nsd_ch4_volume		;BGM ch4 Noize
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
+.ifdef	FDS
+;	.addr	
+.endif
+.ifdef	VRC6
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	VRC7
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	MMC5
+;	.addr	
+;	.addr	
+.endif
+.ifdef	N163
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	PSG
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
 	.addr	_nsd_ch2_volume		;SE  ch1 Pulse
 	.addr	_nsd_ch4_volume		;SE  ch2 Noize
 .code
@@ -184,7 +327,42 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	.addr	Exit			;BGM ch3 Triangle	-- no process --
 	.addr	Exit			;BGM ch4 Noize		-- no process --
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
-	.addr	_nsd_ch2_sweep		;SE  ch1 Pulse
+.ifdef	FDS
+;	.addr	
+.endif
+.ifdef	VRC6
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	VRC7
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	MMC5
+;	.addr	
+;	.addr	
+.endif
+.ifdef	N163
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	PSG
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+	.addr	_nsd_se2_sweep		;SE  ch1 Pulse
 	.addr	Exit			;SE  ch2 Noize		-- no process --
 .code
 	;always jmp except This ch's SE is enabale
@@ -225,6 +403,41 @@ JMPTBL:	.addr	_nsd_nes_frequency	;BGM ch1 Pulse
 	.addr	_nsd_nes_frequency	;BGM ch3 Triangle
 	.addr	_nsd_noise_frequency	;BGM ch4 Noise
 	.addr	_nsd_dpcm_frequency	;BGM ch5 DPCM
+.ifdef	FDS
+;	.addr	
+.endif
+.ifdef	VRC6
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	VRC7
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	MMC5
+;	.addr	
+;	.addr	
+.endif
+.ifdef	N163
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
+.ifdef	PSG
+;	.addr	
+;	.addr	
+;	.addr	
+.endif
 	.addr	_nsd_nes_frequency	;SE  ch1 Pulse
 	.addr	_nsd_noise_frequency	;SE  ch2 Noise
 .code
@@ -296,6 +509,30 @@ Exit:
 
 ;	lda	#$80
 ;	sta	APU_PAD2		; SOFTCLK (RW)
+
+.ifdef	FDS
+	
+.endif
+
+.ifdef	VRC6
+	
+.endif
+
+.ifdef	VRC7
+	
+.endif
+
+.ifdef	MMC5
+	
+.endif
+
+.ifdef	N163
+	
+.endif
+
+.ifdef	PSG
+	
+.endif
 
 	rts
 .endproc
@@ -501,10 +738,18 @@ exit:
 .proc	_nsd_ch1_sweep
 .code
 	sta	APU_PULSE1RAMP
+	sta	__sweep_ch1
 	rts
 .endproc
 
 .proc	_nsd_ch2_sweep
+.code
+	sta	APU_PULSE2RAMP
+	sta	__sweep_ch2
+	rts
+.endproc
+
+.proc	_nsd_se2_sweep
 .code
 	sta	APU_PULSE2RAMP
 	rts

@@ -7,7 +7,7 @@ crt0.o:
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000000   Size = 000004
     NULL              Offs = 000000   Size = 000000
-    STARTUP           Offs = 000000   Size = 000108
+    STARTUP           Offs = 000000   Size = 00010C
     VECTORS           Offs = 000000   Size = 000010
 main.o:
     CODE              Offs = 000000   Size = 000003
@@ -17,63 +17,63 @@ main.o:
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd.lib(nsd_func.o):
-    CODE              Offs = 000003   Size = 0000F4
+    CODE              Offs = 000003   Size = 000137
     RODATA            Offs = 000000   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd.lib(nsd_main.o):
-    CODE              Offs = 0000F7   Size = 000067
+    CODE              Offs = 00013A   Size = 000067
     RODATA            Offs = 000000   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd.lib(nsd_seq.o):
-    CODE              Offs = 00015E   Size = 000469
+    CODE              Offs = 0001A1   Size = 000493
     RODATA            Offs = 000000   Size = 000090
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd.lib(nsd_env.o):
-    CODE              Offs = 0005C7   Size = 0001CD
+    CODE              Offs = 000634   Size = 0001CD
     RODATA            Offs = 000090   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd.lib(nsd_snd.o):
-    CODE              Offs = 000794   Size = 0001EF
+    CODE              Offs = 000801   Size = 0001F9
     RODATA            Offs = 000090   Size = 000114
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd.lib(nsd_math.o):
-    CODE              Offs = 000983   Size = 000073
+    CODE              Offs = 0009FA   Size = 000073
     RODATA            Offs = 0001A4   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd.lib(nsd_work.o):
-    CODE              Offs = 0009F6   Size = 000000
+    CODE              Offs = 000A6D   Size = 000000
     RODATA            Offs = 0001A4   Size = 000000
     BSS               Offs = 000001   Size = 000142
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000030
     NULL              Offs = 000000   Size = 000000
 C:\Program Files\cc65/lib/nes.lib(copydata.o):
-    CODE              Offs = 0009F6   Size = 00002D
+    CODE              Offs = 000A6D   Size = 00002D
     RODATA            Offs = 0001A4   Size = 000000
     BSS               Offs = 000143   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000034   Size = 000000
     NULL              Offs = 000000   Size = 000000
 C:\Program Files\cc65/lib/nes.lib(zerobss.o):
-    CODE              Offs = 000A23   Size = 000000
+    CODE              Offs = 000A9A   Size = 000000
     RODATA            Offs = 0001A4   Size = 000000
     BSS               Offs = 000143   Size = 000000
     DATA              Offs = 000000   Size = 000000
@@ -81,7 +81,7 @@ C:\Program Files\cc65/lib/nes.lib(zerobss.o):
     NULL              Offs = 000000   Size = 000000
     INIT              Offs = 000000   Size = 000023
 C:\Program Files\cc65/lib/nes.lib(condes.o):
-    CODE              Offs = 000A23   Size = 00000C
+    CODE              Offs = 000A9A   Size = 00000C
     RODATA            Offs = 0001A4   Size = 000000
     BSS               Offs = 000143   Size = 000000
     DATA              Offs = 000000   Size = 000025
@@ -89,7 +89,7 @@ C:\Program Files\cc65/lib/nes.lib(condes.o):
     NULL              Offs = 000000   Size = 000000
     INIT              Offs = 000023   Size = 00000C
 C:\Program Files\cc65/lib/nes.lib(zeropage.o):
-    CODE              Offs = 000A2F   Size = 000000
+    CODE              Offs = 000AA6   Size = 000000
     RODATA            Offs = 0001A4   Size = 000000
     BSS               Offs = 000143   Size = 000000
     DATA              Offs = 000025   Size = 000000
@@ -107,55 +107,56 @@ NULL                  000000  000000  000000
 ZEROPAGE              000002  00004F  00004E
 DATA                  000200  000224  000025
 BSS                   000225  000367  000143
-STARTUP               00E000  00E107  000108
-INIT                  00E108  00E137  000030
-CODE                  00E138  00EB66  000A2F
-RODATA                00EB67  00ED0A  0001A4
+STARTUP               00E000  00E10B  00010C
+INIT                  00E10C  00E13B  000030
+CODE                  00E13C  00EBE1  000AA6
+RODATA                00EBE2  00ED85  0001A4
 VECTORS               00FFF0  00FFFF  000010
 
 
 Exports list:
 -------------
 __BSS_LOAD__              000225  LA    __BSS_RUN__               000225 RLA    
-__BSS_SIZE__              000143 REA    __CODE_LOAD__             00E138  LA    
-__CODE_RUN__              00E138  LA    __CODE_SIZE__             000A2F  EA    
-__CONSTRUCTOR_COUNT__     000000 REA    __CONSTRUCTOR_TABLE__     00E138 RLA    
-__DATA_LOAD__             00ED0B RLA    __DATA_RUN__              000200 RLA    
+__BSS_SIZE__              000143 REA    __CODE_LOAD__             00E13C  LA    
+__CODE_RUN__              00E13C  LA    __CODE_SIZE__             000AA6  EA    
+__CONSTRUCTOR_COUNT__     000000 REA    __CONSTRUCTOR_TABLE__     00E13C RLA    
+__DATA_LOAD__             00ED86 RLA    __DATA_RUN__              000200 RLA    
 __DATA_SIZE__             000025 REA    __DESTRUCTOR_COUNT__      000000 REA    
-__DESTRUCTOR_TABLE__      00ED0B RLA    __INIT_LOAD__             00E108  LA    
-__INIT_RUN__              00E108  LA    __INIT_SIZE__             000030  EA    
+__DESTRUCTOR_TABLE__      00ED86 RLA    __INIT_LOAD__             00E10C  LA    
+__INIT_RUN__              00E10C  LA    __INIT_SIZE__             000030  EA    
 __RAM_LAST__              006000  LA    __RAM_SIZE__              002000  EA    
-__RAM_START__             006000  LA    __RODATA_LOAD__           00EB67  LA    
-__RODATA_RUN__            00EB67  LA    __RODATA_SIZE__           0001A4  EA    
+__RAM_START__             006000  LA    __RODATA_LOAD__           00EBE2  LA    
+__RODATA_RUN__            00EBE2  LA    __RODATA_SIZE__           0001A4  EA    
 __ROM0_LAST__             008000  LA    __ROM0_SIZE__             004000  EA    
 __ROM0_START__            008000 RLA    __ROM2_LAST__             00C000  LA    
 __ROM2_SIZE__             002000  EA    __ROM2_START__            00C000  LA    
-__ROM3_LAST__             00ED30  LA    __ROM3_SIZE__             001FF0  EA    
+__ROM3_LAST__             00EDAB  LA    __ROM3_SIZE__             001FF0  EA    
 __ROM3_START__            00E000  LA    __SRAM_LAST__             000368  LA    
 __SRAM_SIZE__             000600 REA    __SRAM_START__            000200 RLA    
 __STACKSIZE__             000300  EA    __STARTUP_LOAD__          00E000  LA    
-__STARTUP_RUN__           00E000  LA    __STARTUP_SIZE__          000108  EA    
+__STARTUP_RUN__           00E000  LA    __STARTUP_SIZE__          00010C  EA    
 __STARTUP__               000001 REA    __ZP_LAST__               000050  LA    
 __ZP_SIZE__               000060  EA    __ZP_START__              000002  LA    
-_exit                     00E028  LA    _main                     00E138  LA    
-_nsd_div192               00EABB RLA    _nsd_init                 00E13B RLA    
-_nsd_main                 00E22F RLA    _nsd_mul                  00EAFB RLA    
-_nsd_play_bgm             00E145 RLA    _nsd_snd_frequency        00E945 RLA    
-_nsd_snd_init             00E8CC RLA    _nsd_snd_keyoff           00E8DF RLA    
-_nsd_snd_keyon            00E8CF RLA    _nsd_snd_sweep            00E922 RLA    
-_nsd_snd_voice            00E8EF RLA    _nsd_snd_volume           00E8FF RLA    
-_nsd_stop_bgm             00E1FB  LA    _nsd_stop_se              00E215  LA    
-condes                    000200  LA    copydata                  00EB2E RLA    
-donelib                   00EB5B RLA    initlib                   00E12B RLA    
-nsd_envelop               00E6FF RLA    nsd_sequence              00E35E RLA    
-nsd_work                  000226 RLA    nsd_work_zp               000006 RLZ    
-ptr1                      00003E RLZ    ptr2                      000040 RLZ    
-ptr3                      000042  LZ    ptr4                      000044  LZ    
-regbank                   00004A  LZ    regsave                   00003A  LZ    
-sp                        000036 RLZ    sreg                      000038  LZ    
-tmp1                      000046 RLZ    tmp2                      000047  LZ    
-tmp3                      000048  LZ    tmp4                      000049  LZ    
-zerobss                   00E108 RLA    
+_exit                     00E028  LA    _main                     00E13C  LA    
+_nsd_div192               00EB36 RLA    _nsd_init                 00E13F RLA    
+_nsd_main                 00E276 RLA    _nsd_mul                  00EB76 RLA    
+_nsd_play_bgm             00E149 RLA    _nsd_play_se              00E197 RLA    
+_nsd_snd_frequency        00E9B6 RLA    _nsd_snd_init             00E93D RLA    
+_nsd_snd_keyoff           00E950 RLA    _nsd_snd_keyon            00E940 RLA    
+_nsd_snd_sweep            00E993 RLA    _nsd_snd_voice            00E960 RLA    
+_nsd_snd_volume           00E970 RLA    _nsd_stop_bgm             00E185  LA    
+_nsd_stop_se              00E1CA  LA    condes                    000200  LA    
+copydata                  00EBA9 RLA    donelib                   00EBD6 RLA    
+initlib                   00E12F RLA    nsd_envelop               00E770 RLA    
+nsd_sequence              00E3A5 RLA    nsd_work                  000226 RLA    
+nsd_work_zp               000006 RLZ    ptr1                      00003E RLZ    
+ptr2                      000040 RLZ    ptr3                      000042  LZ    
+ptr4                      000044  LZ    regbank                   00004A  LZ    
+regsave                   00003A  LZ    sp                        000036 RLZ    
+sreg                      000038  LZ    tmp1                      000046 RLZ    
+tmp2                      000047  LZ    tmp3                      000048  LZ    
+tmp4                      000049  LZ    zerobss                   00E10C RLA    
+
 
 
 Imports list:
@@ -220,13 +221,15 @@ _main (main.o):
 _nsd_div192 (nsd_math.o):
     nsd_snd.o                 nsd_snd.s(12)
 _nsd_init (nsd_func.o):
-    crt0.o                    crt0.s(51)
+    crt0.o                    ..\..\include\nsd.inc(48)
 _nsd_main (nsd_main.o):
-    crt0.o                    crt0.s(50)
+    crt0.o                    ..\..\include\nsd.inc(36)
 _nsd_mul (nsd_math.o):
     nsd_env.o                 nsd_env.s(9)
 _nsd_play_bgm (nsd_func.o):
-    crt0.o                    crt0.s(52)
+    crt0.o                    ..\..\include\nsd.inc(70)
+_nsd_play_se (nsd_func.o):
+    crt0.o                    ..\..\include\nsd.inc(92)
 _nsd_snd_frequency (nsd_snd.o):
     nsd_env.o                 nsd_env.s(8)
 _nsd_snd_init (nsd_snd.o):
@@ -258,14 +261,14 @@ nsd_work (nsd_work.o):
     nsd_snd.o                 nsd_snd.s(14)
     nsd_env.o                 nsd_env.s(10)
     nsd_seq.o                 nsd_seq.s(9)
-    nsd_func.o                nsd_func.s(11)
+    nsd_func.o                nsd_func.s(12)
 nsd_work_zp (nsd_work.o):
     nsd_math.o                nsd_math.s(7)
     nsd_snd.o                 nsd_snd.s(15)
     nsd_env.o                 nsd_env.s(11)
     nsd_seq.o                 nsd_seq.s(10)
     nsd_main.o                nsd_main.s(6)
-    nsd_func.o                nsd_func.s(12)
+    nsd_func.o                nsd_func.s(13)
 ptr1 (zeropage.o):
     zerobss.o                 zerobss.s(9)
     copydata.o                copydata.s(9)

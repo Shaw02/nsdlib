@@ -4,10 +4,11 @@
 	.export		_nsd_init
 	.export		_nsd_play_bgm
 	.export		_nsd_stop_bgm
-;	.export		_nsd_play_se
+	.export		_nsd_play_se
 	.export		_nsd_stop_se
 
 	.import		_nsd_snd_init
+	.import		_nsd_snd_sweep
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
@@ -65,6 +66,163 @@
 	ldx	#nsd::TR_BGM1
 
 Loop:
+	lda	#00
+	sta	__chflag,x
+	jsr	play
+
+	inx
+	inx
+	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
+	bcs	Loop_End
+	jmp	Loop
+Loop_End:
+
+	;-----------------------
+	;common
+	lda	#$08
+	sta	APU_PULSE1RAMP
+	sta	APU_PULSE2RAMP
+	sta	__sweep_ch1
+	sta	__sweep_ch2
+
+	lda	#120
+	sta	__Tempo
+
+	lda	#~nsd_flag::BGM
+	and	__flag
+	sta	__flag			;BGM Enable
+
+	rts
+.endproc
+
+;=======================================================================
+;	void	__fastcall__	nsd_stop_bgm(void );
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Stop the BGM
+;<<Input>>
+;	nothing
+;<<Output>>
+;	nothing
+;=======================================================================
+.proc	_nsd_stop_bgm: near
+
+	;-----------------------
+	;common
+	lda	#nsd_flag::BGM
+	ora	__flag
+	sta	__flag			;BGM Disable
+
+	;-----------------------
+	;Init the channel structure
+	ldx	#nsd::TR_BGM1
+Loop:
+	jsr	stop
+
+	inx
+	inx
+	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
+	bcc	Loop	
+
+	rts
+.endproc
+
+;=======================================================================
+;	void	__fastcall__	nsd_play_se(void* se );
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Play start the BGM
+;<<Input>>
+;	ax	pointer of BGM
+;<<Output>>
+;	nothing
+;=======================================================================
+.proc	_nsd_play_se: near
+
+	sta	__ptr
+	stx	__ptr + 1
+
+	jsr	_nsd_stop_se		;stop the BGM (disable BGM)
+
+	ldy	#0
+
+	lda	(__ptr),y		; a = number of track
+	shl	a, 1
+	add	#nsd::TR_SE1
+	sta	__tmp
+	iny
+	iny
+
+	;-----------------------
+	;Init the channel structure
+	ldx	#nsd::TR_SE1
+	lda	#nsd_chflag::SE1
+	sta	__chflag,x
+	jsr	play
+
+	ldx	#nsd::TR_SE2
+	lda	#nsd_chflag::SE2
+	sta	__chflag,x
+	jsr	play
+
+	;-----------------------
+	;common
+	lda	#$08
+	sta	APU_PULSE2RAMP		;ch 2 only
+
+	;Tempo is none
+
+	lda	#~nsd_flag::SE
+	and	__flag
+	sta	__flag			;SE Enable
+
+	rts
+.endproc
+
+;=======================================================================
+;	void	__fastcall__	nsd_stop_se(void );
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Stop the SE
+;<<Input>>
+;	nothing
+;<<Output>>
+;	nothing
+;=======================================================================
+.proc	_nsd_stop_se: near
+
+	;-----------------------
+	;common
+	lda	#nsd_flag::SE
+	ora	__flag
+	sta	__flag			;SE Disable
+
+	;-----------------------
+	;Init the channel structure
+	ldx	#nsd::TR_SE1
+Loop:
+	jsr	stop
+	inx
+	inx
+	cpx	#nsd::TR_SE1 + nsd::SE_Track * 2
+	bcc	Loop	
+
+	rts
+.endproc
+
+;=======================================================================
+;	Play
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Play
+;<<Input>>
+;	__ptr	pointer
+;	__tmp	channel
+;<<Output>>
+;	nothing
+;=======================================================================
+.proc	play
+
 	cpx	__tmp
 	bcs	@L
 	lda	(__ptr),y
@@ -84,7 +242,6 @@ Loop:
 	sta	__Sequence_ptr,x
 	sta	__Sequence_ptr + 1,x
 @E:
-	sta	__chflag,x		;Å°Å°Å° to do for SE 
 	sta	__tai,x
 	sta	__Gate,x
 	sta	__gate_q,x
@@ -136,95 +293,25 @@ Step:
 	lda	#$2
 	sta	__gatemode,x
 
-	inx
-	inx
-	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
-	bcs	Loop_End
-	jmp	Loop
-Loop_End:
-
-	;-----------------------
-	;common
-
-	lda	#120
-	sta	__Tempo
-
-	lda	#~nsd_flag::BGM
-	and	__flag
-	sta	__flag			;BGM Enable
-
 	rts
 .endproc
 
 ;=======================================================================
-;	void	__fastcall__	nsd_stop_bgm(void );
+;	Stop
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	Stop the BGM
+;	Stop
 ;<<Input>>
 ;	nothing
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.proc	_nsd_stop_bgm: near
-
-	;-----------------------
-	;common
-	lda	#nsd_flag::BGM
-	ora	__flag
-	sta	__flag			;BGM Disable
-
-	;-----------------------
-	;Init the channel structure
-	ldx	#nsd::TR_BGM1
-Loop:
+.proc	stop
 	lda	#$00
 	sta	__Sequence_ptr,x
 	sta	__Sequence_ptr + 1,x
 	lda	#$FF
 	sta	__note,x
 
-	inx
-	inx
-	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
-	bcc	Loop	
-
 	rts
 .endproc
-
-;=======================================================================
-;	void	__fastcall__	nsd_stop_se(void );
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Stop the SE
-;<<Input>>
-;	nothing
-;<<Output>>
-;	nothing
-;=======================================================================
-.proc	_nsd_stop_se: near
-
-	;-----------------------
-	;common
-	lda	#nsd_flag::SE
-	ora	__flag
-	sta	__flag			;SE Disable
-
-	;-----------------------
-	;Init the channel structure
-	ldx	#nsd::TR_SE1
-Loop:
-	lda	#$00
-	sta	__Sequence_ptr,x
-	sta	__Sequence_ptr + 1,x
-	lda	#$FF
-	sta	__note,x
-
-	inx
-	inx
-	cpx	#nsd::TR_SE1 + nsd::SE_Track * 2
-	bcc	Loop	
-
-	rts
-.endproc
-

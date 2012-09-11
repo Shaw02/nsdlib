@@ -16,6 +16,7 @@ private:
 	unsigned	int		offset_repeat_a_b;	//前回の :  コマンドのオフセット
 	unsigned	int		offset_repeat_b_s;	//前回の |: コマンドのオフセット
 	unsigned	int		offset_repeat_b_b;	//前回の \  コマンドのオフセット
+	unsigned	int		DefaultLength;
 				bool	loop_flag;
 
 				char	KeySignature[7];	//調号(c,d,e...)
