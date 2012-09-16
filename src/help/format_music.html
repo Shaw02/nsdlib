@@ -72,13 +72,14 @@
 <tr><td>0x14		</td><td>n1			</td><td>Detune (16 = 100 cent)				</td></tr>
 <tr><td>0x15		</td><td>n1			</td><td>Detune (Resister base)				</td></tr>
 <tr><td>0x16		</td><td>n1			</td><td>Sweep (Resister base)				</td></tr>
-<tr><td>0x17		</td><td>n1 n2 n3	</td><td>Portamento	(Frequency += n2, every n3 [VBlank])	<strong>–¢ŽÀ‘•</strong><br>
-												n1 = Depth. (1 = 100 [cent])		<br>
-												n2 = Count (16 = 100 [cent])		<br>
-												n3 = Rate (1 = 1 VBlank)			</td></tr>
-<tr><td>0x18		</td><td>			</td><td>Repeat(B) Start point					</td></tr>
-<tr><td>0x19		</td><td>			</td><td>Repeat(B) Branch point					</td></tr>
-<tr><td>0x1A		</td><td>n1 n2		</td><td>Repeat(B) End point<br>
+<tr><td>0x17		</td><td>n1 n2 n3 n4</td><td>Portamento							<br>
+												n1 = Decay  (1 = 1 VBlank)			<br>
+												n2 = Rate   (1 = 1 VBlank)			<br>
+												n3 = Depth  (16 = 100 [cent])		<br>
+												n4 = Target (1 = 100 [cent])		</td></tr>
+<tr><td>0x18		</td><td>			</td><td>Repeat(B) Start point				</td></tr>
+<tr><td>0x19		</td><td>			</td><td>Repeat(B) Branch point				</td></tr>
+<tr><td>0x1A		</td><td>n1 n2		</td><td>Repeat(B) End point				<br>
 												n1::n2 = Pointer of start.			</td></tr>
 <tr><td>0x1B		</td><td>n1			</td><td>Voice (Voice Envelop Off)			</td></tr>
 <tr><td>0x20		</td><td>			</td><td>Volume down	(-1)				</td></tr>

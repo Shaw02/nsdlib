@@ -28,6 +28,7 @@ MusicTrack::MusicTrack(const char _strName[]):
 	KeySignature[4]	= 0;
 	KeySignature[5]	= 0;
 	KeySignature[6]	= 0;
+	KeySignature[7]	= 0;
 }
 
 //==============================================================
@@ -199,10 +200,10 @@ void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML)
 	mml_Address*		_event = new mml_Address(_opcode, "Envelop");
 	unsigned	int		_no = MML->GetInt();
 
-	if((_no<0) || (_no>65535)){
-		MML->Err("エンベロープ番号は、0～65535の範囲で指定してください。");
-	}
-	_event->set_Address( _no & 0xFFFF );
+//	if((_no<0) || (_no>65535)){
+//		MML->Err("エンベロープ番号は、0～65535の範囲で指定してください。");
+//	}
+	_event->set_id(_no);
 	SetEvent(_event);
 	ptcEnvelop.push_back(_event);
 }
@@ -220,10 +221,10 @@ void	MusicTrack::SetSubroutine(MMLfile* MML)
 	mml_Address*		_event = new mml_Address(nsd_Call, "Subroutine");
 	unsigned	int		_no = MML->GetInt();
 
-	if((_no<0) || (_no>65535)){
-		MML->Err("サブルーチン番号は、0～65535の範囲で指定してください。");
-	}
-	_event->set_Address( _no & 0xFFFF );
+//	if((_no<0) || (_no>65535)){
+//		MML->Err("サブルーチン番号は、0～65535の範囲で指定してください。");
+//	}
+	_event->set_id(_no);
 	SetEvent(_event);
 	ptcSubroutine.push_back(_event);
 }
@@ -251,7 +252,7 @@ void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv)
 	if(!ptcSubroutine.empty()){
 		itSub = ptcSubroutine.begin();
 		while(itSub != ptcSubroutine.end()){
-			_no			= (*itSub)->get_Address();		//サブルーチンNo.の取得
+			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
 			_com_offset	= (*itSub)->getOffset();
 			if( ptcSub->count(_no) == 0){
 				printf("サブルーチン %d 番が存在しません。",_no);
@@ -267,7 +268,7 @@ void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv)
 	if(!ptcEnvelop.empty()){
 		itEnv = ptcEnvelop.begin();
 		while(itEnv != ptcEnvelop.end()){
-			_no			= (*itEnv)->get_Address();		//エンベロープNo.の取得
+			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itEnv)->getOffset();
 			if( ptcEnv->count(_no) == 0){
 				printf("エンベロープ %d 番が存在しません。",_no);
@@ -386,8 +387,23 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 		case('+'):
 			_code = 0x0E;
 			break;
+		case('='):
+		case('*'):
+			_code = 0x0F;
+			break;
 		default:
 			MML->Back();
+			switch(KeySignature[7]){
+				case(-1):
+					_code = 0x0D;
+					break;
+				case(+1):
+					_code = 0x0E;
+					break;
+				default:
+					_code = 0x0F;
+					break;
+			}
 			break;
 	}
 
@@ -578,8 +594,8 @@ void	MusicTrack::SetGatetime_u(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetSweep(MMLfile* MML)
 {
-	unsigned	int		iSpeed;
-	unsigned	int		iDepth;
+				int		iSpeed;
+				int		iDepth;
 	unsigned	char	_data;
 	unsigned	char	cData;
 
@@ -696,6 +712,62 @@ void	MusicTrack::SetReleaseVolume(MMLfile* MML)
 //	●返値
 //		無し
 //==============================================================
+void	MusicTrack::SetProtament(MMLfile* MML)
+{
+	unsigned	char	cData;
+
+				int		_Decay;
+				int		_Rate;
+				int		_Depth;
+				int		_Target;
+
+	_Decay = MML->GetInt();
+	if( (_Decay < 0) || (_Decay > 255) ){
+		MML->Err("ポルタメントの第1パラメータは、0～255の範囲で指定してください。");
+	}
+	_Decay++;
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
+	}
+
+	_Rate = MML->GetInt();
+	if( (_Rate < 1) || (_Rate > 256) ){
+		MML->Err("ポルタメントの第2パラメータは、1～256の範囲で指定してください。");
+	}
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
+	}
+
+	_Depth = MML->GetInt();
+	if( (_Depth < -128) || (_Depth > 127) ){
+		MML->Err("ポルタメントの第3パラメータは、-128～127の範囲で指定してください。");
+	}
+	_Decay++;
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
+	}
+
+	_Target = MML->GetInt();
+	if( (_Target < -128) || (_Target > 127) ){
+		MML->Err("ポルタメントの第4パラメータは、-128～127の範囲で指定してください。");
+	}
+	SetEvent(new mml_general(nsd_Portamento, _Decay & 0xFF,_Rate & 0xFF,_Depth & 0xFF,_Target & 0xFF, "Portamento"));
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
 void	MusicTrack::SetPoke(MMLfile* MML)
 {
 	unsigned	int	addr;
@@ -741,6 +813,7 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		ks_g,
 		ks_a,
 		ks_b,
+		ks_r,
 		ks_0,
 		ks_s1,
 		ks_s2,
@@ -772,6 +845,7 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		{	"g",		ks_g		},
 		{	"a",		ks_a		},
 		{	"b",		ks_b		},
+		{	"r",		ks_r		},
 		{	"C_Dur",	ks_0		},	//
 		{	"Cis_Dur",	ks_f5		},	//bbbbb
 		{	"D_Dur",	ks_s2		},	//##
@@ -828,6 +902,9 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 				break;
 			case(ks_b):
 				KeySignature[6] = sign;
+				break;
+			case(ks_r):
+				KeySignature[7] = sign;
 				break;
 			case(ks_Natural):
 				sign = 0;

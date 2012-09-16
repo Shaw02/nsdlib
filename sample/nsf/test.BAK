@@ -27,7 +27,7 @@ Envelop(300){	4 3 2 1 0}
 Sub(1000000){	l4 o5 cc+ dd+ e ff+ gg+ aa+ b > cc+ dd+ e1	}
 
 bgm(9){
-	TR3	v15	P20,1,-7,-24 Em100	c1	c1	P20,1,7,24	c1	c1
+	TR3	v15	P20,1,-7,-24	c1	c1	P20,1,7,24	c1	c1
 }
 
 bgm(7){

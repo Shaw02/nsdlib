@@ -231,17 +231,12 @@ Current file: nsd_snd.s
 000000r 2               
 000000r 2               .Struct		NSD_Por_Lv
 000000r 2               	target		.byte		;`P' target
-000000r 2               	inc		.byte		;`P' add value
-000000r 2               .Endstruct
-000000r 2               
-000000r 2               .Struct		NSD_Por_Sp
-000000r 2               	decay		.byte		;
-000000r 2               	rate		.byte		;rate (speed)
+000000r 2               	depth		.byte		;`P' add value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Por_Co
 000000r 2               	count		.byte		;rate control
-000000r 2               	lv		.byte		;now depth
+000000r 2               	rate		.byte		;now depth
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Trans
@@ -286,8 +281,8 @@ Current file: nsd_snd.s
 000000r 2               	Note		.tag	NSD_note	nsd::Track	;octave and note command
 000000r 2               	Detune		.tag	NSD_Detune	nsd::Track	;detune
 000000r 2               	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
-000000r 2               	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
 000000r 2               	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
+000000r 2               	Por_now		.word			nsd::Track	;Portamento
 000000r 2               	Trans		.tag	NSD_Trans	nsd::Track	;Repeat and Transpose
 000000r 2               	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat and Transpose
 000000r 2               	Volume		.tag	NSD_volume	nsd::Track	;volume
@@ -348,11 +343,10 @@ Current file: nsd_snd.s
 000000r 2               .define	__detune_cent	nsd_work + NSD_work::Detune + NSD_Detune::cent
 000000r 2               .define	__detune_fine	nsd_work + NSD_work::Detune + NSD_Detune::fine
 000000r 2               .define	__por_target	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::target
-000000r 2               .define	__por_inc	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::inc
-000000r 2               .define	__por_decay	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::decay
-000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
+000000r 2               .define	__por_depth	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::depth
 000000r 2               .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
-000000r 2               .define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
+000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Co + NSD_Por_Co::rate
+000000r 2               .define __por_now	nsd_work + NSD_work::Por_now
 000000r 2               .define	__trans		nsd_work + NSD_work::Trans + NSD_Trans::trans
 000000r 2               .define	__trans_one	nsd_work + NSD_work::Trans + NSD_Trans::onetime
 000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
@@ -1264,7 +1258,7 @@ Current file: nsd_snd.s
 0000DEr 1  15 08        	.word	$0815
 0000E0r 1  06 08        	.word	$0806
 0000E2r 1  F7 07        	.word	$07F7
-0000E4r 1  E8 07        	.word	$07E8
+0000E4r 1  E8 07        	.word	$07E8	;A
 0000E6r 1  DA 07        	.word	$07DA
 0000E8r 1  CB 07        	.word	$07CB
 0000EAr 1  BD 07        	.word	$07BD
@@ -1272,7 +1266,7 @@ Current file: nsd_snd.s
 0000EEr 1  A1 07        	.word	$07A1
 0000F0r 1  93 07        	.word	$0793
 0000F2r 1  85 07        	.word	$0785
-0000F4r 1  77 07        	.word	$0777
+0000F4r 1  77 07        	.word	$0777	;B (Bs / Ais)
 0000F6r 1  69 07        	.word	$0769
 0000F8r 1  5B 07        	.word	$075B
 0000FAr 1  4E 07        	.word	$074E
@@ -1280,7 +1274,7 @@ Current file: nsd_snd.s
 0000FEr 1  33 07        	.word	$0733
 000100r 1  26 07        	.word	$0726
 000102r 1  19 07        	.word	$0719
-000104r 1  0B 07        	.word	$070B
+000104r 1  0B 07        	.word	$070B	;H (B)
 000106r 1  FE 06        	.word	$06FE
 000108r 1  F2 06        	.word	$06F2
 00010Ar 1  E5 06        	.word	$06E5

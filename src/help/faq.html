@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>FAQ</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+
+<h2>FAQ</h2>
+
+<p>
+今まで、質問のあった内容をまとめています。<br>
+是非、ご参照下さい。<br>
+</p>
+
+<div class='block'>
+<h3>NSD.libによる曲の打ち込み</h3>
+
+<div class='block'>
+<h4>休符で音量が０じゃなくて２になる</h4>
+<p>
+音量エンベロープが無効な場合、キーオフ後の音量は<a href="mml_release.html">Rvコマンド</a>で指定した値が適用されます。<br>
+<a href="mml_release.html">Rvコマンド</a>の初期値は２であるため、音量が２となります。<br>
+解決策としては、音量エンベロープを使う、<a href="mml_release.html">Rvコマンド</a>で設定する、もしくは<a href="mml_rest.html">r(休符)</a>コマンドに臨時記号`-'を付けてください。<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>休符なのに、音が鳴りっぱなしになる</h4>
+<p>
+音量エンベロープで、リリースのパターンを定義していない可能性があります。<br>
+各系統のエンベロープにおいてリリースのパターンを指定しない場合、そのままエンベロープが継続されます。<br>
+解決策としては、音量エンベロープにはリリースのパターンを定義する、もしくは<a href="mml_rest.html">r(休符)</a>コマンドに臨時記号`-'か`+'を付けてください。<br>
+なお、<a href="mml_gate.html">`q',`u'（ゲートタイム）</a>コマンドによってキーオフされた後の挙動は、<a href="mml_release.html">Rmコマンド</a>で設定します。<br>
+</p>
+</div>
+
+</div>	<!-- h3 -->
+
+
+<div class='block'>
+<h3>NSD.libを用いたアプリケーション開発</h3>
+
+<h4></h4>
+<p>
+今後、何か質問があったら、掲載いたします。
+</p>
+
+</div>	<!-- h3 -->
+
+
+</div>	<!-- contents -->
+
+</BODY>
+</HTML>

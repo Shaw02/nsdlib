@@ -5,29 +5,52 @@
 <meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>MML reference: Octave</Title>
+<Title>MML reference: Portamento</Title>
 </HEAD>
 <BODY>
 
 <div id='contents'>
 <h1>NSDL（NES Sound Driver Library）</h1>
-<h2>MML reference: Octave</h2>
+<h2>MML reference: Portamento</h2>
 
 <!-- ──────────────── -->
 <div class='block'>
 <h3>定義（Define）</h3>
 <code><pre>
-        o<var>octave</var>
+        P<var>decay</var>,<var>rate</var>,<var>depth</var>,<var>target</var>
 </pre></code>
 </div>
+
+
+
 
 <!-- ──────────────── -->
 <div class='block'>
 <h3>引数（Inputs）</h3>
 
-<h4>octave</h4>
+<h4>decay</h4>
 <p>
-オクターブです。2～9の範囲（o4＝中央）で指定してください。<br>
+ポルタメントがかかるまでの遅延時間です。<br>
+フレーム単位で指定してください。<br>
+</p>
+
+
+<h4>rate</h4>
+<p>
+<var>depth</var>を加算する周期です。<br>
+フレーム単位で指定してください。<br>
+</p>
+
+<h4>depth</h4>
+<p>
+<var>rate</var>フレーム毎に加算する値です。<br>
+16で100 centを意味します。<br>
+</p>
+
+
+<h4>target</h4>
+<p>
+最終的な変化量です。1で半音に相当します。<br>
 </p>
 
 
@@ -36,7 +59,7 @@
 <div class='block'>
 <h3>内容（Contents）</h3>
 <p>
-オクターブを指定します。<br>
+次の音符に対して、ポルタメントをかけます。<br>
 </p>
 </div>
 
@@ -44,14 +67,9 @@
 <div class='block'>
 <h3>注意（Notes）</h3>
 <p>
-2A03（内蔵音源）は高い音程になるほど、音程が悪く（音痴に）なります。<br>
-<code>o6</code>で、楽器初心者が演奏したようなピッチになり、<br>
-<code>o7</code>では、場合によっては音階そのものが違ってきます。<br>
+<var>depth</var>と<var>target</var>の符号は合わせて下さい。<br>
 </p>
-<p>
-無限ループやリピートで戻った際も適用されますので、注意してください。<br>
-但し、音長を省略して付点のみを記述した音符・休符に関しては、無限ループやリピート前のlコマンドの値に付点がつきます（コンパイラの疑似命令です）。
-</p>
+
 </div>
 
 <!-- ──────────────── -->
@@ -59,8 +77,7 @@
 <h3>例（Sample）</h3>
 
 <code><pre>
-    o4     <span style="color:green;">/* octave = 4 */</span>
-
+    P20,1,-7,-24    c1  c1     <span style="color:green;">/* Portamento */</span>
 </pre></code>
 
 </div>
@@ -70,3 +87,7 @@
 
 </BODY>
 </HTML>
+
+
+
+

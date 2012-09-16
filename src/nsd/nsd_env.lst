@@ -227,17 +227,12 @@ Current file: nsd_env.s
 000000r 2               
 000000r 2               .Struct		NSD_Por_Lv
 000000r 2               	target		.byte		;`P' target
-000000r 2               	inc		.byte		;`P' add value
-000000r 2               .Endstruct
-000000r 2               
-000000r 2               .Struct		NSD_Por_Sp
-000000r 2               	decay		.byte		;
-000000r 2               	rate		.byte		;rate (speed)
+000000r 2               	depth		.byte		;`P' add value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Por_Co
 000000r 2               	count		.byte		;rate control
-000000r 2               	lv		.byte		;now depth
+000000r 2               	rate		.byte		;now depth
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Trans
@@ -282,8 +277,8 @@ Current file: nsd_env.s
 000000r 2               	Note		.tag	NSD_note	nsd::Track	;octave and note command
 000000r 2               	Detune		.tag	NSD_Detune	nsd::Track	;detune
 000000r 2               	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
-000000r 2               	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
 000000r 2               	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
+000000r 2               	Por_now		.word			nsd::Track	;Portamento
 000000r 2               	Trans		.tag	NSD_Trans	nsd::Track	;Repeat and Transpose
 000000r 2               	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat and Transpose
 000000r 2               	Volume		.tag	NSD_volume	nsd::Track	;volume
@@ -344,11 +339,10 @@ Current file: nsd_env.s
 000000r 2               .define	__detune_cent	nsd_work + NSD_work::Detune + NSD_Detune::cent
 000000r 2               .define	__detune_fine	nsd_work + NSD_work::Detune + NSD_Detune::fine
 000000r 2               .define	__por_target	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::target
-000000r 2               .define	__por_inc	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::inc
-000000r 2               .define	__por_decay	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::decay
-000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
+000000r 2               .define	__por_depth	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::depth
 000000r 2               .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
-000000r 2               .define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
+000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Co + NSD_Por_Co::rate
+000000r 2               .define __por_now	nsd_work + NSD_work::Por_now
 000000r 2               .define	__trans		nsd_work + NSD_work::Trans + NSD_Trans::trans
 000000r 2               .define	__trans_one	nsd_work + NSD_work::Trans + NSD_Trans::onetime
 000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
@@ -558,179 +552,239 @@ Current file: nsd_env.s
 000073r 1  85 rr        	sta	__tmp + 1
 000075r 1               
 000075r 1               	;-------------------------------
-000075r 1               	;Envelop of Frequency
-000075r 1  BD rr rr     F_Env:	lda	__env_frequency + 1,x
-000078r 1  85 rr        	sta	__ptr + 1
-00007Ar 1  F0 54        	beq	@Freq_Exit
-00007Cr 1  B5 rr 29 0F  	ENV	__env_frequency, __env_freq_ptr, __env_freq_now, __Envelop_F, 0
-000080r 1  F0 0A B5 rr  
-000084r 1  38 E9 01 95  
-000088r 1  rr 4C rr rr  
-00008Cr 1  BD rr rr 85  
-000090r 1  rr BC rr rr  
-000094r 1  B1 rr 10 13  
-000098r 1  C9 C0 90 06  
-00009Cr 1  29 3F A8 4C  
-0000A0r 1  rr rr 29 0F  
-0000A4r 1  15 rr 95 rr  
-0000A8r 1  4C rr rr 9D  
-0000ACr 1  rr rr C8 98  
-0000B0r 1  9D rr rr BD  
-0000B4r 1  rr rr        
-0000B6r 1  C9 40        	cmp	#$40
-0000B8r 1  90 0B        	bcc	@Sigh
-0000BAr 1  09 80        	ora	#$80
-0000BCr 1  18 65 rr     	add	__tmp
-0000BFr 1  85 rr        	sta	__tmp
-0000C1r 1  A9 FF        	lda	#$FF
-0000C3r 1  D0 07        	bne	@SetH
-0000C5r 1  18 65 rr     @Sigh:	add	__tmp
-0000C8r 1  85 rr        	sta	__tmp
-0000CAr 1  A9 00        	lda	#$0
-0000CCr 1  65 rr        @SetH:	adc	__tmp+1
-0000CEr 1  85 rr        	sta	__tmp+1
-0000D0r 1               @Freq_Exit:
-0000D0r 1               
-0000D0r 1               	;-------------------------------
-0000D0r 1               	;Detune of cent unit
-0000D0r 1  BD rr rr     Detune:	lda	__detune_cent,x
-0000D3r 1  30 05        	bmi	@L
-0000D5r 1  A0 00        	ldy	#$00
-0000D7r 1  4C rr rr     	jmp	@E
-0000DAr 1  A0 FF        @L:	ldy	#$FF			; ay = __detune_cent (sign expand)
-0000DCr 1  18 65 rr     @E:	add	__tmp
-0000DFr 1  85 rr        	sta	__tmp
-0000E1r 1  98           	tya
-0000E2r 1  65 rr        	adc	__tmp + 1
-0000E4r 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
-0000E6r 1               
-0000E6r 1               	;-----------------------
-0000E6r 1               	;Setting device (APU)
-0000E6r 1  A5 rr        	lda	__tmp
-0000E8r 1  A6 rr        	ldx	__tmp + 1
-0000EAr 1  20 rr rr     	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
-0000EDr 1               
-0000EDr 1               
-0000EDr 1               
-0000EDr 1               	;=======================================
-0000EDr 1               	;Voice & Volume
-0000EDr 1  A6 rr        	ldx	__channel
-0000EFr 1  E0 04        	cpx	#nsd::TR_BGM3
-0000F1r 1  F0 04        	beq	exit
-0000F3r 1  E0 08        	cpx	#nsd::TR_BGM5
-0000F5r 1  D0 01        	bne	Voice
-0000F7r 1  60           exit:	rts
-0000F8r 1               
-0000F8r 1               	;-------------------------------
-0000F8r 1               	;Envelop of Voice
-0000F8r 1               Voice:
-0000F8r 1  BD rr rr     	lda	__chflag,x
-0000FBr 1  BD rr rr     	lda	__chflag,x
-0000FEr 1  29 02        	and	#$02
-000100r 1  D0 0A        	bne	@L
-000102r 1               
-000102r 1  BD rr rr     	lda	__voice,x
-000105r 1  4A 4A 4A 4A  	shr	a, 4			; a = release voice
-000109r 1  4C rr rr     	jmp	Set_Voice
-00010Cr 1               
-00010Cr 1  BD rr rr     @L:	lda	__env_voice + 1,x
-00010Fr 1  D0 06        	bne	@Envelop
-000111r 1  BD rr rr     	lda	__env_voice,x
-000114r 1  4C rr rr     	jmp	Set_Voice
-000117r 1               
-000117r 1               @Envelop:
-000117r 1  85 rr        	sta	__ptr + 1
-000119r 1  B5 rr        	lda	__Envelop_V,x
-00011Br 1  29 F0        	and	#$F0			;
-00011Dr 1  F0 0A        	beq	@Done			;if(counter != 0){
-00011Fr 1  B5 rr        	lda	__Envelop_V,x		;
-000121r 1  38 E9 10     	sub	#$10			;  counter--
-000124r 1  95 rr        	sta	__Envelop_V,x		;
-000126r 1  4C rr rr     	jmp	Voice_Exit		;} else {
-000129r 1               
-000129r 1  BD rr rr     @Done:	lda	__env_voice,x
-00012Cr 1  85 rr        	sta	__ptr			;  __ptr = (table address of envelop)
-00012Er 1  BC rr rr     	ldy	__env_voi_ptr,x		;  y     = (_envelop pointer)
-000131r 1  B1 rr        @Loop:	lda	(__ptr),y		;  do{
-000133r 1  10 1A        	bpl	@Value			;  a = __ptr[y]
-000135r 1  C9 C0        	cmp	#$C0			;    if( a >= 0x80 ){
-000137r 1  90 06        	bcc	@SetDecay		;      if( a >= 0xc0){
-000139r 1  29 3F        	and	#$3F			;        y = a & 0x3F;  //continue
-00013Br 1  A8           	tay				;      } else {
-00013Cr 1  4C rr rr     	jmp	@Loop			;        (decay counter) = a<<4 | (decay counter);
-00013Fr 1               
-00013Fr 1               @SetDecay:				;
-00013Fr 1  0A 0A 0A 0A  	shl	a, 4			;
-000143r 1  15 rr        	ora	__Envelop_V,x		;
-000145r 1  95 rr        	sta	__Envelop_V,x		;
-000147r 1  C8           	iny				;
-000148r 1  98           	tya				;
-000149r 1  9D rr rr     	sta	__env_voi_ptr,x		;
-00014Cr 1  4C rr rr     	jmp	Voice_Exit
-00014Fr 1               
-00014Fr 1               @Value:
-00014Fr 1  48           	pha
-000150r 1  C8           	iny
-000151r 1  98           	tya
-000152r 1  9D rr rr     	sta	__env_voi_ptr,x
-000155r 1  68           	pla
-000156r 1               	;-----------------------
-000156r 1               	;Setting device (APU)
-000156r 1               Set_Voice:
-000156r 1  20 rr rr     	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
-000159r 1               Voice_Exit:
-000159r 1               
-000159r 1               	;-------------------------------
-000159r 1               	;Envelop of Volume
-000159r 1               Volume:
-000159r 1  BD rr rr     	lda	__chflag,x
-00015Cr 1  29 03        	and	#$03
-00015Er 1  C9 03        	cmp	#$03
-000160r 1  F0 11        	beq	@L3	;mode = 3 だったら、エンベロープへ
-000162r 1  C9 01        	cmp	#$01
-000164r 1  F0 05        	beq	@L1		;mode = 1 で、リリース音量
-000166r 1               
-000166r 1  BD rr rr     @L2:	lda	__env_volume + 1,x
-000169r 1  D0 17        	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
-00016Br 1  BD rr rr     @L1:	lda	__volume,x
-00016Er 1  29 F0        	and	#$F0
-000170r 1  4C rr rr     	jmp	Set_Volume
-000173r 1               
-000173r 1  BD rr rr     @L3:	lda	__env_volume + 1,x
-000176r 1  D0 0A        	bne	@Envelop
-000178r 1  BD rr rr     	lda	__volume,x
-00017Br 1  0A 0A 0A 0A  	shl	a, 4
-00017Fr 1  4C rr rr     	jmp	Set_Volume
-000182r 1               
-000182r 1               @Envelop:
-000182r 1  85 rr        	sta	__ptr + 1
-000184r 1  B5 rr 29 0F  	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
-000188r 1  F0 0A B5 rr  
-00018Cr 1  38 E9 01 95  
-000190r 1  rr 4C rr rr  
-000194r 1  BD rr rr 85  
-000198r 1  rr BC rr rr  
-00019Cr 1  B1 rr 10 13  
-0001A0r 1  C9 C0 90 06  
-0001A4r 1  29 3F A8 4C  
-0001A8r 1  rr rr 29 0F  
-0001ACr 1  15 rr 95 rr  
-0001B0r 1  4C rr rr 9D  
-0001B4r 1  rr rr C8 98  
-0001B8r 1  9D rr rr BD  
-0001BCr 1  rr rr        
-0001BEr 1               
-0001BEr 1  85 rr        	sta	__tmp
-0001C0r 1  BD rr rr     	lda	__volume,x
-0001C3r 1  A6 rr        	ldx	__tmp
-0001C5r 1  20 rr rr     	jsr	_nsd_mul
-0001C8r 1  A6 rr        	ldx	__channel
-0001CAr 1               
-0001CAr 1               	;-----------------------
-0001CAr 1               	;Setting device (APU)
-0001CAr 1               Set_Volume:
-0001CAr 1  4C rr rr     	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
-0001CDr 1               
-0001CDr 1               .endproc
-0001CDr 1               
-0001CDr 1               
+000075r 1               	;Por
+000075r 1  BD rr rr     	lda	__por_target,x
+000078r 1  F0 7C        	beq	F_Env
+00007Ar 1               
+00007Ar 1  BD rr rr     	lda	__por_depth,x
+00007Dr 1  F0 68        	beq	Por_S
+00007Fr 1               
+00007Fr 1  DE rr rr     	dec	__por_ctr,x		;MMLコンパイラではdecayを +1 する事。
+000082r 1  D0 63        	bne	Por_S
+000084r 1               
+000084r 1  BD rr rr     	lda	__por_rate,x
+000087r 1  9D rr rr     	sta	__por_ctr,x
+00008Ar 1               
+00008Ar 1  A0 00        	ldy	#$00
+00008Cr 1  BD rr rr     	lda	__por_depth,x
+00008Fr 1  10 02        	bpl	@PL
+000091r 1  A0 FF        	ldy	#$FF
+000093r 1  18 7D rr rr  @PL:	add	__por_now + 0,x
+000097r 1  9D rr rr     	sta	__por_now + 0,x
+00009Ar 1  98           	tya
+00009Br 1  7D rr rr     	adc	__por_now + 1,x
+00009Er 1  9D rr rr     	sta	__por_now + 1,x		;__por_now += __por_depth
+0000A1r 1               
+0000A1r 1  0A 0A 0A 0A  	shl	a, 4
+0000A5r 1  85 rr        	sta	__ptr
+0000A7r 1  BD rr rr     	lda	__por_now + 0,x
+0000AAr 1  4A 4A 4A 4A  	shr	a, 4
+0000AEr 1  05 rr        	ora	__ptr			;a = __por_now >> 4;
+0000B0r 1               
+0000B0r 1  C0 00        	cpy	#$00
+0000B2r 1  F0 07        	beq	Por_PL
+0000B4r 1  DD rr rr     Por_MI:	cmp	__por_target,x		;if (a - __por_target < 0) then
+0000B7r 1  90 09        	bcc	Por_O
+0000B9r 1  B0 2C        	bcs	Por_S
+0000BBr 1  DD rr rr     Por_PL:	cmp	__por_target,x		;if (a - __por_target > 0) then
+0000BEr 1  B0 02        	bcs	Por_O
+0000C0r 1  90 25        	bcc	Por_S
+0000C2r 1               
+0000C2r 1  BD rr rr     Por_O:	lda	__por_target,x
+0000C5r 1  9D rr rr     	sta	__por_now + 1,x
+0000C8r 1  0A 0A 0A 0A  	shl	a, 4
+0000CCr 1  9D rr rr     	sta	__por_now,x
+0000CFr 1  BD rr rr     	lda	__por_now + 1,x
+0000D2r 1  4A 4A 4A 4A  	shr	a, 4
+0000D6r 1  C0 00        	cpy	#00
+0000D8r 1  F0 02        	beq	@L
+0000DAr 1  09 F0        	ora	#$F0			;算術シフト的なもの
+0000DCr 1  9D rr rr     @L:	sta	__por_now + 1,x
+0000DFr 1  A9 00        	lda	#$0
+0000E1r 1  9D rr rr     	sta	__por_rate,x
+0000E4r 1  9D rr rr     	sta	__por_depth,x
+0000E7r 1  BD rr rr     Por_S:	lda	__por_now,x
+0000EAr 1  18 65 rr     	add	__tmp
+0000EDr 1  85 rr        	sta	__tmp
+0000EFr 1  BD rr rr     	lda	__por_now + 1,x
+0000F2r 1  65 rr        	adc	__tmp + 1
+0000F4r 1  85 rr        	sta	__tmp + 1
+0000F6r 1               Por_E:
+0000F6r 1               
+0000F6r 1               	;-------------------------------
+0000F6r 1               	;Envelop of Frequency
+0000F6r 1  BD rr rr     F_Env:	lda	__env_frequency + 1,x
+0000F9r 1  85 rr        	sta	__ptr + 1
+0000FBr 1  F0 54        	beq	@Freq_Exit
+0000FDr 1  B5 rr 29 0F  	ENV	__env_frequency, __env_freq_ptr, __env_freq_now, __Envelop_F, 0
+000101r 1  F0 0A B5 rr  
+000105r 1  38 E9 01 95  
+000109r 1  rr 4C rr rr  
+00010Dr 1  BD rr rr 85  
+000111r 1  rr BC rr rr  
+000115r 1  B1 rr 10 13  
+000119r 1  C9 C0 90 06  
+00011Dr 1  29 3F A8 4C  
+000121r 1  rr rr 29 0F  
+000125r 1  15 rr 95 rr  
+000129r 1  4C rr rr 9D  
+00012Dr 1  rr rr C8 98  
+000131r 1  9D rr rr BD  
+000135r 1  rr rr        
+000137r 1  C9 40        	cmp	#$40
+000139r 1  90 0B        	bcc	@Sigh
+00013Br 1  09 80        	ora	#$80
+00013Dr 1  18 65 rr     	add	__tmp
+000140r 1  85 rr        	sta	__tmp
+000142r 1  A9 FF        	lda	#$FF
+000144r 1  D0 07        	bne	@SetH
+000146r 1  18 65 rr     @Sigh:	add	__tmp
+000149r 1  85 rr        	sta	__tmp
+00014Br 1  A9 00        	lda	#$0
+00014Dr 1  65 rr        @SetH:	adc	__tmp+1
+00014Fr 1  85 rr        	sta	__tmp+1
+000151r 1               @Freq_Exit:
+000151r 1               
+000151r 1               	;-------------------------------
+000151r 1               	;Detune of cent unit
+000151r 1  BD rr rr     Detune:	lda	__detune_cent,x
+000154r 1  30 05        	bmi	@L
+000156r 1  A0 00        	ldy	#$00
+000158r 1  4C rr rr     	jmp	@E
+00015Br 1  A0 FF        @L:	ldy	#$FF			; ay = __detune_cent (sign expand)
+00015Dr 1  18 65 rr     @E:	add	__tmp
+000160r 1  85 rr        	sta	__tmp
+000162r 1  98           	tya
+000163r 1  65 rr        	adc	__tmp + 1
+000165r 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
+000167r 1               
+000167r 1               	;-----------------------
+000167r 1               	;Setting device (APU)
+000167r 1  A5 rr        	lda	__tmp
+000169r 1  A6 rr        	ldx	__tmp + 1
+00016Br 1  20 rr rr     	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
+00016Er 1               
+00016Er 1               
+00016Er 1               
+00016Er 1               	;=======================================
+00016Er 1               	;Voice & Volume
+00016Er 1  A6 rr        	ldx	__channel
+000170r 1  E0 04        	cpx	#nsd::TR_BGM3
+000172r 1  F0 04        	beq	exit
+000174r 1  E0 08        	cpx	#nsd::TR_BGM5
+000176r 1  D0 01        	bne	Voice
+000178r 1  60           exit:	rts
+000179r 1               
+000179r 1               	;-------------------------------
+000179r 1               	;Envelop of Voice
+000179r 1               Voice:
+000179r 1  BD rr rr     	lda	__chflag,x
+00017Cr 1  BD rr rr     	lda	__chflag,x
+00017Fr 1  29 02        	and	#$02
+000181r 1  D0 0A        	bne	@L
+000183r 1               
+000183r 1  BD rr rr     	lda	__voice,x
+000186r 1  4A 4A 4A 4A  	shr	a, 4			; a = release voice
+00018Ar 1  4C rr rr     	jmp	Set_Voice
+00018Dr 1               
+00018Dr 1  BD rr rr     @L:	lda	__env_voice + 1,x
+000190r 1  D0 06        	bne	@Envelop
+000192r 1  BD rr rr     	lda	__env_voice,x
+000195r 1  4C rr rr     	jmp	Set_Voice
+000198r 1               
+000198r 1               @Envelop:
+000198r 1  85 rr        	sta	__ptr + 1
+00019Ar 1  B5 rr        	lda	__Envelop_V,x
+00019Cr 1  29 F0        	and	#$F0			;
+00019Er 1  F0 0A        	beq	@Done			;if(counter != 0){
+0001A0r 1  B5 rr        	lda	__Envelop_V,x		;
+0001A2r 1  38 E9 10     	sub	#$10			;  counter--
+0001A5r 1  95 rr        	sta	__Envelop_V,x		;
+0001A7r 1  4C rr rr     	jmp	Voice_Exit		;} else {
+0001AAr 1               
+0001AAr 1  BD rr rr     @Done:	lda	__env_voice,x
+0001ADr 1  85 rr        	sta	__ptr			;  __ptr = (table address of envelop)
+0001AFr 1  BC rr rr     	ldy	__env_voi_ptr,x		;  y     = (_envelop pointer)
+0001B2r 1  B1 rr        @Loop:	lda	(__ptr),y		;  do{
+0001B4r 1  10 1A        	bpl	@Value			;  a = __ptr[y]
+0001B6r 1  C9 C0        	cmp	#$C0			;    if( a >= 0x80 ){
+0001B8r 1  90 06        	bcc	@SetDecay		;      if( a >= 0xc0){
+0001BAr 1  29 3F        	and	#$3F			;        y = a & 0x3F;  //continue
+0001BCr 1  A8           	tay				;      } else {
+0001BDr 1  4C rr rr     	jmp	@Loop			;        (decay counter) = a<<4 | (decay counter);
+0001C0r 1               
+0001C0r 1               @SetDecay:				;
+0001C0r 1  0A 0A 0A 0A  	shl	a, 4			;
+0001C4r 1  15 rr        	ora	__Envelop_V,x		;
+0001C6r 1  95 rr        	sta	__Envelop_V,x		;
+0001C8r 1  C8           	iny				;
+0001C9r 1  98           	tya				;
+0001CAr 1  9D rr rr     	sta	__env_voi_ptr,x		;
+0001CDr 1  4C rr rr     	jmp	Voice_Exit
+0001D0r 1               
+0001D0r 1               @Value:
+0001D0r 1  48           	pha
+0001D1r 1  C8           	iny
+0001D2r 1  98           	tya
+0001D3r 1  9D rr rr     	sta	__env_voi_ptr,x
+0001D6r 1  68           	pla
+0001D7r 1               	;-----------------------
+0001D7r 1               	;Setting device (APU)
+0001D7r 1               Set_Voice:
+0001D7r 1  20 rr rr     	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
+0001DAr 1               Voice_Exit:
+0001DAr 1               
+0001DAr 1               	;-------------------------------
+0001DAr 1               	;Envelop of Volume
+0001DAr 1               Volume:
+0001DAr 1  BD rr rr     	lda	__chflag,x
+0001DDr 1  29 03        	and	#$03
+0001DFr 1  C9 03        	cmp	#$03
+0001E1r 1  F0 11        	beq	@L3	;mode = 3 だったら、エンベロープへ
+0001E3r 1  C9 01        	cmp	#$01
+0001E5r 1  F0 05        	beq	@L1		;mode = 1 で、リリース音量
+0001E7r 1               
+0001E7r 1  BD rr rr     @L2:	lda	__env_volume + 1,x
+0001EAr 1  D0 17        	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
+0001ECr 1  BD rr rr     @L1:	lda	__volume,x
+0001EFr 1  29 F0        	and	#$F0
+0001F1r 1  4C rr rr     	jmp	Set_Volume
+0001F4r 1               
+0001F4r 1  BD rr rr     @L3:	lda	__env_volume + 1,x
+0001F7r 1  D0 0A        	bne	@Envelop
+0001F9r 1  BD rr rr     	lda	__volume,x
+0001FCr 1  0A 0A 0A 0A  	shl	a, 4
+000200r 1  4C rr rr     	jmp	Set_Volume
+000203r 1               
+000203r 1               @Envelop:
+000203r 1  85 rr        	sta	__ptr + 1
+000205r 1  B5 rr 29 0F  	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
+000209r 1  F0 0A B5 rr  
+00020Dr 1  38 E9 01 95  
+000211r 1  rr 4C rr rr  
+000215r 1  BD rr rr 85  
+000219r 1  rr BC rr rr  
+00021Dr 1  B1 rr 10 13  
+000221r 1  C9 C0 90 06  
+000225r 1  29 3F A8 4C  
+000229r 1  rr rr 29 0F  
+00022Dr 1  15 rr 95 rr  
+000231r 1  4C rr rr 9D  
+000235r 1  rr rr C8 98  
+000239r 1  9D rr rr BD  
+00023Dr 1  rr rr        
+00023Fr 1               
+00023Fr 1  85 rr        	sta	__tmp
+000241r 1  BD rr rr     	lda	__volume,x
+000244r 1  A6 rr        	ldx	__tmp
+000246r 1  20 rr rr     	jsr	_nsd_mul
+000249r 1  A6 rr        	ldx	__channel
+00024Br 1               
+00024Br 1               	;-----------------------
+00024Br 1               	;Setting device (APU)
+00024Br 1               Set_Volume:
+00024Br 1  4C rr rr     	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
+00024Er 1               
+00024Er 1               .endproc
+00024Er 1               
+00024Er 1               

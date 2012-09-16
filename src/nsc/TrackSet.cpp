@@ -396,9 +396,9 @@ const	static	Command_Info	Command[] = {
 				nowTrack->SetEvent(new mml_general(nsd_Relative_Transpose, MML, "Relative Transpose"));
 				break;
 
-//			case(mml_Protament):
-				//¡ to do 
-//				break;
+			case(mml_Protament):
+				nowTrack->SetProtament(MML);
+				break;
 
 			case(mml_Sweep):
 				nowTrack->SetSweep(MML);

@@ -841,7 +841,7 @@ Freq:	;Frequency table
 	.word	$0815
 	.word	$0806
 	.word	$07F7
-	.word	$07E8
+	.word	$07E8	;A
 	.word	$07DA
 	.word	$07CB
 	.word	$07BD
@@ -849,7 +849,7 @@ Freq:	;Frequency table
 	.word	$07A1
 	.word	$0793
 	.word	$0785
-	.word	$0777
+	.word	$0777	;B (Bs / Ais)
 	.word	$0769
 	.word	$075B
 	.word	$074E
@@ -857,7 +857,7 @@ Freq:	;Frequency table
 	.word	$0733
 	.word	$0726
 	.word	$0719
-	.word	$070B
+	.word	$070B	;H (B)
 	.word	$06FE
 	.word	$06F2
 	.word	$06E5

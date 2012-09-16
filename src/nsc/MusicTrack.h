@@ -19,7 +19,7 @@ private:
 	unsigned	int		DefaultLength;
 				bool	loop_flag;
 
-				char	KeySignature[7];	//í≤çÜ(c,d,e...)
+				char	KeySignature[8];	//í≤çÜ(c,d,e,f,g,a,b,r)
 
 	mml_note*			_old_note;
 	mml_Address*		_old_repeatA_Branch;
@@ -59,6 +59,7 @@ public:
 				void	SetReleaseMode(MMLfile* MML);
 				void	SetReleaseVoice(MMLfile* MML);
 				void	SetReleaseVolume(MMLfile* MML);
+				void	SetProtament(MMLfile* MML);
 				void	SetPoke(MMLfile* MML);
 				void	SetKeySignature(MMLfile* MML);	//í≤çÜÇÃê›íË
 };

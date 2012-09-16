@@ -123,6 +123,66 @@ Frequency:
 	sta	__tmp + 1
 
 	;-------------------------------
+	;Por
+	lda	__por_target,x
+	beq	F_Env
+
+	lda	__por_depth,x
+	beq	Por_S
+
+	dec	__por_ctr,x		;MMLコンパイラではdecayを +1 する事。
+	bne	Por_S
+
+	lda	__por_rate,x
+	sta	__por_ctr,x
+
+	ldy	#$00
+	lda	__por_depth,x
+	bpl	@PL
+	ldy	#$FF
+@PL:	add	__por_now + 0,x
+	sta	__por_now + 0,x
+	tya
+	adc	__por_now + 1,x
+	sta	__por_now + 1,x		;__por_now += __por_depth
+
+	shl	a, 4
+	sta	__ptr
+	lda	__por_now + 0,x
+	shr	a, 4
+	ora	__ptr			;a = __por_now >> 4;
+
+	cpy	#$00
+	beq	Por_PL
+Por_MI:	cmp	__por_target,x		;if (a - __por_target < 0) then 
+	bcc	Por_O
+	bcs	Por_S
+Por_PL:	cmp	__por_target,x		;if (a - __por_target > 0) then 
+	bcs	Por_O
+	bcc	Por_S
+
+Por_O:	lda	__por_target,x
+	sta	__por_now + 1,x
+	shl	a, 4
+	sta	__por_now,x
+	lda	__por_now + 1,x
+	shr	a, 4
+	cpy	#00
+	beq	@L
+	ora	#$F0			;算術シフト的なもの
+@L:	sta	__por_now + 1,x
+	lda	#$0
+	sta	__por_rate,x
+	sta	__por_depth,x
+Por_S:	lda	__por_now,x
+	add	__tmp
+	sta	__tmp
+	lda	__por_now + 1,x
+	adc	__tmp + 1
+	sta	__tmp + 1
+Por_E:
+
+	;-------------------------------
 	;Envelop of Frequency
 F_Env:	lda	__env_frequency + 1,x
 	sta	__ptr + 1

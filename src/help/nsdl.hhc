@@ -135,6 +135,10 @@
 					<param name="Local" value="mml_KeySignature.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="P：ポルタメント">
+					<param name="Local" value="mml_portamento.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Rm,R@,Rv：リリース処理">
 					<param name="Local" value="mml_release.html">
 					</OBJECT>
@@ -186,6 +190,10 @@
 			<param name="Local" value="format_music.html">
 			</OBJECT>
 	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="FAQ">
+		<param name="Local" value="faq.html">
+		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="著作権">
 		<param name="Local" value="copyright.html">

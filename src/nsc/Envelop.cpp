@@ -132,9 +132,14 @@ const	static	Command_Info	Command[] = {
 
 			case(Env_Release):
 				if(Loop_Normal == -1){
-					MML->Err("リリースを指定しない場合は、ループポイントを指定して下さい。");
+					MML->Warning("ループポイントがありません。最後の値をループします。");
+					code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
+				} else {
+					if(ptEnvelop == Loop_Normal){
+						MML->Err("Lコマンドの直後にRコマンドを置くことはできません。");
+					}
+					code.append((char)1, (char)(Loop_Normal | 0xC0));
 				}
-				code.append((char)1, (char)(Loop_Normal | 0xC0));
 				ptEnvelop++;
 				code[0] = ptEnvelop;
 				Release = true;
@@ -152,14 +157,22 @@ const	static	Command_Info	Command[] = {
 
 	if(Release == true){
 		if(Loop_Release == -1){
-			MML->Err("リリースを指定する場合は、リリース時のループポイントを指定して下さい。");
+			MML->Warning("リリース時のループポイントがありません。最後の値をループします。");
+			code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
 		} else {
+			if(ptEnvelop == Loop_Release){
+				MML->Err("Lコマンドでパターン定義を終わることはできません。");
+			}
 			code.append((char)1, (char)(Loop_Release | 0xC0));
 		}
 	} else {
 		if(Loop_Normal == -1){
-			MML->Err("リリースを指定しない場合は、ループポイントを指定して下さい。");
+			MML->Warning("ループポイントがありません。最後の値をループします。");
+			code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
 		} else {
+			if(ptEnvelop == Loop_Normal){
+				MML->Err("Lコマンドでパターン定義を終わることはできません。");
+			}
 			code.append((char)1, (char)(Loop_Normal | 0xC0));
 		}
 	}

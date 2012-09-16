@@ -226,17 +226,12 @@ Current file: nsd_seq.s
 000000r 2               
 000000r 2               .Struct		NSD_Por_Lv
 000000r 2               	target		.byte		;`P' target
-000000r 2               	inc		.byte		;`P' add value
-000000r 2               .Endstruct
-000000r 2               
-000000r 2               .Struct		NSD_Por_Sp
-000000r 2               	decay		.byte		;
-000000r 2               	rate		.byte		;rate (speed)
+000000r 2               	depth		.byte		;`P' add value
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Por_Co
 000000r 2               	count		.byte		;rate control
-000000r 2               	lv		.byte		;now depth
+000000r 2               	rate		.byte		;now depth
 000000r 2               .Endstruct
 000000r 2               
 000000r 2               .Struct		NSD_Trans
@@ -281,8 +276,8 @@ Current file: nsd_seq.s
 000000r 2               	Note		.tag	NSD_note	nsd::Track	;octave and note command
 000000r 2               	Detune		.tag	NSD_Detune	nsd::Track	;detune
 000000r 2               	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
-000000r 2               	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
 000000r 2               	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
+000000r 2               	Por_now		.word			nsd::Track	;Portamento
 000000r 2               	Trans		.tag	NSD_Trans	nsd::Track	;Repeat and Transpose
 000000r 2               	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat and Transpose
 000000r 2               	Volume		.tag	NSD_volume	nsd::Track	;volume
@@ -343,11 +338,10 @@ Current file: nsd_seq.s
 000000r 2               .define	__detune_cent	nsd_work + NSD_work::Detune + NSD_Detune::cent
 000000r 2               .define	__detune_fine	nsd_work + NSD_work::Detune + NSD_Detune::fine
 000000r 2               .define	__por_target	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::target
-000000r 2               .define	__por_inc	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::inc
-000000r 2               .define	__por_decay	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::decay
-000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
+000000r 2               .define	__por_depth	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::depth
 000000r 2               .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
-000000r 2               .define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
+000000r 2               .define	__por_rate	nsd_work + NSD_work::Por_Co + NSD_Por_Co::rate
+000000r 2               .define __por_now	nsd_work + NSD_work::Por_now
 000000r 2               .define	__trans		nsd_work + NSD_work::Trans + NSD_Trans::trans
 000000r 2               .define	__trans_one	nsd_work + NSD_work::Trans + NSD_Trans::onetime
 000000r 2               .define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
@@ -448,7 +442,7 @@ Current file: nsd_seq.s
 000000r 1               	;tai check
 000000r 1  BD rr rr     	lda	__tai,x
 000003r 1  29 02        	and	#$02
-000005r 1  D0 2D        	bne	exit
+000005r 1  D0 37        	bne	exit
 000007r 1               
 000007r 1               	;Software envelop Key on
 000007r 1  BD rr rr     	lda	__chflag,x
@@ -456,158 +450,165 @@ Current file: nsd_seq.s
 00000Cr 1  09 03        	ora	#nsd_chflag::KeyOff
 00000Er 1  9D rr rr     	sta	__chflag,x
 000011r 1               
-000011r 1               	;Hardware key on
-000011r 1  20 rr rr     	jsr	_nsd_snd_keyon
-000014r 1               
-000014r 1  A9 00        	lda	#$00
-000016r 1  95 rr        	sta	__Envelop_F,x
-000018r 1  A9 01        	lda	#$01
-00001Ar 1  9D rr rr     	sta	__env_freq_ptr,x
-00001Dr 1  9D rr rr     	sta	__env_note_ptr,x
-000020r 1               
-000020r 1  E0 04        	cpx	#nsd::TR_BGM3
-000022r 1  F0 10        	beq	exit
-000024r 1  E0 08        	cpx	#nsd::TR_BGM5
-000026r 1  F0 0C        	beq	exit
-000028r 1               
-000028r 1  A9 00        	lda	#$00
-00002Ar 1  95 rr        	sta	__Envelop_V,x
-00002Cr 1  A9 01        	lda	#$01
-00002Er 1  9D rr rr     	sta	__env_voi_ptr,x
-000031r 1  9D rr rr     	sta	__env_vol_ptr,x
-000034r 1               
-000034r 1  60           exit:	rts
-000035r 1               .endproc
-000035r 1               
-000035r 1               ;=======================================================================
-000035r 1               ;		nsd_keyoff
-000035r 1               ;-----------------------------------------------------------------------
-000035r 1               ;<<Contents>>
-000035r 1               ;	Key Off
-000035r 1               ;<<Input>>
-000035r 1               ;	nothing
-000035r 1               ;<<Output>>
-000035r 1               ;	nothing
-000035r 1               ;=======================================================================
-000035r 1               .proc	nsd_keyoff
-000035r 1               
-000035r 1               	; to do	tai check
-000035r 1  BD rr rr     	lda	__tai,x
-000038r 1  29 01        	and	#$01
-00003Ar 1  D0 09        	bne	@E
-00003Cr 1               
-00003Cr 1  BD rr rr     	lda	__chflag,x
-00003Fr 1  29 03        	and	#nsd_chflag::KeyOff
-000041r 1  C9 03        	cmp	#nsd_chflag::KeyOff
-000043r 1  F0 01        	beq	@L			;Key Onの時のみ、処理。
-000045r 1               
-000045r 1  60           @E:	rts
-000046r 1               @L:
-000046r 1               	;Software key Off
+000011r 1               	;Portamento
+000011r 1  BD rr rr     	lda	__por_depth,x
+000014r 1  D0 05        	bne	@L		;ポルタメントが終了していたら、無効化する。
+000016r 1  A9 00        	lda	#0
+000018r 1  9D rr rr     	sta	__por_target,x
+00001Br 1               @L:
+00001Br 1               
+00001Br 1               	;Hardware key on
+00001Br 1  20 rr rr     	jsr	_nsd_snd_keyon
+00001Er 1               
+00001Er 1  A9 00        	lda	#$00
+000020r 1  95 rr        	sta	__Envelop_F,x
+000022r 1  A9 01        	lda	#$01
+000024r 1  9D rr rr     	sta	__env_freq_ptr,x
+000027r 1  9D rr rr     	sta	__env_note_ptr,x
+00002Ar 1               
+00002Ar 1  E0 04        	cpx	#nsd::TR_BGM3
+00002Cr 1  F0 10        	beq	exit
+00002Er 1  E0 08        	cpx	#nsd::TR_BGM5
+000030r 1  F0 0C        	beq	exit
+000032r 1               
+000032r 1  A9 00        	lda	#$00
+000034r 1  95 rr        	sta	__Envelop_V,x
+000036r 1  A9 01        	lda	#$01
+000038r 1  9D rr rr     	sta	__env_voi_ptr,x
+00003Br 1  9D rr rr     	sta	__env_vol_ptr,x
+00003Er 1               
+00003Er 1  60           exit:	rts
+00003Fr 1               .endproc
+00003Fr 1               
+00003Fr 1               ;=======================================================================
+00003Fr 1               ;		nsd_keyoff
+00003Fr 1               ;-----------------------------------------------------------------------
+00003Fr 1               ;<<Contents>>
+00003Fr 1               ;	Key Off
+00003Fr 1               ;<<Input>>
+00003Fr 1               ;	nothing
+00003Fr 1               ;<<Output>>
+00003Fr 1               ;	nothing
+00003Fr 1               ;=======================================================================
+00003Fr 1               .proc	nsd_keyoff
+00003Fr 1               
+00003Fr 1               	; to do	tai check
+00003Fr 1  BD rr rr     	lda	__tai,x
+000042r 1  29 01        	and	#$01
+000044r 1  D0 09        	bne	@E
+000046r 1               
 000046r 1  BD rr rr     	lda	__chflag,x
-000049r 1  29 FC        	and	#~nsd_chflag::KeyOff
-00004Br 1  1D rr rr     	ora	__gatemode,x
-00004Er 1  9D rr rr     	sta	__chflag,x
-000051r 1               
-000051r 1               	;Hardware key off
-000051r 1  20 rr rr     	jsr	_nsd_snd_keyoff
-000054r 1               
-000054r 1  A9 00        	lda	#$00
-000056r 1  A8           	tay
-000057r 1  9D rr rr     	sta	__por_target,x		;Por off
-00005Ar 1               
-00005Ar 1               	;Frequency Envelop keyoff
-00005Ar 1  BD rr rr     	lda	__env_frequency,x
-00005Dr 1  85 rr        	sta	__ptr
-00005Fr 1  BD rr rr     	lda	__env_frequency + 1,x
-000062r 1  85 rr        	sta	__ptr + 1
-000064r 1  B1 rr        	lda	(__ptr),y
-000066r 1  F0 09        	beq	Freq_End
-000068r 1  9D rr rr     	sta	__env_freq_ptr,x
-00006Br 1  B5 rr        	lda	__Envelop_F,x
-00006Dr 1  29 F0        	and	#$F0
-00006Fr 1  95 rr        	sta	__Envelop_F,x
-000071r 1               Freq_End:
-000071r 1               
-000071r 1               	;Note Envelop keyoff
-000071r 1  BD rr rr     	lda	__env_note,x
-000074r 1  85 rr        	sta	__ptr
-000076r 1  BD rr rr     	lda	__env_note + 1,x
-000079r 1  85 rr        	sta	__ptr + 1
-00007Br 1  B1 rr        	lda	(__ptr),y
-00007Dr 1  F0 09        	beq	Note_End
-00007Fr 1  9D rr rr     	sta	__env_note_ptr,x
-000082r 1  B5 rr        	lda	__Envelop_F,x
-000084r 1  29 0F        	and	#$0F
-000086r 1  95 rr        	sta	__Envelop_F,x
-000088r 1               Note_End:
-000088r 1               
-000088r 1  E0 04        	cpx	#nsd::TR_BGM3
-00008Ar 1  F0 32        	beq	exit
-00008Cr 1  E0 08        	cpx	#nsd::TR_BGM5
-00008Er 1  F0 2E        	beq	exit
-000090r 1               
-000090r 1               	;Voice Envelop keyoff
-000090r 1  BD rr rr     	lda	__env_voice,x
-000093r 1  85 rr        	sta	__ptr
-000095r 1  BD rr rr     	lda	__env_voice + 1,x
-000098r 1  85 rr        	sta	__ptr + 1
-00009Ar 1  B1 rr        	lda	(__ptr),y
-00009Cr 1  F0 09        	beq	Voice_End
-00009Er 1  9D rr rr     	sta	__env_voi_ptr,x
-0000A1r 1  B5 rr        	lda	__Envelop_V,x
-0000A3r 1  29 0F        	and	#$0F
-0000A5r 1  95 rr        	sta	__Envelop_V,x
-0000A7r 1               Voice_End:
-0000A7r 1               
-0000A7r 1               	;Volume Envelop keyoff
-0000A7r 1  BD rr rr     	lda	__env_volume,x
-0000AAr 1  85 rr        	sta	__ptr
-0000ACr 1  BD rr rr     	lda	__env_volume + 1,x
-0000AFr 1  85 rr        	sta	__ptr + 1
-0000B1r 1  B1 rr        	lda	(__ptr),y
-0000B3r 1  F0 09        	beq	Volume_End
-0000B5r 1  9D rr rr     	sta	__env_vol_ptr,x
-0000B8r 1  B5 rr        	lda	__Envelop_V,x
-0000BAr 1  29 F0        	and	#$F0
-0000BCr 1  95 rr        	sta	__Envelop_V,x
-0000BEr 1               Volume_End:
-0000BEr 1               
-0000BEr 1  60           exit:	rts
-0000BFr 1               .endproc
-0000BFr 1               
-0000BFr 1               ;=======================================================================
-0000BFr 1               ;		nsd_load_sequence;
-0000BFr 1               ;-----------------------------------------------------------------------
-0000BFr 1               ;<<Contents>>
-0000BFr 1               ;	read sequence data
-0000BFr 1               ;<<Input>>
-0000BFr 1               ;	x	Channel * 2
-0000BFr 1               ;	nds_work.Sequence_ptr
-0000BFr 1               ;<<Output>>
-0000BFr 1               ;	a	sequence datq
-0000BFr 1               ;=======================================================================
-0000BFr 1               .proc	nsd_load_sequence
-0000BFr 1  A1 rr        	lda	(__Sequence_ptr,x)
-0000C1r 1  F6 rr        	inc	__Sequence_ptr,x
-0000C3r 1  D0 02        	bne	exit
-0000C5r 1  F6 rr        	inc	__Sequence_ptr + 1,x
-0000C7r 1  60           exit:	rts
-0000C8r 1               .endproc
-0000C8r 1               
-0000C8r 1               ;=======================================================================
-0000C8r 1               ;	void	nsd_sequence(void);
-0000C8r 1               ;-----------------------------------------------------------------------
-0000C8r 1               ;<<Contents>>
-0000C8r 1               ;	Play sequence and control gate time
-0000C8r 1               ;<<Input>>
-0000C8r 1               ;	x	Channel * 2
-0000C8r 1               ;<<Output>>
-0000C8r 1               ;	nothing
-0000C8r 1               ;=======================================================================
-0000C8r 1               .proc	nsd_sequence
-0000C8r 1               
-0000C8r 1               .rodata
+000049r 1  29 03        	and	#nsd_chflag::KeyOff
+00004Br 1  C9 03        	cmp	#nsd_chflag::KeyOff
+00004Dr 1  F0 01        	beq	@L			;Key Onの時のみ、処理。
+00004Fr 1               
+00004Fr 1  60           @E:	rts
+000050r 1               @L:
+000050r 1               	;Software key Off
+000050r 1  BD rr rr     	lda	__chflag,x
+000053r 1  29 FC        	and	#~nsd_chflag::KeyOff
+000055r 1  1D rr rr     	ora	__gatemode,x
+000058r 1  9D rr rr     	sta	__chflag,x
+00005Br 1               
+00005Br 1               	;Hardware key off
+00005Br 1  20 rr rr     	jsr	_nsd_snd_keyoff
+00005Er 1               
+00005Er 1  A9 00        	lda	#$00
+000060r 1  A8           	tay
+000061r 1               ;	sta	__por_target,x		;Por off
+000061r 1               
+000061r 1               	;Frequency Envelop keyoff
+000061r 1  BD rr rr     	lda	__env_frequency,x
+000064r 1  85 rr        	sta	__ptr
+000066r 1  BD rr rr     	lda	__env_frequency + 1,x
+000069r 1  85 rr        	sta	__ptr + 1
+00006Br 1  B1 rr        	lda	(__ptr),y
+00006Dr 1  F0 09        	beq	Freq_End
+00006Fr 1  9D rr rr     	sta	__env_freq_ptr,x
+000072r 1  B5 rr        	lda	__Envelop_F,x
+000074r 1  29 F0        	and	#$F0
+000076r 1  95 rr        	sta	__Envelop_F,x
+000078r 1               Freq_End:
+000078r 1               
+000078r 1               	;Note Envelop keyoff
+000078r 1  BD rr rr     	lda	__env_note,x
+00007Br 1  85 rr        	sta	__ptr
+00007Dr 1  BD rr rr     	lda	__env_note + 1,x
+000080r 1  85 rr        	sta	__ptr + 1
+000082r 1  B1 rr        	lda	(__ptr),y
+000084r 1  F0 09        	beq	Note_End
+000086r 1  9D rr rr     	sta	__env_note_ptr,x
+000089r 1  B5 rr        	lda	__Envelop_F,x
+00008Br 1  29 0F        	and	#$0F
+00008Dr 1  95 rr        	sta	__Envelop_F,x
+00008Fr 1               Note_End:
+00008Fr 1               
+00008Fr 1  E0 04        	cpx	#nsd::TR_BGM3
+000091r 1  F0 32        	beq	exit
+000093r 1  E0 08        	cpx	#nsd::TR_BGM5
+000095r 1  F0 2E        	beq	exit
+000097r 1               
+000097r 1               	;Voice Envelop keyoff
+000097r 1  BD rr rr     	lda	__env_voice,x
+00009Ar 1  85 rr        	sta	__ptr
+00009Cr 1  BD rr rr     	lda	__env_voice + 1,x
+00009Fr 1  85 rr        	sta	__ptr + 1
+0000A1r 1  B1 rr        	lda	(__ptr),y
+0000A3r 1  F0 09        	beq	Voice_End
+0000A5r 1  9D rr rr     	sta	__env_voi_ptr,x
+0000A8r 1  B5 rr        	lda	__Envelop_V,x
+0000AAr 1  29 0F        	and	#$0F
+0000ACr 1  95 rr        	sta	__Envelop_V,x
+0000AEr 1               Voice_End:
+0000AEr 1               
+0000AEr 1               	;Volume Envelop keyoff
+0000AEr 1  BD rr rr     	lda	__env_volume,x
+0000B1r 1  85 rr        	sta	__ptr
+0000B3r 1  BD rr rr     	lda	__env_volume + 1,x
+0000B6r 1  85 rr        	sta	__ptr + 1
+0000B8r 1  B1 rr        	lda	(__ptr),y
+0000BAr 1  F0 09        	beq	Volume_End
+0000BCr 1  9D rr rr     	sta	__env_vol_ptr,x
+0000BFr 1  B5 rr        	lda	__Envelop_V,x
+0000C1r 1  29 F0        	and	#$F0
+0000C3r 1  95 rr        	sta	__Envelop_V,x
+0000C5r 1               Volume_End:
+0000C5r 1               
+0000C5r 1  60           exit:	rts
+0000C6r 1               .endproc
+0000C6r 1               
+0000C6r 1               ;=======================================================================
+0000C6r 1               ;		nsd_load_sequence;
+0000C6r 1               ;-----------------------------------------------------------------------
+0000C6r 1               ;<<Contents>>
+0000C6r 1               ;	read sequence data
+0000C6r 1               ;<<Input>>
+0000C6r 1               ;	x	Channel * 2
+0000C6r 1               ;	nds_work.Sequence_ptr
+0000C6r 1               ;<<Output>>
+0000C6r 1               ;	a	sequence datq
+0000C6r 1               ;=======================================================================
+0000C6r 1               .proc	nsd_load_sequence
+0000C6r 1  A1 rr        	lda	(__Sequence_ptr,x)
+0000C8r 1  F6 rr        	inc	__Sequence_ptr,x
+0000CAr 1  D0 02        	bne	exit
+0000CCr 1  F6 rr        	inc	__Sequence_ptr + 1,x
+0000CEr 1  60           exit:	rts
+0000CFr 1               .endproc
+0000CFr 1               
+0000CFr 1               ;=======================================================================
+0000CFr 1               ;	void	nsd_sequence(void);
+0000CFr 1               ;-----------------------------------------------------------------------
+0000CFr 1               ;<<Contents>>
+0000CFr 1               ;	Play sequence and control gate time
+0000CFr 1               ;<<Input>>
+0000CFr 1               ;	x	Channel * 2
+0000CFr 1               ;<<Output>>
+0000CFr 1               ;	nothing
+0000CFr 1               ;=======================================================================
+0000CFr 1               .proc	nsd_sequence
+0000CFr 1               
+0000CFr 1               .rodata
 000000r 1               
 000000r 1  60           length:	.byte	96
 000001r 1  48           	.byte	72
@@ -692,557 +693,558 @@ Current file: nsd_seq.s
 00008Er 1  rr rr        	.addr	nsd_op3F
 000090r 1               
 000090r 1               .code
-0000C8r 1               
-0000C8r 1               	;-------------------------------
-0000C8r 1               	;now play?	(check: Sequence_ptr == 0 ?)	** upper 1 byte only **
-0000C8r 1  B5 rr        	lda	__Sequence_ptr + 1,x
-0000CAr 1  F0 7D        	beq	Exit
-0000CCr 1               
-0000CCr 1  86 rr        	stx	__channel		;channel <- x
-0000CEr 1               
-0000CEr 1               	;-------------------------------
-0000CEr 1               	;Gatetime control
-0000CEr 1               
-0000CEr 1               	;length == gatetime q ?
-0000CEr 1  D6 rr        	dec	__Length_ctr,x		;length--
-0000D0r 1  B5 rr        	lda	__Length_ctr,x
-0000D2r 1  D5 rr        	cmp	__Gate,x
-0000D4r 1  D0 03        	bne	GateTime_Exit		; if(__Length_ctr == __Gate){
-0000D6r 1  20 rr rr     	jsr	nsd_keyoff		; 	nsd_keyoff();
-0000D9r 1               GateTime_Exit:				; }
-0000D9r 1  B5 rr        	lda	__Length_ctr,x
-0000DBr 1  D0 6C        	bne	Exit		; if(__Length_ctr != 0){ return(); };
-0000DDr 1               
-0000DDr 1               	;-------------------------------
-0000DDr 1               	;Sequence		(length == 0)
-0000DDr 1               Sequence:
-0000DDr 1  20 rr rr     	jsr	nsd_load_sequence
-0000E0r 1               
-0000E0r 1  C9 80        	cmp	#$80
-0000E2r 1  90 79        	bcc	Control			;a >= 80 ?
+0000CFr 1               
+0000CFr 1               	;-------------------------------
+0000CFr 1               	;now play?	(check: Sequence_ptr == 0 ?)	** upper 1 byte only **
+0000CFr 1  B5 rr        	lda	__Sequence_ptr + 1,x
+0000D1r 1  F0 7D        	beq	Exit
+0000D3r 1               
+0000D3r 1  86 rr        	stx	__channel		;channel <- x
+0000D5r 1               
+0000D5r 1               	;-------------------------------
+0000D5r 1               	;Gatetime control
+0000D5r 1               
+0000D5r 1               	;length == gatetime q ?
+0000D5r 1  D6 rr        	dec	__Length_ctr,x		;length--
+0000D7r 1  B5 rr        	lda	__Length_ctr,x
+0000D9r 1  D5 rr        	cmp	__Gate,x
+0000DBr 1  D0 03        	bne	GateTime_Exit		; if(__Length_ctr == __Gate){
+0000DDr 1  20 rr rr     	jsr	nsd_keyoff		; 	nsd_keyoff();
+0000E0r 1               GateTime_Exit:				; }
+0000E0r 1  B5 rr        	lda	__Length_ctr,x
+0000E2r 1  D0 6C        	bne	Exit		; if(__Length_ctr != 0){ return(); };
 0000E4r 1               
-0000E4r 1               	;-----------------------
-0000E4r 1               	;op-code = 0x80 - 0xFF
-0000E4r 1               Note:
-0000E4r 1  A8           	tay	;save a to y
-0000E5r 1               
-0000E5r 1               	;-------
-0000E5r 1               	;bit 4 check (Slur)
-0000E5r 1               Chk_Slur:
-0000E5r 1  18           	clc
-0000E6r 1  29 10        	and	#$10
-0000E8r 1  F0 01        	beq	@L
-0000EAr 1  38           	sec
-0000EBr 1  3E rr rr     @L:	rol	__tai,x
-0000EEr 1               
-0000EEr 1               	;-------
-0000EEr 1               	;bit 5 check (Length )
-0000EEr 1               Chk_Length:
-0000EEr 1  98           	tya
-0000EFr 1  29 20        	and	#$20
-0000F1r 1  F0 06        	beq	@L
-0000F3r 1  20 rr rr     	jsr	nsd_load_sequence
-0000F6r 1  4C rr rr     	jmp	@E
-0000F9r 1  BD rr rr     @L:	lda	__length,x
-0000FCr 1  95 rr        @E:	sta	__Length_ctr,x
-0000FEr 1               
-0000FEr 1               	;-------
-0000FEr 1               	;bit 6 check (Gate Time)
-0000FEr 1               Chk_GateTime:
-0000FEr 1  98           	tya
-0000FFr 1  29 40        	and	#$40
-000101r 1  F0 10        	beq	@L
-000103r 1  20 rr rr     	jsr	nsd_load_sequence
-000106r 1  85 rr        	sta	__tmp
-000108r 1  B5 rr        	lda	__Length_ctr,x
-00010Ar 1  38 E5 rr     	sub	__tmp			; a = __Length_ctr - __Gate;
-00010Dr 1  B0 19        	bcs	@gateset		; if(a < 0){
-00010Fr 1  A9 00        	lda	#$0			;    a = 0x0; //no gate
-000111r 1  F0 15        	beq	@gateset		; }	// relative jump because "0"
-000113r 1               @L:
-000113r 1  BD rr rr     	lda	__gate_u,x		;if (__gate_u,x == 0) then @q
-000116r 1  F0 0D        	beq	@q			;
-000118r 1  B5 rr        	lda	__Length_ctr,x
-00011Ar 1  38 FD rr rr  	sub	__gate_u,x		; a = __Length_ctr - __Gate
-00011Er 1  90 05        	bcc	@q			; if (a < 0) then @q
-000120r 1  DD rr rr     	cmp	__gate_q,x		;
-000123r 1  B0 03        	bcs	@gateset		; if( a < __gate_q){
-000125r 1  BD rr rr     @q:	lda	__gate_q,x		;    a = __gate_q;
-000128r 1               @gateset:				; }
-000128r 1  95 rr        	sta	__Gate,x
-00012Ar 1               
-00012Ar 1               Calc_Note_Number:
-00012Ar 1  98           	tya
-00012Br 1  29 0F        	and	#$0F
-00012Dr 1  C9 0C        	cmp	#12
-00012Fr 1  90 19        	bcc	NoteSet
+0000E4r 1               	;-------------------------------
+0000E4r 1               	;Sequence		(length == 0)
+0000E4r 1               Sequence:
+0000E4r 1  20 rr rr     	jsr	nsd_load_sequence
+0000E7r 1               
+0000E7r 1  C9 80        	cmp	#$80
+0000E9r 1  90 79        	bcc	Control			;a >= 80 ?
+0000EBr 1               
+0000EBr 1               	;-----------------------
+0000EBr 1               	;op-code = 0x80 - 0xFF
+0000EBr 1               Note:
+0000EBr 1  A8           	tay	;save a to y
+0000ECr 1               
+0000ECr 1               	;-------
+0000ECr 1               	;bit 4 check (Slur)
+0000ECr 1               Chk_Slur:
+0000ECr 1  18           	clc
+0000EDr 1  29 10        	and	#$10
+0000EFr 1  F0 01        	beq	@L
+0000F1r 1  38           	sec
+0000F2r 1  3E rr rr     @L:	rol	__tai,x
+0000F5r 1               
+0000F5r 1               	;-------
+0000F5r 1               	;bit 5 check (Length )
+0000F5r 1               Chk_Length:
+0000F5r 1  98           	tya
+0000F6r 1  29 20        	and	#$20
+0000F8r 1  F0 06        	beq	@L
+0000FAr 1  20 rr rr     	jsr	nsd_load_sequence
+0000FDr 1  4C rr rr     	jmp	@E
+000100r 1  BD rr rr     @L:	lda	__length,x
+000103r 1  95 rr        @E:	sta	__Length_ctr,x
+000105r 1               
+000105r 1               	;-------
+000105r 1               	;bit 6 check (Gate Time)
+000105r 1               Chk_GateTime:
+000105r 1  98           	tya
+000106r 1  29 40        	and	#$40
+000108r 1  F0 10        	beq	@L
+00010Ar 1  20 rr rr     	jsr	nsd_load_sequence
+00010Dr 1  85 rr        	sta	__tmp
+00010Fr 1  B5 rr        	lda	__Length_ctr,x
+000111r 1  38 E5 rr     	sub	__tmp			; a = __Length_ctr - __Gate;
+000114r 1  B0 19        	bcs	@gateset		; if(a < 0){
+000116r 1  A9 00        	lda	#$0			;    a = 0x0; //no gate
+000118r 1  F0 15        	beq	@gateset		; }	// relative jump because "0"
+00011Ar 1               @L:
+00011Ar 1  BD rr rr     	lda	__gate_u,x		;if (__gate_u,x == 0) then @q
+00011Dr 1  F0 0D        	beq	@q			;
+00011Fr 1  B5 rr        	lda	__Length_ctr,x
+000121r 1  38 FD rr rr  	sub	__gate_u,x		; a = __Length_ctr - __Gate
+000125r 1  90 05        	bcc	@q			; if (a < 0) then @q
+000127r 1  DD rr rr     	cmp	__gate_q,x		;
+00012Ar 1  B0 03        	bcs	@gateset		; if( a < __gate_q){
+00012Cr 1  BD rr rr     @q:	lda	__gate_q,x		;    a = __gate_q;
+00012Fr 1               @gateset:				; }
+00012Fr 1  95 rr        	sta	__Gate,x
 000131r 1               
-000131r 1  29 0F        @Rest:	and	#$0F
-000133r 1  38 E9 0D     	sub	#$0D
-000136r 1  85 rr        	sta	__tmp
-000138r 1  BD rr rr     	lda	__tai,x
-00013Br 1  29 02        	and	#$02
-00013Dr 1  D0 0A        	bne	Exit		;If tai then exit
-00013Fr 1  BD rr rr     	lda	__chflag,x
-000142r 1  29 FC        	and	#~nsd_chflag::KeyOff
-000144r 1  05 rr        	ora	__tmp
-000146r 1  9D rr rr     	sta	__chflag,x
-000149r 1               Exit:
-000149r 1  60           	rts
-00014Ar 1               
-00014Ar 1               NoteSet:
-00014Ar 1  18 7D rr rr  	add	__octave,x
-00014Er 1  18 7D rr rr  	add	__trans_one,x
-000152r 1  9D rr rr     	sta	__note,x
-000155r 1  A9 00        	lda	#0
-000157r 1  9D rr rr     	sta	__trans_one,x	;0 reset
-00015Ar 1  4C rr rr     	jmp	nsd_keyon
-00015Dr 1               
-00015Dr 1               
-00015Dr 1               	;-----------------------
-00015Dr 1               	;op-code = 0x00 - 0x7F
-00015Dr 1               Control:
-00015Dr 1  C9 40        	cmp	#$40
-00015Fr 1  B0 0F        	bcs	Short_Control
-000161r 1               	;---------------
-000161r 1               	;op-code = 0x00 - 0x3F
-000161r 1  0A           	asl
-000162r 1  A8           	tay				;x <- a * 2
-000163r 1  B9 rr rr     	lda	opaddr,y
-000166r 1  85 rr        	sta	__ptr
-000168r 1  B9 rr rr     	lda	opaddr + 1,y
-00016Br 1  85 rr        	sta	__ptr + 1
-00016Dr 1  6C rr rr     	jmp	(__ptr)			;jump for each op-code
-000170r 1               
-000170r 1               	;---------------
-000170r 1               	;op-code = 0x40 - 0x7F
-000170r 1               Short_Control:
-000170r 1               
-000170r 1               	;---------------
-000170r 1               	;op-code = 0x40 - 0x7F
-000170r 1               	;---------------
-000170r 1               	;0x40 - 0x4F
-000170r 1  C9 50        op40:	cmp	#$50
-000172r 1  B0 0C        	bcs	op50
-000174r 1  29 0F        	and	#$0F
-000176r 1               	;Set default length
-000176r 1  A8           	tay
-000177r 1  B9 rr rr     	lda	length,y
-00017Ar 1  9D rr rr     	sta	__length,x		;__length = length[a & 0x0F];
-00017Dr 1  4C rr rr     	jmp	Sequence
-000180r 1               	;---------------
-000180r 1               	;0x50 - 0x5F
-000180r 1  C9 60        op50:	cmp	#$60
-000182r 1  B0 08        	bcs	op60
-000184r 1  29 0F        	and	#$0F
-000186r 1               	;Set gate time (1)
-000186r 1  9D rr rr     	sta	__gate_q,x		;__gate_q = a & 0x0F;
-000189r 1  4C rr rr     	jmp	Sequence
-00018Cr 1               	;---------------
-00018Cr 1               	;0x60 - 0x6F
-00018Cr 1  C9 70        op60:	cmp	#$70
-00018Er 1  B0 11        	bcs	op70
-000190r 1  29 0F        	and	#$0F
-000192r 1               	;Set volume
-000192r 1  85 rr        	sta	__tmp
-000194r 1  BD rr rr     	lda	__volume,x
-000197r 1  29 F0        	and	#$F0
-000199r 1  05 rr        	ora	__tmp
-00019Br 1  9D rr rr     	sta	__volume,x		;__volume = (__volume & 0xF0) | (a & 0x0F);
-00019Er 1  4C rr rr     	jmp	Sequence
-0001A1r 1               	;---------------
-0001A1r 1               	;0x70 - 0x7F
-0001A1r 1               op70:	;Ser release volume
-0001A1r 1  0A 0A 0A 0A  	shl	a, 4
-0001A5r 1  85 rr        	sta	__tmp
-0001A7r 1  BD rr rr     	lda	__volume,x
-0001AAr 1  29 0F        	and	#$0F
-0001ACr 1  05 rr        	ora	__tmp
-0001AEr 1  9D rr rr     	sta	__volume,x		;__volume = (__volume & 0x0F) | (a << 4);
-0001B1r 1  4C rr rr     	jmp	Sequence
-0001B4r 1               
-0001B4r 1               ;=======================================================================
-0001B4r 1               ;		opcode	0x00:	End of Track / End of Subroutine
-0001B4r 1               ;-----------------------------------------------------------------------
-0001B4r 1               nsd_op00:
-0001B4r 1  BD rr rr     	lda	__subroutine + 1,x
-0001B7r 1  95 rr        	sta	__Sequence_ptr + 1,x
-0001B9r 1  F0 10        	beq	@L	;if (a == 0)
-0001BBr 1  BD rr rr     	lda	__subroutine,x
-0001BEr 1  95 rr        	sta	__Sequence_ptr,x	;戻るときは代入
-0001C0r 1  A9 00        	lda	#0
-0001C2r 1  9D rr rr     	sta	__subroutine,x
-0001C5r 1  9D rr rr     	sta	__subroutine + 1,x
-0001C8r 1  4C rr rr     	jmp	Sequence
-0001CBr 1               @L:
-0001CBr 1  95 rr        	sta	__Sequence_ptr,x
-0001CDr 1               
-0001CDr 1  BD rr rr     	lda	__chflag,x
-0001D0r 1  29 FC        	and	#~nsd_chflag::KeyOff
-0001D2r 1  9D rr rr     	sta	__chflag,x
-0001D5r 1               ;
-0001D5r 1               ;	Sweepの状態を元に戻す。
-0001D5r 1               ;
-0001D5r 1               @SE1:	;lda	__chflag,x
-0001D5r 1  29 40        	and	#nsd_chflag::SE1
-0001D7r 1  F0 09        	beq	@SE2
-0001D9r 1  AD rr rr     	lda	__sweep_ch1
-0001DCr 1  20 rr rr     	jsr	_nsd_snd_sweep
-0001DFr 1  4C rr rr     	jmp	@Exit
-0001E2r 1               
-0001E2r 1  BD rr rr     @SE2:	lda	__chflag,x
-0001E5r 1  29 80        	and	#nsd_chflag::SE2
-0001E7r 1  F0 06        	beq	@Exit
-0001E9r 1  AD rr rr     	lda	__sweep_ch2
-0001ECr 1  20 rr rr     	jsr	_nsd_snd_sweep
-0001EFr 1               
-0001EFr 1               @Exit:
-0001EFr 1  60           	rts
-0001F0r 1               
-0001F0r 1               ;=======================================================================
-0001F0r 1               ;		opcode	0x02:	Sub-routine call
-0001F0r 1               ;-----------------------------------------------------------------------
-0001F0r 1               nsd_op02:
-0001F0r 1  B5 rr        	lda	__Sequence_ptr,x
-0001F2r 1  18 69 02     	add	#2
-0001F5r 1  9D rr rr     	sta	__subroutine,x
-0001F8r 1  B5 rr        	lda	__Sequence_ptr + 1,x
-0001FAr 1  69 00        	adc	#0
-0001FCr 1  9D rr rr     	sta	__subroutine + 1,x		;2byte先のポインタを記憶する。
-0001FFr 1               
-0001FFr 1               ;=======================================================================
-0001FFr 1               ;		opcode	0x01:	Jump (End of Track with loop)
-0001FFr 1               ;-----------------------------------------------------------------------
-0001FFr 1               nsd_op01:
-0001FFr 1               Jump:
-0001FFr 1  B4 rr        	ldy	__Sequence_ptr,x
-000201r 1  84 rr        	sty	__ptr			;
-000203r 1  B4 rr        	ldy	__Sequence_ptr + 1,x
-000205r 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
-000207r 1               
-000207r 1  20 rr rr     	jsr	nsd_load_sequence
-00020Ar 1  85 rr        	sta	__tmp
-00020Cr 1  20 rr rr     	jsr	nsd_load_sequence
-00020Fr 1  85 rr        	sta	__tmp + 1		;__tmp = value
-000211r 1               
-000211r 1  A5 rr        	lda	__ptr
-000213r 1  18 65 rr     	add	__tmp
-000216r 1  95 rr        	sta	__Sequence_ptr,x
-000218r 1  A5 rr        	lda	__ptr + 1
-00021Ar 1  65 rr        	adc	__tmp + 1
-00021Cr 1  95 rr        	sta	__Sequence_ptr + 1,x	;__Sequence_ptr = __ptr + __tmp
-00021Er 1               
-00021Er 1  4C rr rr     	jmp	Sequence
-000221r 1               
-000221r 1               ;=======================================================================
-000221r 1               ;		opcode	0x03:	Repeat start.
-000221r 1               ;-----------------------------------------------------------------------
-000221r 1               nsd_op03:
-000221r 1  20 rr rr     	jsr	nsd_load_sequence
-000224r 1  9D rr rr     	sta	__repeat_ctr,x
-000227r 1  4C rr rr     	jmp	Sequence
-00022Ar 1               
-00022Ar 1               ;=======================================================================
-00022Ar 1               ;		opcode	0x04:	Repeat break.
-00022Ar 1               ;-----------------------------------------------------------------------
-00022Ar 1               nsd_op04:
-00022Ar 1  BD rr rr     	lda	__repeat_ctr,x
-00022Dr 1  C9 01        	cmp	#1
-00022Fr 1  F0 CE        	beq	Jump
-000231r 1  20 rr rr     	jsr	nsd_load_sequence
-000234r 1  20 rr rr     	jsr	nsd_load_sequence
-000237r 1  4C rr rr     	jmp	Sequence
-00023Ar 1               
-00023Ar 1               ;=======================================================================
-00023Ar 1               ;		opcode	0x05:	Repeat end.
-00023Ar 1               ;-----------------------------------------------------------------------
-00023Ar 1               nsd_op05:
-00023Ar 1  DE rr rr     	dec	__repeat_ctr,x
-00023Dr 1  D0 C0        	bne	Jump
-00023Fr 1  20 rr rr     	jsr	nsd_load_sequence
-000242r 1  20 rr rr     	jsr	nsd_load_sequence
-000245r 1               nsd_op06:
-000245r 1  4C rr rr     	jmp	Sequence
-000248r 1               
-000248r 1               ;=======================================================================
-000248r 1               ;		opcode	0x18:	Repeat start.
-000248r 1               ;-----------------------------------------------------------------------
-000248r 1               nsd_op18:
-000248r 1  A9 00        	lda	#0			;counter <= 0
-00024Ar 1  9D rr rr     	sta	__repeat_ctr2,x
-00024Dr 1  4C rr rr     	jmp	Sequence
-000250r 1               
-000250r 1               ;=======================================================================
-000250r 1               ;		opcode	0x19:	repeat 1 time point
-000250r 1               ;-----------------------------------------------------------------------
-000250r 1               nsd_op19:
-000250r 1  BD rr rr     	lda	__repeat_ctr2,x
-000253r 1  F0 0A        	beq	@exit			;counter == 0 だったら何もしない。
-000255r 1  BD rr rr     	lda	__repeat2,x
-000258r 1  95 rr        	sta	__Sequence_ptr,x
-00025Ar 1  BD rr rr     	lda	__repeat2 + 1,x
-00025Dr 1  95 rr        	sta	__Sequence_ptr + 1,x	;それ以外は、 :| の次にジャンプ
-00025Fr 1               @exit:
-00025Fr 1  4C rr rr     	jmp	Sequence
-000262r 1               
-000262r 1               ;=======================================================================
-000262r 1               ;		opcode	0x1A:	Repeat end.
-000262r 1               ;-----------------------------------------------------------------------
-000262r 1               nsd_op1A:
-000262r 1  FE rr rr     	inc	__repeat_ctr2,x		;counter ++
-000265r 1               
-000265r 1  B5 rr        	lda	__Sequence_ptr,x
-000267r 1  18 69 02     	add	#2
-00026Ar 1  9D rr rr     	sta	__repeat2,x
-00026Dr 1  B5 rr        	lda	__Sequence_ptr + 1,x
-00026Fr 1  69 00        	adc	#0
-000271r 1  9D rr rr     	sta	__repeat2 + 1,x		;2byte先のポインタを記憶する。
-000274r 1               
-000274r 1  4C rr rr     	jmp	Jump			;相対ジャンプへ
-000277r 1               
-000277r 1               ;=======================================================================
-000277r 1               ;		opcode	0x07:	Write data to memory.
-000277r 1               ;-----------------------------------------------------------------------
-000277r 1               nsd_op07:
-000277r 1  20 rr rr     	jsr	nsd_load_sequence
-00027Ar 1  85 rr        	sta	__ptr
-00027Cr 1  20 rr rr     	jsr	nsd_load_sequence
-00027Fr 1  85 rr        	sta	__ptr + 1
-000281r 1  20 rr rr     	jsr	nsd_load_sequence
-000284r 1  A0 00        	ldy	#0
-000286r 1  91 rr        	sta	(__ptr),y
-000288r 1  4C rr rr     	jmp	Sequence
-00028Br 1               
-00028Br 1               ;=======================================================================
-00028Br 1               ;		opcode	0x08:	Tempo [BPM]
-00028Br 1               ;-----------------------------------------------------------------------
-00028Br 1               nsd_op08:
-00028Br 1  BD rr rr     	lda	__chflag,x
-00028Er 1  29 C0        	and	#nsd_chflag::SE1 + nsd_chflag::SE2
-000290r 1  D0 08        	bne	Set_Tempo_SE
-000292r 1  20 rr rr     	jsr	nsd_load_sequence
-000295r 1               Set_Tempo:
-000295r 1  85 rr        	sta	__Tempo
+000131r 1               Calc_Note_Number:
+000131r 1  98           	tya
+000132r 1  29 0F        	and	#$0F
+000134r 1  C9 0C        	cmp	#12
+000136r 1  90 19        	bcc	NoteSet
+000138r 1               
+000138r 1  29 0F        @Rest:	and	#$0F
+00013Ar 1  38 E9 0D     	sub	#$0D
+00013Dr 1  85 rr        	sta	__tmp
+00013Fr 1  BD rr rr     	lda	__tai,x
+000142r 1  29 02        	and	#$02
+000144r 1  D0 0A        	bne	Exit		;If tai then exit
+000146r 1  BD rr rr     	lda	__chflag,x
+000149r 1  29 FC        	and	#~nsd_chflag::KeyOff
+00014Br 1  05 rr        	ora	__tmp
+00014Dr 1  9D rr rr     	sta	__chflag,x
+000150r 1               Exit:
+000150r 1  60           	rts
+000151r 1               
+000151r 1               NoteSet:
+000151r 1  18 7D rr rr  	add	__octave,x
+000155r 1  18 7D rr rr  	add	__trans_one,x
+000159r 1  9D rr rr     	sta	__note,x
+00015Cr 1  A9 00        	lda	#0
+00015Er 1  9D rr rr     	sta	__trans_one,x	;0 reset
+000161r 1  4C rr rr     	jmp	nsd_keyon
+000164r 1               
+000164r 1               
+000164r 1               
+000164r 1               	;-----------------------
+000164r 1               	;op-code = 0x00 - 0x7F
+000164r 1               Control:
+000164r 1  C9 40        	cmp	#$40
+000166r 1  B0 0F        	bcs	Short_Control
+000168r 1               	;---------------
+000168r 1               	;op-code = 0x00 - 0x3F
+000168r 1  0A           	asl
+000169r 1  A8           	tay				;x <- a * 2
+00016Ar 1  B9 rr rr     	lda	opaddr,y
+00016Dr 1  85 rr        	sta	__ptr
+00016Fr 1  B9 rr rr     	lda	opaddr + 1,y
+000172r 1  85 rr        	sta	__ptr + 1
+000174r 1  6C rr rr     	jmp	(__ptr)			;jump for each op-code
+000177r 1               
+000177r 1               	;---------------
+000177r 1               	;op-code = 0x40 - 0x7F
+000177r 1               Short_Control:
+000177r 1               
+000177r 1               	;---------------
+000177r 1               	;op-code = 0x40 - 0x7F
+000177r 1               	;---------------
+000177r 1               	;0x40 - 0x4F
+000177r 1  C9 50        op40:	cmp	#$50
+000179r 1  B0 0C        	bcs	op50
+00017Br 1  29 0F        	and	#$0F
+00017Dr 1               	;Set default length
+00017Dr 1  A8           	tay
+00017Er 1  B9 rr rr     	lda	length,y
+000181r 1  9D rr rr     	sta	__length,x		;__length = length[a & 0x0F];
+000184r 1  4C rr rr     	jmp	Sequence
+000187r 1               	;---------------
+000187r 1               	;0x50 - 0x5F
+000187r 1  C9 60        op50:	cmp	#$60
+000189r 1  B0 08        	bcs	op60
+00018Br 1  29 0F        	and	#$0F
+00018Dr 1               	;Set gate time (1)
+00018Dr 1  9D rr rr     	sta	__gate_q,x		;__gate_q = a & 0x0F;
+000190r 1  4C rr rr     	jmp	Sequence
+000193r 1               	;---------------
+000193r 1               	;0x60 - 0x6F
+000193r 1  C9 70        op60:	cmp	#$70
+000195r 1  B0 11        	bcs	op70
+000197r 1  29 0F        	and	#$0F
+000199r 1               	;Set volume
+000199r 1  85 rr        	sta	__tmp
+00019Br 1  BD rr rr     	lda	__volume,x
+00019Er 1  29 F0        	and	#$F0
+0001A0r 1  05 rr        	ora	__tmp
+0001A2r 1  9D rr rr     	sta	__volume,x		;__volume = (__volume & 0xF0) | (a & 0x0F);
+0001A5r 1  4C rr rr     	jmp	Sequence
+0001A8r 1               	;---------------
+0001A8r 1               	;0x70 - 0x7F
+0001A8r 1               op70:	;Ser release volume
+0001A8r 1  0A 0A 0A 0A  	shl	a, 4
+0001ACr 1  85 rr        	sta	__tmp
+0001AEr 1  BD rr rr     	lda	__volume,x
+0001B1r 1  29 0F        	and	#$0F
+0001B3r 1  05 rr        	ora	__tmp
+0001B5r 1  9D rr rr     	sta	__volume,x		;__volume = (__volume & 0x0F) | (a << 4);
+0001B8r 1  4C rr rr     	jmp	Sequence
+0001BBr 1               
+0001BBr 1               ;=======================================================================
+0001BBr 1               ;		opcode	0x00:	End of Track / End of Subroutine
+0001BBr 1               ;-----------------------------------------------------------------------
+0001BBr 1               nsd_op00:
+0001BBr 1  BD rr rr     	lda	__subroutine + 1,x
+0001BEr 1  95 rr        	sta	__Sequence_ptr + 1,x
+0001C0r 1  F0 10        	beq	@L	;if (a == 0)
+0001C2r 1  BD rr rr     	lda	__subroutine,x
+0001C5r 1  95 rr        	sta	__Sequence_ptr,x	;戻るときは代入
+0001C7r 1  A9 00        	lda	#0
+0001C9r 1  9D rr rr     	sta	__subroutine,x
+0001CCr 1  9D rr rr     	sta	__subroutine + 1,x
+0001CFr 1  4C rr rr     	jmp	Sequence
+0001D2r 1               @L:
+0001D2r 1  95 rr        	sta	__Sequence_ptr,x
+0001D4r 1               
+0001D4r 1  BD rr rr     	lda	__chflag,x
+0001D7r 1  29 FC        	and	#~nsd_chflag::KeyOff
+0001D9r 1  9D rr rr     	sta	__chflag,x
+0001DCr 1               ;
+0001DCr 1               ;	Sweepの状態を元に戻す。
+0001DCr 1               ;
+0001DCr 1               @SE1:	;lda	__chflag,x
+0001DCr 1  29 40        	and	#nsd_chflag::SE1
+0001DEr 1  F0 09        	beq	@SE2
+0001E0r 1  AD rr rr     	lda	__sweep_ch2
+0001E3r 1  20 rr rr     	jsr	_nsd_snd_sweep
+0001E6r 1  4C rr rr     	jmp	@Exit
+0001E9r 1               
+0001E9r 1               @SE2:	;SE2は無い。
+0001E9r 1               
+0001E9r 1               @Exit:
+0001E9r 1  60           	rts
+0001EAr 1               
+0001EAr 1               ;=======================================================================
+0001EAr 1               ;		opcode	0x02:	Sub-routine call
+0001EAr 1               ;-----------------------------------------------------------------------
+0001EAr 1               nsd_op02:
+0001EAr 1  B5 rr        	lda	__Sequence_ptr,x
+0001ECr 1  18 69 02     	add	#2
+0001EFr 1  9D rr rr     	sta	__subroutine,x
+0001F2r 1  B5 rr        	lda	__Sequence_ptr + 1,x
+0001F4r 1  69 00        	adc	#0
+0001F6r 1  9D rr rr     	sta	__subroutine + 1,x		;2byte先のポインタを記憶する。
+0001F9r 1               
+0001F9r 1               ;=======================================================================
+0001F9r 1               ;		opcode	0x01:	Jump (End of Track with loop)
+0001F9r 1               ;-----------------------------------------------------------------------
+0001F9r 1               nsd_op01:
+0001F9r 1               Jump:
+0001F9r 1  B4 rr        	ldy	__Sequence_ptr,x
+0001FBr 1  84 rr        	sty	__ptr			;
+0001FDr 1  B4 rr        	ldy	__Sequence_ptr + 1,x
+0001FFr 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
+000201r 1               
+000201r 1  20 rr rr     	jsr	nsd_load_sequence
+000204r 1  85 rr        	sta	__tmp
+000206r 1  20 rr rr     	jsr	nsd_load_sequence
+000209r 1  85 rr        	sta	__tmp + 1		;__tmp = value
+00020Br 1               
+00020Br 1  A5 rr        	lda	__ptr
+00020Dr 1  18 65 rr     	add	__tmp
+000210r 1  95 rr        	sta	__Sequence_ptr,x
+000212r 1  A5 rr        	lda	__ptr + 1
+000214r 1  65 rr        	adc	__tmp + 1
+000216r 1  95 rr        	sta	__Sequence_ptr + 1,x	;__Sequence_ptr = __ptr + __tmp
+000218r 1               
+000218r 1  4C rr rr     	jmp	Sequence
+00021Br 1               
+00021Br 1               ;=======================================================================
+00021Br 1               ;		opcode	0x03:	Repeat start.
+00021Br 1               ;-----------------------------------------------------------------------
+00021Br 1               nsd_op03:
+00021Br 1  20 rr rr     	jsr	nsd_load_sequence
+00021Er 1  9D rr rr     	sta	__repeat_ctr,x
+000221r 1  4C rr rr     	jmp	Sequence
+000224r 1               
+000224r 1               ;=======================================================================
+000224r 1               ;		opcode	0x04:	Repeat break.
+000224r 1               ;-----------------------------------------------------------------------
+000224r 1               nsd_op04:
+000224r 1  BD rr rr     	lda	__repeat_ctr,x
+000227r 1  C9 01        	cmp	#1
+000229r 1  F0 CE        	beq	Jump
+00022Br 1  20 rr rr     	jsr	nsd_load_sequence
+00022Er 1  20 rr rr     	jsr	nsd_load_sequence
+000231r 1  4C rr rr     	jmp	Sequence
+000234r 1               
+000234r 1               ;=======================================================================
+000234r 1               ;		opcode	0x05:	Repeat end.
+000234r 1               ;-----------------------------------------------------------------------
+000234r 1               nsd_op05:
+000234r 1  DE rr rr     	dec	__repeat_ctr,x
+000237r 1  D0 C0        	bne	Jump
+000239r 1  20 rr rr     	jsr	nsd_load_sequence
+00023Cr 1  20 rr rr     	jsr	nsd_load_sequence
+00023Fr 1               nsd_op06:
+00023Fr 1  4C rr rr     	jmp	Sequence
+000242r 1               
+000242r 1               ;=======================================================================
+000242r 1               ;		opcode	0x18:	Repeat start.
+000242r 1               ;-----------------------------------------------------------------------
+000242r 1               nsd_op18:
+000242r 1  A9 00        	lda	#0			;counter <= 0
+000244r 1  9D rr rr     	sta	__repeat_ctr2,x
+000247r 1  4C rr rr     	jmp	Sequence
+00024Ar 1               
+00024Ar 1               ;=======================================================================
+00024Ar 1               ;		opcode	0x19:	repeat 1 time point
+00024Ar 1               ;-----------------------------------------------------------------------
+00024Ar 1               nsd_op19:
+00024Ar 1  BD rr rr     	lda	__repeat_ctr2,x
+00024Dr 1  F0 0A        	beq	@exit			;counter == 0 だったら何もしない。
+00024Fr 1  BD rr rr     	lda	__repeat2,x
+000252r 1  95 rr        	sta	__Sequence_ptr,x
+000254r 1  BD rr rr     	lda	__repeat2 + 1,x
+000257r 1  95 rr        	sta	__Sequence_ptr + 1,x	;それ以外は、 :| の次にジャンプ
+000259r 1               @exit:
+000259r 1  4C rr rr     	jmp	Sequence
+00025Cr 1               
+00025Cr 1               ;=======================================================================
+00025Cr 1               ;		opcode	0x1A:	Repeat end.
+00025Cr 1               ;-----------------------------------------------------------------------
+00025Cr 1               nsd_op1A:
+00025Cr 1  FE rr rr     	inc	__repeat_ctr2,x		;counter ++
+00025Fr 1               
+00025Fr 1  B5 rr        	lda	__Sequence_ptr,x
+000261r 1  18 69 02     	add	#2
+000264r 1  9D rr rr     	sta	__repeat2,x
+000267r 1  B5 rr        	lda	__Sequence_ptr + 1,x
+000269r 1  69 00        	adc	#0
+00026Br 1  9D rr rr     	sta	__repeat2 + 1,x		;2byte先のポインタを記憶する。
+00026Er 1               
+00026Er 1  4C rr rr     	jmp	Jump			;相対ジャンプへ
+000271r 1               
+000271r 1               ;=======================================================================
+000271r 1               ;		opcode	0x07:	Write data to memory.
+000271r 1               ;-----------------------------------------------------------------------
+000271r 1               nsd_op07:
+000271r 1  20 rr rr     	jsr	nsd_load_sequence
+000274r 1  85 rr        	sta	__ptr
+000276r 1  20 rr rr     	jsr	nsd_load_sequence
+000279r 1  85 rr        	sta	__ptr + 1
+00027Br 1  20 rr rr     	jsr	nsd_load_sequence
+00027Er 1  A0 00        	ldy	#0
+000280r 1  91 rr        	sta	(__ptr),y
+000282r 1  4C rr rr     	jmp	Sequence
+000285r 1               
+000285r 1               ;=======================================================================
+000285r 1               ;		opcode	0x08:	Tempo [BPM]
+000285r 1               ;-----------------------------------------------------------------------
+000285r 1               nsd_op08:
+000285r 1  BD rr rr     	lda	__chflag,x
+000288r 1  29 C0        	and	#nsd_chflag::SE1 + nsd_chflag::SE2
+00028Ar 1  D0 08        	bne	Set_Tempo_SE
+00028Cr 1  20 rr rr     	jsr	nsd_load_sequence
+00028Fr 1               Set_Tempo:
+00028Fr 1  85 rr        	sta	__Tempo
+000291r 1  4C rr rr     	jmp	Sequence
+000294r 1               Set_Tempo_SE:
+000294r 1  20 rr rr     	jsr	nsd_load_sequence
 000297r 1  4C rr rr     	jmp	Sequence
-00029Ar 1               Set_Tempo_SE:
-00029Ar 1  20 rr rr     	jsr	nsd_load_sequence
-00029Dr 1  4C rr rr     	jmp	Sequence
-0002A0r 1               ;=======================================================================
-0002A0r 1               ;		opcode	0x0C:	Relative Tempo [BPM]
-0002A0r 1               ;-----------------------------------------------------------------------
-0002A0r 1               nsd_op0C:
-0002A0r 1  BD rr rr     	lda	__chflag,x
-0002A3r 1  29 C0        	and	#nsd_chflag::SE1 + nsd_chflag::SE2
-0002A5r 1  D0 F3        	bne	Set_Tempo_SE
-0002A7r 1  20 rr rr     	jsr	nsd_load_sequence
-0002AAr 1  18 65 rr     	add	__Tempo
-0002ADr 1  4C rr rr     	jmp	Set_Tempo
-0002B0r 1               ;=======================================================================
-0002B0r 1               ;		opcode	0x09:	Note length of 省略時 [Ticks]
-0002B0r 1               ;-----------------------------------------------------------------------
-0002B0r 1               nsd_op09:
-0002B0r 1  20 rr rr     	jsr	nsd_load_sequence
-0002B3r 1  9D rr rr     	sta	__length,x
-0002B6r 1  4C rr rr     	jmp	Sequence
-0002B9r 1               
-0002B9r 1               ;=======================================================================
-0002B9r 1               ;		opcode	0x0A:	Gate time (key-off timing from last)
-0002B9r 1               ;-----------------------------------------------------------------------
-0002B9r 1               nsd_op0A:
-0002B9r 1  20 rr rr     	jsr	nsd_load_sequence
-0002BCr 1  9D rr rr     	sta	__gate_q,x
-0002BFr 1  4C rr rr     	jmp	Sequence
-0002C2r 1               
-0002C2r 1               ;=======================================================================
-0002C2r 1               ;		opcode	0x0B:	Gate time (length of 発音)
-0002C2r 1               ;-----------------------------------------------------------------------
-0002C2r 1               nsd_op0B:
-0002C2r 1  20 rr rr     	jsr	nsd_load_sequence
-0002C5r 1  9D rr rr     	sta	__gate_u,x
-0002C8r 1  4C rr rr     	jmp	Sequence
-0002CBr 1               
-0002CBr 1               ;=======================================================================
-0002CBr 1               ;		opcode	0x0D:	gate mode	(vol = 0)
-0002CBr 1               ;-----------------------------------------------------------------------
-0002CBr 1               nsd_op0D:
-0002CBr 1  A9 00        	lda	#$00
-0002CDr 1  9D rr rr     	sta	__gatemode,x
-0002D0r 1  4C rr rr     	jmp	Sequence
-0002D3r 1               ;=======================================================================
-0002D3r 1               ;		opcode	0x0E:	gate mode
-0002D3r 1               ;-----------------------------------------------------------------------
-0002D3r 1               nsd_op0E:
-0002D3r 1  A9 01        	lda	#$01
-0002D5r 1  9D rr rr     	sta	__gatemode,x
-0002D8r 1  4C rr rr     	jmp	Sequence
-0002DBr 1               ;=======================================================================
-0002DBr 1               ;		opcode	0x0F:	gate mode	(release)
-0002DBr 1               ;-----------------------------------------------------------------------
-0002DBr 1               nsd_op0F:
-0002DBr 1  A9 02        	lda	#$02
-0002DDr 1  9D rr rr     	sta	__gatemode,x
-0002E0r 1  4C rr rr     	jmp	Sequence
-0002E3r 1               
-0002E3r 1               ;=======================================================================
-0002E3r 1               ;		opcode	0x10:	Voice envelop.
-0002E3r 1               ;-----------------------------------------------------------------------
-0002E3r 1               nsd_op10:
-0002E3r 1  B4 rr        	ldy	__Sequence_ptr,x
-0002E5r 1  84 rr        	sty	__ptr			;
-0002E7r 1  B4 rr        	ldy	__Sequence_ptr + 1,x
-0002E9r 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
-0002EBr 1               
-0002EBr 1  20 rr rr     	jsr	nsd_load_sequence
-0002EEr 1  85 rr        	sta	__tmp
-0002F0r 1  20 rr rr     	jsr	nsd_load_sequence
-0002F3r 1  85 rr        	sta	__tmp + 1		;__tmp = value
-0002F5r 1               
-0002F5r 1  E0 04        	cpx	#nsd::TR_BGM3
-0002F7r 1  F0 18        	beq	@Exit
-0002F9r 1  E0 08        	cpx	#nsd::TR_BGM5
-0002FBr 1  F0 14        	beq	@Exit
-0002FDr 1               
-0002FDr 1  A5 rr        	lda	__ptr
-0002FFr 1  18 65 rr     	add	__tmp
-000302r 1  9D rr rr     	sta	__env_voice,x
-000305r 1  A5 rr        	lda	__ptr + 1
-000307r 1  65 rr        	adc	__tmp + 1
-000309r 1  9D rr rr     @Zero:	sta	__env_voice + 1,x	;__env_voice = __ptr + __tmp
-00030Cr 1               
-00030Cr 1  A9 01        	lda	#$01
-00030Er 1  9D rr rr     	sta	__env_voi_ptr,x
-000311r 1               @Exit:
-000311r 1  4C rr rr     	jmp	Sequence
-000314r 1               
-000314r 1               ;=======================================================================
-000314r 1               ;		opcode	0x11:	Volume envelop.
-000314r 1               ;-----------------------------------------------------------------------
-000314r 1               nsd_op11:
-000314r 1  B4 rr        	ldy	__Sequence_ptr,x
-000316r 1  84 rr        	sty	__ptr			;
-000318r 1  B4 rr        	ldy	__Sequence_ptr + 1,x
-00031Ar 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
-00031Cr 1               
-00031Cr 1  20 rr rr     	jsr	nsd_load_sequence
-00031Fr 1  85 rr        	sta	__tmp
-000321r 1  20 rr rr     	jsr	nsd_load_sequence
-000324r 1  85 rr        	sta	__tmp + 1		;__tmp = value
-000326r 1               
-000326r 1  E0 04        	cpx	#nsd::TR_BGM3
-000328r 1  F0 1C        	beq	@Exit
-00032Ar 1  E0 08        	cpx	#nsd::TR_BGM5
-00032Cr 1  F0 18        	beq	@Exit
-00032Er 1               
-00032Er 1  05 rr        	ora	__tmp
-000330r 1  F0 0C        	beq	@Zero
-000332r 1               
-000332r 1  A5 rr        	lda	__ptr
-000334r 1  18 65 rr     	add	__tmp
-000337r 1  9D rr rr     	sta	__env_volume,x
-00033Ar 1  A5 rr        	lda	__ptr + 1
-00033Cr 1  65 rr        	adc	__tmp + 1
-00033Er 1  9D rr rr     @Zero:	sta	__env_volume + 1,x
-000341r 1               
-000341r 1  A9 01        	lda	#$01
-000343r 1  9D rr rr     	sta	__env_vol_ptr,x
-000346r 1               @Exit:
-000346r 1  4C rr rr     	jmp	Sequence
-000349r 1               
-000349r 1               ;=======================================================================
-000349r 1               ;		opcode	0x12:	Frequency envelop.
-000349r 1               ;-----------------------------------------------------------------------
-000349r 1               nsd_op12:
-000349r 1  B4 rr        	ldy	__Sequence_ptr,x
-00034Br 1  84 rr        	sty	__ptr			;
-00034Dr 1  B4 rr        	ldy	__Sequence_ptr + 1,x
-00034Fr 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
-000351r 1               
-000351r 1  20 rr rr     	jsr	nsd_load_sequence
-000354r 1  85 rr        	sta	__tmp
-000356r 1  20 rr rr     	jsr	nsd_load_sequence
-000359r 1  85 rr        	sta	__tmp + 1		;__tmp = value
-00035Br 1               
-00035Br 1  05 rr        	ora	__tmp
-00035Dr 1  F0 0C        	beq	@Zero
-00035Fr 1               
-00035Fr 1  A5 rr        	lda	__ptr
-000361r 1  18 65 rr     	add	__tmp
-000364r 1  9D rr rr     	sta	__env_frequency,x
-000367r 1  A5 rr        	lda	__ptr + 1
-000369r 1  65 rr        	adc	__tmp + 1
-00036Br 1  9D rr rr     @Zero:	sta	__env_frequency + 1,x
-00036Er 1               
-00036Er 1  A9 01        	lda	#$01
-000370r 1  9D rr rr     	sta	__env_freq_ptr,x
-000373r 1               @Exit:
-000373r 1  4C rr rr     	jmp	Sequence
-000376r 1               
-000376r 1               ;=======================================================================
-000376r 1               ;		opcode	0x13:	Note envelop.
-000376r 1               ;-----------------------------------------------------------------------
-000376r 1               nsd_op13:
-000376r 1  B4 rr        	ldy	__Sequence_ptr,x
-000378r 1  84 rr        	sty	__ptr			;
-00037Ar 1  B4 rr        	ldy	__Sequence_ptr + 1,x
-00037Cr 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
-00037Er 1               
-00037Er 1  20 rr rr     	jsr	nsd_load_sequence
-000381r 1  85 rr        	sta	__tmp
-000383r 1  20 rr rr     	jsr	nsd_load_sequence
-000386r 1  85 rr        	sta	__tmp + 1		;__tmp = value
-000388r 1               
-000388r 1  05 rr        	ora	__tmp
-00038Ar 1  F0 0C        	beq	@Zero
-00038Cr 1               
-00038Cr 1  A5 rr        	lda	__ptr
-00038Er 1  18 65 rr     	add	__tmp
-000391r 1  9D rr rr     	sta	__env_note,x
-000394r 1  A5 rr        	lda	__ptr + 1
-000396r 1  65 rr        	adc	__tmp + 1
-000398r 1  9D rr rr     @Zero:	sta	__env_note + 1,x
-00039Br 1               
-00039Br 1  A9 01        	lda	#$01
-00039Dr 1  9D rr rr     	sta	__env_note_ptr,x
-0003A0r 1               @Exit:
-0003A0r 1  4C rr rr     	jmp	Sequence
-0003A3r 1               
-0003A3r 1               ;=======================================================================
-0003A3r 1               ;		opcode	0x14:	Detune (16 = 100 cent)
-0003A3r 1               ;-----------------------------------------------------------------------
-0003A3r 1               nsd_op14:
-0003A3r 1  20 rr rr     	jsr	nsd_load_sequence
-0003A6r 1  9D rr rr     	sta	__detune_cent,x
-0003A9r 1  4C rr rr     	jmp	Sequence
-0003ACr 1               
-0003ACr 1               ;=======================================================================
-0003ACr 1               ;		opcode	0x15:	Detune (Resister base)
-0003ACr 1               ;-----------------------------------------------------------------------
-0003ACr 1               nsd_op15:
-0003ACr 1  20 rr rr     	jsr	nsd_load_sequence
-0003AFr 1  9D rr rr     	sta	__detune_fine,x
-0003B2r 1  4C rr rr     	jmp	Sequence
-0003B5r 1               
-0003B5r 1               ;=======================================================================
-0003B5r 1               ;		opcode	0x16:	Sweep (Resister base)
-0003B5r 1               ;-----------------------------------------------------------------------
-0003B5r 1               nsd_op16:
-0003B5r 1  20 rr rr     	jsr	nsd_load_sequence
-0003B8r 1  20 rr rr     	jsr	_nsd_snd_sweep
-0003BBr 1  4C rr rr     	jmp	Sequence
-0003BEr 1               
-0003BEr 1               ;=======================================================================
-0003BEr 1               ;		opcode	0x17:	Portamento (Frequency += n2, every n3 [VBlank])
-0003BEr 1               ;-----------------------------------------------------------------------
-0003BEr 1               nsd_op17:
-0003BEr 1  20 rr rr     	jsr	nsd_load_sequence
-0003C1r 1  9D rr rr     	sta	__por_target,x
-0003C4r 1  20 rr rr     	jsr	nsd_load_sequence
-0003C7r 1  9D rr rr     	sta	__por_inc,x
-0003CAr 1  20 rr rr     	jsr	nsd_load_sequence
-0003CDr 1  9D rr rr     	sta	__por_rate,x
-0003D0r 1  9D rr rr     	sta	__por_ctr,x
-0003D3r 1  A9 00        	lda	#0
-0003D5r 1  9D rr rr     	sta	__por_lv,x
+00029Ar 1               ;=======================================================================
+00029Ar 1               ;		opcode	0x0C:	Relative Tempo [BPM]
+00029Ar 1               ;-----------------------------------------------------------------------
+00029Ar 1               nsd_op0C:
+00029Ar 1  BD rr rr     	lda	__chflag,x
+00029Dr 1  29 C0        	and	#nsd_chflag::SE1 + nsd_chflag::SE2
+00029Fr 1  D0 F3        	bne	Set_Tempo_SE
+0002A1r 1  20 rr rr     	jsr	nsd_load_sequence
+0002A4r 1  18 65 rr     	add	__Tempo
+0002A7r 1  4C rr rr     	jmp	Set_Tempo
+0002AAr 1               ;=======================================================================
+0002AAr 1               ;		opcode	0x09:	Note length of 省略時 [Ticks]
+0002AAr 1               ;-----------------------------------------------------------------------
+0002AAr 1               nsd_op09:
+0002AAr 1  20 rr rr     	jsr	nsd_load_sequence
+0002ADr 1  9D rr rr     	sta	__length,x
+0002B0r 1  4C rr rr     	jmp	Sequence
+0002B3r 1               
+0002B3r 1               ;=======================================================================
+0002B3r 1               ;		opcode	0x0A:	Gate time (key-off timing from last)
+0002B3r 1               ;-----------------------------------------------------------------------
+0002B3r 1               nsd_op0A:
+0002B3r 1  20 rr rr     	jsr	nsd_load_sequence
+0002B6r 1  9D rr rr     	sta	__gate_q,x
+0002B9r 1  4C rr rr     	jmp	Sequence
+0002BCr 1               
+0002BCr 1               ;=======================================================================
+0002BCr 1               ;		opcode	0x0B:	Gate time (length of 発音)
+0002BCr 1               ;-----------------------------------------------------------------------
+0002BCr 1               nsd_op0B:
+0002BCr 1  20 rr rr     	jsr	nsd_load_sequence
+0002BFr 1  9D rr rr     	sta	__gate_u,x
+0002C2r 1  4C rr rr     	jmp	Sequence
+0002C5r 1               
+0002C5r 1               ;=======================================================================
+0002C5r 1               ;		opcode	0x0D:	gate mode	(vol = 0)
+0002C5r 1               ;-----------------------------------------------------------------------
+0002C5r 1               nsd_op0D:
+0002C5r 1  A9 00        	lda	#$00
+0002C7r 1  9D rr rr     	sta	__gatemode,x
+0002CAr 1  4C rr rr     	jmp	Sequence
+0002CDr 1               ;=======================================================================
+0002CDr 1               ;		opcode	0x0E:	gate mode
+0002CDr 1               ;-----------------------------------------------------------------------
+0002CDr 1               nsd_op0E:
+0002CDr 1  A9 01        	lda	#$01
+0002CFr 1  9D rr rr     	sta	__gatemode,x
+0002D2r 1  4C rr rr     	jmp	Sequence
+0002D5r 1               ;=======================================================================
+0002D5r 1               ;		opcode	0x0F:	gate mode	(release)
+0002D5r 1               ;-----------------------------------------------------------------------
+0002D5r 1               nsd_op0F:
+0002D5r 1  A9 02        	lda	#$02
+0002D7r 1  9D rr rr     	sta	__gatemode,x
+0002DAr 1  4C rr rr     	jmp	Sequence
+0002DDr 1               
+0002DDr 1               ;=======================================================================
+0002DDr 1               ;		opcode	0x10:	Voice envelop.
+0002DDr 1               ;-----------------------------------------------------------------------
+0002DDr 1               nsd_op10:
+0002DDr 1  B4 rr        	ldy	__Sequence_ptr,x
+0002DFr 1  84 rr        	sty	__ptr			;
+0002E1r 1  B4 rr        	ldy	__Sequence_ptr + 1,x
+0002E3r 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
+0002E5r 1               
+0002E5r 1  20 rr rr     	jsr	nsd_load_sequence
+0002E8r 1  85 rr        	sta	__tmp
+0002EAr 1  20 rr rr     	jsr	nsd_load_sequence
+0002EDr 1  85 rr        	sta	__tmp + 1		;__tmp = value
+0002EFr 1               
+0002EFr 1  E0 04        	cpx	#nsd::TR_BGM3
+0002F1r 1  F0 18        	beq	@Exit
+0002F3r 1  E0 08        	cpx	#nsd::TR_BGM5
+0002F5r 1  F0 14        	beq	@Exit
+0002F7r 1               
+0002F7r 1  A5 rr        	lda	__ptr
+0002F9r 1  18 65 rr     	add	__tmp
+0002FCr 1  9D rr rr     	sta	__env_voice,x
+0002FFr 1  A5 rr        	lda	__ptr + 1
+000301r 1  65 rr        	adc	__tmp + 1
+000303r 1  9D rr rr     @Zero:	sta	__env_voice + 1,x	;__env_voice = __ptr + __tmp
+000306r 1               
+000306r 1  A9 01        	lda	#$01
+000308r 1  9D rr rr     	sta	__env_voi_ptr,x
+00030Br 1               @Exit:
+00030Br 1  4C rr rr     	jmp	Sequence
+00030Er 1               
+00030Er 1               ;=======================================================================
+00030Er 1               ;		opcode	0x11:	Volume envelop.
+00030Er 1               ;-----------------------------------------------------------------------
+00030Er 1               nsd_op11:
+00030Er 1  B4 rr        	ldy	__Sequence_ptr,x
+000310r 1  84 rr        	sty	__ptr			;
+000312r 1  B4 rr        	ldy	__Sequence_ptr + 1,x
+000314r 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
+000316r 1               
+000316r 1  20 rr rr     	jsr	nsd_load_sequence
+000319r 1  85 rr        	sta	__tmp
+00031Br 1  20 rr rr     	jsr	nsd_load_sequence
+00031Er 1  85 rr        	sta	__tmp + 1		;__tmp = value
+000320r 1               
+000320r 1  E0 04        	cpx	#nsd::TR_BGM3
+000322r 1  F0 1C        	beq	@Exit
+000324r 1  E0 08        	cpx	#nsd::TR_BGM5
+000326r 1  F0 18        	beq	@Exit
+000328r 1               
+000328r 1  05 rr        	ora	__tmp
+00032Ar 1  F0 0C        	beq	@Zero
+00032Cr 1               
+00032Cr 1  A5 rr        	lda	__ptr
+00032Er 1  18 65 rr     	add	__tmp
+000331r 1  9D rr rr     	sta	__env_volume,x
+000334r 1  A5 rr        	lda	__ptr + 1
+000336r 1  65 rr        	adc	__tmp + 1
+000338r 1  9D rr rr     @Zero:	sta	__env_volume + 1,x
+00033Br 1               
+00033Br 1  A9 01        	lda	#$01
+00033Dr 1  9D rr rr     	sta	__env_vol_ptr,x
+000340r 1               @Exit:
+000340r 1  4C rr rr     	jmp	Sequence
+000343r 1               
+000343r 1               ;=======================================================================
+000343r 1               ;		opcode	0x12:	Frequency envelop.
+000343r 1               ;-----------------------------------------------------------------------
+000343r 1               nsd_op12:
+000343r 1  B4 rr        	ldy	__Sequence_ptr,x
+000345r 1  84 rr        	sty	__ptr			;
+000347r 1  B4 rr        	ldy	__Sequence_ptr + 1,x
+000349r 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
+00034Br 1               
+00034Br 1  20 rr rr     	jsr	nsd_load_sequence
+00034Er 1  85 rr        	sta	__tmp
+000350r 1  20 rr rr     	jsr	nsd_load_sequence
+000353r 1  85 rr        	sta	__tmp + 1		;__tmp = value
+000355r 1               
+000355r 1  05 rr        	ora	__tmp
+000357r 1  F0 0C        	beq	@Zero
+000359r 1               
+000359r 1  A5 rr        	lda	__ptr
+00035Br 1  18 65 rr     	add	__tmp
+00035Er 1  9D rr rr     	sta	__env_frequency,x
+000361r 1  A5 rr        	lda	__ptr + 1
+000363r 1  65 rr        	adc	__tmp + 1
+000365r 1  9D rr rr     @Zero:	sta	__env_frequency + 1,x
+000368r 1               
+000368r 1  A9 01        	lda	#$01
+00036Ar 1  9D rr rr     	sta	__env_freq_ptr,x
+00036Dr 1               @Exit:
+00036Dr 1  4C rr rr     	jmp	Sequence
+000370r 1               
+000370r 1               ;=======================================================================
+000370r 1               ;		opcode	0x13:	Note envelop.
+000370r 1               ;-----------------------------------------------------------------------
+000370r 1               nsd_op13:
+000370r 1  B4 rr        	ldy	__Sequence_ptr,x
+000372r 1  84 rr        	sty	__ptr			;
+000374r 1  B4 rr        	ldy	__Sequence_ptr + 1,x
+000376r 1  84 rr        	sty	__ptr + 1		;__ptr = __Sequence_ptr
+000378r 1               
+000378r 1  20 rr rr     	jsr	nsd_load_sequence
+00037Br 1  85 rr        	sta	__tmp
+00037Dr 1  20 rr rr     	jsr	nsd_load_sequence
+000380r 1  85 rr        	sta	__tmp + 1		;__tmp = value
+000382r 1               
+000382r 1  05 rr        	ora	__tmp
+000384r 1  F0 0C        	beq	@Zero
+000386r 1               
+000386r 1  A5 rr        	lda	__ptr
+000388r 1  18 65 rr     	add	__tmp
+00038Br 1  9D rr rr     	sta	__env_note,x
+00038Er 1  A5 rr        	lda	__ptr + 1
+000390r 1  65 rr        	adc	__tmp + 1
+000392r 1  9D rr rr     @Zero:	sta	__env_note + 1,x
+000395r 1               
+000395r 1  A9 01        	lda	#$01
+000397r 1  9D rr rr     	sta	__env_note_ptr,x
+00039Ar 1               @Exit:
+00039Ar 1  4C rr rr     	jmp	Sequence
+00039Dr 1               
+00039Dr 1               ;=======================================================================
+00039Dr 1               ;		opcode	0x14:	Detune (16 = 100 cent)
+00039Dr 1               ;-----------------------------------------------------------------------
+00039Dr 1               nsd_op14:
+00039Dr 1  20 rr rr     	jsr	nsd_load_sequence
+0003A0r 1  9D rr rr     	sta	__detune_cent,x
+0003A3r 1  4C rr rr     	jmp	Sequence
+0003A6r 1               
+0003A6r 1               ;=======================================================================
+0003A6r 1               ;		opcode	0x15:	Detune (Resister base)
+0003A6r 1               ;-----------------------------------------------------------------------
+0003A6r 1               nsd_op15:
+0003A6r 1  20 rr rr     	jsr	nsd_load_sequence
+0003A9r 1  9D rr rr     	sta	__detune_fine,x
+0003ACr 1  4C rr rr     	jmp	Sequence
+0003AFr 1               
+0003AFr 1               ;=======================================================================
+0003AFr 1               ;		opcode	0x16:	Sweep (Resister base)
+0003AFr 1               ;-----------------------------------------------------------------------
+0003AFr 1               nsd_op16:
+0003AFr 1  20 rr rr     	jsr	nsd_load_sequence
+0003B2r 1  20 rr rr     	jsr	_nsd_snd_sweep
+0003B5r 1  4C rr rr     	jmp	Sequence
+0003B8r 1               
+0003B8r 1               ;=======================================================================
+0003B8r 1               ;		opcode	0x17:	Portamento (Frequency += n2, every n3 [VBlank])
+0003B8r 1               ;-----------------------------------------------------------------------
+0003B8r 1               nsd_op17:
+0003B8r 1  20 rr rr     	jsr	nsd_load_sequence	;decay
+0003BBr 1  9D rr rr     	sta	__por_ctr,x
+0003BEr 1  20 rr rr     	jsr	nsd_load_sequence	;rate
+0003C1r 1  9D rr rr     	sta	__por_rate,x
+0003C4r 1  20 rr rr     	jsr	nsd_load_sequence	;depth
+0003C7r 1  9D rr rr     	sta	__por_depth,x
+0003CAr 1  20 rr rr     	jsr	nsd_load_sequence	;target
+0003CDr 1  9D rr rr     	sta	__por_target,x
+0003D0r 1               
+0003D0r 1  A9 00        	lda	#0
+0003D2r 1  9D rr rr     	sta	__por_now + 0,x
+0003D5r 1  9D rr rr     	sta	__por_now + 1,x		;現在の変位
+0003D8r 1               
 0003D8r 1  4C rr rr     	jmp	Sequence
 0003DBr 1               
 0003DBr 1               ;=======================================================================

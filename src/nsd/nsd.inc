@@ -115,17 +115,12 @@
 
 .Struct		NSD_Por_Lv
 	target		.byte		;`P' target
-	inc		.byte		;`P' add value
-.Endstruct
-
-.Struct		NSD_Por_Sp
-	decay		.byte		;
-	rate		.byte		;rate (speed)
+	depth		.byte		;`P' add value
 .Endstruct
 
 .Struct		NSD_Por_Co
 	count		.byte		;rate control
-	lv		.byte		;now depth
+	rate		.byte		;now depth
 .Endstruct
 
 .Struct		NSD_Trans
@@ -170,8 +165,8 @@
 	Note		.tag	NSD_note	nsd::Track	;octave and note command
 	Detune		.tag	NSD_Detune	nsd::Track	;detune
 	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
-	Por_Sp		.tag	NSD_Por_Sp	nsd::Track	;Portamento
 	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
+	Por_now		.word			nsd::Track	;Portamento
 	Trans		.tag	NSD_Trans	nsd::Track	;Repeat and Transpose
 	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat and Transpose
 	Volume		.tag	NSD_volume	nsd::Track	;volume
@@ -232,11 +227,10 @@
 .define	__detune_cent	nsd_work + NSD_work::Detune + NSD_Detune::cent
 .define	__detune_fine	nsd_work + NSD_work::Detune + NSD_Detune::fine
 .define	__por_target	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::target
-.define	__por_inc	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::inc
-.define	__por_decay	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::decay
-.define	__por_rate	nsd_work + NSD_work::Por_Sp + NSD_Por_Sp::rate
+.define	__por_depth	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::depth
 .define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
-.define	__por_lv	nsd_work + NSD_work::Por_Co + NSD_Por_Co::lv
+.define	__por_rate	nsd_work + NSD_work::Por_Co + NSD_Por_Co::rate
+.define __por_now	nsd_work + NSD_work::Por_now
 .define	__trans		nsd_work + NSD_work::Trans + NSD_Trans::trans
 .define	__trans_one	nsd_work + NSD_work::Trans + NSD_Trans::onetime
 .define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1

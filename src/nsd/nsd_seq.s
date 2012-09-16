@@ -35,6 +35,13 @@
 	ora	#nsd_chflag::KeyOff
 	sta	__chflag,x
 
+	;Portamento
+	lda	__por_depth,x
+	bne	@L		;ポルタメントが終了していたら、無効化する。
+	lda	#0
+	sta	__por_target,x
+@L:
+
 	;Hardware key on
 	jsr	_nsd_snd_keyon
 
@@ -93,7 +100,7 @@ exit:	rts
 
 	lda	#$00
 	tay
-	sta	__por_target,x		;Por off
+;	sta	__por_target,x		;Por off
 
 	;Frequency Envelop keyoff
 	lda	__env_frequency,x
@@ -378,6 +385,7 @@ NoteSet:
 	jmp	nsd_keyon
 
 
+
 	;-----------------------
 	;op-code = 0x00 - 0x7F
 Control:
@@ -465,15 +473,11 @@ nsd_op00:
 @SE1:	;lda	__chflag,x
 	and	#nsd_chflag::SE1
 	beq	@SE2
-	lda	__sweep_ch1
+	lda	__sweep_ch2
 	jsr	_nsd_snd_sweep
 	jmp	@Exit
 
-@SE2:	lda	__chflag,x
-	and	#nsd_chflag::SE2
-	beq	@Exit
-	lda	__sweep_ch2
-	jsr	_nsd_snd_sweep
+@SE2:	;SE2は無い。
 
 @Exit:
 	rts
@@ -813,15 +817,19 @@ nsd_op16:
 ;		opcode	0x17:	Portamento (Frequency += n2, every n3 [VBlank]) 
 ;-----------------------------------------------------------------------
 nsd_op17:
-	jsr	nsd_load_sequence
-	sta	__por_target,x
-	jsr	nsd_load_sequence
-	sta	__por_inc,x
-	jsr	nsd_load_sequence
-	sta	__por_rate,x
+	jsr	nsd_load_sequence	;decay
 	sta	__por_ctr,x
+	jsr	nsd_load_sequence	;rate
+	sta	__por_rate,x
+	jsr	nsd_load_sequence	;depth
+	sta	__por_depth,x
+	jsr	nsd_load_sequence	;target
+	sta	__por_target,x
+
 	lda	#0
-	sta	__por_lv,x
+	sta	__por_now + 0,x
+	sta	__por_now + 1,x		;現在の変位
+
 	jmp	Sequence
 
 ;=======================================================================

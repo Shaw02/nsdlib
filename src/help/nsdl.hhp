@@ -11,6 +11,7 @@ Title=NES Sound Driver Libraly
 
 [FILES]
 copyright.html
+faq.html
 format_music.html
 func_nsd_init.html
 func_nsd_main.html
@@ -30,6 +31,7 @@ mml_loop.html
 mml_note.html
 mml_octave.html
 mml_poke.html
+mml_portamento.html
 mml_relative_octave.html
 mml_relative_volume.html
 mml_release.html
