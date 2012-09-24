@@ -20,4 +20,5 @@ public:
 			string*	GetFilename(void){return(&strFilename);};
 unsigned	int		GetLine(void){return(iLine);};
 unsigned	char	cRead();
+unsigned	int		GetSize();
 };

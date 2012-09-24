@@ -11,15 +11,12 @@ class OPSW {
 public:
 	unsigned	char		cDebug;			//デバッグ用
 				bool		saveNSF;
-				bool		saveBIN;
 				bool		saveASM;
-				bool		saveC;
 				char		fHelp;			//ヘルプを指定したか？
 				string		strMMLname;		//指定したMMLファイル名
 				string		strNSFname;		//指定したNSFファイル名
-				string		strBINname;		//指定したBINファイル名
 				string		strASMname;		//指定したASMファイル名
-				string		strCname;		//指定したC  ファイル名
+				string		strCodeName;	//ROM Codeの名前
 
 //メンバー関数
 public:

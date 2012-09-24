@@ -1,9 +1,7 @@
 // ê√ìIÉÇÉfÉã
 
-
 #ifndef __SUB__
 #define __SUB__
-
 
 // Include files
 #include "MMLfile.h"
@@ -18,9 +16,9 @@ class Sub : public TrackSet
 
 public:
 
-	Sub(MMLfile* MML, char _strName[] = "==== [ Sub ]====");
-
+	Sub(MMLfile* MML, unsigned int _id, char _strName[] = "==== [ Sub ]====");
 	~Sub();
+	void	getAsm(MusicFile* MUS);
 
 };// END CLASS DEFINITION Sub
 

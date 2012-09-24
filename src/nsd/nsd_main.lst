@@ -110,45 +110,47 @@ Current file: nsd_main.s
 000000r 2               
 000000r 1               	.include	"nsd.inc"
 000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;General Define
 000000r 2               .scope	nsd
 000000r 2               	APU_Track	= 5		;
 000000r 2               
-000000r 2               	TR_FDS		= APU_Track
+000000r 2               	TR_FDS		= APU_Track * 2
 000000r 2               	.ifdef	FDS
 000000r 2               		FDS_Track	= 1		;
 000000r 2               	.else
 000000r 2               		FDS_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_VRC6		= TR_FDS + FDS_Track
+000000r 2               	TR_VRC6		= TR_FDS + FDS_Track * 2
 000000r 2               	.ifdef	VRC6
 000000r 2               		VRC6_Track	= 3		;
 000000r 2               	.else
 000000r 2               		VRC6_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_VRC7		= TR_VRC6 + VRC6_Track
+000000r 2               	TR_VRC7		= TR_VRC6 + VRC6_Track * 2
 000000r 2               	.ifdef	VRC7
 000000r 2               		VRC7_Track	= 6		;
 000000r 2               	.else
 000000r 2               		VRC7_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_MMC5		= TR_VRC7 + VRC7_Track
+000000r 2               	TR_MMC5		= TR_VRC7 + VRC7_Track * 2
 000000r 2               	.ifdef	MMC5
 000000r 2               		MMC5_Track	= 2		; (without DPCM)
 000000r 2               	.else
 000000r 2               		MMC5_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_N163		= TR_MMC5 + MMC5_Track
+000000r 2               	TR_N163		= TR_MMC5 + MMC5_Track * 2
 000000r 2               	.ifdef	N163
 000000r 2               		N163_Track	= 8		;
 000000r 2               	.else
 000000r 2               		N163_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_PSG		= TR_N163 + N163_Track
+000000r 2               	TR_PSG		= TR_N163 + N163_Track * 2
 000000r 2               	.ifdef	PSG
 000000r 2               		PSG_Track	= 3		;
 000000r 2               	.else
@@ -169,6 +171,85 @@ Current file: nsd_main.s
 000000r 2               	TR_SE2		= BGM_Track * 2 + 2
 000000r 2               
 000000r 2               .endscope
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;FDS define
+000000r 2               
+000000r 2               FDS_Wave_Table		= $4040		; to $407F
+000000r 2               FDS_Volume		= $4080
+000000r 2               FDS_FTUNE		= $4082
+000000r 2               FDS_CTUNE		= $4083
+000000r 2               FDS_Sweep_Envelope	= $4084
+000000r 2               FDS_Sweep_Bias		= $4085
+000000r 2               FDS_Mod_FTUNE		= $4086
+000000r 2               FDS_Mod_CTUNE		= $4087
+000000r 2               FDS_Mod_Append		= $4088
+000000r 2               FDS_Write_Enable	= $4089
+000000r 2               FDS_Envelope_Speed	= $408A
+000000r 2               FDS_Volume_Gain		= $4090		;$4080's value
+000000r 2               FDS_Sweep_Gain		= $4092		;$4084's value
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;VRC6 define
+000000r 2               
+000000r 2               VRC6_Frequency		= $9003
+000000r 2               VRC6_Pulse1_CTRL	= $9000
+000000r 2               VRC6_Pulse1_FTUNE	= $9001
+000000r 2               VRC6_Pulse1_CTUNE	= $9002
+000000r 2               VRC6_Pulse2_CTRL	= $A000
+000000r 2               VRC6_Pulse2_FTUNE	= $A001
+000000r 2               VRC6_Pulse2_CTUNE	= $A002
+000000r 2               VRC6_SAW_CTRL		= $B000
+000000r 2               VRC6_SAW_FTUNE		= $B001
+000000r 2               VRC6_SAW_CTUNE		= $B002
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;VRC7 define
+000000r 2               
+000000r 2               VRC7_Resister		= $9010		;wait  6 clk
+000000r 2               VRC7_Data		= $9030		;wait 42 clk
+000000r 2               
+000000r 2               VRC7_Patch0		= $00
+000000r 2               VRC7_Patch1		= $01
+000000r 2               VRC7_Patch2		= $02
+000000r 2               VRC7_Patch3		= $03
+000000r 2               VRC7_Patch4		= $04
+000000r 2               VRC7_Patch5		= $05
+000000r 2               VRC7_Patch6		= $06
+000000r 2               VRC7_Patch7		= $07
+000000r 2               
+000000r 2               VRC7_Frequency		= $10
+000000r 2               VRC7_Octave		= $20
+000000r 2               VRC7_Volume		= $30
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;MMC5 define
+000000r 2               
+000000r 2               MMC5_Pulse1_CTRL	= $5000         ; Pulse_ #1 Control Register (W)
+000000r 2               MMC5_Pulse1_FTUNE	= $5002         ; Pulse_ #1 Fine Tune (FT) Register (W)
+000000r 2               MMC5_Pulse1_CTUNE	= $5003         ; Pulse_ #1 Coarse Tune (CT) Register (W)
+000000r 2               MMC5_Pulse2_CTRL	= $5004         ; Pulse_ #2 Control Register (W)
+000000r 2               MMC5_Pulse2_FTUNE	= $5006         ; Pulse_ #2 Fine Tune Register (W)
+000000r 2               MMC5_Pulse2_STUNE	= $5007         ; Pulse_ #2 Coarse Tune Register (W)
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;N163 define
+000000r 2               
+000000r 2               N163_Resister		= $F800
+000000r 2               N163_Data		= $4800
+000000r 2               
+000000r 2               N163_Frequency_Low	= $40
+000000r 2               N163_Frequency_Middle	= $42
+000000r 2               N163_Frequency_High	= $44
+000000r 2               N163_Waveform		= $46
+000000r 2               N163_Volume		= $47
+000000r 2               N163_EnableChannel	= $7F
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;PSG define
+000000r 2               
+000000r 2               PSG_Register		= $C000
+000000r 2               PSG_Data		= $E000
 000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Working Struct define in Zero-page area
@@ -369,6 +450,21 @@ Current file: nsd_main.s
 000000r 2               .define	__sweep_ch1	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM3
 000000r 2               .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 000000r 2               
+000000r 2               .define	__dpcm_info	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5
+000000r 2               
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;		Struct of DPCM					*
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               .Struct		nsd_dpcm
+000000r 2               	Control		.byte		;I/O 0x4010
+000000r 2               	DA		.byte		;I/O 0x4011
+000000r 2               	Address		.byte		;I/O 0x4012
+000000r 2               	Size		.byte		;I/O 0x4013
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               
+000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Macros
 000000r 2               ;-----------------------------------------------------------------------
@@ -443,7 +539,7 @@ Current file: nsd_main.s
 000000r 1               
 000000r 1  A9 01        	lda	#nsd_flag::BGM
 000002r 1  24 rr        	bit	__flag
-000004r 1  D0 46        	bne	BGM_Exit		;BGM disable ?
+000004r 1  D0 41        	bne	BGM_Exit		;BGM disable ?
 000006r 1               
 000006r 1               	;-------------------------------
 000006r 1               	;Tempo
@@ -462,7 +558,7 @@ Current file: nsd_main.s
 00001Fr 1  06 20 rr rr  
 000023r 1  A2 08 20 rr  
 000027r 1  rr           
-000028r 1               		ldx	#I*2
+000028r 1               		ldx	#I*2 + nsd::TR_BGM1
 000028r 1               		jsr	nsd_sequence
 000028r 1               	.endrepeat
 000028r 1               
@@ -481,42 +577,42 @@ Current file: nsd_main.s
 00003Br 1  rr rr A2 04  
 00003Fr 1  20 rr rr A2  
 000043r 1  06 20 rr rr  
-000047r 1  A2 08 20 rr  
-00004Br 1  rr           
-00004Cr 1               		ldx	#I*2
-00004Cr 1               		jsr	nsd_envelop
-00004Cr 1               	.endrepeat
-00004Cr 1               
-00004Cr 1               BGM_Exit:
-00004Cr 1               
-00004Cr 1               
-00004Cr 1               	;-------------------------------
-00004Cr 1               	;SE
-00004Cr 1               
-00004Cr 1  A9 02        	lda	#nsd_flag::SE
-00004Er 1  24 rr        	bit	__flag
-000050r 1  D0 14        	bne	SE_Exit			;SE disable ?
-000052r 1               
-000052r 1  A2 0A 20 rr  	.repeat	nsd::SE_Track, I
-000056r 1  rr A2 0C 20  
-00005Ar 1  rr rr        
-00005Cr 1               		ldx	#I * 2 + nsd::BGM_Track * 2
-00005Cr 1               		jsr	nsd_sequence
-00005Cr 1               	.endrepeat
-00005Cr 1               
-00005Cr 1               	;-------
-00005Cr 1               	;Envelop
-00005Cr 1  A2 0A 20 rr  	.repeat	nsd::SE_Track, I
-000060r 1  rr A2 0C 20  
-000064r 1  rr rr        
-000066r 1               		ldx	#I * 2 + nsd::BGM_Track * 2
-000066r 1               		jsr	nsd_envelop
-000066r 1               	.endrepeat
-000066r 1               
-000066r 1               SE_Exit:
-000066r 1               
-000066r 1               	;-------------------------------
-000066r 1               	;Exit
-000066r 1  60           	rts
-000067r 1               .endproc
-000067r 1               
+000047r 1               	  .if	I <> 4		;DPCM is no envelope
+000047r 1               		ldx	#I*2 + nsd::TR_BGM1
+000047r 1               		jsr	nsd_envelop
+000047r 1               	  .endif
+000047r 1               	.endrepeat
+000047r 1               
+000047r 1               BGM_Exit:
+000047r 1               
+000047r 1               
+000047r 1               	;-------------------------------
+000047r 1               	;SE
+000047r 1               
+000047r 1  A9 02        	lda	#nsd_flag::SE
+000049r 1  24 rr        	bit	__flag
+00004Br 1  D0 10        	bne	SE_Exit			;SE disable ?
+00004Dr 1               
+00004Dr 1  A2 0A 20 rr  	.repeat	nsd::SE_Track, I
+000051r 1  rr 20 rr rr  
+000055r 1  A2 0C 20 rr  
+000059r 1  rr 20 rr rr  
+00005Dr 1               		ldx	#I * 2 + nsd::TR_SE1
+00005Dr 1               		jsr	nsd_sequence
+00005Dr 1               		jsr	nsd_envelop
+00005Dr 1               	.endrepeat
+00005Dr 1               
+00005Dr 1               ;	;-------
+00005Dr 1               ;	;Envelop
+00005Dr 1               ;	.repeat	nsd::SE_Track, I
+00005Dr 1               ;		ldx	#I * 2 + nsd::TR_SE1
+00005Dr 1               ;		jsr	nsd_envelop
+00005Dr 1               ;	.endrepeat
+00005Dr 1               
+00005Dr 1               SE_Exit:
+00005Dr 1               
+00005Dr 1               	;-------------------------------
+00005Dr 1               	;Exit
+00005Dr 1  60           	rts
+00005Er 1               .endproc
+00005Er 1               

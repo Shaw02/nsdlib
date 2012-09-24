@@ -41,7 +41,7 @@
 	;BGM
 BGM_Begin:
 	.repeat	nsd::BGM_Track, I
-		ldx	#I*2
+		ldx	#I*2 + nsd::TR_BGM1
 		jsr	nsd_sequence
 	.endrepeat
 
@@ -56,8 +56,10 @@ BGM_SEQ_Exit:
 	;-------
 	;Envelop
 	.repeat	nsd::BGM_Track, I
-		ldx	#I*2
+	  .if	I <> 4		;DPCM is no envelope
+		ldx	#I*2 + nsd::TR_BGM1
 		jsr	nsd_envelop
+	  .endif
 	.endrepeat
 
 BGM_Exit:
@@ -71,16 +73,17 @@ BGM_Exit:
 	bne	SE_Exit			;SE disable ?
 
 	.repeat	nsd::SE_Track, I
-		ldx	#I * 2 + nsd::BGM_Track * 2
+		ldx	#I * 2 + nsd::TR_SE1
 		jsr	nsd_sequence
-	.endrepeat
-
-	;-------
-	;Envelop
-	.repeat	nsd::SE_Track, I
-		ldx	#I * 2 + nsd::BGM_Track * 2
 		jsr	nsd_envelop
 	.endrepeat
+
+;	;-------
+;	;Envelop
+;	.repeat	nsd::SE_Track, I
+;		ldx	#I * 2 + nsd::TR_SE1
+;		jsr	nsd_envelop
+;	.endrepeat
 
 SE_Exit:
 

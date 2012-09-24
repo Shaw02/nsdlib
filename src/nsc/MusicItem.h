@@ -18,7 +18,7 @@ protected:
 	const		char*	strName;		//オブジェクトの名称
 	vector<MusicItem*>	ptcItem;		//構造化
 				string	code;
-	unsigned	int		iSize;
+				size_t	iSize;
 	unsigned	int		iOffset;		//SNDファイルポインタ
 	
 
@@ -27,9 +27,10 @@ public:
 	MusicItem(const char _strName[]="");
 	~MusicItem(void);
 
-	unsigned	int		getSize();
+				size_t	getSize();
 	unsigned	int		getOffset();
 	unsigned	int		SetOffset(unsigned	int	_offset);
 
 	virtual		void	getCode(string* _str);
+	virtual		void	getAsm(MusicFile* MUS);
 };

@@ -111,45 +111,47 @@ Current file: nsd_env.s
 000000r 2               
 000000r 1               	.include	"nsd.inc"
 000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;General Define
 000000r 2               .scope	nsd
 000000r 2               	APU_Track	= 5		;
 000000r 2               
-000000r 2               	TR_FDS		= APU_Track
+000000r 2               	TR_FDS		= APU_Track * 2
 000000r 2               	.ifdef	FDS
 000000r 2               		FDS_Track	= 1		;
 000000r 2               	.else
 000000r 2               		FDS_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_VRC6		= TR_FDS + FDS_Track
+000000r 2               	TR_VRC6		= TR_FDS + FDS_Track * 2
 000000r 2               	.ifdef	VRC6
 000000r 2               		VRC6_Track	= 3		;
 000000r 2               	.else
 000000r 2               		VRC6_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_VRC7		= TR_VRC6 + VRC6_Track
+000000r 2               	TR_VRC7		= TR_VRC6 + VRC6_Track * 2
 000000r 2               	.ifdef	VRC7
 000000r 2               		VRC7_Track	= 6		;
 000000r 2               	.else
 000000r 2               		VRC7_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_MMC5		= TR_VRC7 + VRC7_Track
+000000r 2               	TR_MMC5		= TR_VRC7 + VRC7_Track * 2
 000000r 2               	.ifdef	MMC5
 000000r 2               		MMC5_Track	= 2		; (without DPCM)
 000000r 2               	.else
 000000r 2               		MMC5_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_N163		= TR_MMC5 + MMC5_Track
+000000r 2               	TR_N163		= TR_MMC5 + MMC5_Track * 2
 000000r 2               	.ifdef	N163
 000000r 2               		N163_Track	= 8		;
 000000r 2               	.else
 000000r 2               		N163_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_PSG		= TR_N163 + N163_Track
+000000r 2               	TR_PSG		= TR_N163 + N163_Track * 2
 000000r 2               	.ifdef	PSG
 000000r 2               		PSG_Track	= 3		;
 000000r 2               	.else
@@ -170,6 +172,85 @@ Current file: nsd_env.s
 000000r 2               	TR_SE2		= BGM_Track * 2 + 2
 000000r 2               
 000000r 2               .endscope
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;FDS define
+000000r 2               
+000000r 2               FDS_Wave_Table		= $4040		; to $407F
+000000r 2               FDS_Volume		= $4080
+000000r 2               FDS_FTUNE		= $4082
+000000r 2               FDS_CTUNE		= $4083
+000000r 2               FDS_Sweep_Envelope	= $4084
+000000r 2               FDS_Sweep_Bias		= $4085
+000000r 2               FDS_Mod_FTUNE		= $4086
+000000r 2               FDS_Mod_CTUNE		= $4087
+000000r 2               FDS_Mod_Append		= $4088
+000000r 2               FDS_Write_Enable	= $4089
+000000r 2               FDS_Envelope_Speed	= $408A
+000000r 2               FDS_Volume_Gain		= $4090		;$4080's value
+000000r 2               FDS_Sweep_Gain		= $4092		;$4084's value
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;VRC6 define
+000000r 2               
+000000r 2               VRC6_Frequency		= $9003
+000000r 2               VRC6_Pulse1_CTRL	= $9000
+000000r 2               VRC6_Pulse1_FTUNE	= $9001
+000000r 2               VRC6_Pulse1_CTUNE	= $9002
+000000r 2               VRC6_Pulse2_CTRL	= $A000
+000000r 2               VRC6_Pulse2_FTUNE	= $A001
+000000r 2               VRC6_Pulse2_CTUNE	= $A002
+000000r 2               VRC6_SAW_CTRL		= $B000
+000000r 2               VRC6_SAW_FTUNE		= $B001
+000000r 2               VRC6_SAW_CTUNE		= $B002
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;VRC7 define
+000000r 2               
+000000r 2               VRC7_Resister		= $9010		;wait  6 clk
+000000r 2               VRC7_Data		= $9030		;wait 42 clk
+000000r 2               
+000000r 2               VRC7_Patch0		= $00
+000000r 2               VRC7_Patch1		= $01
+000000r 2               VRC7_Patch2		= $02
+000000r 2               VRC7_Patch3		= $03
+000000r 2               VRC7_Patch4		= $04
+000000r 2               VRC7_Patch5		= $05
+000000r 2               VRC7_Patch6		= $06
+000000r 2               VRC7_Patch7		= $07
+000000r 2               
+000000r 2               VRC7_Frequency		= $10
+000000r 2               VRC7_Octave		= $20
+000000r 2               VRC7_Volume		= $30
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;MMC5 define
+000000r 2               
+000000r 2               MMC5_Pulse1_CTRL	= $5000         ; Pulse_ #1 Control Register (W)
+000000r 2               MMC5_Pulse1_FTUNE	= $5002         ; Pulse_ #1 Fine Tune (FT) Register (W)
+000000r 2               MMC5_Pulse1_CTUNE	= $5003         ; Pulse_ #1 Coarse Tune (CT) Register (W)
+000000r 2               MMC5_Pulse2_CTRL	= $5004         ; Pulse_ #2 Control Register (W)
+000000r 2               MMC5_Pulse2_FTUNE	= $5006         ; Pulse_ #2 Fine Tune Register (W)
+000000r 2               MMC5_Pulse2_STUNE	= $5007         ; Pulse_ #2 Coarse Tune Register (W)
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;N163 define
+000000r 2               
+000000r 2               N163_Resister		= $F800
+000000r 2               N163_Data		= $4800
+000000r 2               
+000000r 2               N163_Frequency_Low	= $40
+000000r 2               N163_Frequency_Middle	= $42
+000000r 2               N163_Frequency_High	= $44
+000000r 2               N163_Waveform		= $46
+000000r 2               N163_Volume		= $47
+000000r 2               N163_EnableChannel	= $7F
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;PSG define
+000000r 2               
+000000r 2               PSG_Register		= $C000
+000000r 2               PSG_Data		= $E000
 000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Working Struct define in Zero-page area
@@ -370,6 +451,21 @@ Current file: nsd_env.s
 000000r 2               .define	__sweep_ch1	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM3
 000000r 2               .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 000000r 2               
+000000r 2               .define	__dpcm_info	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5
+000000r 2               
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;		Struct of DPCM					*
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               .Struct		nsd_dpcm
+000000r 2               	Control		.byte		;I/O 0x4010
+000000r 2               	DA		.byte		;I/O 0x4011
+000000r 2               	Address		.byte		;I/O 0x4012
+000000r 2               	Size		.byte		;I/O 0x4013
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               
+000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Macros
 000000r 2               ;-----------------------------------------------------------------------
@@ -497,6 +593,8 @@ Current file: nsd_env.s
 000000r 1               ;	x	Channel * 2
 000000r 1               ;<<Output>>
 000000r 1               ;	nothing
+000000r 1               ;<<Note>>
+000000r 1               ;	DPCM track do not call this routine.
 000000r 1               ;=======================================================================
 000000r 1               .proc	nsd_envelop
 000000r 1               
@@ -647,144 +745,142 @@ Current file: nsd_env.s
 000151r 1               
 000151r 1               	;-------------------------------
 000151r 1               	;Detune of cent unit
-000151r 1  BD rr rr     Detune:	lda	__detune_cent,x
-000154r 1  30 05        	bmi	@L
-000156r 1  A0 00        	ldy	#$00
-000158r 1  4C rr rr     	jmp	@E
-00015Br 1  A0 FF        @L:	ldy	#$FF			; ay = __detune_cent (sign expand)
-00015Dr 1  18 65 rr     @E:	add	__tmp
-000160r 1  85 rr        	sta	__tmp
-000162r 1  98           	tya
-000163r 1  65 rr        	adc	__tmp + 1
-000165r 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
-000167r 1               
-000167r 1               	;-----------------------
-000167r 1               	;Setting device (APU)
-000167r 1  A5 rr        	lda	__tmp
-000169r 1  A6 rr        	ldx	__tmp + 1
-00016Br 1  20 rr rr     	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
-00016Er 1               
-00016Er 1               
-00016Er 1               
-00016Er 1               	;=======================================
-00016Er 1               	;Voice & Volume
-00016Er 1  A6 rr        	ldx	__channel
-000170r 1  E0 04        	cpx	#nsd::TR_BGM3
-000172r 1  F0 04        	beq	exit
-000174r 1  E0 08        	cpx	#nsd::TR_BGM5
-000176r 1  D0 01        	bne	Voice
-000178r 1  60           exit:	rts
-000179r 1               
-000179r 1               	;-------------------------------
-000179r 1               	;Envelop of Voice
-000179r 1               Voice:
-000179r 1  BD rr rr     	lda	__chflag,x
-00017Cr 1  BD rr rr     	lda	__chflag,x
-00017Fr 1  29 02        	and	#$02
-000181r 1  D0 0A        	bne	@L
-000183r 1               
-000183r 1  BD rr rr     	lda	__voice,x
-000186r 1  4A 4A 4A 4A  	shr	a, 4			; a = release voice
-00018Ar 1  4C rr rr     	jmp	Set_Voice
-00018Dr 1               
-00018Dr 1  BD rr rr     @L:	lda	__env_voice + 1,x
-000190r 1  D0 06        	bne	@Envelop
-000192r 1  BD rr rr     	lda	__env_voice,x
-000195r 1  4C rr rr     	jmp	Set_Voice
-000198r 1               
-000198r 1               @Envelop:
-000198r 1  85 rr        	sta	__ptr + 1
-00019Ar 1  B5 rr        	lda	__Envelop_V,x
-00019Cr 1  29 F0        	and	#$F0			;
-00019Er 1  F0 0A        	beq	@Done			;if(counter != 0){
-0001A0r 1  B5 rr        	lda	__Envelop_V,x		;
-0001A2r 1  38 E9 10     	sub	#$10			;  counter--
-0001A5r 1  95 rr        	sta	__Envelop_V,x		;
-0001A7r 1  4C rr rr     	jmp	Voice_Exit		;} else {
-0001AAr 1               
-0001AAr 1  BD rr rr     @Done:	lda	__env_voice,x
-0001ADr 1  85 rr        	sta	__ptr			;  __ptr = (table address of envelop)
-0001AFr 1  BC rr rr     	ldy	__env_voi_ptr,x		;  y     = (_envelop pointer)
-0001B2r 1  B1 rr        @Loop:	lda	(__ptr),y		;  do{
-0001B4r 1  10 1A        	bpl	@Value			;  a = __ptr[y]
-0001B6r 1  C9 C0        	cmp	#$C0			;    if( a >= 0x80 ){
-0001B8r 1  90 06        	bcc	@SetDecay		;      if( a >= 0xc0){
-0001BAr 1  29 3F        	and	#$3F			;        y = a & 0x3F;  //continue
-0001BCr 1  A8           	tay				;      } else {
-0001BDr 1  4C rr rr     	jmp	@Loop			;        (decay counter) = a<<4 | (decay counter);
-0001C0r 1               
-0001C0r 1               @SetDecay:				;
-0001C0r 1  0A 0A 0A 0A  	shl	a, 4			;
-0001C4r 1  15 rr        	ora	__Envelop_V,x		;
-0001C6r 1  95 rr        	sta	__Envelop_V,x		;
-0001C8r 1  C8           	iny				;
-0001C9r 1  98           	tya				;
-0001CAr 1  9D rr rr     	sta	__env_voi_ptr,x		;
-0001CDr 1  4C rr rr     	jmp	Voice_Exit
-0001D0r 1               
-0001D0r 1               @Value:
-0001D0r 1  48           	pha
-0001D1r 1  C8           	iny
-0001D2r 1  98           	tya
-0001D3r 1  9D rr rr     	sta	__env_voi_ptr,x
-0001D6r 1  68           	pla
-0001D7r 1               	;-----------------------
-0001D7r 1               	;Setting device (APU)
-0001D7r 1               Set_Voice:
-0001D7r 1  20 rr rr     	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
-0001DAr 1               Voice_Exit:
-0001DAr 1               
-0001DAr 1               	;-------------------------------
-0001DAr 1               	;Envelop of Volume
-0001DAr 1               Volume:
-0001DAr 1  BD rr rr     	lda	__chflag,x
-0001DDr 1  29 03        	and	#$03
-0001DFr 1  C9 03        	cmp	#$03
-0001E1r 1  F0 11        	beq	@L3	;mode = 3 だったら、エンベロープへ
-0001E3r 1  C9 01        	cmp	#$01
-0001E5r 1  F0 05        	beq	@L1		;mode = 1 で、リリース音量
-0001E7r 1               
-0001E7r 1  BD rr rr     @L2:	lda	__env_volume + 1,x
-0001EAr 1  D0 17        	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
-0001ECr 1  BD rr rr     @L1:	lda	__volume,x
-0001EFr 1  29 F0        	and	#$F0
-0001F1r 1  4C rr rr     	jmp	Set_Volume
-0001F4r 1               
-0001F4r 1  BD rr rr     @L3:	lda	__env_volume + 1,x
-0001F7r 1  D0 0A        	bne	@Envelop
-0001F9r 1  BD rr rr     	lda	__volume,x
-0001FCr 1  0A 0A 0A 0A  	shl	a, 4
-000200r 1  4C rr rr     	jmp	Set_Volume
-000203r 1               
-000203r 1               @Envelop:
-000203r 1  85 rr        	sta	__ptr + 1
-000205r 1  B5 rr 29 0F  	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
-000209r 1  F0 0A B5 rr  
-00020Dr 1  38 E9 01 95  
-000211r 1  rr 4C rr rr  
-000215r 1  BD rr rr 85  
-000219r 1  rr BC rr rr  
-00021Dr 1  B1 rr 10 13  
-000221r 1  C9 C0 90 06  
-000225r 1  29 3F A8 4C  
-000229r 1  rr rr 29 0F  
-00022Dr 1  15 rr 95 rr  
-000231r 1  4C rr rr 9D  
-000235r 1  rr rr C8 98  
-000239r 1  9D rr rr BD  
-00023Dr 1  rr rr        
-00023Fr 1               
-00023Fr 1  85 rr        	sta	__tmp
-000241r 1  BD rr rr     	lda	__volume,x
-000244r 1  A6 rr        	ldx	__tmp
-000246r 1  20 rr rr     	jsr	_nsd_mul
-000249r 1  A6 rr        	ldx	__channel
-00024Br 1               
-00024Br 1               	;-----------------------
-00024Br 1               	;Setting device (APU)
-00024Br 1               Set_Volume:
-00024Br 1  4C rr rr     	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
-00024Er 1               
-00024Er 1               .endproc
-00024Er 1               
-00024Er 1               
+000151r 1               Detune:
+000151r 1  A0 00        	ldy	#$00
+000153r 1  BD rr rr     	lda	__detune_cent,x
+000156r 1  10 02        	bpl	@L
+000158r 1  A0 FF        	ldy	#$FF			; ay = __detune_cent (sign expand)
+00015Ar 1  18 65 rr     @L:	add	__tmp
+00015Dr 1  85 rr        	sta	__tmp
+00015Fr 1  98           	tya
+000160r 1  65 rr        	adc	__tmp + 1
+000162r 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
+000164r 1               
+000164r 1               	;-----------------------
+000164r 1               	;Setting device (APU)
+000164r 1  A5 rr        	lda	__tmp
+000166r 1  A6 rr        	ldx	__tmp + 1
+000168r 1  20 rr rr     	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
+00016Br 1               
+00016Br 1               
+00016Br 1               
+00016Br 1               	;=======================================
+00016Br 1               	;Voice & Volume
+00016Br 1  A6 rr        	ldx	__channel	;要る？
+00016Dr 1  E0 04        	cpx	#nsd::TR_BGM3
+00016Fr 1  D0 01        	bne	Voice
+000171r 1  60           exit:	rts
+000172r 1               
+000172r 1               	;-------------------------------
+000172r 1               	;Envelop of Voice
+000172r 1               Voice:
+000172r 1  BD rr rr     	lda	__chflag,x
+000175r 1  BD rr rr     	lda	__chflag,x
+000178r 1  29 02        	and	#$02
+00017Ar 1  D0 0A        	bne	@L
+00017Cr 1               
+00017Cr 1  BD rr rr     	lda	__voice,x
+00017Fr 1  4A 4A 4A 4A  	shr	a, 4			; a = release voice
+000183r 1  4C rr rr     	jmp	Set_Voice
+000186r 1               
+000186r 1  BD rr rr     @L:	lda	__env_voice + 1,x
+000189r 1  D0 06        	bne	@Envelop
+00018Br 1  BD rr rr     	lda	__env_voice,x
+00018Er 1  4C rr rr     	jmp	Set_Voice
+000191r 1               
+000191r 1               @Envelop:
+000191r 1  85 rr        	sta	__ptr + 1
+000193r 1  B5 rr        	lda	__Envelop_V,x
+000195r 1  29 F0        	and	#$F0			;
+000197r 1  F0 0A        	beq	@Done			;if(counter != 0){
+000199r 1  B5 rr        	lda	__Envelop_V,x		;
+00019Br 1  38 E9 10     	sub	#$10			;  counter--
+00019Er 1  95 rr        	sta	__Envelop_V,x		;
+0001A0r 1  4C rr rr     	jmp	Voice_Exit		;} else {
+0001A3r 1               
+0001A3r 1  BD rr rr     @Done:	lda	__env_voice,x
+0001A6r 1  85 rr        	sta	__ptr			;  __ptr = (table address of envelop)
+0001A8r 1  BC rr rr     	ldy	__env_voi_ptr,x		;  y     = (_envelop pointer)
+0001ABr 1  B1 rr        @Loop:	lda	(__ptr),y		;  do{
+0001ADr 1  10 1A        	bpl	@Value			;  a = __ptr[y]
+0001AFr 1  C9 C0        	cmp	#$C0			;    if( a >= 0x80 ){
+0001B1r 1  90 06        	bcc	@SetDecay		;      if( a >= 0xc0){
+0001B3r 1  29 3F        	and	#$3F			;        y = a & 0x3F;  //continue
+0001B5r 1  A8           	tay				;      } else {
+0001B6r 1  4C rr rr     	jmp	@Loop			;        (decay counter) = a<<4 | (decay counter);
+0001B9r 1               
+0001B9r 1               @SetDecay:				;
+0001B9r 1  0A 0A 0A 0A  	shl	a, 4			;
+0001BDr 1  15 rr        	ora	__Envelop_V,x		;
+0001BFr 1  95 rr        	sta	__Envelop_V,x		;
+0001C1r 1  C8           	iny				;
+0001C2r 1  98           	tya				;
+0001C3r 1  9D rr rr     	sta	__env_voi_ptr,x		;
+0001C6r 1  4C rr rr     	jmp	Voice_Exit
+0001C9r 1               
+0001C9r 1               @Value:
+0001C9r 1  48           	pha
+0001CAr 1  C8           	iny
+0001CBr 1  98           	tya
+0001CCr 1  9D rr rr     	sta	__env_voi_ptr,x
+0001CFr 1  68           	pla
+0001D0r 1               	;-----------------------
+0001D0r 1               	;Setting device (APU)
+0001D0r 1               Set_Voice:
+0001D0r 1  20 rr rr     	jsr	_nsd_snd_voice		;nsd_snd_voice(a);
+0001D3r 1               Voice_Exit:
+0001D3r 1               
+0001D3r 1               	;-------------------------------
+0001D3r 1               	;Envelop of Volume
+0001D3r 1               Volume:
+0001D3r 1  BD rr rr     	lda	__chflag,x
+0001D6r 1  29 03        	and	#$03
+0001D8r 1  C9 03        	cmp	#$03
+0001DAr 1  F0 11        	beq	@L3	;mode = 3 だったら、エンベロープへ
+0001DCr 1  C9 01        	cmp	#$01
+0001DEr 1  F0 05        	beq	@L1		;mode = 1 で、リリース音量
+0001E0r 1               
+0001E0r 1  BD rr rr     @L2:	lda	__env_volume + 1,x
+0001E3r 1  D0 17        	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
+0001E5r 1  BD rr rr     @L1:	lda	__volume,x
+0001E8r 1  29 F0        	and	#$F0
+0001EAr 1  4C rr rr     	jmp	Set_Volume
+0001EDr 1               
+0001EDr 1  BD rr rr     @L3:	lda	__env_volume + 1,x
+0001F0r 1  D0 0A        	bne	@Envelop
+0001F2r 1  BD rr rr     	lda	__volume,x
+0001F5r 1  0A 0A 0A 0A  	shl	a, 4
+0001F9r 1  4C rr rr     	jmp	Set_Volume
+0001FCr 1               
+0001FCr 1               @Envelop:
+0001FCr 1  85 rr        	sta	__ptr + 1
+0001FEr 1  B5 rr 29 0F  	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
+000202r 1  F0 0A B5 rr  
+000206r 1  38 E9 01 95  
+00020Ar 1  rr 4C rr rr  
+00020Er 1  BD rr rr 85  
+000212r 1  rr BC rr rr  
+000216r 1  B1 rr 10 13  
+00021Ar 1  C9 C0 90 06  
+00021Er 1  29 3F A8 4C  
+000222r 1  rr rr 29 0F  
+000226r 1  15 rr 95 rr  
+00022Ar 1  4C rr rr 9D  
+00022Er 1  rr rr C8 98  
+000232r 1  9D rr rr BD  
+000236r 1  rr rr        
+000238r 1               
+000238r 1  85 rr        	sta	__tmp
+00023Ar 1  BD rr rr     	lda	__volume,x
+00023Dr 1  A6 rr        	ldx	__tmp
+00023Fr 1  20 rr rr     	jsr	_nsd_mul
+000242r 1  A6 rr        	ldx	__channel
+000244r 1               
+000244r 1               	;-----------------------
+000244r 1               	;Setting device (APU)
+000244r 1               Set_Volume:
+000244r 1  4C rr rr     	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
+000247r 1               
+000247r 1               .endproc
+000247r 1               
+000247r 1               

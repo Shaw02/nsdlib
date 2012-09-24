@@ -1,43 +1,45 @@
 
+;---------------------------------------
+;General Define
 .scope	nsd
 	APU_Track	= 5		;
 
-	TR_FDS		= APU_Track
+	TR_FDS		= APU_Track * 2
 	.ifdef	FDS
 		FDS_Track	= 1		;
 	.else
 		FDS_Track	= 0		;
 	.endif
 
-	TR_VRC6		= TR_FDS + FDS_Track
+	TR_VRC6		= TR_FDS + FDS_Track * 2
 	.ifdef	VRC6
 		VRC6_Track	= 3		;
 	.else
 		VRC6_Track	= 0		;
 	.endif
 
-	TR_VRC7		= TR_VRC6 + VRC6_Track
+	TR_VRC7		= TR_VRC6 + VRC6_Track * 2
 	.ifdef	VRC7
 		VRC7_Track	= 6		;
 	.else
 		VRC7_Track	= 0		;
 	.endif
 
-	TR_MMC5		= TR_VRC7 + VRC7_Track
+	TR_MMC5		= TR_VRC7 + VRC7_Track * 2
 	.ifdef	MMC5
 		MMC5_Track	= 2		; (without DPCM)
 	.else
 		MMC5_Track	= 0		;
 	.endif
 
-	TR_N163		= TR_MMC5 + MMC5_Track
+	TR_N163		= TR_MMC5 + MMC5_Track * 2
 	.ifdef	N163
 		N163_Track	= 8		;
 	.else
 		N163_Track	= 0		;
 	.endif
 
-	TR_PSG		= TR_N163 + N163_Track
+	TR_PSG		= TR_N163 + N163_Track * 2
 	.ifdef	PSG
 		PSG_Track	= 3		;
 	.else
@@ -58,6 +60,85 @@
 	TR_SE2		= BGM_Track * 2 + 2
 
 .endscope
+
+;---------------------------------------
+;FDS define
+
+FDS_Wave_Table		= $4040		; to $407F
+FDS_Volume		= $4080
+FDS_FTUNE		= $4082
+FDS_CTUNE		= $4083
+FDS_Sweep_Envelope	= $4084
+FDS_Sweep_Bias		= $4085
+FDS_Mod_FTUNE		= $4086
+FDS_Mod_CTUNE		= $4087
+FDS_Mod_Append		= $4088
+FDS_Write_Enable	= $4089
+FDS_Envelope_Speed	= $408A
+FDS_Volume_Gain		= $4090		;$4080's value
+FDS_Sweep_Gain		= $4092		;$4084's value
+
+;---------------------------------------
+;VRC6 define
+
+VRC6_Frequency		= $9003
+VRC6_Pulse1_CTRL	= $9000
+VRC6_Pulse1_FTUNE	= $9001
+VRC6_Pulse1_CTUNE	= $9002
+VRC6_Pulse2_CTRL	= $A000
+VRC6_Pulse2_FTUNE	= $A001
+VRC6_Pulse2_CTUNE	= $A002
+VRC6_SAW_CTRL		= $B000
+VRC6_SAW_FTUNE		= $B001
+VRC6_SAW_CTUNE		= $B002
+
+;---------------------------------------
+;VRC7 define
+
+VRC7_Resister		= $9010		;wait  6 clk
+VRC7_Data		= $9030		;wait 42 clk
+
+VRC7_Patch0		= $00
+VRC7_Patch1		= $01
+VRC7_Patch2		= $02
+VRC7_Patch3		= $03
+VRC7_Patch4		= $04
+VRC7_Patch5		= $05
+VRC7_Patch6		= $06
+VRC7_Patch7		= $07
+
+VRC7_Frequency		= $10
+VRC7_Octave		= $20
+VRC7_Volume		= $30
+
+;---------------------------------------
+;MMC5 define
+
+MMC5_Pulse1_CTRL	= $5000         ; Pulse_ #1 Control Register (W)
+MMC5_Pulse1_FTUNE	= $5002         ; Pulse_ #1 Fine Tune (FT) Register (W)
+MMC5_Pulse1_CTUNE	= $5003         ; Pulse_ #1 Coarse Tune (CT) Register (W)
+MMC5_Pulse2_CTRL	= $5004         ; Pulse_ #2 Control Register (W)
+MMC5_Pulse2_FTUNE	= $5006         ; Pulse_ #2 Fine Tune Register (W)
+MMC5_Pulse2_STUNE	= $5007         ; Pulse_ #2 Coarse Tune Register (W)
+
+;---------------------------------------
+;N163 define
+
+N163_Resister		= $F800
+N163_Data		= $4800
+
+N163_Frequency_Low	= $40
+N163_Frequency_Middle	= $42
+N163_Frequency_High	= $44
+N163_Waveform		= $46
+N163_Volume		= $47
+N163_EnableChannel	= $7F
+
+;---------------------------------------
+;PSG define
+
+PSG_Register		= $C000
+PSG_Data		= $E000
 
 ;=======================================================================
 ;	Working Struct define in Zero-page area
@@ -257,6 +338,21 @@
 
 .define	__sweep_ch1	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM3
 .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
+
+.define	__dpcm_info	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5
+
+
+;=======================================================================
+;		Struct of DPCM					*
+;-----------------------------------------------------------------------
+.Struct		nsd_dpcm
+	Control		.byte		;I/O 0x4010
+	DA		.byte		;I/O 0x4011
+	Address		.byte		;I/O 0x4012
+	Size		.byte		;I/O 0x4013
+.Endstruct
+
+
 
 ;=======================================================================
 ;	Macros

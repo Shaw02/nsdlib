@@ -50,7 +50,7 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	_nsd_nes_keyon		;BGM ch2 Pulse
 	.addr	_nsd_ch3_keyon		;BGM ch3 Triangle
 	.addr	_nsd_nes_keyon		;BGM ch4 Noize
-	.addr	Exit			;BGM ch5 DPCM
+	.addr	_nsd_dpcm_keyon		;BGM ch5 DPCM
 .ifdef	FDS
 ;	.addr	
 .endif
@@ -117,7 +117,7 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 	.addr	Exit			;BGM ch2 Pulse
 	.addr	_nsd_ch3_keyoff		;BGM ch3 Triangle	-- no process --
 	.addr	Exit			;BGM ch4 Noize		-- no process --
-	.addr	Exit			;BGM ch5 DPCM		-- no process --
+	.addr	_nsd_dpcm_keyoff	;BGM ch5 DPCM		-- no process --
 .ifdef	FDS
 ;	.addr	
 .endif
@@ -184,7 +184,7 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	_nsd_nes_voice		;BGM ch2 Pulse
 	.addr	Exit			;BGM ch3 Triangle	-- no process --
 	.addr	_nsd_noise_voice	;BGM ch4 Noize
-	.addr	_nsd_dpcm_voice		;BGM ch5 DPCM
+	.addr	Exit			;BGM ch5 DPCM
 .ifdef	FDS
 ;	.addr	
 .endif
@@ -402,7 +402,7 @@ JMPTBL:	.addr	_nsd_nes_frequency	;BGM ch1 Pulse
 	.addr	_nsd_nes_frequency	;BGM ch2 Pulse
 	.addr	_nsd_nes_frequency	;BGM ch3 Triangle
 	.addr	_nsd_noise_frequency	;BGM ch4 Noise
-	.addr	_nsd_dpcm_frequency	;BGM ch5 DPCM
+	.addr	Exit			;BGM ch5 DPCM
 .ifdef	FDS
 ;	.addr	
 .endif
@@ -583,6 +583,51 @@ Exit:
 	rts
 .endproc
 
+.proc	_nsd_dpcm_keyon
+
+	lda	__dpcm_info + 0
+	sta	__ptr + 0
+	lda	__dpcm_info + 1
+	sta	__ptr + 1
+
+	lda	__note,x
+	shl	a, 2
+
+	tay
+	lda	(__ptr),y
+	sta	APU_MODCTRL
+
+	iny
+	lda	(__ptr),y
+	sta	APU_MODDA
+
+	iny
+	lda	(__ptr),y
+	sta	APU_MODADDR
+
+	iny
+	lda	(__ptr),y
+	sta	APU_MODLEN
+
+	lda	#$1F
+	sta	APU_CHANCTRL
+
+	rts
+.endproc
+
+.proc	_nsd_dpcm_keyoff
+
+	;r- ?
+	lda	__chflag,x
+	and	#nsd_chflag::KeyOff
+	beq	Exit
+
+	lda	#$0F
+	sta	APU_CHANCTRL
+Exit:
+	rts
+.endproc
+
 ;=======================================================================
 ;	void	__fastcall__	nsd_nes_voice(char voice);
 ;-----------------------------------------------------------------------
@@ -621,18 +666,6 @@ exit:
 	;-------------------------------
 	; *** Set the voice to work
 	sta	__voice_set,x
-
-	;-------------------------------
-	; *** Exit
-exit:
-	rts
-.endproc
-
-.proc	_nsd_dpcm_voice
-
-;
-;	to do
-;
 
 	;-------------------------------
 	; *** Exit
@@ -765,10 +798,10 @@ exit:
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.proc	_nsd_nes_frequency
-
 .rodata
-Freq:	;Frequency table
+
+;APU, MMC5, VRC6, FME7 Frequency table
+Freq:
 	.word	$0D4D	;C
 	.word	$0D34
 	.word	$0D1C
@@ -866,7 +899,135 @@ Freq:	;Frequency table
 	.word	$06BF
 	.word	$06B3
 
+;-----------------------
+;FDS Frequency table
+.ifdef	FDS
+Freq_FDS:
+
+.endif
+
+;-----------------------
+;SAW Frequency table
+.ifdef	VRC6
+Freq_SAW:
+	.word	$0F33
+	.word	$0F17
+	.word	$0EFC
+	.word	$0EE0
+	.word	$0EC5
+	.word	$0EA9
+	.word	$0E8E
+	.word	$0E74
+	.word	$0E59
+	.word	$0E3F
+	.word	$0E24
+	.word	$0E0A
+	.word	$0DF0
+	.word	$0DD7
+	.word	$0DBD
+	.word	$0DA4
+	.word	$0D8B
+	.word	$0D72
+	.word	$0D59
+	.word	$0D41
+	.word	$0D28
+	.word	$0D10
+	.word	$0CF8
+	.word	$0CE0
+	.word	$0CC8
+	.word	$0CB1
+	.word	$0C99
+	.word	$0C82
+	.word	$0C6B
+	.word	$0C54
+	.word	$0C3D
+	.word	$0C27
+	.word	$0C11
+	.word	$0BFA
+	.word	$0BE4
+	.word	$0BCE
+	.word	$0BB9
+	.word	$0BA3
+	.word	$0B8E
+	.word	$0B78
+	.word	$0B63
+	.word	$0B4E
+	.word	$0B39
+	.word	$0B25
+	.word	$0B10
+	.word	$0AFC
+	.word	$0AE8
+	.word	$0AD3
+	.word	$0AC0
+	.word	$0AAC
+	.word	$0A98
+	.word	$0A85
+	.word	$0A71
+	.word	$0A5E
+	.word	$0A4B
+	.word	$0A38
+	.word	$0A25
+	.word	$0A12
+	.word	$0A00
+	.word	$09ED
+	.word	$09DB
+	.word	$09C9
+	.word	$09B7
+	.word	$09A5
+	.word	$0993
+	.word	$0982
+	.word	$0970
+	.word	$095F
+	.word	$094D
+	.word	$093C
+	.word	$092B
+	.word	$091A
+	.word	$090A
+	.word	$08F9
+	.word	$08E8
+	.word	$08D8
+	.word	$08C8
+	.word	$08B8
+	.word	$08A8
+	.word	$0898
+	.word	$0888
+	.word	$0878
+	.word	$0868
+	.word	$0859
+	.word	$084A
+	.word	$083A
+	.word	$082B
+	.word	$081C
+	.word	$080D
+	.word	$07FE
+	.word	$07F0
+	.word	$07E1
+	.word	$07D2
+	.word	$07C4
+	.word	$07B6
+	.word	$07A8
+.endif
+
+
+;-----------------------
+;VRC7 Frequency table
+.ifdef	VRC7
+Freq_VRC7:
+
+.endif
+
+
+;-----------------------
+;N168 Frequency table
+.ifdef	N163
+Freq_N163:
+
+.endif
+
+;-----------------------
+;Code
 .code
+.proc	_nsd_nes_frequency
 	;-----------
 	;check the old frequency
 	ldy	__channel
@@ -926,12 +1087,11 @@ Octave_Exit:
 Detune:	
 	ldx	__channel
 	sta	__tmp
-	lda	__detune_fine,x
-	bmi	@L
 	ldy	#$00
-	jmp	@E
-@L:	ldy	#$FF			; ay = __detune_fine (sign expand)
-@E:	add	__tmp
+	lda	__detune_fine,x
+	bpl	@L
+	ldy	#$FF			; ay = __detune_fine (sign expand)
+@L:	add	__tmp
 	sta	__frequency_set,x
 	tya
 	adc	__tmp + 1
@@ -990,18 +1150,6 @@ Exit:
 	beq	Exit
 	sta	APU_NOISEFREQ2
 	sta	__frequency_set + 1,x
-
-	;-------------------------------
-	; *** Exit
-Exit:
-	rts
-.endproc
-
-.proc	_nsd_dpcm_frequency
-.code
-;
-;	to do
-;
 
 	;-------------------------------
 	; *** Exit

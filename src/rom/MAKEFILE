@@ -25,7 +25,7 @@ LIB_FILES = ../nsd/nsd.lib
 
 INC_FILES = 
 
-FILES = crt0.o main.o
+FILES = crt0.o
 
 clean: $(PROJ).bin
 	@del *.bak

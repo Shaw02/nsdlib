@@ -9,9 +9,9 @@
 //	●返値
 //				無し
 //==============================================================
-MusicFile::MusicFile(MMLfile* MML, const char _strName[]):
+MusicFile::MusicFile(MMLfile* MML, string _code, const char _strName[]):
 	MusicItem(_strName),
-	Header(MML)
+	Header(MML, _code)
 {
 	//----------------------
 	//Local変数
@@ -19,20 +19,26 @@ MusicFile::MusicFile(MMLfile* MML, const char _strName[]):
 
 //	定数定義
 enum	Command_ID_MusicFile {
-	//NSF Header
-	id_include,
+	//for NSF output
 	id_Title,
 	id_Composer,
 	id_Copyright,
+	id_OffsetPCM,
+	id_Code,
+
+	//for ASM output
+	id_SegmentSEQ,
+	id_SegmentPCM,
+	id_Label,
+
+	//General
+	id_include,
+	id_OctaveReverse,
 	id_bgm_num,
 	id_se_num,
 
-	id_Segment,
-	id_Code,
-
-	id_OctaveReverse,
-
 	//Block
+	id_DPCM,
 	id_Envelop,
 	id_Macro,
 	id_Sub,
@@ -42,26 +48,42 @@ enum	Command_ID_MusicFile {
 
 //	これらは、MML構文で使えるコマンド。
 const	static	Command_Info	Command[] = {
-		{	"#Include",			id_include		},
-		{	"#include",			id_include		},
+		//for NSF output
 		{	"#Title",			id_Title		},
 		{	"#title",			id_Title		},
 		{	"#Composer",		id_Composer		},
 		{	"#composer",		id_Composer		},
 		{	"#Copyright",		id_Copyright	},
 		{	"#copyright",		id_Copyright	},
-		{	"#Segment",			id_Segment		},
-		{	"#segment",			id_Segment		},
+		{	"#OffsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
+		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#Code",			id_Code			},
 		{	"#code",			id_Code			},
+		//for ASM output
+		{	"#Segment",			id_SegmentSEQ	},	//Segment name for Sequence
+		{	"#segment",			id_SegmentSEQ	},
+		{	"#SegmentSEQ",		id_SegmentSEQ	},	//Segment name for Sequence
+		{	"#segmentSEQ",		id_SegmentSEQ	},
+		{	"#SegmentPCM",		id_SegmentPCM	},	//Segment name for ⊿PCM
+		{	"#segmentPCM",		id_SegmentPCM	},
+		{	"#Label",			id_Label		},
+		{	"#label",			id_Label		},
+		//General
+		{	"#Include",			id_include		},
+		{	"#include",			id_include		},
 		{	"#OctaveReverse",	id_OctaveReverse},
 		{	"#octaveReverse",	id_OctaveReverse},
 		{	"#BGM",				id_bgm_num		},
 		{	"#bgm",				id_bgm_num		},
 		{	"#SE",				id_se_num		},
 		{	"#se",				id_se_num		},
+		//Block
+		{	"DPCM",				id_DPCM			},
+		{	"Envelope",			id_Envelop		},
+		{	"envelope",			id_Envelop		},
 		{	"Envelop",			id_Envelop		},
 		{	"envelop",			id_Envelop		},
+		{	"E",				id_Envelop		},
 		{	"$",				id_Macro		},
 		{	"Sub",				id_Sub			},
 		{	"sub",				id_Sub			},
@@ -101,8 +123,9 @@ const	static	Command_Info	Command[] = {
 
 		//コマンド文字列のチェック
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
-			case(id_include):
-				MML->include();
+			//for NSF output
+			case(id_Code):
+				Header.Set_RomCode(MML);
 				break;
 			case(id_Title):
 				Header.Set_Title(MML);
@@ -113,11 +136,22 @@ const	static	Command_Info	Command[] = {
 			case(id_Copyright):
 				Header.Set_Copyright(MML);
 				break;
-			case(id_Segment):
-				Header.Set_Segment(MML);
+			case(id_OffsetPCM):
+				Header.Set_OffsetPCM(MML);
 				break;
-			case(id_Code):
-				Header.Set_RomCode(MML);
+			//for ASM output
+			case(id_SegmentSEQ):
+				Header.Set_SegmentSEQ(MML);
+				break;
+			case(id_SegmentPCM):
+				Header.Set_SegmentPCM(MML);
+				break;
+			case(id_Label):
+				Header.Set_Label(MML);
+				break;
+			//General
+			case(id_include):
+				MML->include();
 				break;
 			case(id_OctaveReverse):
 				MML->octave_reverse = true;		//これは、MMLファイルの属性。
@@ -128,16 +162,23 @@ const	static	Command_Info	Command[] = {
 			case(id_se_num):
 				Header.Set_Number_SE(MML);
 				break;
+			//MML
+			case(id_DPCM):
+				//■■■　to do
+				break;
 			case(id_Envelop):
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcEnv.count(i) != 0){
 					MML->Err("Envelop()ブロックで同じ番号が指定されました。");
 				}
-				_env = new Envelop(MML);
+				_env = new Envelop(MML, i);
 				ptcItem.push_back(_env);
 				ptcEnv[i] = _env;
 				iSize += _env->getSize();	//BGMのサイズを更新
+				break;
+			case(id_Macro):
+				//■■■　to do
 				break;
 			case(id_Sub):
 				i = MML->GetNum();
@@ -146,7 +187,7 @@ const	static	Command_Info	Command[] = {
 					MML->Err("Sub()ブロックで同じ番号が指定されました。");
 				}
 				//範囲チェック
-				_sub = new Sub(MML);
+				_sub = new Sub(MML, i);
 				ptcItem.push_back(_sub);
 				ptcSub[i] = _sub;
 				iSize += _sub->getSize();	//BGMのサイズを更新
@@ -161,7 +202,7 @@ const	static	Command_Info	Command[] = {
 				if((Header.iBGM <= i) || (i<0)){
 					MML->Err("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。");
 				}
-				_bgm = new BGM(MML);
+				_bgm = new BGM(MML, i);
 				ptcItem.push_back(_bgm);
 				ptcBGM[i] = _bgm;
 				iSize += _bgm->getSize();	//BGMのサイズを更新
@@ -176,7 +217,7 @@ const	static	Command_Info	Command[] = {
 				if((Header.iSE <= i) || (i<0)){
 					MML->Err("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。");
 				}
-				_se = new SE(MML);
+				_se = new SE(MML, i);
 				ptcItem.push_back(_se);
 				ptcSE[i] = _se;
 				iSize += _se->getSize();	//BGMのサイズを更新
@@ -221,7 +262,22 @@ const	static	Command_Info	Command[] = {
 //==============================================================
 MusicFile::~MusicFile(void)
 {
+	//⊿PCMは、ここで破棄する。
 
+	//----------------------
+	//Local変数
+	map<string, MusicItem*>::iterator	itItem;
+
+	//----------------------
+	//Delete Class
+	if(!ptcDPCM.empty()){
+		itItem = ptcDPCM.begin();
+		while(itItem != ptcDPCM.end()){
+			delete itItem->second;
+			itItem++;
+		}
+		ptcDPCM.clear();
+	}
 }
 
 //==============================================================
@@ -257,20 +313,7 @@ void	MusicFile::Fix_Address(void)
 	}
 }
 
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-void	MusicFile::init_romimg(void)
-{
-	memset(romimg, 0, sizeof(romimg));
-
-}
-
+/*
 //==============================================================
 //		曲バイナリイメージの作成
 //--------------------------------------------------------------
@@ -281,14 +324,29 @@ void	MusicFile::init_romimg(void)
 //==============================================================
 void	MusicFile::make_binary(void)
 {
-	string	_str;
+
+}
+*/		
+//==============================================================
+//		ＮＳＦの作成
+//--------------------------------------------------------------
+//	●引数
+//		const char*	strFileName	コード
+//	●返値
+//				無し
+//==============================================================
+void	MusicFile::make_bin(unsigned int rom_size)
+{
+				string		_str;
 	unsigned	int			i		= 2;
 	unsigned	int			iBGM	= 0;
 	unsigned	int			iSE		= 0;
 	unsigned	__int16*	pt;
 
-	unsigned	int		_size	= 4 + (Header.iBGM + Header.iSE)*2;
+	unsigned	int			_size	= 4 + (Header.iBGM + Header.iSE)*2;
 
+
+	//曲バイナリーの作成
 	_str.clear();
 	_str.resize(_size);
 
@@ -299,97 +357,18 @@ void	MusicFile::make_binary(void)
 	pt[1]	=	0;			//ΔPCM info のアドレス
 
 	while(iBGM < Header.iBGM){
-		pt[i] = 0x8000 + _size + ptcBGM[iBGM]->getOffset();
+		pt[i] = 0x8000 + rom_size - 0x80 + _size + ptcBGM[iBGM]->getOffset();
 		i++;
 		iBGM++;
 	}
 	while(iSE < Header.iSE){
-		pt[i] = 0x8000 + _size + ptcSE[iSE]->getOffset();
+		pt[i] = 0x8000 + rom_size - 0x80 + _size + ptcSE[iSE]->getOffset();
 		i++;
 		iSE++;
 	}
 
 	getCode(&_str);
 	code = _str;
-}
-		
-//==============================================================
-//		ＮＳＦの作成
-//--------------------------------------------------------------
-//	●引数
-//		const char*	strFileName	コード
-//	●返値
-//				無し
-//==============================================================
-void	MusicFile::make_nsf(const char*	strFileName)
-{
-	FileInput*	_romcode	= new FileInput();
-	_romcode->fileopen(strFileName);
-
-	unsigned	__int16*	_nsd_init	=	((unsigned	__int16*)romimg) + 0x7FF0/sizeof(unsigned	__int16);
-	unsigned	__int16*	_nsd_main	=	((unsigned	__int16*)romimg) + 0x7FF2/sizeof(unsigned	__int16);
-
-	//ROMイメージにバイナリーを転送
-	init_romimg();
-	memcpy((char *)romimg, code.c_str(), code.size());
-
-	_romcode->read((char*)(romimg + 0x6000), 0x2000);
-	_romcode->close();	
-
-	//NSFヘッダーの作成
-	nsf.Name[0]			= 'N';
-	nsf.Name[1]			= 'E';
-	nsf.Name[2]			= 'S';
-	nsf.Name[3]			= 'M';
-	nsf.Name[4]			= 0x1A;
-	nsf.Version			= 1;
-	nsf.MusicNumber		= Header.iBGM + Header.iSE;
-	nsf.StartMusicNumber= 1;
-	nsf.LoadAddress		= 0x8000;
-	nsf.InitAddress		= *_nsd_init;
-	nsf.MainAddress		= *_nsd_main;
-	nsf.Frequency_NTSC	= 0x411A;
-	nsf.Frequency_PAL	= 0x4E20;
-	nsf.Video			= 0;
-	nsf.External		= 0;
-	nsf.Bank[0]			= 0;
-	nsf.Bank[1]			= 0;
-	nsf.Bank[2]			= 0;
-	nsf.Bank[3]			= 0;
-	nsf.Bank[4]			= 0;
-	nsf.Bank[5]			= 0;
-	nsf.Bank[6]			= 0;
-	nsf.Bank[7]			= 0;
-	nsf.Null1			= 0;
-	nsf.Null2			= 0;
-	nsf.Null3			= 0;
-	nsf.Null4			= 0;
-
-	memcpy(&nsf.Title, Header.title.c_str(), 32);
-	memcpy(&nsf.Composer, Header.composer.c_str(), 32);
-	memcpy(&nsf.Copyright, Header.copyright.c_str(), 32);
-
-	delete	_romcode;
-}
-
-//==============================================================
-//		バイナリファイルへの保存
-//--------------------------------------------------------------
-//	●引数
-//		const char*	strFileName		ファイル名
-//	●返値
-//				無し
-//==============================================================
-void	MusicFile::saveBIN(const char*	strFileName)
-{
-	//----------------------
-	//File open
-	fileopen(strFileName);
-
-	write(code.c_str(), code.size());
-	//----------------------
-	//Close file
-	close();
 }
 
 //==============================================================
@@ -402,17 +381,53 @@ void	MusicFile::saveBIN(const char*	strFileName)
 //==============================================================
 void	MusicFile::saveNSF(const char*	strFileName)
 {
+
+	unsigned	int		rom_size;
+				char*	romimg		= new char[0x8000+0x80];
+	NSF_Header*			nsf			= (NSF_Header*)romimg;
+	FileInput*			_romcode	= new FileInput();
+
+
+	//NSF用コードの転送
+	_romcode->fileopen(Header.romcode.c_str());
+	rom_size = _romcode->GetSize();
+	_romcode->read(romimg, rom_size);
+	_romcode->close();
+	delete		_romcode;
+
+	//NSFヘッダーの更新
+	nsf->MusicNumber		= Header.iBGM + Header.iSE;
+	memcpy(&nsf->Title, Header.title.c_str(), 32);
+	memcpy(&nsf->Composer, Header.composer.c_str(), 32);
+	memcpy(&nsf->Copyright, Header.copyright.c_str(), 32);
+
+
+	//シーケンスのバイナリを生成
+	make_bin(rom_size);
+
+	//サイズチェック
+	if((0x8000 + rom_size - 0x80 + code.size()) >= Header.offsetPCM){
+		cout << "コード・シーケンスのサイズが許容値を越えました。" << endl;
+		cout << "　許容値：" << Header.offsetPCM - 0x8000 << "[Byte]" << endl;
+		cout << "　サイズ：" << rom_size - 0x80 + code.size() << "[Byte]" << endl;
+		exit(-1);
+	}
+
+	//
+	//⊿PCM
+	//
+
 	//----------------------
-	//File open
+	//ＮＳＦ書き込み
 	fileopen(strFileName);
-
-	make_nsf(Header.romcode.c_str());
-	write((char*)&nsf, sizeof(nsf));
-	write(romimg, sizeof(romimg));
+	write(romimg, rom_size);			//NSFヘッダー ＆ コードの書き込み
+	write(code.c_str(), code.size());	//シーケンスの書き込み
+	//write();		//⊿PCMの書き込み
+	close();
 
 	//----------------------
-	//Close file
-	close();
+	//Exit
+	delete[]	romimg;
 }
 
 //==============================================================
@@ -425,28 +440,34 @@ void	MusicFile::saveNSF(const char*	strFileName)
 //==============================================================
 void	MusicFile::saveASM(const char*	strFileName)
 {
+	unsigned	int			iBGM	= 0;
+	unsigned	int			iSE		= 0;
+
 	//----------------------
 	//File open
 	fileopen(strFileName);
 
-	//----------------------
-	//Close file
-	close();
-}
+	//Header
+	*this <<	";===============================================================\n"
+				";		Music file for NES Sound Driver & Library\n"
+				";			for assembly language (ca65.exe)\n"
+				";===============================================================\n"
+				<<endl;
 
-//==============================================================
-//		Ｃ言語ソースへの保存
-//--------------------------------------------------------------
-//	●引数
-//		const char*	strFileName		ファイル名
-//	●返値
-//				無し
-//==============================================================
-void	MusicFile::saveC(const char*	strFileName)
-{
-	//----------------------
-	//File open
-	fileopen(strFileName);
+	//Export of Sequence
+	while(iBGM < Header.iBGM){
+		*this	<<	"	.export		"	<<	Header.Label	<<	"BGM"	<<	iBGM	<<	endl;
+		iBGM++;
+	}
+	while(iSE < Header.iSE){
+		*this	<<	"	.export		"	<<	Header.Label	<<	"SE"	<<	iSE	<<	endl;
+		iSE++;
+	}
+
+	//MML
+	*this <<	"\n\n.segment	"	<<	'"'	<<	Header.segmentSEQ	<<	'"' << endl;
+
+	getAsm(this);
 
 	//----------------------
 	//Close file

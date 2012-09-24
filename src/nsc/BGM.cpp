@@ -9,8 +9,8 @@
 //	●返値
 //					無し
 //==============================================================
-BGM::BGM(MMLfile* MML, const char _strName[]):
-	TrackSet(MML, false, _strName)
+BGM::BGM(MMLfile* MML, unsigned int _id, const char _strName[]):
+	TrackSet(MML, _id, false, _strName)
 {
 }
 
@@ -24,4 +24,18 @@ BGM::BGM(MMLfile* MML, const char _strName[]):
 //==============================================================
 BGM::~BGM(void)
 {
+}
+
+//==============================================================
+//		コードの取得
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	BGM::getAsm(MusicFile* MUS)
+{
+	*MUS << MUS->Header.Label.c_str() << "BGM" << m_id << ":" << endl;
+	TrackSet::getAsm(MUS);
 }

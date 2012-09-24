@@ -82,6 +82,8 @@
 ;	x	Channel * 2
 ;<<Output>>
 ;	nothing
+;<<Note>>
+;	DPCM track do not call this routine.
 ;=======================================================================
 .proc	nsd_envelop
 
@@ -204,12 +206,12 @@ F_Env:	lda	__env_frequency + 1,x
 
 	;-------------------------------
 	;Detune of cent unit
-Detune:	lda	__detune_cent,x
-	bmi	@L
+Detune:	
 	ldy	#$00
-	jmp	@E
-@L:	ldy	#$FF			; ay = __detune_cent (sign expand)
-@E:	add	__tmp
+	lda	__detune_cent,x
+	bpl	@L
+	ldy	#$FF			; ay = __detune_cent (sign expand)
+@L:	add	__tmp
 	sta	__tmp
 	tya
 	adc	__tmp + 1
@@ -225,10 +227,8 @@ Detune:	lda	__detune_cent,x
 
 	;=======================================
 	;Voice & Volume
-	ldx	__channel
+	ldx	__channel	;óvÇÈÅH
 	cpx	#nsd::TR_BGM3
-	beq	exit
-	cpx	#nsd::TR_BGM5
 	bne	Voice
 exit:	rts
 

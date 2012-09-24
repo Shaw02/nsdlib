@@ -17,9 +17,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 	//初期化設定
 	fHelp(0),		//ヘルプは、デフォルトは表示しない。
 	saveNSF(false),
-	saveBIN(false),
 	saveASM(false),
-	saveC(false),
 	cDebug(0)
 {
 
@@ -59,19 +57,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 					saveASM = true;
 					break;
 				//--------
-				//バイナリーへ
-				case 'b' :
-				case 'B' :
-					saveBIN = true;
-					break;
-				//--------
-				//Ｃ言語へ
-				case 'c' :
-				case 'C' :
-					saveC = true;
-					break;
-				//--------
-				//Ｃ言語へ
+				//ＮＳＦへ
 				case 'n' :
 				case 'N' :
 					saveNSF = true;
@@ -82,6 +68,28 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 					iResult=sscanf(argv[iCount],"/D%d",&cDebug);
 					if((iResult==NULL)||(iResult==EOF)){
 						opError("-D");
+						break;
+					};
+					break;
+				//--------
+				//Debugの指定
+				case 'l' :
+				case 'L' :
+					//既に指定されている？
+					if(strCodeName.empty()){
+						iFlagFilnameExt=0;		//拡張子の有無　Reset
+						iOptionChk=0;
+						while((cOption=argv[iCount][iOptionChk+2])!=0)
+						{
+							strCodeName+=cOption;
+							if(cOption=='.'){iFlagFilnameExt=1;};
+							iOptionChk++;
+						};
+						if(iFlagFilnameExt==0){
+							strCodeName+=".bin";
+						};
+					} else {
+						opError("-l Code ファイルが2回以上指定されました。");
 						break;
 					};
 					break;
@@ -110,50 +118,10 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 								iOptionChk++;
 							};
 							if(iFlagFilnameExt==0){
-								strASMname+=".asm";
+								strASMname+=".s";
 							};
 						} else {
 							opError("-fa ASM ファイルが2回以上指定されました。");
-							break;
-						};
-						break;
-					case 'B' :
-					case 'b' :
-						//既に指定されている？
-						if(strBINname.empty()){
-							iFlagFilnameExt=0;		//拡張子の有無　Reset
-							iOptionChk=0;
-							while((cOption=argv[iCount][iOptionChk+3])!=0)
-							{
-								strBINname+=cOption;
-								if(cOption=='.'){iFlagFilnameExt=1;};
-								iOptionChk++;
-							};
-							if(iFlagFilnameExt==0){
-								strBINname+=".bin";
-							};
-						} else {
-							opError("-fb BIN ファイルが2回以上指定されました。");
-							break;
-						};
-						break;
-					case 'C' :
-					case 'c' :
-						//既に指定されている？
-						if(strCname.empty()){
-							iFlagFilnameExt=0;		//拡張子の有無　Reset
-							iOptionChk=0;
-							while((cOption=argv[iCount][iOptionChk+3])!=0)
-							{
-								strCname+=cOption;
-								if(cOption=='.'){iFlagFilnameExt=1;};
-								iOptionChk++;
-							};
-							if(iFlagFilnameExt==0){
-								strCname+=".c";
-							};
-						} else {
-							opError("-fc C ファイルが2回以上指定されました。");
 							break;
 						};
 						break;
@@ -226,18 +194,6 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 	//ファイル名が書かれなかった場合も、ヘルプを表示する。
 	if((fHelp==1)||(strMMLname.empty())){print_help();};
 
-	//--------------
-	//ファイルの指定が無かった場合
-	if(strBINname.empty()){
-		iOptionChk=0;		
-		while((cOption=strMMLname[iOptionChk])!='.')
-		{
-			strBINname+=cOption;
-			iOptionChk++;
-		};
-		strBINname+=".bin";
-	};
-
 	if(strASMname.empty()){
 		iOptionChk=0;		
 		while((cOption=strMMLname[iOptionChk])!='.')
@@ -245,17 +201,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 			strASMname+=cOption;
 			iOptionChk++;
 		};
-		strASMname+=".asm";
-	};
-
-	if(strCname.empty()){
-		iOptionChk=0;		
-		while((cOption=strMMLname[iOptionChk])!='.')
-		{
-			strCname+=cOption;
-			iOptionChk++;
-		};
-		strCname+=".c";
+		strASMname+=".s";
 	};
 
 	if(strNSFname.empty()){
@@ -299,13 +245,10 @@ void	OPSW::print_help(){
 				"  Usage : nsc [ -options ] [file(.mml)]\n"
 				"\n"
 				"  -a			Compile to assembly langage.\n"
-				"  -b			Compile to binary.\n"
-				"  -c			Compile to C langage.\n"
-				"  -n			Compile to NSF.\n"
-				"  -fa[file(.asm)]	Name the output assembly langage file.\n"
-				"  -fb[file(.bin)]	Name the output binary file.\n"
-				"  -fc[file(.c  )]	Name the output C langage file.\n"
-				"  -fn[file(.nsf)]	Name the output NSF file.\n"
+				"  -n			Compile to NSF music format.\n"
+				"  -l[file(.bin)]	Filename of the rom code for NSF.\n"
+				"  -fa[file(.s  )]	Filename of the output assembly langage file.\n"
+				"  -fn[file(.nsf)]	Filename of the output NSF music format.\n"
 				"  -h			Print the this help."	<<	endl;
 
 	exit(EXIT_SUCCESS);

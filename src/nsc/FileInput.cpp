@@ -77,3 +77,17 @@ unsigned	char	FileInput::cRead()
 
 	return(readData);
 };
+//--------------------------------
+//ÉTÉCÉY
+//--------------------------------
+unsigned	int	FileInput::GetSize(){
+
+	unsigned	int	iData;
+	unsigned	int	iDataT = tellg();
+
+	seekg(0		,ios::end);
+	iData = tellg();
+	seekg(iDataT,ios::beg);
+
+	return(iData);
+};

@@ -10,8 +10,9 @@
 //	●返値
 //					無し
 //==============================================================
-Envelop::Envelop(MMLfile* MML, const char _strName[]):
-	MusicItem(_strName)
+Envelop::Envelop(MMLfile* MML, unsigned int _id, const char _strName[]):
+	MusicItem(_strName),
+	m_id(_id)
 {
 	//----------------------
 	//Local変数
@@ -190,4 +191,17 @@ const	static	Command_Info	Command[] = {
 //==============================================================
 Envelop::~Envelop(void)
 {
+}
+//==============================================================
+//		コードの取得
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	Envelop::getAsm(MusicFile* MUS)
+{
+	*MUS << MUS->Header.Label.c_str() << "Envelope" << m_id << ":" << endl;
+	MusicItem::getAsm(MUS);
 }

@@ -5,16 +5,19 @@
 #==============================================================================
 
 .SUFFIXES :
-.SUFFIXES : .s .c
+.SUFFIXES : .s .c .mml
 
 ASM = ca65
-AFLAG = -t none --listing --list-bytes 255
+AFLAG = -t none
 
 CC = cl65
-CFLAG = -t none -Oi -Os -Or -c -l -o
+CFLAG = -t none -Oi -Os -Or -c -o
+
+MC = ..\..\bin\nsc
+MFLAG = -a
 
 LINKER = ld65
-LFLAG = -C config.cfg -m $(PROJ).map -vm -o
+LFLAG = -C config.cfg -v -o
 
 LIBER = ar65
 LIBFLAG = a
@@ -25,20 +28,27 @@ LIB_FILES = ../../lib/nsd.lib
 
 INC_FILES = 
 
-FILES = test.o
-
+FILES = test.o testmus.o
 
 
 clean: $(PROJ).nes
 	@del *.bak
+	@del *.o
+	@del *.s
 
 all: $(PROJ).nes
 
 $(PROJ).nes : $(FILES) $(INC_FILES) $(LIB_FILES)
 	@$(LINKER) $(LFLAG) $(PROJ).nes $(FILES)  $(LIB_FILES) nes.lib
 
+.mml.o :
+	@$(MC) $(MFLAG) $<
+	@$(ASM) $(AFLAG) $*.s
+
 .c.o :
 	@$(CC) $(CFLAG) $*.o $<
 
 .s.o :
 	@$(ASM) $(AFLAG) $<
+
+

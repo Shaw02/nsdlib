@@ -1,9 +1,7 @@
 // ê√ìIÉÇÉfÉã
 
-
 #ifndef __SE__
 #define __SE__
-
 
 // Include files
 #include "MMLfile.h"
@@ -18,9 +16,10 @@ class SE : public TrackSet
 
 public:
 
-	SE(MMLfile* MML,	 char _strName[] = "==== [ SE ]====");
-
+	SE(MMLfile* MML, unsigned int _id,	 char _strName[] = "==== [ SE ]====");
 	~SE();
+	void	getAsm(MusicFile* MUS);
+
 
 };// END CLASS DEFINITION SE
 

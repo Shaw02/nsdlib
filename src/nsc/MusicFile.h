@@ -31,36 +31,37 @@ class MusicFile :
 	public FileOutput, public MusicItem
 {
 //メンバー変数
+public:
+			MusicHeader			Header;		//Header			
+
 private:
 //static	const	Command_Info	Command[];
 
-			MusicHeader			Header;		//Header			
 	map<	int, Envelop*	>	ptcEnv;		//Envelop
 	map<	int, BGM*		>	ptcBGM;		//BGM
 	map<	int, SE*		>	ptcSE;		//SE 
 	map<	int, Sub*		>	ptcSub;		//Subroutine Sequence
 	map< string, MusicTrack*>	ptcMac;		//Macro
+	map< string, MusicItem*>	ptcDPCM;	//⊿PCM
+//								DPCMinfo;
 
-				NSF_Header		nsf;
-				char			romimg[0x8000];	//
+	unsigned	int				nsf_size;
 
 //メンバー関数
 public:
-	MusicFile(MMLfile* MML, const char _strName[]="==== [ Music ] ====");
+	MusicFile(MMLfile* MML, string _code, const char _strName[]="==== [ Music ] ====");
 	~MusicFile(void);
 
 	void	Fix_Address(void);
 
 	//バイナリーを作る
-	void	init_romimg(void);					// ROMイメージ用の領域を０初期化
-	void	make_binary(void);					// code にバイナリーを入れる。
-	void	make_nsf(const char*	strFileName);
+	void	make_bin(unsigned int rom_size);
 
 	//保存フェーズ
-	void	saveBIN(const char*	strFileName);
+//	void	saveBIN(const char*	strFileName);
 	void	saveNSF(const char*	strFileName);
 	void	saveASM(const char*	strFileName);
-	void	saveC(const char*	strFileName);
+//	void	saveC(const char*	strFileName);
 
 	void	Err(const char* msg);
 	void	Warning(const char* msg);

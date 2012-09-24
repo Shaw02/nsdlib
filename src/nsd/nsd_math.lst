@@ -108,45 +108,47 @@ Current file: nsd_math.s
 000000r 2               
 000000r 1               	.include	"nsd.inc"
 000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;General Define
 000000r 2               .scope	nsd
 000000r 2               	APU_Track	= 5		;
 000000r 2               
-000000r 2               	TR_FDS		= APU_Track
+000000r 2               	TR_FDS		= APU_Track * 2
 000000r 2               	.ifdef	FDS
 000000r 2               		FDS_Track	= 1		;
 000000r 2               	.else
 000000r 2               		FDS_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_VRC6		= TR_FDS + FDS_Track
+000000r 2               	TR_VRC6		= TR_FDS + FDS_Track * 2
 000000r 2               	.ifdef	VRC6
 000000r 2               		VRC6_Track	= 3		;
 000000r 2               	.else
 000000r 2               		VRC6_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_VRC7		= TR_VRC6 + VRC6_Track
+000000r 2               	TR_VRC7		= TR_VRC6 + VRC6_Track * 2
 000000r 2               	.ifdef	VRC7
 000000r 2               		VRC7_Track	= 6		;
 000000r 2               	.else
 000000r 2               		VRC7_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_MMC5		= TR_VRC7 + VRC7_Track
+000000r 2               	TR_MMC5		= TR_VRC7 + VRC7_Track * 2
 000000r 2               	.ifdef	MMC5
 000000r 2               		MMC5_Track	= 2		; (without DPCM)
 000000r 2               	.else
 000000r 2               		MMC5_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_N163		= TR_MMC5 + MMC5_Track
+000000r 2               	TR_N163		= TR_MMC5 + MMC5_Track * 2
 000000r 2               	.ifdef	N163
 000000r 2               		N163_Track	= 8		;
 000000r 2               	.else
 000000r 2               		N163_Track	= 0		;
 000000r 2               	.endif
 000000r 2               
-000000r 2               	TR_PSG		= TR_N163 + N163_Track
+000000r 2               	TR_PSG		= TR_N163 + N163_Track * 2
 000000r 2               	.ifdef	PSG
 000000r 2               		PSG_Track	= 3		;
 000000r 2               	.else
@@ -167,6 +169,85 @@ Current file: nsd_math.s
 000000r 2               	TR_SE2		= BGM_Track * 2 + 2
 000000r 2               
 000000r 2               .endscope
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;FDS define
+000000r 2               
+000000r 2               FDS_Wave_Table		= $4040		; to $407F
+000000r 2               FDS_Volume		= $4080
+000000r 2               FDS_FTUNE		= $4082
+000000r 2               FDS_CTUNE		= $4083
+000000r 2               FDS_Sweep_Envelope	= $4084
+000000r 2               FDS_Sweep_Bias		= $4085
+000000r 2               FDS_Mod_FTUNE		= $4086
+000000r 2               FDS_Mod_CTUNE		= $4087
+000000r 2               FDS_Mod_Append		= $4088
+000000r 2               FDS_Write_Enable	= $4089
+000000r 2               FDS_Envelope_Speed	= $408A
+000000r 2               FDS_Volume_Gain		= $4090		;$4080's value
+000000r 2               FDS_Sweep_Gain		= $4092		;$4084's value
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;VRC6 define
+000000r 2               
+000000r 2               VRC6_Frequency		= $9003
+000000r 2               VRC6_Pulse1_CTRL	= $9000
+000000r 2               VRC6_Pulse1_FTUNE	= $9001
+000000r 2               VRC6_Pulse1_CTUNE	= $9002
+000000r 2               VRC6_Pulse2_CTRL	= $A000
+000000r 2               VRC6_Pulse2_FTUNE	= $A001
+000000r 2               VRC6_Pulse2_CTUNE	= $A002
+000000r 2               VRC6_SAW_CTRL		= $B000
+000000r 2               VRC6_SAW_FTUNE		= $B001
+000000r 2               VRC6_SAW_CTUNE		= $B002
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;VRC7 define
+000000r 2               
+000000r 2               VRC7_Resister		= $9010		;wait  6 clk
+000000r 2               VRC7_Data		= $9030		;wait 42 clk
+000000r 2               
+000000r 2               VRC7_Patch0		= $00
+000000r 2               VRC7_Patch1		= $01
+000000r 2               VRC7_Patch2		= $02
+000000r 2               VRC7_Patch3		= $03
+000000r 2               VRC7_Patch4		= $04
+000000r 2               VRC7_Patch5		= $05
+000000r 2               VRC7_Patch6		= $06
+000000r 2               VRC7_Patch7		= $07
+000000r 2               
+000000r 2               VRC7_Frequency		= $10
+000000r 2               VRC7_Octave		= $20
+000000r 2               VRC7_Volume		= $30
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;MMC5 define
+000000r 2               
+000000r 2               MMC5_Pulse1_CTRL	= $5000         ; Pulse_ #1 Control Register (W)
+000000r 2               MMC5_Pulse1_FTUNE	= $5002         ; Pulse_ #1 Fine Tune (FT) Register (W)
+000000r 2               MMC5_Pulse1_CTUNE	= $5003         ; Pulse_ #1 Coarse Tune (CT) Register (W)
+000000r 2               MMC5_Pulse2_CTRL	= $5004         ; Pulse_ #2 Control Register (W)
+000000r 2               MMC5_Pulse2_FTUNE	= $5006         ; Pulse_ #2 Fine Tune Register (W)
+000000r 2               MMC5_Pulse2_STUNE	= $5007         ; Pulse_ #2 Coarse Tune Register (W)
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;N163 define
+000000r 2               
+000000r 2               N163_Resister		= $F800
+000000r 2               N163_Data		= $4800
+000000r 2               
+000000r 2               N163_Frequency_Low	= $40
+000000r 2               N163_Frequency_Middle	= $42
+000000r 2               N163_Frequency_High	= $44
+000000r 2               N163_Waveform		= $46
+000000r 2               N163_Volume		= $47
+000000r 2               N163_EnableChannel	= $7F
+000000r 2               
+000000r 2               ;---------------------------------------
+000000r 2               ;PSG define
+000000r 2               
+000000r 2               PSG_Register		= $C000
+000000r 2               PSG_Data		= $E000
 000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Working Struct define in Zero-page area
@@ -366,6 +447,21 @@ Current file: nsd_math.s
 000000r 2               
 000000r 2               .define	__sweep_ch1	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM3
 000000r 2               .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
+000000r 2               
+000000r 2               .define	__dpcm_info	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5
+000000r 2               
+000000r 2               
+000000r 2               ;=======================================================================
+000000r 2               ;		Struct of DPCM					*
+000000r 2               ;-----------------------------------------------------------------------
+000000r 2               .Struct		nsd_dpcm
+000000r 2               	Control		.byte		;I/O 0x4010
+000000r 2               	DA		.byte		;I/O 0x4011
+000000r 2               	Address		.byte		;I/O 0x4012
+000000r 2               	Size		.byte		;I/O 0x4013
+000000r 2               .Endstruct
+000000r 2               
+000000r 2               
 000000r 2               
 000000r 2               ;=======================================================================
 000000r 2               ;	Macros

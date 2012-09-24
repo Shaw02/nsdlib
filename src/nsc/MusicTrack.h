@@ -36,7 +36,7 @@ public:
 
 				void	Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv);
 
-	unsigned	int		SetEnd(void);
+				size_t	SetEnd(void);
 				void	SetSubroutine(MMLfile* MML);
 				void	SetEnvelop(unsigned char _opcode, MMLfile* MML);
 				void	SetLoop();

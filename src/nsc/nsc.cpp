@@ -28,7 +28,7 @@ int	__cdecl	_tmain(int argc, _TCHAR* argv[])
 		cout << "\n============ [ 1st phase : Create Object ] ============\n" << endl;
 	}
 	MMLfile*	cMML		= new MMLfile(cOptionSW->strMMLname.c_str());
-	MusicFile*	cSND		= new MusicFile(cMML);
+	MusicFile*	cSND		= new MusicFile(cMML, cOptionSW->strCodeName);
 
 	//==================================
 	//アドレスの解決
@@ -40,22 +40,13 @@ int	__cdecl	_tmain(int argc, _TCHAR* argv[])
 	cSND->Fix_Address();
 
 	//==================================
-	//バイナリの作成
-	cSND->make_binary();
-
-	//==================================
 	//保存
-	if(cOptionSW->saveASM == true){
-		cSND->saveASM(cOptionSW->strASMname.c_str());
-	}
-	if(cOptionSW->saveBIN == true){
-		cSND->saveBIN(cOptionSW->strBINname.c_str());
-	}
-	if(cOptionSW->saveC == true){
-		cSND->saveC(cOptionSW->strCname.c_str());
-	}
 	if(cOptionSW->saveNSF == true){
 		cSND->saveNSF(cOptionSW->strNSFname.c_str());
+	}
+
+	if(cOptionSW->saveASM == true){
+		cSND->saveASM(cOptionSW->strASMname.c_str());
 	}
 
 

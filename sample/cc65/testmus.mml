@@ -1,0 +1,19 @@
+
+#title	"Test"
+
+#Label	"_Test_"	//Ｃ言語から extern 宣言するので、シンボル先頭には'_'を付ける。
+
+#bgm	1
+
+Envelop( 0){15	L	12	R	10	8	7	6	D0	5	D1	4	D2	3	D3	L	2	}
+
+Envelop(100){	0	D36	L	1	2	3	2	1	0	-1	-2	-3	-2	-1	}
+
+Envelop(300){	3	2	L	0	}
+
+Sub(0){	l4o4u8.	E@300	Em100	Ev0	cdefgab > c1,2.	}
+
+BGM(0){
+	TR1	v12			S0
+	TR2	v8	r-8.	S0
+}

@@ -10,15 +10,25 @@
 //	●返値
 //				無し
 //==============================================================
-MusicHeader::MusicHeader(MMLfile* MML):
+MusicHeader::MusicHeader(MMLfile* MML, string _code):
 	iBGM(1),
 	iSE(0),
+	op_code(false),
+	offsetPCM(0x10000),
+	Label("_nsd_"),
 	title(""),
 	copyright(""),
 	composer(""),
-	romcode("nsd.bin"),
-	segment("RODATA")
+	segmentSEQ("RODATA"),
+	segmentPCM("PCMDATA")
 {
+	if(_code.empty()){
+		op_code = false;
+		romcode = "nsd.bin";
+	} else {
+		op_code = true;
+		romcode = _code;
+	}
 }
 
 //==============================================================
@@ -48,14 +58,42 @@ void	MusicHeader::Set_Composer(MMLfile* MML)
 	composer = MML->GetString();
 }
 
-void	MusicHeader::Set_Segment(MMLfile* MML)
+void	MusicHeader::Set_SegmentSEQ(MMLfile* MML)
 {
-	segment = MML->GetString();
+	segmentSEQ = MML->GetString();
+}
+
+void	MusicHeader::Set_SegmentPCM(MMLfile* MML)
+{
+	segmentPCM = MML->GetString();
+}
+void	MusicHeader::Set_Label(MMLfile* MML)
+{
+	Label = MML->GetString();
+}
+
+void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
+{
+	offsetPCM = MML->GetInt();
+
+	if((offsetPCM < 0xC000) || (offsetPCM > 0x10000)){
+		MML->Err("$C000 ～ $10000（⊿PCM未使用）の範囲で指定して下さい。");
+	}
+	if((offsetPCM & 0x003F) != 0){
+		MML->Warning("⊿PCMは64（$40）Byteでアライメントします。");
+		offsetPCM &= 0xFFC0;
+		offsetPCM += 0x0040;
+	}
 }
 
 void	MusicHeader::Set_RomCode(MMLfile* MML)
 {
-	romcode = MML->GetString();
+	if(op_code == true){
+		MML->Warning("オプションスイッチでリンクするコードが指定されているので、#codeは無視します。");
+		MML->GetString();
+	} else {
+		romcode = MML->GetString();
+	}
 }
 
 void	MusicHeader::Set_Number_BGM(MMLfile* MML)

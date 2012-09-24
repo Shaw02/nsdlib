@@ -10,8 +10,9 @@
 //	●返値
 //					無し
 //==============================================================
-TrackSet::TrackSet(MMLfile* MML, bool _sub, const char _strName[]):
-	MusicItem(_strName)
+TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const char _strName[]):
+	MusicItem(_strName),
+	m_id(_id)
 {
 	//----------------------
 	//Local変数
@@ -433,7 +434,7 @@ const	static	Command_Info	Command[] = {
 	if(fSub == true){
 		//サブルーチンブロックの場合
 		code.resize(0);
-		i = ptcTrack[iTrack]->SetEnd();
+		i = (int)ptcTrack[iTrack]->SetEnd();
 
 	} else {
 		//それ以外の場合
@@ -448,7 +449,7 @@ const	static	Command_Info	Command[] = {
 		while(iTrack <= maxTrack){
 			code[iTrack *2 + 2]	= ((i   ) & 0xFF);
 			code[iTrack *2 + 3]	= ((i>>8) & 0xFF);
-			i += ptcTrack[iTrack]->SetEnd();
+			i += (int)ptcTrack[iTrack]->SetEnd();
 			iTrack++;
 		}
 	}
@@ -540,4 +541,41 @@ MusicTrack*	TrackSet::getTrack(int _track)
 	_getTrack = ptcTrack[_track];
 
 	return(_getTrack);
+}
+//==============================================================
+//		コードの取得
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::getAsm(MusicFile* MUS)
+{
+	//----------------------
+	//Local変数
+	unsigned	int	i = 0;
+	vector<	MusicItem*>::iterator	itItem;
+
+	if(fSub == false){
+		*MUS << "	.byte	$" << hex << setw(2) << setfill('0') << (int)(code[0] & 0xFF) << ", $" << (int)(code[1] & 0xFF) << endl;
+		while(i <= maxTrack){
+			if(i==0){
+				*MUS << "	.word	$";
+			} else {
+				*MUS << " ,$";
+			}
+			*MUS << hex << setw(4) << setfill('0') << (int)((code[i*2+2] & 0xFF) | ((code[i*2+3] & 0xFF)<<8));
+			i++;
+		}
+		*MUS << dec << endl;
+	}
+
+	if(!ptcItem.empty()){
+		itItem = ptcItem.begin();
+		while(itItem != ptcItem.end()){
+			(*itItem)->getAsm(MUS);
+			itItem++;
+		}
+	}
 }

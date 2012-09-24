@@ -941,7 +941,7 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 //	●返値
 //		無し
 //==============================================================
-unsigned	int	MusicTrack::SetEnd(void)
+size_t	MusicTrack::SetEnd(void)
 {
 	mml_Address*	_event;
 
@@ -968,7 +968,7 @@ unsigned	int	MusicTrack::SetEnd(void)
 void	MusicTrack::SetEvent(MusicItem* _item)
 {
 	//サイズの分、オフセットを増やす。
-	offset_now += _item->getSize();
+	offset_now += (unsigned int)_item->getSize();
 
 	//作ったobjectのポインタを保存しておく。
 	ptcItem.push_back(_item);

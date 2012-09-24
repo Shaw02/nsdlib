@@ -10,8 +10,8 @@
 //	●返値
 //					無し
 //==============================================================
-SE::SE(MMLfile* MML, char _strName[]/* = "==== [ SE ]===="*/):
-	TrackSet(MML, false, _strName)
+SE::SE(MMLfile* MML, unsigned int _id, char _strName[]/* = "==== [ SE ]===="*/):
+	TrackSet(MML, _id, false, _strName)
 {
 	
 }
@@ -27,4 +27,17 @@ SE::SE(MMLfile* MML, char _strName[]/* = "==== [ SE ]===="*/):
 SE::~SE()
 {
 	
+}
+//==============================================================
+//		コードの取得
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	SE::getAsm(MusicFile* MUS)
+{
+	*MUS << MUS->Header.Label.c_str() << "SE" << m_id << ":" << endl;
+	TrackSet::getAsm(MUS);
 }
