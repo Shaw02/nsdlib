@@ -37,6 +37,9 @@ int	__cdecl	_tmain(int argc, _TCHAR* argv[])
 	}
 	i = cSND->SetOffset(0);
 	cout << "Music Size = " << i << endl;
+	i = cSND->SetDPCMOffset();
+	cout << "DPCM Size = " << i << endl;
+
 	cSND->Fix_Address();
 
 	//==================================

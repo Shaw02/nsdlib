@@ -178,6 +178,7 @@ _eff:	.byte	0		;SE start number
 	ldy	#0
 	lda	(_ptr),y
 	iny			;ax = BGM and SE's qty
+	iny
 	sta	_eff
 
 	lda	(_ptr),y

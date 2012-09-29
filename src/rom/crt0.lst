@@ -313,66 +313,67 @@ Current file: crt0.s
 000037r 1  A0 00        	ldy	#0
 000039r 1  B1 rr        	lda	(_ptr),y
 00003Br 1  C8           	iny			;ax = BGM and SE's qty
-00003Cr 1  8D rr rr     	sta	_eff
-00003Fr 1               
-00003Fr 1  B1 rr        	lda	(_ptr),y
-000041r 1  C8           	iny
-000042r 1  85 rr        	sta	_tmp
-000044r 1  B1 rr        	lda	(_ptr),y
-000046r 1  AA           	tax			;ax = Pointer of ⊿PCM infomation Struct
-000047r 1  A5 rr        	lda	_tmp
-000049r 1  20 rr rr     	jsr	_nsd_set_dpcm
-00004Cr 1               
-00004Cr 1  60           	rts
-00004Dr 1               .endproc
+00003Cr 1  C8           	iny
+00003Dr 1  8D rr rr     	sta	_eff
+000040r 1               
+000040r 1  B1 rr        	lda	(_ptr),y
+000042r 1  C8           	iny
+000043r 1  85 rr        	sta	_tmp
+000045r 1  B1 rr        	lda	(_ptr),y
+000047r 1  AA           	tax			;ax = Pointer of ⊿PCM infomation Struct
+000048r 1  A5 rr        	lda	_tmp
+00004Ar 1  20 rr rr     	jsr	_nsd_set_dpcm
 00004Dr 1               
-00004Dr 1               ; ------------------------------------------------------------------------
-00004Dr 1               ;
-00004Dr 1               ; ------------------------------------------------------------------------
-00004Dr 1               .proc	_play_music
-00004Dr 1               
-00004Dr 1  48           	pha
-00004Er 1  A9 rr        	lda	#<(__ROM0_LAST__)
-000050r 1  85 rr        	sta	_ptr
-000052r 1  A9 rr        	lda	#>(__ROM0_LAST__)
-000054r 1  85 rr        	sta	_ptr+1		;_ptr = __ROM0_START__
-000056r 1  68           	pla
-000057r 1               
-000057r 1  CD rr rr     	cmp	_eff
-00005Ar 1  08           	php
-00005Br 1  18           	clc
-00005Cr 1  69 02        	adc	#2
-00005Er 1  0A           	asl	a
-00005Fr 1  A8           	tay			; y = _mus * 2
-000060r 1  B1 rr        	lda	(_ptr),y
-000062r 1  85 rr        	sta	_tmp
-000064r 1  C8           	iny
-000065r 1  B1 rr        	lda	(_ptr),y	; ax = Pointer of BGM/SE
-000067r 1  AA           	tax
-000068r 1  A5 rr        	lda	_tmp
-00006Ar 1  28           	plp
-00006Br 1               
-00006Br 1  B0 03        	bcs	@L
-00006Dr 1  4C rr rr     	jmp	_nsd_play_bgm
-000070r 1  4C rr rr     @L:	jmp	_nsd_play_se
-000073r 1               .endproc
-000073r 1               
-000073r 1               
-000073r 1               ; ------------------------------------------------------------------------
-000073r 1               ; hardware vectors
-000073r 1               ; ------------------------------------------------------------------------
-000073r 1               
-000073r 1               ;.segment	"COPYRIGHT"
-000073r 1               ;	.asciiz	"(c) 2012 S.W."
-000073r 1               ;
-000073r 1               ;.segment	"VECTORS"
-000073r 1               ;	.word	_nsf_init	; $fff0		MMLコンパイラが参照して、NSFヘッダーに埋め込む。
-000073r 1               ;	.word	_nsf_main	; $fff2		MMLコンパイラが参照して、NSFヘッダーに埋め込む。
-000073r 1               ;	.word	irq2		; $fff4 ?
-000073r 1               ;	.word	irq1		; $fff6 ?
-000073r 1               ;	.word	timerirq	; $fff8 ?
-000073r 1               ;	.word	nmi		; $fffa vblank nmi
-000073r 1               ;	.word	start		; $fffc reset
-000073r 1               ;	.word	irq		; $fffe irq / brk
-000073r 1               ;
-000073r 1               
+00004Dr 1  60           	rts
+00004Er 1               .endproc
+00004Er 1               
+00004Er 1               ; ------------------------------------------------------------------------
+00004Er 1               ;
+00004Er 1               ; ------------------------------------------------------------------------
+00004Er 1               .proc	_play_music
+00004Er 1               
+00004Er 1  48           	pha
+00004Fr 1  A9 rr        	lda	#<(__ROM0_LAST__)
+000051r 1  85 rr        	sta	_ptr
+000053r 1  A9 rr        	lda	#>(__ROM0_LAST__)
+000055r 1  85 rr        	sta	_ptr+1		;_ptr = __ROM0_START__
+000057r 1  68           	pla
+000058r 1               
+000058r 1  CD rr rr     	cmp	_eff
+00005Br 1  08           	php
+00005Cr 1  18           	clc
+00005Dr 1  69 02        	adc	#2
+00005Fr 1  0A           	asl	a
+000060r 1  A8           	tay			; y = _mus * 2
+000061r 1  B1 rr        	lda	(_ptr),y
+000063r 1  85 rr        	sta	_tmp
+000065r 1  C8           	iny
+000066r 1  B1 rr        	lda	(_ptr),y	; ax = Pointer of BGM/SE
+000068r 1  AA           	tax
+000069r 1  A5 rr        	lda	_tmp
+00006Br 1  28           	plp
+00006Cr 1               
+00006Cr 1  B0 03        	bcs	@L
+00006Er 1  4C rr rr     	jmp	_nsd_play_bgm
+000071r 1  4C rr rr     @L:	jmp	_nsd_play_se
+000074r 1               .endproc
+000074r 1               
+000074r 1               
+000074r 1               ; ------------------------------------------------------------------------
+000074r 1               ; hardware vectors
+000074r 1               ; ------------------------------------------------------------------------
+000074r 1               
+000074r 1               ;.segment	"COPYRIGHT"
+000074r 1               ;	.asciiz	"(c) 2012 S.W."
+000074r 1               ;
+000074r 1               ;.segment	"VECTORS"
+000074r 1               ;	.word	_nsf_init	; $fff0		MMLコンパイラが参照して、NSFヘッダーに埋め込む。
+000074r 1               ;	.word	_nsf_main	; $fff2		MMLコンパイラが参照して、NSFヘッダーに埋め込む。
+000074r 1               ;	.word	irq2		; $fff4 ?
+000074r 1               ;	.word	irq1		; $fff6 ?
+000074r 1               ;	.word	timerirq	; $fff8 ?
+000074r 1               ;	.word	nmi		; $fffa vblank nmi
+000074r 1               ;	.word	start		; $fffc reset
+000074r 1               ;	.word	irq		; $fffe irq / brk
+000074r 1               ;
+000074r 1               

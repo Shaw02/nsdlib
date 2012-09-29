@@ -13,33 +13,21 @@
 <h1>NSDL（NES Sound Driver Library）</h1>
 <h2>MMLコンパイラ（nsc.exe）</h2>
 
+<p>
+テキストで記述されたMMLファイルを、本音源ドライバーNSD.Lib用の曲データに変換するコンパイラーです。<br>
+本MMLコンパイラでは、１つのＭＭＬファイルに複数の曲を記述することが可能です。<br>
+これは、異なる曲で同じエンベロープ、サブルーチンを使用する際に、曲データのバイナリサイズを軽減する事ができます。<br>
+</p>
+<p>
+Microsoft(R) Windows用の実行ファイル（32bit Application）です。<br>
+しかしながら、C++の標準関数のみを使用して開発しているため、
+他の環境でもMMLコンパイラをビルドできるかもしれません。
+</p>
+
 <div class='block'>
-<h3>コマンドラインオプション（Command line option）</h3>
-<p>
-テキストで記述されたMMLファイルを、本音源ドライバーNSD.Lib用のデータに変換します。<br>
-デフォルトでは何も出力しません。何かコマンドラインオプションを指定して下さい。<br>
-</p>
-<p>
-アセンブリ言語で出力したファイルは、単体でオブジェクトファイルにアセンブル可能となります。<br>
-ユーザー・アプリケーションのビルドの際に、そのオブジェクト・ファイルをリンクして下さい。<br>
-</p>
-<p>
-また、NSF Music formarへのコンパイルも可能です。<br>
-複数の曲に対応していますが、コンパイラで直接ＮＳＦを生成する場合、
-実行コード、曲データ、⊿ＰＣＭデータ<strong>(未対応)</strong>の合計が32kByteまでとなります。<br>
-<br>
-</p>
-<code><pre>
-	nsc <var>-option</var> <var>MML-file name</var>
-</pre></code>
-<dl>
-<dt>-h</dt><dd>Print the this help.</dd>
-<dt>-a</dt><dd>Compile to assembly langage. (*.s) </dd>
-<dt>-n</dt><dd>Compile to NSF music format. (*.nsf) </dd>
-<dt>-l<var>filename</var></dt><dd>Set the filename of the rom code for NSF.</dd>
-<dt>-fa<var>filename</var></dt><dd>Set the filename of the output assembly langage file.</dd>
-<dt>-fn<var>filename</var></dt><dd>Set the filename of the output NSF music format.</dd>
-</dl>
+<h3><a href="nsc_option.html">コマンドラインオプション（Command line option）</a></h3>
+<h4><a href="nsc_option.html#overview">概要（Overview）</a></h4>
+<h4><a href="nsc_option.html#detail">詳細（Detail）</a></h4>
 </div>
 
 <div class='block'>
@@ -48,6 +36,10 @@
 <p>
 MMLの構文は、`#'で始まる定義命令・疑似命令及び、<br>
 データ（エンベロープパターン、シーケンスデータ）を記述する記述ブロックで構成されます。
+</p>
+<h4><a href="mml.html#dpcm">⊿PCM定義（Delta PCM define）</a></h4>
+<p>
+音階毎に⊿PCMの波形を定義します。<br>
 </p>
 <h4><a href="mml.html#envelop">エンベロープパターン</a></h4>
 <p>
@@ -61,22 +53,8 @@ BGM,SE,サブルーチンの演奏パターンを定義します。<br>
 
 
 <div class='block'>
-<h3>アセンブリ言語ソースの仕様</h3>
-<p>
-</p>
-<h4>曲データのシンボル（ラベル）</h4>
-<p>
-シンボルは、"<code>#label</code>"コマンドで指定した文字列に、"<code>BGM<var>番号</var></code>"の文字列が付与されます。<br>
-このシンボルのポインタを引数に、<a href="func_nsd_play_bgm.html">nsd_play_bgm()関数</a>を呼び出すことで、その曲データが再生されます。<br>
-曲データは、6502のメモリ空間にさえ存在していれば（バンクがセレクトされていれば）、どこに配置されていても再生可能です。<br>
-</p>
-<p>
-例えば、<code>#label</code>コマンドで指定した文字列が"<var>_foo_</var>"で２番のＢＧＭデータのシンボル名は、<code>_foo_BGM2</code>となります。<br>
-このシンボル名は、コンパイラが生成するアセンブリ言語ソースにて、自動で<code>.export</code>宣言されています。<br>
-従って、ユーザーアプリケーション側からはこのシンボル名に対して、<br>
-アセンブリ言語の場合は<code>.import</code>宣言、<br>
-Ｃ言語の場合は<code>extern</code>宣言（"const char"型のグローバル変数として）することで、参照が可能になります。<br>
-</p>
+<h3><a href="nsc_asm.html">nes.exeが出力するアセンブリ言語ソースについて</a></h3>
+<h4><a href="nsc_asm.html#label">ラベル・シンボル（Label and Symbol）</a></h4>
 </div>
 
 </div>

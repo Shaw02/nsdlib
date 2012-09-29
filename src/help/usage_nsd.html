@@ -15,20 +15,48 @@
 
 <div class='block'>
 <p>
-本サウンドドライバーは、6502用Ｃ言語／アセンブリ言語開発環境のオブジェクトライブラリ`*.lib'として開発しています。<br>
+本サウンドドライバーは、cc65（6502用クロス開発環境）のオブジェクトライブラリ`*.lib'として開発しています。<br>
 ユーザーアプリケーションからは、ライブラリ中の関数を呼ぶことにより、本サウンドドライバーを制御することが可能です。<br>
 </p>
 <p>
-ドライバー本体からは、cc65の付属のNES用ライブラリ`nes.lib'内の関数を一切呼び出しておらず、
-また、Ｃ言語用のランタイム領域にもアクセスしておりません。<br>
-従い、アセンブリ言語のみで開発されたアプリケーションでも使用する事が可能です。<br>
-また、別の開発環境で記述されたコードから呼び出しても動作するとは思いますが、
-その際は、ライブラリのフォーマットが、cc65のものと互換性を持っている必要があります。<br>
+本サウンドドライバーは、cc65の付属のNES用ライブラリ`nes.lib'内の関数を一切呼び出していません。<br>
+（つまり、Ｃ言語の機能（標準関数など）を一切、使っていません。）<br>
+従って、アセンブリ言語のみで開発されたアプリケーションからでも使用する事が可能です。<br>
+cc65以外の開発環境で記述されたコードから呼び出しても動作するとは思いますが、
+ライブラリはcc65の形式ですので、その開発環境のライブラリ形式に変換するか、
+もしくは、cc65のライブラリ形式と互換性を持っている必要があります。<br>
 </p>
 </div>
 
 <div class='block'>
-<h3>cc65のＣ言語でアプリケーションを開発する場合の注意</h3>
+<h3>クロス開発環境"cc65"での使用方法</h3>
+
+<h4>cc65とは</h4>
+<p>
+6502シリーズのＣＰＵをターゲットとした、Ｃ言語・アセンブリ言語によるクロス開発を可能にしたソフトウェア開発環境です。<br>
+多くのプラットフォーム（システム）に対応しており、ＮＥＳ（ファミコン）もその中の１つとなっています。<br>
+フリーの6502開発環境としては非常に優れており、本格的なクロス開発によるソフトウェア開発ができます。<br>
+</p>
+<p>
+cc65は、<a href="http://www.cc65.org/">http://www.cc65.org/</a>からダウンロードできます。<br>
+（※cc65のホームページ、マニュアルは、全て英文です。）<br>
+</p>
+
+<h4>音源ドライバーをユーザーアプリケーションに組み込む</h4>
+<p>
+リンカー"ld65.exe"でリンクする時に、"nsd.lib"（音源ドライバー本体）をリンクして下さい。<br>
+各インクルードファイル（Ｃ言語用は"nsd.h"、アセンブリ言語用は"nsd.inc"）には、
+nsd.libを制御するライブラリ関数の外部宣言等が記述されていますので、
+ユーザーアプリケーションのソースからリンクすると便利です。<br>
+</p>
+
+<h4>曲データを再生する</h4>
+<p>
+別途、<a href="nsc_asm.html">nes.exeが出力するアセンブリ言語ソースについて</a>を参照して下さい。<br>
+Ｃ言語で曲データを再生するサンプルソースですが、アセンブリ言語でも方法は同じです。<br>
+</p>
+
+<h4>Ｃ言語でアプリケーションを開発する場合の注意</h4>
 <p>
 本音源ドライバーは、6502の"Zeropage"領域（メモリ空間0x0000～0x00FF）をいくらか使用します。<br>
 （使用する量は、対応する拡張音源の種類によって異なります。）<br>
@@ -39,8 +67,7 @@
 そのため、 -nes オプションを使用すると、音源ドライバ用の Zeropage を確保できず、ビルドに失敗します。<br>
 </p>
 
-<h4> cc65付属のNES用ライブラリ"nes.lib"を使用する場合の注意</h4>
-
+<h4>NES用ライブラリ"nes.lib"を使用する場合の注意</h4>
 <p>
 "nes.lib"内のコードは、configファイルのセグメント設定と関係無しに、
 Zeropageを絶対アドレス（つまり、番地を直接指定）で読み書きしている領域があります。<br>
@@ -61,7 +88,7 @@ cc65に付属のドキュメント及び、"nes.inc"及び、"nes.lib"のソースファイルを良く参照
 <tr><th>return value	</th><th>Function name		</th><th>Contents		</th></tr>
 <tr><td>void	</td><td><a href="func_nsd_main.html">nsd_main(void)</a>		</td><td>Driver main routine. Please call by one V-blank.</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_init.html">nsd_init(void)</a>		</td><td>Initraize the driver.	</td></tr>
-<tr><td>void	</td><td>nsd_set_dpcm(nsd_dpcm* dpcm)	</td><td>Set the dpcm information.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_set_dpcm.html">nsd_set_dpcm(void* dpcm)</a>	</td><td>Set the dpcm information.	</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_play_bgm.html">nsd_play_bgm(void *bgm)</a>	</td><td>Start the BGM.		</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_stop_bgm.html">nsd_stop_bgm(void)</a>	</td><td>Stop  the BGM.		</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_play_se.html">nsd_play_se(void *se)</a>	</td><td>Start the SE.	</td></tr>

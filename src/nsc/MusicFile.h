@@ -36,14 +36,13 @@ public:
 
 private:
 //static	const	Command_Info	Command[];
-
+					string		dpcm_code;
 	map<	int, Envelop*	>	ptcEnv;		//Envelop
 	map<	int, BGM*		>	ptcBGM;		//BGM
 	map<	int, SE*		>	ptcSE;		//SE 
 	map<	int, Sub*		>	ptcSub;		//Subroutine Sequence
 	map< string, MusicTrack*>	ptcMac;		//Macro
-	map< string, MusicItem*>	ptcDPCM;	//⊿PCM
-//								DPCMinfo;
+				DPCMinfo*		cDPCMinfo;
 
 	unsigned	int				nsf_size;
 
@@ -52,16 +51,16 @@ public:
 	MusicFile(MMLfile* MML, string _code, const char _strName[]="==== [ Music ] ====");
 	~MusicFile(void);
 
+	unsigned	int		SetDPCMOffset(void);
+
 	void	Fix_Address(void);
 
 	//バイナリーを作る
 	void	make_bin(unsigned int rom_size);
 
 	//保存フェーズ
-//	void	saveBIN(const char*	strFileName);
 	void	saveNSF(const char*	strFileName);
 	void	saveASM(const char*	strFileName);
-//	void	saveC(const char*	strFileName);
 
 	void	Err(const char* msg);
 	void	Warning(const char* msg);

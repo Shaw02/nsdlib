@@ -599,7 +599,9 @@ Exit:
 
 	iny
 	lda	(__ptr),y
+	bmi	@L			;if 0x80 >= a then skip
 	sta	APU_MODDA
+@L:
 
 	iny
 	lda	(__ptr),y

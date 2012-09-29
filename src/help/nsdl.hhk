@@ -5,5 +5,483 @@
 <!-- Sitemap 1.0 -->
 </HEAD><BODY>
 <UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="&quot;">
+		<param name="Name" value="MML reference: Relative Octave">
+		<param name="Local" value="mml_relative_octave.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="(">
+		<param name="Name" value="MML reference: Relative Volume">
+		<param name="Local" value="mml_relative_volume.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value=")">
+		<param name="Name" value="MML reference: Relative Volume">
+		<param name="Local" value="mml_relative_volume.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value=":">
+		<param name="Name" value="MML reference: Repeat(A)">
+		<param name="Local" value="mml_repeatA.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value=":|">
+		<param name="Name" value="MML reference: Repeat(B)">
+		<param name="Local" value="mml_repeatB.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="[">
+		<param name="Name" value="MML reference: Repeat(A)">
+		<param name="Local" value="mml_repeatA.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="]">
+		<param name="Name" value="MML reference: Repeat(A)">
+		<param name="Local" value="mml_repeatA.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="_">
+		<param name="Name" value="MML reference: Transpose">
+		<param name="Local" value="mml_transpose.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="__">
+		<param name="Name" value="MML reference: Transpose">
+		<param name="Local" value="mml_transpose.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="`">
+		<param name="Name" value="MML reference: Relative Octave">
+		<param name="Local" value="mml_relative_octave.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="|:">
+		<param name="Name" value="MML reference: Repeat(B)">
+		<param name="Local" value="mml_repeatB.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="\">
+		<param name="Name" value="MML reference: Repeat(B)">
+		<param name="Local" value="mml_repeatB.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="&lt;">
+		<param name="Name" value="MML reference: Relative Octave">
+		<param name="Local" value="mml_relative_octave.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="&gt;">
+		<param name="Name" value="MML reference: Relative Octave">
+		<param name="Local" value="mml_relative_octave.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="a">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="b">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="c">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="D">
+		<param name="Name" value="MML reference: Detune">
+		<param name="Local" value="mml_detune.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="d">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="D%">
+		<param name="Name" value="MML reference: Detune">
+		<param name="Local" value="mml_detune.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="e">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="E@">
+		<param name="Name" value="MML reference: Envelope">
+		<param name="Local" value="mml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Em">
+		<param name="Name" value="MML reference: Envelope">
+		<param name="Local" value="mml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Em*">
+		<param name="Name" value="MML reference: Envelope">
+		<param name="Local" value="mml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="En">
+		<param name="Name" value="MML reference: Envelope">
+		<param name="Local" value="mml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="En*">
+		<param name="Name" value="MML reference: Envelope">
+		<param name="Local" value="mml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Ev">
+		<param name="Name" value="MML reference: Envelope">
+		<param name="Local" value="mml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Ev*">
+		<param name="Name" value="MML reference: Envelope">
+		<param name="Local" value="mml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="f">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="FAQ">
+		<param name="Name" value="FAQ">
+		<param name="Local" value="faq.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="g">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="L">
+		<param name="Name" value="MML reference: Loop">
+		<param name="Local" value="mml_loop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="l">
+		<param name="Name" value="MML reference: Length">
+		<param name="Local" value="mml_length.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="MMLコンパイラ&quot;nsc.exe&quot;の使い方">
+		<param name="Name" value="MMLコンパイラ（nsc.exe）">
+		<param name="Local" value="usage_nsc.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="MMLコンパイラが出力するアセンブリ言語ソースについて">
+		<param name="Name" value="出力するアセンブリ言語ソースについて">
+		<param name="Local" value="nsc_asm.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="MMLコンパイラのコマンドラインオプション">
+		<param name="Name" value="コマンドラインオプション（Command line option）">
+		<param name="Local" value="nsc_option.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="MML文法">
+		<param name="Name" value="ＭＭＬ文法">
+		<param name="Local" value="mml.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsc.exe">
+		<param name="Name" value="MMLコンパイラ（nsc.exe）">
+		<param name="Local" value="usage_nsc.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd.lib">
+		<param name="Name" value="サウンドドライバー（nsd.lib）">
+		<param name="Local" value="usage_nsd.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_init()">
+		<param name="Name" value="nsd_init()">
+		<param name="Local" value="func_nsd_init.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_main()">
+		<param name="Name" value="nsd_main()">
+		<param name="Local" value="func_nsd_main.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_play_bgm()">
+		<param name="Name" value="Function reference: nsd_play_bgm()">
+		<param name="Local" value="func_nsd_play_bgm.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_play_se()">
+		<param name="Name" value="Function reference: nsd_play_se()">
+		<param name="Local" value="func_nsd_play_se.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_set_dpcm()">
+		<param name="Name" value="Function reference: nsd_set_dpcm()">
+		<param name="Local" value="func_nsd_set_dpcm.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_stop_bgm()">
+		<param name="Name" value="nsd_stop_bgm()">
+		<param name="Local" value="func_nsd_stop_bgm.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_stop_se()">
+		<param name="Name" value="nsd_stop_se()">
+		<param name="Local" value="func_nsd_stop_se.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="o">
+		<param name="Name" value="MML reference: Octave">
+		<param name="Local" value="mml_octave.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="q">
+		<param name="Name" value="MML reference: Gate time">
+		<param name="Local" value="mml_gate.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="r">
+		<param name="Name" value="MML reference: Rest">
+		<param name="Local" value="mml_rest.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="R@">
+		<param name="Name" value="MML reference: Release">
+		<param name="Local" value="mml_release.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Rm">
+		<param name="Name" value="MML reference: Release">
+		<param name="Local" value="mml_release.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Rv">
+		<param name="Name" value="MML reference: Release">
+		<param name="Local" value="mml_release.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="s">
+		<param name="Name" value="MML reference: Sweep">
+		<param name="Local" value="mml_sweep.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="S">
+		<param name="Name" value="MML reference: Subroutine">
+		<param name="Local" value="mml_sub.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="t">
+		<param name="Name" value="MML reference: Tempo">
+		<param name="Local" value="mml_tempo.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="t_">
+		<param name="Name" value="MML reference: Tempo">
+		<param name="Local" value="mml_tempo.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="TR">
+		<param name="Name" value="MML reference: TR">
+		<param name="Local" value="mml_TR.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="u">
+		<param name="Name" value="MML reference: Gate time">
+		<param name="Local" value="mml_gate.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="v">
+		<param name="Name" value="MML reference: Volume">
+		<param name="Local" value="mml_volume.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="y">
+		<param name="Name" value="MML reference: Memory Write">
+		<param name="Local" value="mml_poke.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="エンベロープ">
+		<param name="Name" value="MML reference: Envelope">
+		<param name="Local" value="mml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="オクターブ">
+		<param name="Name" value="MML reference: Octave">
+		<param name="Local" value="mml_octave.html">
+		<param name="Name" value="MML reference: Relative Octave">
+		<param name="Local" value="mml_relative_octave.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ゲートタイム">
+		<param name="Name" value="MML reference: Gate time">
+		<param name="Local" value="mml_gate.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="サウンドドライバ&quot;nsd.lib&quot;の使い方">
+		<param name="Name" value="サウンドドライバー（nsd.lib）">
+		<param name="Local" value="usage_nsd.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="サブルーチン">
+		<param name="Name" value="MML reference: Subroutine">
+		<param name="Local" value="mml_sub.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="スイープ">
+		<param name="Name" value="MML reference: Sweep">
+		<param name="Local" value="mml_sweep.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="スラー">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="タイ">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		<param name="Name" value="MML reference: Tie">
+		<param name="Local" value="mml_tie.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ディチューン">
+		<param name="Name" value="MML reference: Detune">
+		<param name="Local" value="mml_detune.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="テンポ">
+		<param name="Name" value="MML reference: Tempo">
+		<param name="Local" value="mml_tempo.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="トラック">
+		<param name="Name" value="MML reference: TR">
+		<param name="Local" value="mml_TR.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ポルタメント">
+		<param name="Name" value="MML reference: Portamento">
+		<param name="Local" value="mml_portamento.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="メモリ書き込み">
+		<param name="Name" value="MML reference: Memory Write">
+		<param name="Local" value="mml_poke.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="リピート">
+		<param name="Name" value="MML reference: Repeat(A)">
+		<param name="Local" value="mml_repeatA.html">
+		<param name="Name" value="MML reference: Repeat(B)">
+		<param name="Local" value="mml_repeatB.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="リリース">
+		<param name="Name" value="MML reference: Release">
+		<param name="Local" value="mml_release.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="移調">
+		<param name="Name" value="MML reference: Transpose">
+		<param name="Local" value="mml_transpose.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="音色">
+		<param name="Name" value="MML reference: Voice">
+		<param name="Local" value="mml_voice.html">
+		<param name="Name" value="MML reference: Release">
+		<param name="Local" value="mml_release.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="音長">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		<param name="Name" value="MML reference: Length">
+		<param name="Local" value="mml_length.html">
+		<param name="Name" value="MML reference: Rest">
+		<param name="Local" value="mml_rest.html">
+		<param name="Name" value="MML reference: Tie">
+		<param name="Local" value="mml_tie.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="音符">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="音量">
+		<param name="Name" value="MML reference: Volume">
+		<param name="Local" value="mml_volume.html">
+		<param name="Name" value="MML reference: Relative Volume">
+		<param name="Local" value="mml_relative_volume.html">
+		<param name="Name" value="MML reference: Release">
+		<param name="Local" value="mml_release.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="改訂履歴">
+		<param name="Name" value="改訂履歴">
+		<param name="Local" value="revision.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="休符">
+		<param name="Name" value="MML reference: Rest">
+		<param name="Local" value="mml_rest.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="曲データフォーマット">
+		<param name="Name" value="BGM,SEデータフォーマット">
+		<param name="Local" value="format_music.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="曲データ最適化のためのヒント">
+		<param name="Name" value="最適化のためのヒント">
+		<param name="Local" value="mml_tips.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="再配布">
+		<param name="Name" value="再配布">
+		<param name="Local" value="redistribution.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="相対オクターブ">
+		<param name="Name" value="MML reference: Relative Octave">
+		<param name="Local" value="mml_relative_octave.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="相対テンポ">
+		<param name="Name" value="MML reference: Tempo">
+		<param name="Local" value="mml_tempo.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="相対移調">
+		<param name="Name" value="MML reference: Transpose">
+		<param name="Local" value="mml_transpose.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="相対音量">
+		<param name="Name" value="MML reference: Relative Volume">
+		<param name="Local" value="mml_relative_volume.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="著作権">
+		<param name="Name" value="著作権">
+		<param name="Local" value="copyright.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="調号">
+		<param name="Name" value="MML reference: Key Signature">
+		<param name="Local" value="mml_KeySignature.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="無限ループ">
+		<param name="Name" value="MML reference: Loop">
+		<param name="Local" value="mml_loop.html">
+		</OBJECT>
 </UL>
 </BODY></HTML>

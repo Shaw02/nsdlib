@@ -38,6 +38,9 @@ typedef struct {
 
 #include "MusicItem.h"
 
+#include "DPCM.h"
+#include "DPCMinfo.h"
+
 #include "Envelop.h"
 
 #include "MusicEvent.h"			//各イベント

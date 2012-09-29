@@ -156,6 +156,12 @@
 				Name="Music"
 				Filter="">
 				<File
+					RelativePath=".\DPCM.cpp">
+				</File>
+				<File
+					RelativePath=".\DPCMinfo.cpp">
+				</File>
+				<File
 					RelativePath=".\Envelop.cpp">
 				</File>
 				<File
@@ -230,6 +236,12 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath=".\BGM.h">
+			</File>
+			<File
+				RelativePath=".\DPCM.h">
+			</File>
+			<File
+				RelativePath=".\DPCMinfo.h">
 			</File>
 			<File
 				RelativePath=".\Envelop.h">

@@ -32,6 +32,14 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 <tr><td>#octaveReverse						</td><td>本コマンドを記述することで、相対オクターブの`&lt;'と`&gt;'を入れ替えます。</td></tr>
 <tr><td>#bgm <var>n</var>					</td><td>BGMの曲数を設定します。（Default: <var>n</var> = 1）</td></tr>
 <tr><td>#se  <var>n</var>					</td><td>SE の曲数を設定します。（Default: <var>n</var> = 0）</td></tr>
+<tr><td>#offsetPCM	<var>address</var>		</td><td>⊿PCMを配置するアドレスを指定します。（Default: $10000(⊿PCM無し)）<br>
+														シーケンスデータはこのコマンドで指定したアドレス-1の領域まで使えます。<br>
+														NSF music formatでは、このアドレスからΔPCMを配置します。<br>
+														アセンブリ言語ソースを出力する場合は、"#segmentPCM"コマンドで指定したセグメントについて
+														リンカー"ld65.exe"のコンフィグファイルにて設定した実アドレス指定して下さい。</td></tr>
+<tr><td>DPCM{<br> <var>Delta PCM define</var><br>}	</td>
+	<td>⊿PCMの記述ブロックです。<br>
+		⊿PCMのの記述は、<a href="#dpcm">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
 <tr><td>Envelop(<var>n</var>){<br> <var>Envelop data</var><br>}	</td>
 	<td><var>n</var>番のエンベロープパターンの記述ブロックです。<br>
 		エンベロープパターンの記述は、<a href="#envelop">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>
@@ -62,7 +70,6 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 <tr><td>#title		"<var>strings</var>"	</td><td>タイトル名を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
 <tr><td>#composer	"<var>strings</var>"	</td><td>作曲者を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
 <tr><td>#copyright	"<var>strings</var>"	</td><td>著作権者を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
-<tr><td>#offsetPCM	<var>address</var>		</td><td>⊿PCMを配置するアドレスを指定します。（Default: $10000(⊿PCM無し)）<br>シーケンスデータはこのコマンドで指定したアドレス-1の領域まで使えます。</td></tr>
 </table>
 <br>
 
@@ -72,9 +79,67 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 <tr><td>#segment	"<var>name</var>"<br>
 		#segmentSEQ	"<var>name</var>"		</td><td>⊿PCM以外のセグメントを指定します。（Default: name = `RODATA'）</td></tr>
 <tr><td>#segmentPCM	"<var>name</var>"		</td><td>⊿PCMのセグメントを指定します。（Default: name = `PCMDATA'）</td></tr>
-<tr><td>#label		"<var>name</var>"		</td><td>アセンブリ言語出力時のラベルを指定します。（Default: name = `_nsd_'）</td></tr>
+<tr><td>#label		"<var>name</var>"		</td><td>ラベル名（シンボル名）の先頭に付与する文字列を指定します。（Default: name = `_nsd_'）<br>
+								Ｃコンパイラは、Ｃ言語で記述されたラベル（シンボル）名の先頭に`_'を付加します。<br>
+								従い、Ｃ言語から曲データを参照する場合、MML側で設定するラベル名は先頭に`_'を追加してください。</td></tr>
 </table>
 </div>
+
+<div class='block'>
+<h3><a name="dpcm">⊿PCM定義（Delta PCM define）</a></h3>
+<p>
+⊿PCMを定義します。<br>
+⊿PCMは、音階毎に割り当てる事が可能です。<br>
+</p>
+<h4>書式</h4>
+<code><pre>
+	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)</span>
+</pre></code>
+
+<h4>note</h4>
+<p>⊿PCMの波形を割り当てる音階です</p>
+<dl>
+<dt>a … </dt><dd>A, La, ラ</dd>
+<dt>b … </dt><dd>H, Si, シ</dd>
+<dt>c … </dt><dd>C, Do, ド</dd>
+<dt>d … </dt><dd>D, Re, レ</dd>
+<dt>e … </dt><dd>E, Mi, ミ</dd>
+<dt>f … </dt><dd>F, Fa, ファ</dd>
+<dt>g … </dt><dd>G, Sol, ソ</dd>
+</dl>
+
+<h4>Accidentals</h4>
+<p>⊿PCMの波形を割り当てる音階に対する臨時記号です。省略可能です。</p>
+<dl>
+<dt>+ … </dt><dd>&#9839; Sharp</dd>
+<dt># … </dt><dd>&#9839; Sharp</dd>
+<dt>- … </dt><dd>&#9837; Flat</dd>
+<dt>= … </dt><dd>&#9838; Natural</dd>
+</dl>
+
+<h4>octave</h4>
+<p>⊿PCMの波形を割り当てるオクターブです。1～8で指定してください。</p>
+
+<h4>filename</h4>
+<p>割り当てる⊿PCMの波形ファイル（*.dmc）を指定してください。</p>
+
+<h4>mode</h4>
+<dl>
+<dt>0 … </dt><dd>1 shot</dd>
+<dt>1 … </dt><dd>loop</dd>
+</dl>
+
+<h4>volume</h4>
+<p>
+⊿PCMの初期ボリュームです。<br>
+0～127の範囲で指定した場合は、波形再生開始時に$4011番地に書く初期ボリュームとなります。<br>
+-1を指定した場合は、波形再生開始時に$4011番地に何も書きません。<br>
+省略した場合は、0となります。<br>
+</p>
+
+</div>
+
+
 
 <div class='block'>
 <h3><a name="envelop">エンベロープパターン（Envelop pattern）</a></h3>

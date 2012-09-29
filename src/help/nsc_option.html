@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>コマンドラインオプション（Command line option）</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>コマンドラインオプション（Command line option）</h2>
+
+
+<div class='block'>
+<p>
+本MMLコンパイラは、CUI（Command line User Interface）のアプリケーションです。<br>
+以下のように、記述してください。<br>
+尚、デフォルトでは何も出力しません。何かコマンドラインオプションを指定して下さい。<br>
+</p>
+</div>
+
+<div class='block'>
+<h3><a name="overview">概要（Overview）</a></h3>
+
+<code><pre>
+	nsc <var>-option</var> <var>filename(*.mml)</var>
+</pre></code>
+
+<dl>
+<dt>-a</dt><dd>Compile to assembly langage. (*.s) </dd>
+<dt>-n</dt><dd>Compile to NSF music format. (*.nsf) </dd>
+<dt>-l<var>filename</var></dt><dd>Set the filename of the rom code for NSF.</dd>
+<dt>-fa<var>filename</var></dt><dd>Set the filename of the output assembly langage file.</dd>
+<dt>-fn<var>filename</var></dt><dd>Set the filename of the output NSF music format.</dd>
+<dt>-h</dt><dd>Print the this help.</dd>
+</dl>
+</div>
+
+<div class='block'>
+<h3><a name="detail">詳細（Detail）</a></h3>
+<h4>-a</h4>
+<p>
+MMLファイルをアセンブリ言語ソース（ca65.exe用）へ変換します。<br>
+出力されるアセンブリ言語ソースは、そのままca65.exeでアセンブル可能なソースになっており編集不要です。<br>
+ソースを編集すると、再生に影響を及ぼす可能性がありますので、編集せずにアセンブルしてください。<br>
+ユーザー・アプリケーションのビルドの際に、そのオブジェクト・ファイルをリンクして下さい。<br>
+</p>
+<p>
+出力するアセンブリ言語ソースの詳細は、<a href="nsc_asm.html">出力するアセンブリ言語ソースについて</a>を参照して下さい。<br>
+
+</p>
+
+<h4>-n</h4>
+<p>
+NSF Music formatへ変換します。<br>
+コンパイラで直接ＮＳＦを生成する場合、
+実行コード、曲データ、⊿ＰＣＭデータ<strong>(未対応)</strong>の合計が32kByteまでとなります。<br>
+</p>
+
+<h4>-l<var>filename</var></h4>
+<p>
+NSF Music formatへ変換する際の実行コードファイルを指定します。<br>
+このオプションを指定した場合、MML中の"#code"コマンドは無視されます。<br>
+</p>
+
+<h4>-fa<var>filename</var></h4>
+<p>
+アセンブリ言語ソースのファイル名を指定できます。<br>
+指定がない場合は、入力されたmmlのファイル名で、拡張子を`.s'にして出力します。<br>
+</p>
+
+<h4>-fn<var>filename</var></h4>
+<p>
+NSF Music formatのファイル名を指定できます。<br>
+指定がない場合は、入力されたmmlのファイル名で、拡張子を`.nsf'にして出力します。<br>
+</p>
+
+<h4>-h</h4>
+<p>
+簡易ヘルプを表示します。<br>
+</p>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

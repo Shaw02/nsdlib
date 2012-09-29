@@ -50,7 +50,7 @@ void	__fastcall__	nsd_init(void);
 	Arguments :	Pointer of the Delta PCM information.
 	Return :	None
 ----------------------------------------------*/
-void	__fastcall__	nsd_set_dpcm(nsd_dpcm* dpcm);
+void	__fastcall__	nsd_set_dpcm(void* dpcm);
 
 
 /*----------------------------------------------

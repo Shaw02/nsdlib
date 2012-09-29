@@ -1,9 +1,11 @@
 [OPTIONS]
+Auto Index=Yes
 Compatibility=1.1 or later
 Compiled file=nsdl.chm
 Contents file=nsdl.hhc
 Default topic=index.html
 Display compile progress=No
+Full-text search=Yes
 Index file=nsdl.hhk
 Language=0x411 “ú–{Œê
 Title=NES Sound Driver Libraly
@@ -15,6 +17,7 @@ faq.html
 format_music.html
 func_nsd_init.html
 func_nsd_main.html
+func_nsd_set_dpcm.html
 func_nsd_play_bgm.html
 func_nsd_play_se.html
 func_nsd_stop_bgm.html
@@ -50,6 +53,9 @@ redistribution.html
 revision.html
 usage.html
 usage_nsc.html
+nsc_option.html
+nsc_asm.html
 usage_nsd.html
+
 [INFOTYPES]
 

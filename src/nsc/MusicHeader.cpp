@@ -79,10 +79,10 @@ void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 	if((offsetPCM < 0xC000) || (offsetPCM > 0x10000)){
 		MML->Err("$C000 ～ $10000（⊿PCM未使用）の範囲で指定して下さい。");
 	}
-	if((offsetPCM & 0x003F) != 0){
-		MML->Warning("⊿PCMは64（$40）Byteでアライメントします。");
-		offsetPCM &= 0xFFC0;
-		offsetPCM += 0x0040;
+	if((offsetPCM & 0x0FFF) != 0){
+		MML->Warning("⊿PCMの配置アドレスは4096（$1000）Byteでアライメントします。");
+		offsetPCM &= 0xF000;
+		offsetPCM += 0x1000;
 	}
 }
 

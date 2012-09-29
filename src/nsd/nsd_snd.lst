@@ -1110,208 +1110,210 @@ Current file: nsd_snd.s
 000103r 1               
 000103r 1  C8           	iny
 000104r 1  B1 rr        	lda	(__ptr),y
-000106r 1  8D 11 40     	sta	APU_MODDA
-000109r 1               
-000109r 1  C8           	iny
-00010Ar 1  B1 rr        	lda	(__ptr),y
-00010Cr 1  8D 12 40     	sta	APU_MODADDR
-00010Fr 1               
-00010Fr 1  C8           	iny
-000110r 1  B1 rr        	lda	(__ptr),y
-000112r 1  8D 13 40     	sta	APU_MODLEN
-000115r 1               
-000115r 1  A9 1F        	lda	#$1F
-000117r 1  8D 15 40     	sta	APU_CHANCTRL
-00011Ar 1               
-00011Ar 1  60           	rts
-00011Br 1               .endproc
-00011Br 1               
-00011Br 1               .proc	_nsd_dpcm_keyoff
-00011Br 1               
-00011Br 1               	;r- ?
-00011Br 1  BD rr rr     	lda	__chflag,x
-00011Er 1  29 03        	and	#nsd_chflag::KeyOff
-000120r 1  F0 05        	beq	Exit
-000122r 1               
-000122r 1  A9 0F        	lda	#$0F
-000124r 1  8D 15 40     	sta	APU_CHANCTRL
-000127r 1               Exit:
-000127r 1  60           	rts
-000128r 1               .endproc
-000128r 1               
-000128r 1               ;=======================================================================
-000128r 1               ;	void	__fastcall__	nsd_nes_voice(char voice);
-000128r 1               ;-----------------------------------------------------------------------
-000128r 1               ;<<Contents>>
-000128r 1               ;	NES Sound device:	Set voice
-000128r 1               ;<<Input>>
-000128r 1               ;	a	voice	(0:12.5% / 1:25% / 2:50% / 3:75%)
-000128r 1               ;	x	channel
-000128r 1               ;<<Output>>
-000128r 1               ;	nsd_work.Voice.voice_set  =  (voice << 6) | 0x30
-000128r 1               ;=======================================================================
-000128r 1               .proc	_nsd_nes_voice
-000128r 1               .code
-000128r 1               	;-------------------------------
-000128r 1               	; *** Calculate the voice
-000128r 1  0A 0A 0A 0A  	shl	a, 6	;a <<= 6
-00012Cr 1  0A 0A        
-00012Er 1  29 C0        	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
-000130r 1               
-000130r 1               	;-------------------------------
-000130r 1               	; *** Set the voice to work
-000130r 1  9D rr rr     	sta	__voice_set,x
-000133r 1               
-000133r 1               	;-------------------------------
-000133r 1               	; *** Exit
-000133r 1               exit:
-000133r 1  60           	rts
-000134r 1               .endproc
-000134r 1               
-000134r 1               .proc	_nsd_noise_voice
-000134r 1               .code
-000134r 1               	;-------------------------------
-000134r 1               	; *** Calculate the voice
-000134r 1  0A 0A 0A 0A  	shl	a, 7	;a <<= 7
-000138r 1  0A 0A 0A     
-00013Br 1  29 80        	and	#$80	;a &= 0x80	;for OR to frequency(lower 4bit)
-00013Dr 1               
-00013Dr 1               	;-------------------------------
-00013Dr 1               	; *** Set the voice to work
-00013Dr 1  9D rr rr     	sta	__voice_set,x
-000140r 1               
-000140r 1               	;-------------------------------
-000140r 1               	; *** Exit
-000140r 1               exit:
-000140r 1  60           	rts
-000141r 1               .endproc
-000141r 1               
-000141r 1               ;=======================================================================
-000141r 1               ;	void	__fastcall__	nsd_nes_volume(char volume);
-000141r 1               ;-----------------------------------------------------------------------
-000141r 1               ;<<Contents>>
-000141r 1               ;	NES Sound device:	Set volume
-000141r 1               ;<<Input>>
-000141r 1               ;	a	volume	(0 to 255)	(volume is upper 4bit)
-000141r 1               ;	x	channel
-000141r 1               ;<<Output>>
-000141r 1               ;	nothing
-000141r 1               ;=======================================================================
-000141r 1               .proc	_nsd_ch1_volume
-000141r 1               .code
-000141r 1               	;-------------------------------
-000141r 1               	; *** Calculate the volume
-000141r 1               	;a >>= 4
-000141r 1  4A 4A 4A 4A  	shr	a, 4
-000145r 1               
-000145r 1               	;-------------------------------
-000145r 1               	; *** Mix voice and volume
-000145r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-000145r 1  29 0F        	and	#$0F
-000147r 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-000149r 1  1D rr rr     	ora	__voice_set,x
-00014Cr 1               
-00014Cr 1               	;-------------------------------
-00014Cr 1               	; *** Output to NES sound device
-00014Cr 1               	;y = x << 1
-00014Cr 1  8D 00 40     	sta	APU_PULSE1CTRL
-00014Fr 1               
-00014Fr 1               	;-------------------------------
-00014Fr 1               	; *** Exit
-00014Fr 1               exit:
-00014Fr 1  60           	rts
-000150r 1               .endproc
-000150r 1               
-000150r 1               .proc	_nsd_ch2_volume
-000150r 1               .code
-000150r 1               	;-------------------------------
-000150r 1               	; *** Calculate the volume
-000150r 1               	;a >>= 4
-000150r 1  4A 4A 4A 4A  	shr	a, 4
-000154r 1               
-000154r 1               	;-------------------------------
-000154r 1               	; *** Mix voice and volume
-000154r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-000154r 1  29 0F        	and	#$0F
-000156r 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-000158r 1  1D rr rr     	ora	__voice_set,x
-00015Br 1               
-00015Br 1               	;-------------------------------
-00015Br 1               	; *** Output to NES sound device
-00015Br 1               	;y = x << 1
-00015Br 1  8D 04 40     	sta	APU_PULSE2CTRL
-00015Er 1               
-00015Er 1               	;-------------------------------
-00015Er 1               	; *** Exit
-00015Er 1               exit:
-00015Er 1  60           	rts
-00015Fr 1               .endproc
-00015Fr 1               
-00015Fr 1               .proc	_nsd_ch4_volume
-00015Fr 1               .code
-00015Fr 1               	;-------------------------------
-00015Fr 1               	; *** Calculate the volume
-00015Fr 1               	;a >>= 4
-00015Fr 1  4A 4A 4A 4A  	shr	a, 4
-000163r 1               
-000163r 1               	;-------------------------------
-000163r 1               	; *** Mix voice and volume
-000163r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-000163r 1  29 0F        	and	#$0F
-000165r 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-000167r 1               
-000167r 1               	;-------------------------------
-000167r 1               	; *** Output to NES sound device
-000167r 1               	;y = x << 1
-000167r 1  8D 0C 40     	sta	APU_NOISECTRL
-00016Ar 1               
-00016Ar 1               	;-------------------------------
-00016Ar 1               	; *** Exit
-00016Ar 1               exit:
-00016Ar 1  60           	rts
-00016Br 1               .endproc
-00016Br 1               ;=======================================================================
-00016Br 1               ;	void	__fastcall__	nsd_nes_volume(char volume);
-00016Br 1               ;-----------------------------------------------------------------------
-00016Br 1               ;<<Contents>>
-00016Br 1               ;	NES Sound device:	Set volume
-00016Br 1               ;<<Input>>
-00016Br 1               ;	a	volume	(0 to 255)	(volume is upper 4bit)
-00016Br 1               ;	x	channel
-00016Br 1               ;<<Output>>
-00016Br 1               ;	nothing
-00016Br 1               ;=======================================================================
-00016Br 1               .proc	_nsd_ch1_sweep
-00016Br 1               .code
-00016Br 1  8D 01 40     	sta	APU_PULSE1RAMP
-00016Er 1  8D rr rr     	sta	__sweep_ch1
-000171r 1  60           	rts
-000172r 1               .endproc
-000172r 1               
-000172r 1               .proc	_nsd_ch2_sweep
-000172r 1               .code
-000172r 1  8D 05 40     	sta	APU_PULSE2RAMP
-000175r 1  8D rr rr     	sta	__sweep_ch2
-000178r 1  60           	rts
-000179r 1               .endproc
-000179r 1               
-000179r 1               .proc	_nsd_se2_sweep
-000179r 1               .code
-000179r 1  8D 05 40     	sta	APU_PULSE2RAMP
-00017Cr 1  60           	rts
-00017Dr 1               .endproc
-00017Dr 1               
-00017Dr 1               ;=======================================================================
-00017Dr 1               ;	void	__fastcall__	nsd_nes_frequency(int freq);
-00017Dr 1               ;-----------------------------------------------------------------------
-00017Dr 1               ;<<Contents>>
-00017Dr 1               ;	NES Sound device:	Set frequency
-00017Dr 1               ;<<Input>>
-00017Dr 1               ;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
-00017Dr 1               ;<<Output>>
-00017Dr 1               ;	nothing
-00017Dr 1               ;=======================================================================
-00017Dr 1               .rodata
+000106r 1  30 03        	bmi	@L			;if 0x80 >= a then skip
+000108r 1  8D 11 40     	sta	APU_MODDA
+00010Br 1               @L:
+00010Br 1               
+00010Br 1  C8           	iny
+00010Cr 1  B1 rr        	lda	(__ptr),y
+00010Er 1  8D 12 40     	sta	APU_MODADDR
+000111r 1               
+000111r 1  C8           	iny
+000112r 1  B1 rr        	lda	(__ptr),y
+000114r 1  8D 13 40     	sta	APU_MODLEN
+000117r 1               
+000117r 1  A9 1F        	lda	#$1F
+000119r 1  8D 15 40     	sta	APU_CHANCTRL
+00011Cr 1               
+00011Cr 1  60           	rts
+00011Dr 1               .endproc
+00011Dr 1               
+00011Dr 1               .proc	_nsd_dpcm_keyoff
+00011Dr 1               
+00011Dr 1               	;r- ?
+00011Dr 1  BD rr rr     	lda	__chflag,x
+000120r 1  29 03        	and	#nsd_chflag::KeyOff
+000122r 1  F0 05        	beq	Exit
+000124r 1               
+000124r 1  A9 0F        	lda	#$0F
+000126r 1  8D 15 40     	sta	APU_CHANCTRL
+000129r 1               Exit:
+000129r 1  60           	rts
+00012Ar 1               .endproc
+00012Ar 1               
+00012Ar 1               ;=======================================================================
+00012Ar 1               ;	void	__fastcall__	nsd_nes_voice(char voice);
+00012Ar 1               ;-----------------------------------------------------------------------
+00012Ar 1               ;<<Contents>>
+00012Ar 1               ;	NES Sound device:	Set voice
+00012Ar 1               ;<<Input>>
+00012Ar 1               ;	a	voice	(0:12.5% / 1:25% / 2:50% / 3:75%)
+00012Ar 1               ;	x	channel
+00012Ar 1               ;<<Output>>
+00012Ar 1               ;	nsd_work.Voice.voice_set  =  (voice << 6) | 0x30
+00012Ar 1               ;=======================================================================
+00012Ar 1               .proc	_nsd_nes_voice
+00012Ar 1               .code
+00012Ar 1               	;-------------------------------
+00012Ar 1               	; *** Calculate the voice
+00012Ar 1  0A 0A 0A 0A  	shl	a, 6	;a <<= 6
+00012Er 1  0A 0A        
+000130r 1  29 C0        	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
+000132r 1               
+000132r 1               	;-------------------------------
+000132r 1               	; *** Set the voice to work
+000132r 1  9D rr rr     	sta	__voice_set,x
+000135r 1               
+000135r 1               	;-------------------------------
+000135r 1               	; *** Exit
+000135r 1               exit:
+000135r 1  60           	rts
+000136r 1               .endproc
+000136r 1               
+000136r 1               .proc	_nsd_noise_voice
+000136r 1               .code
+000136r 1               	;-------------------------------
+000136r 1               	; *** Calculate the voice
+000136r 1  0A 0A 0A 0A  	shl	a, 7	;a <<= 7
+00013Ar 1  0A 0A 0A     
+00013Dr 1  29 80        	and	#$80	;a &= 0x80	;for OR to frequency(lower 4bit)
+00013Fr 1               
+00013Fr 1               	;-------------------------------
+00013Fr 1               	; *** Set the voice to work
+00013Fr 1  9D rr rr     	sta	__voice_set,x
+000142r 1               
+000142r 1               	;-------------------------------
+000142r 1               	; *** Exit
+000142r 1               exit:
+000142r 1  60           	rts
+000143r 1               .endproc
+000143r 1               
+000143r 1               ;=======================================================================
+000143r 1               ;	void	__fastcall__	nsd_nes_volume(char volume);
+000143r 1               ;-----------------------------------------------------------------------
+000143r 1               ;<<Contents>>
+000143r 1               ;	NES Sound device:	Set volume
+000143r 1               ;<<Input>>
+000143r 1               ;	a	volume	(0 to 255)	(volume is upper 4bit)
+000143r 1               ;	x	channel
+000143r 1               ;<<Output>>
+000143r 1               ;	nothing
+000143r 1               ;=======================================================================
+000143r 1               .proc	_nsd_ch1_volume
+000143r 1               .code
+000143r 1               	;-------------------------------
+000143r 1               	; *** Calculate the volume
+000143r 1               	;a >>= 4
+000143r 1  4A 4A 4A 4A  	shr	a, 4
+000147r 1               
+000147r 1               	;-------------------------------
+000147r 1               	; *** Mix voice and volume
+000147r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+000147r 1  29 0F        	and	#$0F
+000149r 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+00014Br 1  1D rr rr     	ora	__voice_set,x
+00014Er 1               
+00014Er 1               	;-------------------------------
+00014Er 1               	; *** Output to NES sound device
+00014Er 1               	;y = x << 1
+00014Er 1  8D 00 40     	sta	APU_PULSE1CTRL
+000151r 1               
+000151r 1               	;-------------------------------
+000151r 1               	; *** Exit
+000151r 1               exit:
+000151r 1  60           	rts
+000152r 1               .endproc
+000152r 1               
+000152r 1               .proc	_nsd_ch2_volume
+000152r 1               .code
+000152r 1               	;-------------------------------
+000152r 1               	; *** Calculate the volume
+000152r 1               	;a >>= 4
+000152r 1  4A 4A 4A 4A  	shr	a, 4
+000156r 1               
+000156r 1               	;-------------------------------
+000156r 1               	; *** Mix voice and volume
+000156r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+000156r 1  29 0F        	and	#$0F
+000158r 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+00015Ar 1  1D rr rr     	ora	__voice_set,x
+00015Dr 1               
+00015Dr 1               	;-------------------------------
+00015Dr 1               	; *** Output to NES sound device
+00015Dr 1               	;y = x << 1
+00015Dr 1  8D 04 40     	sta	APU_PULSE2CTRL
+000160r 1               
+000160r 1               	;-------------------------------
+000160r 1               	; *** Exit
+000160r 1               exit:
+000160r 1  60           	rts
+000161r 1               .endproc
+000161r 1               
+000161r 1               .proc	_nsd_ch4_volume
+000161r 1               .code
+000161r 1               	;-------------------------------
+000161r 1               	; *** Calculate the volume
+000161r 1               	;a >>= 4
+000161r 1  4A 4A 4A 4A  	shr	a, 4
+000165r 1               
+000165r 1               	;-------------------------------
+000165r 1               	; *** Mix voice and volume
+000165r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+000165r 1  29 0F        	and	#$0F
+000167r 1  09 30        	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+000169r 1               
+000169r 1               	;-------------------------------
+000169r 1               	; *** Output to NES sound device
+000169r 1               	;y = x << 1
+000169r 1  8D 0C 40     	sta	APU_NOISECTRL
+00016Cr 1               
+00016Cr 1               	;-------------------------------
+00016Cr 1               	; *** Exit
+00016Cr 1               exit:
+00016Cr 1  60           	rts
+00016Dr 1               .endproc
+00016Dr 1               ;=======================================================================
+00016Dr 1               ;	void	__fastcall__	nsd_nes_volume(char volume);
+00016Dr 1               ;-----------------------------------------------------------------------
+00016Dr 1               ;<<Contents>>
+00016Dr 1               ;	NES Sound device:	Set volume
+00016Dr 1               ;<<Input>>
+00016Dr 1               ;	a	volume	(0 to 255)	(volume is upper 4bit)
+00016Dr 1               ;	x	channel
+00016Dr 1               ;<<Output>>
+00016Dr 1               ;	nothing
+00016Dr 1               ;=======================================================================
+00016Dr 1               .proc	_nsd_ch1_sweep
+00016Dr 1               .code
+00016Dr 1  8D 01 40     	sta	APU_PULSE1RAMP
+000170r 1  8D rr rr     	sta	__sweep_ch1
+000173r 1  60           	rts
+000174r 1               .endproc
+000174r 1               
+000174r 1               .proc	_nsd_ch2_sweep
+000174r 1               .code
+000174r 1  8D 05 40     	sta	APU_PULSE2RAMP
+000177r 1  8D rr rr     	sta	__sweep_ch2
+00017Ar 1  60           	rts
+00017Br 1               .endproc
+00017Br 1               
+00017Br 1               .proc	_nsd_se2_sweep
+00017Br 1               .code
+00017Br 1  8D 05 40     	sta	APU_PULSE2RAMP
+00017Er 1  60           	rts
+00017Fr 1               .endproc
+00017Fr 1               
+00017Fr 1               ;=======================================================================
+00017Fr 1               ;	void	__fastcall__	nsd_nes_frequency(int freq);
+00017Fr 1               ;-----------------------------------------------------------------------
+00017Fr 1               ;<<Contents>>
+00017Fr 1               ;	NES Sound device:	Set frequency
+00017Fr 1               ;<<Input>>
+00017Fr 1               ;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
+00017Fr 1               ;<<Output>>
+00017Fr 1               ;	nothing
+00017Fr 1               ;=======================================================================
+00017Fr 1               .rodata
 000054r 1               
 000054r 1               ;APU, MMC5, VRC6, FME7 Frequency table
 000054r 1               Freq:
@@ -1540,133 +1542,133 @@ Current file: nsd_snd.s
 000114r 1               ;-----------------------
 000114r 1               ;Code
 000114r 1               .code
-00017Dr 1               .proc	_nsd_nes_frequency
-00017Dr 1               	;-----------
-00017Dr 1               	;check the old frequency
-00017Dr 1  A4 rr        	ldy	__channel
-00017Fr 1  D9 rr rr     	cmp	__frequency,y
-000182r 1  F0 0A        	beq	@L
-000184r 1  99 rr rr     	sta	__frequency,y
-000187r 1  8A           	txa
-000188r 1  99 rr rr     	sta	__frequency + 1,y
-00018Br 1  4C rr rr     	jmp	Set_Frequency
-00018Er 1  8A           @L:	txa
-00018Fr 1  D9 rr rr     	cmp	__frequency + 1,y
-000192r 1  F0 7B        	beq	Exit
-000194r 1  99 rr rr     	sta	__frequency + 1,y
-000197r 1  AA           	tax
-000198r 1               Set_Frequency:
-000198r 1  B9 rr rr     	lda	__frequency,y
-00019Br 1  20 rr rr     	jsr	_nsd_div192		;
-00019Er 1  29 FE        	and	#$FE			; x =  ax  /  192
-0001A0r 1  A8           	tay				; y = (ax mod 192) & 0xFE
-0001A1r 1               
-0001A1r 1               	;-------------------------------
-0001A1r 1               	; *** Get frequency from table
-0001A1r 1               	; nsd_work_zp._tmp <- frequency
-0001A1r 1  B9 rr rr     	lda	Freq + 1,y
-0001A4r 1  85 rr        	sta	__tmp + 1
-0001A6r 1  B9 rr rr     	lda	Freq,y
-0001A9r 1               
-0001A9r 1               	;-------------------------------
-0001A9r 1               	; *** Octave caluclate  and  overflow check
-0001A9r 1               Octave_Proc:
-0001A9r 1               	;if (octave == 0) {
-0001A9r 1  E0 00        	cpx	#0
-0001ABr 1  D0 16        	bne	Octave_Loop
-0001ADr 1  85 rr        	sta	__tmp
-0001AFr 1  A5 rr        	lda	__tmp + 1
-0001B1r 1  C9 08        	cmp	#$08				;if (frequency >= 0x0800) {
-0001B3r 1  90 09        	bcc	@E
-0001B5r 1  A9 07        	lda	#$07
-0001B7r 1  85 rr        	sta	__tmp + 1
-0001B9r 1  A9 FF        	lda	#$FF				;	frequency = 0x07FF
-0001BBr 1  4C rr rr     	jmp	Octave_Exit			; } else {
-0001BEr 1  A5 rr        @E:	lda	__tmp
-0001C0r 1  4C rr rr     	jmp	DEC_Freq
-0001C3r 1               	; } } else { while (octave > 0) {
-0001C3r 1               Octave_Loop:
-0001C3r 1  46 rr        	lsr	__tmp + 1	; frequency >>= 1
-0001C5r 1  6A           	ror	a
-0001C6r 1  CA           	dex			; octave--;
-0001C7r 1  D0 FA        	bne	Octave_Loop
-0001C9r 1               	; } }
-0001C9r 1               DEC_Freq:
-0001C9r 1  38 E9 01     	sub	#1
-0001CCr 1  B0 02        	bcs	Octave_Exit
-0001CEr 1  C6 rr        	dec	__tmp + 1	; frequency -= 1
-0001D0r 1               Octave_Exit:
-0001D0r 1               
-0001D0r 1               Detune:
-0001D0r 1  A6 rr        	ldx	__channel
-0001D2r 1  85 rr        	sta	__tmp
-0001D4r 1  A0 00        	ldy	#$00
-0001D6r 1  BD rr rr     	lda	__detune_fine,x
-0001D9r 1  10 02        	bpl	@L
-0001DBr 1  A0 FF        	ldy	#$FF			; ay = __detune_fine (sign expand)
-0001DDr 1  18 65 rr     @L:	add	__tmp
-0001E0r 1  9D rr rr     	sta	__frequency_set,x
-0001E3r 1  98           	tya
-0001E4r 1  65 rr        	adc	__tmp + 1
-0001E6r 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
-0001E8r 1               
-0001E8r 1               	;-------------------------------
-0001E8r 1               	; *** Output to NES sound device
-0001E8r 1               Set_Device:
-0001E8r 1  8A           	txa
-0001E9r 1  C9 0A        	cmp	#nsd::TR_SE1
-0001EBr 1  F0 09        	beq	@S1
-0001EDr 1  C9 0C        	cmp	#nsd::TR_SE2
-0001EFr 1  D0 07        	bne	@E
-0001F1r 1  A9 06        @S2:	lda	#nsd::TR_BGM4	;SE (Noise ch)
-0001F3r 1  4C rr rr     	jmp	@E
-0001F6r 1  A9 02        @S1:	lda	#nsd::TR_BGM2	;SE (Pulse ch)
-0001F8r 1  0A           @E:	asl	a
-0001F9r 1  A8           	tay
-0001FAr 1               
-0001FAr 1  BD rr rr     	lda	__frequency_set,x
-0001FDr 1  99 02 40     	sta	APU_PULSE1FTUNE,y
-000200r 1  A5 rr        	lda	__tmp + 1
-000202r 1  09 08        	ora	#$08
-000204r 1  DD rr rr     	cmp	__frequency_set + 1,x
-000207r 1  F0 06        	beq	Exit
-000209r 1  99 03 40     	sta	APU_PULSE1CTUNE,y
-00020Cr 1  9D rr rr     	sta	__frequency_set + 1,x
-00020Fr 1               
-00020Fr 1               	;-------------------------------
-00020Fr 1               	; *** Exit
-00020Fr 1               Exit:
-00020Fr 1  60           	rts
-000210r 1               .endproc
-000210r 1               
-000210r 1               .proc	_nsd_noise_frequency
-000210r 1               .code
-000210r 1               	;-------------------------------
-000210r 1               	; *** Get the note number lower 4bit
-000210r 1               	;a >>= 4
-000210r 1  49 FF        	eor	#$FF
-000212r 1  4A 4A 4A 4A  	shr	a,4
-000216r 1               
-000216r 1               	;-------------------------------
-000216r 1               	; *** Mix voice and frequency
-000216r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-000216r 1  A6 rr        	ldx	__channel
-000218r 1  29 0F        	and	#$0F
-00021Ar 1  1D rr rr     	ora	__voice_set,x
-00021Dr 1               
-00021Dr 1               	;-------------------------------
-00021Dr 1               	; *** Output to NES sound device
-00021Dr 1  8D 0E 40     	sta	APU_NOISEFREQ1
-000220r 1               	; to do note on?
-000220r 1  A9 08        	lda	#$08
-000222r 1  DD rr rr     	cmp	__frequency_set + 1,x	;for flag
-000225r 1  F0 06        	beq	Exit
-000227r 1  8D 0F 40     	sta	APU_NOISEFREQ2
-00022Ar 1  9D rr rr     	sta	__frequency_set + 1,x
-00022Dr 1               
-00022Dr 1               	;-------------------------------
-00022Dr 1               	; *** Exit
-00022Dr 1               Exit:
-00022Dr 1  60           	rts
-00022Er 1               .endproc
-00022Er 1               
+00017Fr 1               .proc	_nsd_nes_frequency
+00017Fr 1               	;-----------
+00017Fr 1               	;check the old frequency
+00017Fr 1  A4 rr        	ldy	__channel
+000181r 1  D9 rr rr     	cmp	__frequency,y
+000184r 1  F0 0A        	beq	@L
+000186r 1  99 rr rr     	sta	__frequency,y
+000189r 1  8A           	txa
+00018Ar 1  99 rr rr     	sta	__frequency + 1,y
+00018Dr 1  4C rr rr     	jmp	Set_Frequency
+000190r 1  8A           @L:	txa
+000191r 1  D9 rr rr     	cmp	__frequency + 1,y
+000194r 1  F0 7B        	beq	Exit
+000196r 1  99 rr rr     	sta	__frequency + 1,y
+000199r 1  AA           	tax
+00019Ar 1               Set_Frequency:
+00019Ar 1  B9 rr rr     	lda	__frequency,y
+00019Dr 1  20 rr rr     	jsr	_nsd_div192		;
+0001A0r 1  29 FE        	and	#$FE			; x =  ax  /  192
+0001A2r 1  A8           	tay				; y = (ax mod 192) & 0xFE
+0001A3r 1               
+0001A3r 1               	;-------------------------------
+0001A3r 1               	; *** Get frequency from table
+0001A3r 1               	; nsd_work_zp._tmp <- frequency
+0001A3r 1  B9 rr rr     	lda	Freq + 1,y
+0001A6r 1  85 rr        	sta	__tmp + 1
+0001A8r 1  B9 rr rr     	lda	Freq,y
+0001ABr 1               
+0001ABr 1               	;-------------------------------
+0001ABr 1               	; *** Octave caluclate  and  overflow check
+0001ABr 1               Octave_Proc:
+0001ABr 1               	;if (octave == 0) {
+0001ABr 1  E0 00        	cpx	#0
+0001ADr 1  D0 16        	bne	Octave_Loop
+0001AFr 1  85 rr        	sta	__tmp
+0001B1r 1  A5 rr        	lda	__tmp + 1
+0001B3r 1  C9 08        	cmp	#$08				;if (frequency >= 0x0800) {
+0001B5r 1  90 09        	bcc	@E
+0001B7r 1  A9 07        	lda	#$07
+0001B9r 1  85 rr        	sta	__tmp + 1
+0001BBr 1  A9 FF        	lda	#$FF				;	frequency = 0x07FF
+0001BDr 1  4C rr rr     	jmp	Octave_Exit			; } else {
+0001C0r 1  A5 rr        @E:	lda	__tmp
+0001C2r 1  4C rr rr     	jmp	DEC_Freq
+0001C5r 1               	; } } else { while (octave > 0) {
+0001C5r 1               Octave_Loop:
+0001C5r 1  46 rr        	lsr	__tmp + 1	; frequency >>= 1
+0001C7r 1  6A           	ror	a
+0001C8r 1  CA           	dex			; octave--;
+0001C9r 1  D0 FA        	bne	Octave_Loop
+0001CBr 1               	; } }
+0001CBr 1               DEC_Freq:
+0001CBr 1  38 E9 01     	sub	#1
+0001CEr 1  B0 02        	bcs	Octave_Exit
+0001D0r 1  C6 rr        	dec	__tmp + 1	; frequency -= 1
+0001D2r 1               Octave_Exit:
+0001D2r 1               
+0001D2r 1               Detune:
+0001D2r 1  A6 rr        	ldx	__channel
+0001D4r 1  85 rr        	sta	__tmp
+0001D6r 1  A0 00        	ldy	#$00
+0001D8r 1  BD rr rr     	lda	__detune_fine,x
+0001DBr 1  10 02        	bpl	@L
+0001DDr 1  A0 FF        	ldy	#$FF			; ay = __detune_fine (sign expand)
+0001DFr 1  18 65 rr     @L:	add	__tmp
+0001E2r 1  9D rr rr     	sta	__frequency_set,x
+0001E5r 1  98           	tya
+0001E6r 1  65 rr        	adc	__tmp + 1
+0001E8r 1  85 rr        	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
+0001EAr 1               
+0001EAr 1               	;-------------------------------
+0001EAr 1               	; *** Output to NES sound device
+0001EAr 1               Set_Device:
+0001EAr 1  8A           	txa
+0001EBr 1  C9 0A        	cmp	#nsd::TR_SE1
+0001EDr 1  F0 09        	beq	@S1
+0001EFr 1  C9 0C        	cmp	#nsd::TR_SE2
+0001F1r 1  D0 07        	bne	@E
+0001F3r 1  A9 06        @S2:	lda	#nsd::TR_BGM4	;SE (Noise ch)
+0001F5r 1  4C rr rr     	jmp	@E
+0001F8r 1  A9 02        @S1:	lda	#nsd::TR_BGM2	;SE (Pulse ch)
+0001FAr 1  0A           @E:	asl	a
+0001FBr 1  A8           	tay
+0001FCr 1               
+0001FCr 1  BD rr rr     	lda	__frequency_set,x
+0001FFr 1  99 02 40     	sta	APU_PULSE1FTUNE,y
+000202r 1  A5 rr        	lda	__tmp + 1
+000204r 1  09 08        	ora	#$08
+000206r 1  DD rr rr     	cmp	__frequency_set + 1,x
+000209r 1  F0 06        	beq	Exit
+00020Br 1  99 03 40     	sta	APU_PULSE1CTUNE,y
+00020Er 1  9D rr rr     	sta	__frequency_set + 1,x
+000211r 1               
+000211r 1               	;-------------------------------
+000211r 1               	; *** Exit
+000211r 1               Exit:
+000211r 1  60           	rts
+000212r 1               .endproc
+000212r 1               
+000212r 1               .proc	_nsd_noise_frequency
+000212r 1               .code
+000212r 1               	;-------------------------------
+000212r 1               	; *** Get the note number lower 4bit
+000212r 1               	;a >>= 4
+000212r 1  49 FF        	eor	#$FF
+000214r 1  4A 4A 4A 4A  	shr	a,4
+000218r 1               
+000218r 1               	;-------------------------------
+000218r 1               	; *** Mix voice and frequency
+000218r 1               	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+000218r 1  A6 rr        	ldx	__channel
+00021Ar 1  29 0F        	and	#$0F
+00021Cr 1  1D rr rr     	ora	__voice_set,x
+00021Fr 1               
+00021Fr 1               	;-------------------------------
+00021Fr 1               	; *** Output to NES sound device
+00021Fr 1  8D 0E 40     	sta	APU_NOISEFREQ1
+000222r 1               	; to do note on?
+000222r 1  A9 08        	lda	#$08
+000224r 1  DD rr rr     	cmp	__frequency_set + 1,x	;for flag
+000227r 1  F0 06        	beq	Exit
+000229r 1  8D 0F 40     	sta	APU_NOISEFREQ2
+00022Cr 1  9D rr rr     	sta	__frequency_set + 1,x
+00022Fr 1               
+00022Fr 1               	;-------------------------------
+00022Fr 1               	; *** Exit
+00022Fr 1               Exit:
+00022Fr 1  60           	rts
+000230r 1               .endproc
+000230r 1               
