@@ -81,16 +81,16 @@ FDS_Sweep_Gain		= $4092		;$4084's value
 ;---------------------------------------
 ;VRC6 define
 
-VRC6_Frequency		= $9003
-VRC6_Pulse1_CTRL	= $9000
-VRC6_Pulse1_FTUNE	= $9001
-VRC6_Pulse1_CTUNE	= $9002
+VRC6_Frequency		= $9003		;.... .ABH	Normally you should write $00 to this register on startup to initialize it.
+VRC6_Pulse1_CTRL	= $9000		;MDDD vvvv	mode DT vol
+VRC6_Pulse1_FTUNE	= $9001		;FFFF FFFF
+VRC6_Pulse1_CTUNE	= $9002		;E... FFFF
 VRC6_Pulse2_CTRL	= $A000
 VRC6_Pulse2_FTUNE	= $A001
 VRC6_Pulse2_CTUNE	= $A002
-VRC6_SAW_CTRL		= $B000
-VRC6_SAW_FTUNE		= $B001
-VRC6_SAW_CTUNE		= $B002
+VRC6_SAW_CTRL		= $B000		;..AA AAAA	volume
+VRC6_SAW_FTUNE		= $B001		;FFFF FFFF
+VRC6_SAW_CTUNE		= $B002		;E... FFFF
 
 ;---------------------------------------
 ;VRC7 define
@@ -119,7 +119,8 @@ MMC5_Pulse1_FTUNE	= $5002         ; Pulse_ #1 Fine Tune (FT) Register (W)
 MMC5_Pulse1_CTUNE	= $5003         ; Pulse_ #1 Coarse Tune (CT) Register (W)
 MMC5_Pulse2_CTRL	= $5004         ; Pulse_ #2 Control Register (W)
 MMC5_Pulse2_FTUNE	= $5006         ; Pulse_ #2 Fine Tune Register (W)
-MMC5_Pulse2_STUNE	= $5007         ; Pulse_ #2 Coarse Tune Register (W)
+MMC5_Pulse2_CTUNE	= $5007         ; Pulse_ #2 Coarse Tune Register (W)
+MMC5_CHANCTRL		= $5015         ;
 
 ;---------------------------------------
 ;N163 define

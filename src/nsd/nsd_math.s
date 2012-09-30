@@ -94,13 +94,12 @@ exit:
 .code
 
 	and	#$0F
-	shl	a, 3
-	sta	__tmp + 1		; = volume << 3
+	eor	#$FF
+	sta	__tmp
 
 	inx
 	txa
-	eor	#$FF
-	sta	__tmp			; = ^ (envelop+1)
+	sta	__tmp + 1		; = ^ (envelop+1)
 
 	lda	#0
 	lsr	__tmp
@@ -123,11 +122,10 @@ exit:
 	adc	__tmp + 1
 @L4:
 	lsr	a
-	lsr	__tmp
-	bcs	@L5
-	adc	__tmp + 1
-@L5:
+;	lsr	__tmp
+;	bcs	@L5
+;	adc	__tmp + 1
+;@L5:
 exit:
-	shl	a,1
 	rts
 .endproc

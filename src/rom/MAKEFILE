@@ -4,39 +4,64 @@
 #				A.Waranabe (S.W.)
 #==============================================================================
 
-.SUFFIXES :
-.SUFFIXES : .s .c
-
 ASM = ca65
-AFLAG = -t none --listing --list-bytes 255
+#--listing --list-bytes 255
+AFLAG = -t none
+AFDS  = -D FDS
+AVRC6 = -D VRC6
+AVRC7 = -D VRC7
+AMMC5 = -D MMC5
+AN163 = -D N163
+APSG  = -D PSG
+AALL  = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
 
 CC = cl65
 CFLAG = -t none -Oi -Os -Or -c -l -o
 
 LINKER = ld65
-LFLAG = -C config.cfg -m $(PROJ).map -vm -o
+LFLAG = -C config.cfg -m $*.map -vm -o
 
 LIBER = ar65
 LIBFLAG = a
 
-PROJ = nsd
+PROJ      = nsd
+PROJ_FDS  = nsd_fds
+PROJ_VRC6 = nsd_vrc6
+PROJ_VRC7 = nsd_vrc7
+PROJ_MMC5 = nsd_mmc5
+PROJ_N163 = nsd_n163
+PROJ_PSG  = nsd_psg
+PROJ_ALL  = nsd_all
 
-LIB_FILES = ../nsd/nsd.lib
+LIB      = ../nsd/nsd.lib
+LIB_FDS  = ../nsd/nsd_fds.lib
+LIB_VRC6 = ../nsd/nsd_vrc6.lib
+LIB_VRC7 = ../nsd/nsd_vrc7.lib
+LIB_MMC5 = ../nsd/nsd_mmc5.lib
+LIB_N163 = ../nsd/nsd_n163.lib
+LIB_PSG  = ../nsd/nsd_psg.lib
+LIB_ALL  = ../nsd/nsd_all.lib
 
 INC_FILES = 
 
-FILES = crt0.o
+FILES = crt0.s
+OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).bin
+clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_MMC5).bin
 	@del *.bak
+	@del *.o
 
-all: $(PROJ).bin
+all: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_MMC5).bin
 
-$(PROJ).bin : $(FILES) $(INC_FILES) $(LIB_FILES)
-	@$(LINKER) $(LFLAG) $(PROJ).bin $(FILES) $(LIB_FILES) nes.lib
+$(PROJ).bin : $(FILES) $(INC_FILES) $(LIB)
+	@$(ASM) $(AFLAG) $(FILES)
+	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB)
 
-.c.o :
-	@$(CC) $(CFLAG) $*.o $<
+$(PROJ_VRC6).bin : $(FILES) $(INC_FILES) $(LIB_VRC6)
+	@$(ASM) $(AVRC6) $(FILES)
+	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_VRC6)
 
-.s.o :
-	@$(ASM) $(AFLAG) $<
+$(PROJ_MMC5).bin : $(FILES) $(INC_FILES) $(LIB_MMC5)
+	@$(ASM) $(AMMC5) $(FILES)
+	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_MMC5)
+

@@ -4,11 +4,16 @@
 #				A.Waranabe (S.W.)
 #==============================================================================
 
-.SUFFIXES :
-.SUFFIXES : .s .c
-
 ASM = ca65
-AFLAG = -t none --listing --list-bytes 255
+#--listing --list-bytes 255
+AFLAG = -t none
+AFDS  = -D FDS
+AVRC6 = -D VRC6
+AVRC7 = -D VRC7
+AMMC5 = -D MMC5
+AN163 = -D N163
+APSG  = -D PSG
+AALL  = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
 
 CC = cc65
 CFLAG = -t none
@@ -16,22 +21,52 @@ CFLAG = -t none
 LIBER = ar65
 LIBFLAG = a
 
-PROJ = NSD
+PROJ      = NSD
+PROJ_FDS  = NSD_FDS
+PROJ_VRC6 = NSD_VRC6
+PROJ_VRC7 = NSD_VRC7
+PROJ_MMC5 = NSD_MMC5
+PROJ_N163 = NSD_N163
+PROJ_PSG  = NSD_PSG
+PROJ_ALL  = NSD_ALL
 
 INC_FILES = nsd.inc
 
-FILES = nsd_func.o nsd_main.o nsd_seq.o nsd_env.o nsd_snd.o nsd_math.o nsd_work.o 
+FILES = nsd_func.s nsd_main.s nsd_seq.s nsd_env.s nsd_snd.s nsd_math.s nsd_work.s 
+OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).lib
+clean: $(PROJ).lib $(PROJ_MMC5).lib $(PROJ_VRC6).lib
 	@del *.bak
+	@del *.o
 
-all: $(PROJ).lib
+all: $(PROJ).lib $(PROJ_MMC5).lib $(PROJ_VRC6).lib
 
 $(PROJ).lib : $(FILES) $(INC_FILES)
-	@$(LIBER) $(LIBFLAG) $(PROJ).lib $(FILES)
+	@$(ASM) $(AFLAG) nsd_func.s
+	@$(ASM) $(AFLAG) nsd_main.s
+	@$(ASM) $(AFLAG) nsd_seq.s
+	@$(ASM) $(AFLAG) nsd_env.s
+	@$(ASM) $(AFLAG) nsd_snd.s
+	@$(ASM) $(AFLAG) nsd_math.s
+	@$(ASM) $(AFLAG) nsd_work.s
+	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
-.c.o :
-	@$(CC) $(CFLAG) $*.o $<
+$(PROJ_VRC6).lib : $(FILES) $(INC_FILES)
+	@$(ASM) $(AFLAG) $(AVRC6) nsd_func.s
+	@$(ASM) $(AFLAG) $(AVRC6) nsd_main.s
+	@$(ASM) $(AFLAG) $(AVRC6) nsd_seq.s
+	@$(ASM) $(AFLAG) $(AVRC6) nsd_env.s
+	@$(ASM) $(AFLAG) $(AVRC6) nsd_snd.s
+	@$(ASM) $(AFLAG) $(AVRC6) nsd_math.s
+	@$(ASM) $(AFLAG) $(AVRC6) nsd_work.s
+	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
-.s.o :
-	@$(ASM) $(AFLAG) $<
+$(PROJ_MMC5).lib : $(FILES) $(INC_FILES)
+	@$(ASM) $(AFLAG) $(AMMC5) nsd_func.s
+	@$(ASM) $(AFLAG) $(AMMC5) nsd_main.s
+	@$(ASM) $(AFLAG) $(AMMC5) nsd_seq.s
+	@$(ASM) $(AFLAG) $(AMMC5) nsd_env.s
+	@$(ASM) $(AFLAG) $(AMMC5) nsd_snd.s
+	@$(ASM) $(AFLAG) $(AMMC5) nsd_math.s
+	@$(ASM) $(AFLAG) $(AMMC5) nsd_work.s
+	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)

@@ -304,13 +304,45 @@ Volume:
 @L2:	lda	__env_volume + 1,x
 	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
 @L1:	lda	__volume,x
+
+.ifdef	VRC6
+	cpx	#nsd::TR_VRC6 + 4
+	bne	@VRC6
 	and	#$F0
+	shr	a, 2
+	jmp	@EX
+@VRC6:
+.endif
+
+.ifdef	FDS
+	cpx	#nsd::TR_FDS
+	bne	@FDS
+	and	#$F0
+	shr	a, 2
+	jmp	@EX
+@FDS:
+.endif
+	shr	a, 4
+@EX:
 	jmp	Set_Volume
 
 @L3:	lda	__env_volume + 1,x
 	bne	@Envelop
 	lda	__volume,x
-	shl	a, 4
+.ifdef	VRC6
+	cpx	#nsd::TR_VRC6 + 4
+	bne	@VRC6V
+	shl	a, 2
+@VRC6V:
+.endif
+
+.ifdef	FDS
+	cpx	#nsd::TR_FDS
+	bne	@FDSV
+	shl	a, 2
+@FDSV:
+.endif
+
 	jmp	Set_Volume
 
 @Envelop:
@@ -329,4 +361,3 @@ Set_Volume:
 	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
 
 .endproc
-

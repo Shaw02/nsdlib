@@ -63,6 +63,43 @@ _eff:	.byte	0		;SE start number
 ; 16 bytes INES header
 ; ------------------------------------------------------------------------
 
+	.ifdef	FDS
+		FDS_Flag	= $04		;
+	.else
+		FDS_Flag	= 0		;
+	.endif
+
+	.ifdef	VRC6
+		VRC6_Flag	= $01		;
+	.else
+		VRC6_Flag	= 0		;
+	.endif
+
+	.ifdef	VRC7
+		VRC7_Flag	= $02		;
+	.else
+		VRC7_Flag	= 0		;
+	.endif
+
+	.ifdef	MMC5
+		MMC5_Flag	= $08		; (without DPCM)
+	.else
+		MMC5_Flag	= 0		;
+	.endif
+
+	.ifdef	N163
+		N163_Flag	= $10		;
+	.else
+		N163_Flag	= 0		;
+	.endif
+
+	.ifdef	PSG
+		PSG_Flag	= $20		;
+	.else
+		PSG_Flag	= 0		;
+	.endif
+
+
 .segment	"HEADER"
 
 	.byte	$4E,$45,$53,$4D,$1A	;00	"NESM",0x1A
@@ -77,8 +114,10 @@ _eff:	.byte	0		;SE start number
 	.res	32,	$0
 	.word	$411A			;6E	60Hz
 	.byte	0,0,0,0,0,0,0,0		;70	bank
-	.word	$4E20
-	.byte	0,0,0,0,0,0		;78	
+	.word	$4E20			;78
+	.byte	0			;7A
+	.byte	FDS_Flag + VRC6_Flag + VRC7_Flag + MMC5_Flag + N163_Flag + PSG_Flag
+	.byte	0,0,0,0			;78
 
 ; ------------------------------------------------------------------------
 ; 
