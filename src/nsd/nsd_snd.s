@@ -599,6 +599,9 @@ Exit:
 ;---------------------------------------
 .proc	_nsd_dpcm_keyon
 
+	lda	#$0F
+	sta	APU_CHANCTRL
+
 	lda	__dpcm_info + 0
 	sta	__ptr + 0
 	lda	__dpcm_info + 1
@@ -637,13 +640,16 @@ Exit:
 	;r- ?
 	lda	__chflag,x
 	and	#nsd_chflag::KeyOff
-	beq	Exit
+	bne	Exit
 
 	lda	#$0F
 	sta	APU_CHANCTRL
 
-	lda	#$10
+	lda	#$00
 	sta	APU_MODDA
+
+	lda	#$00
+	sta	APU_MODLEN
 Exit:
 	rts
 .endproc
