@@ -51,6 +51,7 @@
 												n1::n2 = Pointer of exit.			</td></tr>
 <tr><td>0x05		</td><td>n1 n2		</td><td>Repeat(A) End point.						<br>
 												n1::n2 = Pointer of start.			</td></tr>
+<tr><td>0x06		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
 <tr><td>0x07		</td><td>n1 n2 n3	</td><td>Write data to memory.				<br>
 												n1::n2 = Address. / n3 = Writing data	</td></tr>
 <tr><td>0x08		</td><td>n1			</td><td>Tempo [BPM]						</td></tr>
@@ -71,7 +72,8 @@
 												n1::n2 = Pointer.					</td></tr>
 <tr><td>0x14		</td><td>n1			</td><td>Detune (16 = 100 cent)				</td></tr>
 <tr><td>0x15		</td><td>n1			</td><td>Detune (Resister base)				</td></tr>
-<tr><td>0x16		</td><td>n1			</td><td>Sweep (Resister base)				</td></tr>
+<tr><td>0x16		</td><td>n1			</td><td>	APU : Sweep (Resister base)		<br>
+													VRC6: Sustain switch			</td></tr>
 <tr><td>0x17		</td><td>n1 n2 n3 n4</td><td>Portamento							<br>
 												n1 = Decay  (1 = 1 VBlank)			<br>
 												n2 = Rate   (1 = 1 VBlank)			<br>
@@ -82,8 +84,25 @@
 <tr><td>0x1A		</td><td>n1 n2		</td><td>Repeat(B) End point				<br>
 												n1::n2 = Pointer of start.			</td></tr>
 <tr><td>0x1B		</td><td>n1			</td><td>Voice (Voice Envelop Off)			</td></tr>
+
+<tr><td>0x1C		</td><td>n1 n2		</td><td>VRC6: Set user instrument			<br>
+												n1::n2 = Pointer.					</td></tr>
+<tr><td>0x1D		</td><td>n1 n2		</td><td>VRC6: Set resister					<br>
+												n1 : Resister						<br>
+												n2 : Data							</td></tr>
+<tr><td>0x1E		</td><td>n1 n2		</td><td>FDS : Set wave table	<strong>ñ¢é¿ëï</strong>	<br>
+												n1::n2 = Pointer.					</td></tr>
+<tr><td>0x1F		</td><td>n1 n2 n3	</td><td>N163: Set wave table	<strong>ñ¢é¿ëï</strong>	<br>
+												n1 = Addres							<br>
+												n1::n2 = Pointer.					</td></tr>
 <tr><td>0x20		</td><td>			</td><td>Volume down	(-1)				</td></tr>
 <tr><td>0x21		</td><td>			</td><td>Volume up		(+1)				</td></tr>
+<tr><td>0x22		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
+<tr><td>0x23		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
+<tr><td>0x24		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
+<tr><td>0x25		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
+<tr><td>0x26		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
+<tr><td>0x27		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
 <tr><td>0x28		</td><td>			</td><td>Octave down	(-1)				</td></tr>
 <tr><td>0x29		</td><td>			</td><td>Octave up		(+1)				</td></tr>
 <tr><td>0x2A		</td><td>n1			</td><td>Transpose (an absolute value)		</td></tr>
@@ -91,6 +110,7 @@
 <tr><td>0x2C		</td><td>			</td><td>Octave down (only next note)		</td></tr>
 <tr><td>0x2D		</td><td>			</td><td>Octave up   (only next note)		</td></tr>
 <tr><td>0x2E		</td><td>n1			</td><td>One time transpose	(a relative value)</td></tr>
+<tr><td>0x2F		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
 <tr><td>0x30-0x37	</td><td>n1			</td><td>Voice of release (after key-off)	</td></tr>
 <tr><td>0x38-0x3F	</td><td>			</td><td>Octave			(op-code lower 4bit is value)	</td></tr>
 <tr><td>0x40-0x4F	</td><td>			</td><td>Note length of è»ó™éû	(op-code lower 4bit is value)	<br>

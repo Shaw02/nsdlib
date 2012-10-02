@@ -135,6 +135,10 @@
 						<param name="Local" value="mml_detune.html">
 						</OBJECT>
 					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="yV：VRC7レジスタ書き込み">
+						<param name="Local" value="mml_VRC7write.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
 						<param name="Name" value="L：無限ループ">
 						<param name="Local" value="mml_loop.html">
 						</OBJECT>
@@ -169,6 +173,10 @@
 					<LI> <OBJECT type="text/sitemap">
 						<param name="Name" value="(,)：相対ボリューム">
 						<param name="Local" value="mml_relative_volume.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="@V：VRC7ユーザ定義音色">
+						<param name="Local" value="mml_VRC7voice.html">
 						</OBJECT>
 					<LI> <OBJECT type="text/sitemap">
 						<param name="Name" value="&lt;,&gt;,&quot;,'：相対オクターブ">

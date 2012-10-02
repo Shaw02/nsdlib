@@ -39,7 +39,10 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 														リンカー"ld65.exe"のコンフィグファイルにて設定した実アドレス指定して下さい。</td></tr>
 <tr><td>DPCM{<br> <var>Delta PCM define</var><br>}	</td>
 	<td>⊿PCMの記述ブロックです。<br>
-		⊿PCMのの記述は、<a href="#dpcm">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
+		⊿PCMの記述は、<a href="#dpcm">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
+<tr><td>VRC7(<var>n</var>){<br> <var>VRC7 define</var><br>}	</td>
+	<td>VRC7ユーザー音色定義の記述ブロックです。<br>
+		VRC7ユーザー音色定義の記述は、<a href="#vrc7">VRC7 ユーザー音色定義（VRC7 User Instrument define）</a>の項を参照ください。</td></tr>
 <tr><td>Envelop(<var>n</var>){<br> <var>Envelop data</var><br>}	</td>
 	<td><var>n</var>番のエンベロープパターンの記述ブロックです。<br>
 		エンベロープパターンの記述は、<a href="#envelop">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>
@@ -139,6 +142,25 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 
 </div>
 
+<div class='block'>
+<h3><a name="vrc7">VRC7 ユーザー音色定義（VRC7 User Instrument define）</a></h3>
+<p>
+VRC7のユーザー音色を定義します。<br>
+パラメータの詳細は、OPLLのデータシート等をご参照ください。<br>
+</p>
+<h4>書式</h4>
+<code><pre>
+	@<var>TL</var> <var>FB</var>
+	<var>AR</var> <var>DR</var> <var>SL</var> <var>RR</var> <var>KL</var> <var>MT</var> <var>AM</var> <var>VB</var> <var>EG</var> <var>KR</var> <var>DT</var>
+	<var>AR</var> <var>DR</var> <var>SL</var> <var>RR</var> <var>KL</var> <var>MT</var> <var>AM</var> <var>VB</var> <var>EG</var> <var>KR</var> <var>DT</var>
+
+</pre></code>
+<code><pre>
+	@R<var>reg1</var>,<var>reg2</var>,<var>reg3</var>,<var>reg4</var>,<var>reg5</var>,<var>reg6</var>,<var>reg7</var>,<var>reg8</var>
+</pre></code>
+
+
+</div>
 
 
 <div class='block'>
@@ -197,12 +219,13 @@ BGM,SE,サブルーチンの演奏パターンを定義します。<br>
 <tr><td><a href="mml_gate.html">q</a></td><td>後方からのゲートタイム</td></tr>
 <tr><td><a href="mml_rest.html">r</a></td><td>休符</td></tr>
 <tr><td><a href="mml_tie.html">^</a></td><td>タイ</td></tr>
-<tr><td><a href="mml_sweep.html">s</a></td><td>スイープ</td></tr>
+<tr><td><a href="mml_sweep.html">s</a></td><td>APU : スイープ<br>VRC7 : サスティン</td></tr>
 <tr><td><a href="mml_tempo.html">t</a></td><td>テンポ</td></tr>
 <tr><td><a href="mml_tempo.html">t_</a></td><td>相対テンポ</td></tr>
 <tr><td><a href="mml_gate.html">u</a></td><td>前方からのゲートタイム</td></tr>
 <tr><td><a href="mml_volume.html">v</a></td><td>音量</td></tr>
 <tr><td><a href="mml_poke.html">y</a></td><td>メモリ書き込み</td></tr>
+<tr><td><a href="mml_VRC7write.html">yV</a></td><td>VRC7レジスタ書き込み</td></tr>
 <tr><td><a href="mml_detune.html">D</a></td><td>ディチューン（cent単位）</td></tr>
 <tr><td><a href="mml_detune.html">D%</a></td><td>ディチューン（register単位）</td></tr>
 <tr><td><a href="mml_envelop.html">E@</a></td><td>音色エンベロープ・パターン</td></tr>
@@ -217,6 +240,7 @@ BGM,SE,サブルーチンの演奏パターンを定義します。<br>
 <tr><td><a href="mml_release.html">Rm</a></td><td>Key off時のモード</td></tr>
 <tr><td><a href="mml_sub.html">S</a></td><td>サブルーチン呼び出し（サブルーチンの記述ブロック内では無効です）</td></tr>
 <tr><td><a href="mml_TR.html">TR</a></td><td>トラック（サブルーチンの記述ブロック内では無効です）</td></tr>
+<tr><td><a href="mml_VRC7voice.html">@V</a></td><td>VRC7ユーザー音色設定</td></tr>
 <tr><td><a href="mml_voice.html">@</a></td><td>音色（音色エンベロープ無効）</td></tr>
 <tr><td><a href="mml_repeatA.html">[  :  ]</a></td><td>リピート(Ａ)</td></tr>
 <tr><td><a href="mml_repeatB.html">|:  \  :|</a></td><td>リピート(Ｂ)</td></tr>

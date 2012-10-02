@@ -289,8 +289,10 @@ PSG_Data		= $E000
 .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 
 .scope	nsd_chflag
-	SE1	= $40
 	SE2	= $80
+	SE1	= $40
+	Sustain	= $20		;for VRC7
+	KeyOn	= $10		;for VRC7
 	KeyOff	= $03		;00	Key Off	: Vol = 0
 				;01	Key Off	: Release command
 				;10	Key Off	:  envelop

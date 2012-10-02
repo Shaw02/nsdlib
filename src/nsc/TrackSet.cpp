@@ -63,6 +63,7 @@ enum	Command_ID_mml {
 	mml_Release_Voice,
 	mml_Release_Volume,
 
+	mml_VRC7,
 	mml_Voice,
 
 	mml_Octave,
@@ -81,6 +82,7 @@ enum	Command_ID_mml {
 	mml_Volume_Up,
 	mml_Volume_Down,
 
+	mml_VRC7_Write,
 	mml_Memory_Write,
 
 	mml_Bar
@@ -132,6 +134,7 @@ const	static	Command_Info	Command[] = {
 		{	"R@",	mml_Release_Voice		},
 		{	"Rv",	mml_Release_Volume		},
 
+		{	"@V",	mml_VRC7				},		//ñ¢é¿ëï
 		{	"@",	mml_Voice				},		//ñ¢é¿ëï
 
 		{	"o",	mml_Octave				},
@@ -150,6 +153,7 @@ const	static	Command_Info	Command[] = {
 		{	")",	mml_Volume_Up			},
 		{	"(",	mml_Volume_Down			},
 
+		{	"yV",	mml_VRC7_Write			},
 		{	"y",	mml_Memory_Write		},
 
 		{	"|",	mml_Bar					}
@@ -349,6 +353,10 @@ const	static	Command_Info	Command[] = {
 				nowTrack->SetReleaseVolume(MML);
 				break;
 
+			case(mml_VRC7):
+				nowTrack->SetVRC7(MML);
+				break;
+
 			case(mml_Voice):
 				nowTrack->SetEvent(new mml_general(nsd_Voice, MML, "Voice"));
 				break;
@@ -417,6 +425,9 @@ const	static	Command_Info	Command[] = {
 				nowTrack->SetEvent(new mml_general(nsd_Volume_Down, "Volume down"));
 				break;
 
+			case(mml_VRC7_Write):
+				nowTrack->SetVRC7_Write(MML);
+				break;
 			case(mml_Memory_Write):
 				nowTrack->SetPoke(MML);
 				break;
@@ -477,11 +488,11 @@ TrackSet::~TrackSet(void)
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-void	TrackSet::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnvelop)
+void	TrackSet::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnvelop, map<int, VRC7*>* ptcVRC7)
 {
 	iTrack = 0;
 	while(iTrack <= maxTrack){
-		ptcTrack[iTrack]->Fix_Address(ptcSub, ptcEnvelop);
+		ptcTrack[iTrack]->Fix_Address(ptcSub, ptcEnvelop, ptcVRC7);
 		iTrack++;
 	}
 

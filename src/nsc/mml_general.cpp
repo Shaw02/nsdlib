@@ -63,7 +63,27 @@ mml_general::mml_general(unsigned char _code, const char _data, const char _strN
 }
 
 //==============================================================
-//			コンストラクタ（引数1Byte）
+//			コンストラクタ（引数2Byte）
+//--------------------------------------------------------------
+//	●引数
+//		unsigned	int		code
+//		const		char	_data
+//		const		char	_strName[]	クラスの名前
+//	●返値
+//				無し
+//==============================================================
+mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, const char _strName[]/*="General"*/):
+	MusicEvent(_strName)
+{
+	iSize = 3;
+	code.resize(iSize);
+	code[0] = _code;
+	code[1] = _n1;
+	code[2] = _n2;
+}
+
+//==============================================================
+//			コンストラクタ（引数4Byte）
 //--------------------------------------------------------------
 //	●引数
 //		unsigned	int		code

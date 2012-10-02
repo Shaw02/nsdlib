@@ -200,9 +200,6 @@ void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML)
 	mml_Address*		_event = new mml_Address(_opcode, "Envelop");
 	unsigned	int		_no = MML->GetInt();
 
-//	if((_no<0) || (_no>65535)){
-//		MML->Err("エンベロープ番号は、0～65535の範囲で指定してください。");
-//	}
 	_event->set_id(_no);
 	SetEvent(_event);
 	ptcEnvelop.push_back(_event);
@@ -216,14 +213,28 @@ void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML)
 //	●返値
 //				無し
 //==============================================================
+void	MusicTrack::SetVRC7(MMLfile* MML)
+{
+	mml_Address*		_event = new mml_Address(nsc_VRC7, "Subroutine");
+	unsigned	int		_no = MML->GetInt();
+
+	_event->set_id(_no);
+	SetEvent(_event);
+	ptcOPLL.push_back(_event);
+}
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
 void	MusicTrack::SetSubroutine(MMLfile* MML)
 {
 	mml_Address*		_event = new mml_Address(nsd_Call, "Subroutine");
 	unsigned	int		_no = MML->GetInt();
 
-//	if((_no<0) || (_no>65535)){
-//		MML->Err("サブルーチン番号は、0～65535の範囲で指定してください。");
-//	}
 	_event->set_id(_no);
 	SetEvent(_event);
 	ptcSubroutine.push_back(_event);
@@ -237,12 +248,13 @@ void	MusicTrack::SetSubroutine(MMLfile* MML)
 //	●返値
 //				無し
 //==============================================================
-void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv)
+void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv, map<int, VRC7*>* ptcVRC7)
 {
 	//----------------------
 	//Local変数
 	vector<	mml_Address*	>::iterator	itSub;
 	vector<	mml_Address*	>::iterator	itEnv;
+	vector<	mml_Address*	>::iterator	itVRC7;
 	unsigned	int	_no;
 	unsigned	int	_sub_offset;
 	unsigned	int	_com_offset;
@@ -279,6 +291,23 @@ void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv)
 			itEnv++;
 		}
 	}
+
+	//
+	if(!ptcOPLL.empty()){
+		itVRC7 = ptcOPLL.begin();
+		while(itVRC7 != ptcOPLL.end()){
+			_no			= (*itVRC7)->get_id();		//エンベロープNo.の取得
+			_com_offset	= (*itVRC7)->getOffset();
+			if( ptcVRC7->count(_no) == 0){
+				printf("VRC7 %d 番が存在しません。",_no);
+				exit(-1);
+			}
+			_sub_offset = (*ptcVRC7)[_no]->getOffset();	//指定エンベロープが存在するオフセット
+			(*itVRC7)->set_Address(_sub_offset - _com_offset - 1);
+			itVRC7++;
+		}
+	}
+
 }
 //==============================================================
 //		音符のイベント作成
@@ -606,13 +635,16 @@ void	MusicTrack::SetSweep(MMLfile* MML)
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("s コマンドのパラメータが足りません。２つ指定してください。");
+		MML->Back();
+		iDepth = iSpeed;
+		iSpeed = 0;
+	} else {
+		iDepth = MML->GetInt();
+		if( (iDepth < 0) || (iDepth > 15) ){
+			MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
+		}
 	}
 
-	iDepth = MML->GetInt();
-	if( (iDepth < 0) || (iDepth > 15) ){
-		MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
-	}
 	_data = ((iSpeed & 0x0F) << 4) | (iDepth & 0x0F);
 	SetEvent(new mml_general(nsd_Sweep, _data, "Sweep"));
 }
@@ -760,6 +792,38 @@ void	MusicTrack::SetProtament(MMLfile* MML)
 	SetEvent(new mml_general(nsd_Portamento, _Decay & 0xFF,_Rate & 0xFF,_Depth & 0xFF,_Target & 0xFF, "Portamento"));
 }
 
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetVRC7_Write(MMLfile* MML)
+{
+	unsigned	char	cData;
+
+				int		_Reg;
+				int		_Dat;
+
+	_Reg = MML->GetInt();
+	if( (_Reg < 0) || (_Reg > 0x40) ){
+		MML->Err("ポルタメントの第1パラメータは、0～63の範囲で指定してください。");
+	}
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
+	}
+
+	_Dat = MML->GetInt();
+	if( (_Dat < 0) || (_Dat > 255) ){
+		MML->Err("ポルタメントの第2パラメータは、0～255の範囲で指定してください。");
+	}
+
+	SetEvent(new mml_general(nsc_VRC7_reg,_Reg,_Dat, "VRC7 Register Write"));
+}
 //==============================================================
 //		
 //--------------------------------------------------------------

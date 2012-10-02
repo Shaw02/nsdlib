@@ -31,6 +31,16 @@
 		<param name="Local" value="mml_repeatB.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@">
+		<param name="Name" value="MML reference: Voice">
+		<param name="Local" value="mml_voice.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@V">
+		<param name="Name" value="MML reference: VRC7 User Instrument">
+		<param name="Local" value="mml_VRC7voice.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="[">
 		<param name="Name" value="MML reference: Repeat(A)">
 		<param name="Local" value="mml_repeatA.html">
@@ -91,14 +101,14 @@
 		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="D">
-		<param name="Name" value="MML reference: Detune">
-		<param name="Local" value="mml_detune.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="d">
 		<param name="Name" value="MML reference: Note">
 		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="D">
+		<param name="Name" value="MML reference: Detune">
+		<param name="Local" value="mml_detune.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="D%">
@@ -266,14 +276,14 @@
 		<param name="Local" value="mml_release.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="s">
-		<param name="Name" value="MML reference: Sweep">
-		<param name="Local" value="mml_sweep.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="S">
 		<param name="Name" value="MML reference: Subroutine">
 		<param name="Local" value="mml_sub.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="s">
+		<param name="Name" value="MML reference: Sweep">
+		<param name="Local" value="mml_sweep.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="t">
@@ -304,6 +314,11 @@
 		<param name="Name" value="y">
 		<param name="Name" value="MML reference: Memory Write">
 		<param name="Local" value="mml_poke.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="yV">
+		<param name="Name" value="MML reference: VRC7 Regigster Write">
+		<param name="Local" value="mml_VRC7write.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="エンベロープ">

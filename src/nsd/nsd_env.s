@@ -236,7 +236,6 @@ exit:	rts
 	;Envelop of Voice
 Voice:
 	lda	__chflag,x
-	lda	__chflag,x
 	and	#$02
 	bne	@L
 
@@ -303,8 +302,21 @@ Volume:
 
 @L2:	lda	__env_volume + 1,x
 	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
-@L1:	lda	__volume,x
+@L1:
+	lda	__volume,x
 
+.ifdef	VRC7
+	;VRC7は、mode 2の時はリリース処理しない。
+	cpx	#nsd::TR_VRC7
+	bcc	@VRC7L
+	cpx	#nsd::TR_VRC7 + 6*2
+	bcs	@VRC7L
+	and	#$0F
+	jmp	@VRC7_Exit
+@VRC7:
+
+.endif
+@VRC7L:
 .ifdef	VRC6
 	cpx	#nsd::TR_VRC6 + 4
 	bne	@VRC6
@@ -323,6 +335,7 @@ Volume:
 @FDS:
 .endif
 	shr	a, 4
+@VRC7_Exit:
 @EX:
 	jmp	Set_Volume
 

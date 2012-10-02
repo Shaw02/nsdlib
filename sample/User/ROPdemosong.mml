@@ -1,0 +1,145 @@
+#title		"NSD.Lib Sample Songs"
+#Copyright	"Ropchiptune Labo."
+#Composer	"Ropchiptune Labo."
+
+#Code		"../../bin/nsd_mmc5.bin"
+
+#bgm		2
+#se		0
+#OffsetPCM	$E000
+
+
+// ----------------------------------------------------------------------------------------
+//
+// 音色等のエンベロープ設定
+//
+// ----------------------------------------------------------------------------------------
+
+Envelop(01) = { 15 12 11 10 9 8 7 6 5 4 3 2 L 1 R L 0 }
+Envelop(02) = { 8 5 3 L 1 R L 0 }
+
+Envelop(03) = { 0 L -2 0 0  2 0 0 }
+Envelop(04) = { 0 L  4 0 0 -4 0 0 }
+Envelop(05) = { 12 11 10 9 8 7 6 5 4 3 2 L 1 }
+Envelop(10) = { 8 4 2 1 L 0 }
+Envelop(15) = { 63 L -32 }
+Envelop(16) = { 63 L -64 }
+Envelop(26) = { 15 12 9 L 5 5 4 4 3 3 2 3 4 R 4 L 2 }
+Envelop(34) = { 8 6 5 4 3 L 2 }
+
+
+DPCM{
+//	音階, "ファイル名", 周波数, モード(0:shot / 1:loop)
+
+	c4,	"..\dmc\bd.dmc",15,0
+	d4,	"..\dmc\sd.dmc",15,0
+	f4,	"..\dmc\hho.dmc",15,0
+
+}
+
+
+
+// ----------------------------------------------------------------------------------------
+//
+// 酩酊宴  for NSD.Lib 0.12beta
+//
+//	Original Music Composed by ROPchiptune Laboratory 2010 (for ppmck)
+//	Customize for NSD.Lib 0.12beta by ROPchiptune Laboratory. 2012
+//      - Using MMC5 extra track
+//
+// ----------------------------------------------------------------------------------------
+bgm(0) {
+
+TR6 t150 @0 o5 l8  Ev34 Em4
+TR7      @0 o5 l8  Ev34 Em3
+TR1      @2 o5 l16 Ev05
+TR2      @0 o2 l16 Ev26 q4
+TR3         o6 l16  v15 En15 Em16
+TR4         o2 l16 Ev10
+TR5         o4 l8
+
+TR5 L [7 cfdf ] cfdd [7 cfdf ] cfd16d16d
+
+TR6 L [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR7 L [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR1 L [8 r-1]
+TR2 L [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR3 L [4 cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4 L [16  Ev10ffv12dEv10eEv5a8v12dEv10f]
+
+TR1 crargra>c rrcr<argr eedrergr arrcrrcr crargra>c rrcr<argr eegrar>cc drergrer<
+TR1 [4 r1]
+TR6 [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR7 [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR2 [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR3 [4 cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4 [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
+
+TR1 crargra>c rrcr<argr eedrergr arrcrrcr crargra>c rrcr<argr eegrar>cc drergrer<
+TR1 [4 r1]
+TR6 [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR7 [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR2 [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR3 [4  cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4 [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
+
+TR1 <br>erdre<a rrar>crdr cc<br>ccdr crcrergr <br>erdre<a rrar>crdr ggar>cr<ar ggerdrcr
+TR1 <br>erdre<a rrar>crdr cc<br>ccdr crcrergr <br>erdre<a rrar>crdr rrerrdre ddcrc8.r
+TR6   [4 e.e.e.e. ab e.e.e.e. <ab> ]
+TR7 < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
+TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR3   [8 cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4   [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
+
+TR1 <br>erdre<a rrar>crdr cc<br>ccdr crcrergr <br>erdre<a rrar>crdr ggar>cr<ar ggerdrcr
+TR1 <br>erdre<a rrar>crdr cc<br>ccdr crcrergr <br>erdre<a rrar>crdr rrerrdre drcderg8
+TR6   [4 e.e.e.e. ab e.e.e.e. <ab> ]
+TR7 < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
+TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR3   [8 cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4   [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
+
+
+}
+
+// ----------------------------------------------------------------------------------------
+//
+// Stardust Chaser  for NSD.Lib 0.06a  (MCKwatch Sample music - RopMusicDayomon.mml)
+//
+//	Original Music Composed by ROPchiptune Laboratory 2003 (for mck)
+//	Customize for NSD.Lib 0.06a by ROPchiptune Laboratory. 2012
+//
+// ----------------------------------------------------------------------------------------
+
+bgm(1) {
+
+	TR1 t150 l8 v15 o4 @3 Ev1     L
+	TR2      l8 v15 o2 @0 Ev1 l16 L
+	TR3      l8 v15 o4            L
+	TR4      l8 v15 o2            L
+	TR5      l8 v15 o4            L
+
+	TR1 d4f+4g4f+4e4d4c2 d4f+4g4f+4>c2<a4g4
+	    d4f+4g4f+4e4d4c2 d4f+4g4f+4>c2d2<
+	    a.g.a g.f+.g f+.e.f+ e.d.c d.e.f+ g.a.g a.>c.<a >c.d.f+<
+	    a.g.f+ g.f+.e f+.e.d e.d.c d.e.f+ g.a.>c d.e.f+ d2<
+	    d4.d4.d4 f+4.f+4.f+4 g4.g4.g4 f+2.r4
+	    d4.d4.d4 f+4.f+4.f+4 g4.a4.>c4 d1<
+
+	TR2 [8 cr-cc>c8<cc ] [8 dr-dd>d8<dd ]
+	    [4 cr-cc>c8<cc ] [4 dr-dd>d8<dd ] [4 cr-cc>c8<cc ] [4 dr-dd>d8<dd ]
+	    [8 cr-cc>c8<cc ] [8 dr-dd>d8<dd ]
+
+	TR3 [24 r1]
+	    a2g2f+2e2f+2g2f+1 a2g2f+2e2f+2g2>c1<
+	    c1c1d1d1c1c1d1d2.d.r16
+	    d1f+1g1f+1 d1f+1g1a1
+
+	TR4 [16 Ev2f16f16f16f16 Ev1a Ev2f16f16]
+	    [7  Ev2f16f16f16f16 Ev1a Ev2f16f16] Ev1[8 a32r32]
+
+	TR5 [7 c4d4 ] c8d8d8d8
+
+}

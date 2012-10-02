@@ -38,6 +38,8 @@ typedef struct {
 
 #include "MusicItem.h"
 
+#include "VRC7.h"
+
 #include "DPCM.h"
 #include "DPCMinfo.h"
 

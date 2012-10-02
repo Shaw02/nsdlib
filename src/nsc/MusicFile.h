@@ -37,6 +37,7 @@ public:
 private:
 //static	const	Command_Info	Command[];
 					string		dpcm_code;
+	map<	int, VRC7*		>	ptcVRC7;	//VRC7 User Instrument
 	map<	int, Envelop*	>	ptcEnv;		//Envelop
 	map<	int, BGM*		>	ptcBGM;		//BGM
 	map<	int, SE*		>	ptcSE;		//SE 

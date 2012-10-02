@@ -33,6 +33,8 @@
 #define	nsd_Repeat_B_Branch		0x19
 #define	nsd_Repeat_B_End		0x1A
 #define	nsd_Voice				0x1B
+#define	nsc_VRC7				0x1C
+#define	nsc_VRC7_reg			0x1D
 #define	nsd_Volume_Down			0x20
 #define	nsd_Volume_Up			0x21
 #define	nsd_Octave_Down			0x28

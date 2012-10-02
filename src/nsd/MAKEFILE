@@ -35,11 +35,11 @@ INC_FILES = nsd.inc
 FILES = nsd_func.s nsd_main.s nsd_seq.s nsd_env.s nsd_snd.s nsd_math.s nsd_work.s 
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).lib $(PROJ_MMC5).lib $(PROJ_VRC6).lib
+clean: $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_MMC5).lib
 	@del *.bak
 	@del *.o
 
-all: $(PROJ).lib $(PROJ_MMC5).lib $(PROJ_VRC6).lib
+all:   $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_MMC5).lib
 
 $(PROJ).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) nsd_func.s
@@ -59,6 +59,16 @@ $(PROJ_VRC6).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_math.s
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_work.s
+	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
+
+$(PROJ_VRC7).lib : $(FILES) $(INC_FILES)
+	@$(ASM) $(AFLAG) $(AVRC7) nsd_func.s
+	@$(ASM) $(AFLAG) $(AVRC7) nsd_main.s
+	@$(ASM) $(AFLAG) $(AVRC7) nsd_seq.s
+	@$(ASM) $(AFLAG) $(AVRC7) nsd_env.s
+	@$(ASM) $(AFLAG) $(AVRC7) nsd_snd.s
+	@$(ASM) $(AFLAG) $(AVRC7) nsd_math.s
+	@$(ASM) $(AFLAG) $(AVRC7) nsd_work.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_MMC5).lib : $(FILES) $(INC_FILES)

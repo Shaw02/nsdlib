@@ -77,7 +77,7 @@
 .endif
 
 .ifdef	VRC7
-	
+	;初期化は特に無し？
 .endif
 
 .ifdef	MMC5
@@ -125,12 +125,12 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	Exit
 .endif
 .ifdef	VRC7
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
+	.addr	_nsd_vrc7_keyon		;取りあえず、処理しない。
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
 .endif
 .ifdef	MMC5
 	.addr	_nsd_nes_keyon		;仕組みは同じ。
@@ -192,12 +192,12 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 	.addr	Exit
 .endif
 .ifdef	VRC7
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
+	.addr	_nsd_vrc7_keyoff	;KeyOffを書き込んでおく。
+	.addr	_nsd_vrc7_keyoff
+	.addr	_nsd_vrc7_keyoff
+	.addr	_nsd_vrc7_keyoff
+	.addr	_nsd_vrc7_keyoff
+	.addr	_nsd_vrc7_keyoff
 .endif
 .ifdef	MMC5
 	.addr	Exit
@@ -259,12 +259,12 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	Exit			;Saw
 .endif
 .ifdef	VRC7
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
 .endif
 .ifdef	MMC5
 	.addr	_nsd_nes_voice		;仕組みは同じ
@@ -325,12 +325,12 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	.addr	_nsd_vrc6_ch3_volume
 .endif
 .ifdef	VRC7
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
 .endif
 .ifdef	MMC5
 	.addr	_nsd_mmc5_ch1_volume
@@ -401,12 +401,12 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	.addr	Exit
 .endif
 .ifdef	VRC7
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
 .endif
 .ifdef	MMC5
 	.addr	Exit
@@ -477,12 +477,12 @@ JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
 	.addr	_nsd_vrc6_ch3_frequency
 .endif
 .ifdef	VRC7
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
 .endif
 .ifdef	MMC5
 	.addr	_nsd_mmc5_ch1_frequency
@@ -561,9 +561,6 @@ Exit:
 .proc	_nsd_nes_keyon
 
 	;For hardware Key on
-	lda	#$FF
-	sta	__frequency,x
-	sta	__frequency + 1,x
 	lda	#$00
 	sta	__frequency_set,x
 	sta	__frequency_set + 1,x
@@ -575,9 +572,6 @@ Exit:
 .proc	_nsd_ch3_keyon
 
 	;For hardware Key on
-	lda	#$FF
-	sta	__frequency,x
-	sta	__frequency + 1,x
 	lda	#$00
 	sta	__frequency_set,x
 	sta	__frequency_set + 1,x
@@ -590,6 +584,7 @@ Exit:
 
 ;---------------------------------------
 .proc	_nsd_ch3_keyoff
+
 	lda	#$80
 	sta	APU_TRICTRL1
 
@@ -654,6 +649,40 @@ Exit:
 	rts
 .endproc
 
+;---------------------------------------
+.ifdef	VRC7
+.proc	_nsd_vrc7_keyon
+
+	lda	__chflag,x
+	ora	#nsd_chflag::KeyOn
+	sta	__chflag,x
+
+	rts
+.endproc
+
+;---------------------------------------
+.proc	_nsd_vrc7_keyoff
+
+;	取りあえず、必ずKeyOffする。
+	lda	__chflag,x
+	and	#~nsd_chflag::KeyOn
+	sta	__chflag,x
+
+	;書かれない可能性があるので、ここで書く。
+	txa
+	sub	#nsd::TR_VRC7
+	shr	a, 1
+	add	#VRC7_Octave
+	sta	VRC7_Resister		;レジスターをセット
+
+	lda	__frequency_set + 1,x	;[5]
+	and	#$EF			;[2]
+	sta	VRC7_Data		;
+
+;Exit:
+	rts
+.endproc
+.endif
 ;=======================================================================
 ;	void	__fastcall__	nsd_nes_voice(char voice);
 ;-----------------------------------------------------------------------
@@ -707,6 +736,25 @@ exit:
 	; *** Calculate the voice
 	shl	a, 4	;a <<= 6
 	and	#$70	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__voice_set,x
+
+	;-------------------------------
+	; *** Exit
+exit:
+	rts
+.endproc
+.endif
+
+;---------------------------------------
+.ifdef	VRC7
+.proc	_nes_vrc7_voice
+	;-------------------------------
+	; *** Calculate the voice
+	shl	a, 4	;a <<= 6
+	and	#$F0	;a &= 0xF0	;for OR to volume(lower 4bit)
 
 	;-------------------------------
 	; *** Set the voice to work
@@ -847,6 +895,31 @@ exit:
 
 
 ;---------------------------------------
+.ifdef	VRC7
+.proc	_nsd_vrc7_volume
+
+	eor	#$FF
+	tay
+
+	txa
+	sub	#nsd::TR_VRC7
+	shr	a, 1
+	add	#VRC7_Volume
+	sta	VRC7_Resister		;
+
+	tya				;[2]
+	and	#$0F			;[2]
+	ora	__voice_set,x		;[4]
+
+	sta	VRC7_Data
+
+	rts
+.endproc
+.endif
+
+
+
+;---------------------------------------
 .ifdef	MMC5
 .proc	_nsd_mmc5_ch1_volume
 
@@ -923,6 +996,22 @@ exit:
 	rts
 .endproc
 
+;---------------------------------------
+.ifdef	VRC7
+.proc	_nsd_vrc7_sustain
+
+	tay
+	lda	__chflag,x
+	cpy	#0
+	bne	@L
+	and	#~nsd_chflag::Sustain
+	jmp	@Set
+@L:	ora	#nsd_chflag::Sustain
+@Set:	sta	__chflag,x
+
+	rts
+.endproc
+.endif
 ;=======================================================================
 ;	void	__fastcall__	nsd_nes_frequency(int freq);
 ;-----------------------------------------------------------------------
@@ -933,6 +1022,7 @@ exit:
 ;<<Output>>
 ;	nothing
 ;=======================================================================
+
 .rodata
 
 ;APU, MMC5, VRC6, FME7 Frequency table
@@ -1034,12 +1124,16 @@ Freq:
 	.word	$06BF
 	.word	$06B3
 
+
+
 ;-----------------------
 ;FDS Frequency table
 .ifdef	FDS
 Freq_FDS:
 
 .endif
+
+
 
 ;-----------------------
 ;SAW Frequency table
@@ -1144,19 +1238,307 @@ Freq_SAW:
 .endif
 
 
+
 ;-----------------------
 ;VRC7 Frequency table
 .ifdef	VRC7
 Freq_VRC7:
-
+	.byte	$AD
+	.byte	$AE
+	.byte	$AF
+	.byte	$B1
+	.byte	$B2
+	.byte	$B3
+	.byte	$B4
+	.byte	$B6
+	.byte	$B7
+	.byte	$B8
+	.byte	$BA
+	.byte	$BB
+	.byte	$BC
+	.byte	$BE
+	.byte	$BF
+	.byte	$C1
+	.byte	$C2
+	.byte	$C3
+	.byte	$C5
+	.byte	$C6
+	.byte	$C8
+	.byte	$C9
+	.byte	$CB
+	.byte	$CC
+	.byte	$CD
+	.byte	$CF
+	.byte	$D0
+	.byte	$D2
+	.byte	$D4
+	.byte	$D5
+	.byte	$D7
+	.byte	$D8
+	.byte	$DA
+	.byte	$DB
+	.byte	$DD
+	.byte	$DF
+	.byte	$E0
+	.byte	$E2
+	.byte	$E3
+	.byte	$E5
+	.byte	$E7
+	.byte	$E8
+	.byte	$EA
+	.byte	$EC
+	.byte	$ED
+	.byte	$EF
+	.byte	$F1
+	.byte	$F3
+	.byte	$F4
+	.byte	$F6
+	.byte	$F8
+	.byte	$FA
+	.byte	$FC
+	.byte	$FD
+	.byte	$FF
+	.byte	$01
+	.byte	$03
+	.byte	$05
+	.byte	$07
+	.byte	$09
+	.byte	$0B
+	.byte	$0D
+	.byte	$0F
+	.byte	$10
+	.byte	$12
+	.byte	$14
+	.byte	$16
+	.byte	$18
+	.byte	$1B
+	.byte	$1D
+	.byte	$1F
+	.byte	$21
+	.byte	$23
+	.byte	$25
+	.byte	$27
+	.byte	$29
+	.byte	$2B
+	.byte	$2E
+	.byte	$30
+	.byte	$32
+	.byte	$34
+	.byte	$36
+	.byte	$39
+	.byte	$3B
+	.byte	$3D
+	.byte	$3F
+	.byte	$42
+	.byte	$44
+	.byte	$46
+	.byte	$49
+	.byte	$4B
+	.byte	$4E
+	.byte	$50
+	.byte	$53
+	.byte	$55
+	.byte	$57
 .endif
+
 
 
 ;-----------------------
 ;N163 Frequency table
 .ifdef	N163
 Freq_N163:
-
+	.word	$4168
+	.word	$437F
+	.word	$4597
+	.word	$47B2
+	.word	$49CE
+	.word	$4BEC
+	.word	$4E0D
+	.word	$502F
+	.word	$5253
+	.word	$547A
+	.word	$56A2
+	.word	$58CC
+	.word	$5AF8
+	.word	$5D27
+	.word	$5F57
+	.word	$6189
+	.word	$63BE
+	.word	$65F4
+	.word	$682D
+	.word	$6A67
+	.word	$6CA4
+	.word	$6EE2
+	.word	$7123
+	.word	$7366
+	.word	$75AB
+	.word	$77F2
+	.word	$7A3B
+	.word	$7C86
+	.word	$7ED3
+	.word	$8123
+	.word	$8374
+	.word	$85C8
+	.word	$881E
+	.word	$8A76
+	.word	$8CD0
+	.word	$8F2D
+	.word	$918B
+	.word	$93EC
+	.word	$964F
+	.word	$98B4
+	.word	$9B1C
+	.word	$9D85
+	.word	$9FF1
+	.word	$A25F
+	.word	$A4D0
+	.word	$A742
+	.word	$A9B7
+	.word	$AC2F
+	.word	$AEA8
+	.word	$B124
+	.word	$B3A2
+	.word	$B622
+	.word	$B8A5
+	.word	$BB2A
+	.word	$BDB1
+	.word	$C03B
+	.word	$C2C7
+	.word	$C555
+	.word	$C7E6
+	.word	$CA79
+	.word	$CD0F
+	.word	$CFA7
+	.word	$D241
+	.word	$D4DE
+	.word	$D77D
+	.word	$DA1E
+	.word	$DCC2
+	.word	$DF69
+	.word	$E212
+	.word	$E4BD
+	.word	$E76B
+	.word	$EA1B
+	.word	$ECCE
+	.word	$EF83
+	.word	$F23B
+	.word	$F4F5
+	.word	$F7B2
+	.word	$FA71
+	.word	$FD33
+	.word	$FFF8
+	.word	$02BF		;$50
+	.word	$0589
+	.word	$0855
+	.word	$0B23
+	.word	$0DF5
+	.word	$10C9
+	.word	$139F
+	.word	$1679
+	.word	$1955
+	.word	$1C33
+	.word	$1F14
+	.word	$21F8
+	.word	$24DF
+	.word	$27C8
+	.word	$2AB4
+	.word	$2DA2
+	.word	$3094
+	.word	$3388
+	.word	$367E
+	.word	$3978
+	.word	$3C74
+	.word	$3F73
+	.word	$4275
+	.word	$457A
+	.word	$4881
+	.word	$4B8B
+	.word	$4E98
+	.word	$51A8
+	.word	$54BB
+	.word	$57D0
+	.word	$5AE9
+	.word	$5E04
+	.word	$6122
+	.word	$6443
+	.word	$6767
+	.word	$6A8E
+	.word	$6DB7
+	.word	$70E4
+	.word	$7414
+	.word	$7746
+	.word	$7A7C
+	.word	$7DB4
+	.word	$80F0
+	.word	$842E
+	.word	$8770
+	.word	$8AB4
+	.word	$8DFC
+	.word	$9146
+	.word	$9494
+	.word	$97E4
+	.word	$9B38
+	.word	$9E8F
+	.word	$A1E9
+	.word	$A546
+	.word	$A8A6
+	.word	$AC09
+	.word	$AF6F
+	.word	$B2D9
+	.word	$B645
+	.word	$B9B5
+	.word	$BD28
+	.word	$C09E
+	.word	$C418
+	.word	$C794
+	.word	$CB14
+	.word	$CE97
+	.word	$D21E
+	.word	$D5A7
+	.word	$D934
+	.word	$DCC4
+	.word	$E058
+	.word	$E3EF
+	.word	$E789
+	.word	$EB26
+	.word	$EEC7
+	.word	$F26B
+	.word	$F613
+	.word	$F9BE
+	.word	$FD6C
+	.word	$011E		;$9F
+	.word	$04D3
+	.word	$088B
+	.word	$0C47
+	.word	$1007
+	.word	$13CA
+	.word	$1790
+	.word	$1B5A
+	.word	$1F27
+	.word	$22F8
+	.word	$26CD
+	.word	$2AA5
+	.word	$2E80
+	.word	$325F
+	.word	$3642
+	.word	$3A28
+	.word	$3E12
+	.word	$4200
+	.word	$45F1
+	.word	$49E6
+	.word	$4DDF
+	.word	$51DB
+	.word	$55DB
+	.word	$59DE
+	.word	$5DE5
+	.word	$61F0
+	.word	$65FF
+	.word	$6A12
+	.word	$6E28
+	.word	$7242
+	.word	$7660
+	.word	$7A82
+	.word	$7EA7
 .endif
 
 ;-----------------------
@@ -1327,6 +1709,67 @@ Detune:
 .endproc
 .endif
 
+
+
+;---------------------------------------
+.ifdef	VRC7
+.proc	_nsd_vrc7_frequency
+
+	;除算
+	jsr	_nsd_div192		;Wait変わりに使える？
+	stx	__tmp + 1
+	cmp	#$6E
+	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
+
+	shr	a, 1			;
+	tay				;y = (ax mod 192) >> 1
+	lda	Freq_VRC7,y		;
+	sta	__tmp			;__tmp + 0 = Note_LSB
+
+	;チャンネルの計算
+	ldx	__channel
+	txa
+	sub	#nsd::TR_VRC7
+	shr	a, 1
+	pha				;push VRC7でのチャンネル番号
+	;オクターブ
+	add	#VRC7_Frequency
+	sta	VRC7_Resister		;●Resister Write
+
+Detune:	
+	ldy	#$00			;[2]
+	lda	__detune_fine,x		;[4]6
+	bpl	@L			;[2]8
+	ldy	#$FF			;	ay = __detune_fine (sign expand)
+@L:	add	__tmp			;[5]13	clock > 6 clock
+	sta	VRC7_Data		;●Data Write
+	sta	__frequency_set + 0,x	;[5]
+	tya				;[2]7
+	adc	__tmp + 1		;[3]10
+	and	#$0F			;[2]12
+	sta	__tmp + 1		;[3]15	__tmp += (signed int)__detune_cent
+	lda	__chflag,x		;[4]19
+	and	#$30			;[2]21	 00XX 0000 <2>
+	ora	__tmp + 1		;[3]24	flag と octave をマージ
+	sta	__tmp + 1		;[3]27
+
+	pha				;[3]30
+	pla				;[4]34	
+
+	pla				;[4]38	a ← VRC7でのチャンネル番号
+	add	#VRC7_Octave		;[4]42 clock !! (VRC7のwait)
+
+	sta	VRC7_Resister		;●Resister Write
+	lda	__tmp + 1		;[3]3
+	sta	__frequency_set + 1,x	;[5]8 clock > 6 clock
+	sta	VRC7_Data		;●Data Write
+
+	rts
+.endproc
+.endif
+
+
+
 ;---------------------------------------
 .ifdef	MMC5
 .proc	_nsd_mmc5_ch1_frequency
@@ -1438,6 +1881,7 @@ Exit:
 .endproc
 
 
+
 .ifdef	MMC5
 ;=======================================================================
 ;	void	__fastcall__	MMC5_frequency(int freq);
@@ -1496,3 +1940,4 @@ Exit:
 	rts
 .endproc
 .endif
+

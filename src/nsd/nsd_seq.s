@@ -29,6 +29,11 @@
 	and	#$02
 	bne	exit
 
+	;周波数設定を必ず呼ぶように。
+	lda	#$FF
+	sta	__frequency,x
+	sta	__frequency + 1,x
+
 	;Software envelop Key on
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
@@ -174,11 +179,11 @@ exit:	rts
 ;	a	sequence datq
 ;=======================================================================
 .proc	nsd_load_sequence
-	lda	(__Sequence_ptr,x)
-	inc	__Sequence_ptr,x
-	bne	exit
+	lda	(__Sequence_ptr,x)	;[6]
+	inc	__Sequence_ptr,x	;[6]
+	bne	exit			;[2]
 	inc	__Sequence_ptr + 1,x
-exit:	rts
+exit:	rts				;[6]
 .endproc
 
 ;=======================================================================
@@ -302,10 +307,10 @@ GateTime_Exit:				; }
 	;-------------------------------
 	;Sequence		(length == 0)
 Sequence:
-	jsr	nsd_load_sequence
+	jsr	nsd_load_sequence	;[6]
 
-	cmp	#$80
-	bcc	Control			;a >= 80 ?
+	cmp	#$80			;[2]
+	bcc	Control			;[2]	a >= 80 ?
 
 	;-----------------------
 	;op-code = 0x80 - 0xFF
@@ -389,17 +394,17 @@ NoteSet:
 	;-----------------------
 	;op-code = 0x00 - 0x7F
 Control:
-	cmp	#$40
-	bcs	Short_Control
+	cmp	#$40			;[2]
+	bcs	Short_Control		;[2]
 	;---------------
 	;op-code = 0x00 - 0x3F
-	asl
-	tay				;x <- a * 2
-	lda	opaddr,y
-	sta	__ptr
-	lda	opaddr + 1,y
-	sta	__ptr + 1
-	jmp	(__ptr)			;jump for each op-code
+	asl				;[2]
+	tay				;[2]	x <- a * 2
+	lda	opaddr,y		;[4]
+	sta	__ptr			;[3]
+	lda	opaddr + 1,y		;[4]
+	sta	__ptr + 1		;[3]
+	jmp	(__ptr)			;[5]	jump for each op-code
 
 	;---------------
 	;op-code = 0x40 - 0x7F
@@ -840,8 +845,73 @@ nsd_op1B:
 	sta	__env_voice + 1,x
 	jsr	nsd_load_sequence
 	sta	__env_voice,x
+	jmp	Sequence
+;=======================================================================
+;		opcode	0x1C:	VRC6 : Set user instrument 
+;-----------------------------------------------------------------------
 nsd_op1C:
+
+.ifdef	VRC7
+	ldy	__Sequence_ptr,x
+	sty	__ptr			;
+	ldy	__Sequence_ptr + 1,x
+	sty	__ptr + 1		;__ptr = __Sequence_ptr
+.endif
+
+	jsr	nsd_load_sequence
+	sta	__tmp
+	jsr	nsd_load_sequence
+	sta	__tmp + 1		;__tmp = value
+
+.ifdef	VRC7
+	lda	__ptr
+	add	__tmp
+	sta	__ptr
+
+	lda	__ptr + 1
+	adc	__tmp + 1
+	sta	__ptr + 1		;__ptr テーブルのポインタ
+
+	ldx	#0			;8 byte table
+	ldy	#0
+@L:
+	stx	VRC7_Resister		;●Resister Write
+	lda	(__ptr),y		;[5]
+	iny				;[2]
+	sta	VRC7_Data		;●Data Write
+
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]	36
+
+	inx				;[2]
+	cpx	#8			;[2]
+	bne	@L			;[2]	6 + 36 = 42
+
+	ldx	__channel
+
+.endif
+	jmp	Sequence
+;=======================================================================
+;		opcode	0x1D:	VRC6 : Set resister
+;-----------------------------------------------------------------------
 nsd_op1D:
+
+	jsr	nsd_load_sequence
+
+.ifdef	VRC7
+	sta	VRC7_Resister
+.endif
+
+	jsr	nsd_load_sequence
+
+.ifdef	VRC7
+	sta	VRC7_Data
+.endif
+
 nsd_op1E:
 nsd_op1F:
 	jmp	Sequence

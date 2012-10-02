@@ -173,6 +173,9 @@
 				<File
 					RelativePath=".\MusicItem.cpp">
 				</File>
+				<File
+					RelativePath=".\VRC7.cpp">
+				</File>
 				<Filter
 					Name="Track"
 					Filter="">
@@ -299,6 +302,9 @@
 			</File>
 			<File
 				RelativePath=".\TrackSet.h">
+			</File>
+			<File
+				RelativePath=".\VRC7.h">
 			</File>
 		</Filter>
 		<Filter
