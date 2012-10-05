@@ -34,7 +34,7 @@
 		and	#$0F			;
 		beq	@Done			;
 		lda	Counter,x		;
-		sub	#$01			;	
+		sub	#$01			;
 	.else
 		and	#$F0			;
 		beq	@Done			;if(counter != 0){
@@ -102,8 +102,8 @@ Frequency:
 	;-------------------------------
 	;Envelop of Note
 	lda	__env_note + 1,x
-	sta	__ptr + 1
 	beq	@NOENV				;envelop is disable?
+	sta	__ptr + 1
 	ENV	__env_note, __env_note_ptr, __env_note_now, __Envelop_F, 4
 	cmp	#$40
 	bcc	@Sigh
@@ -127,10 +127,10 @@ Frequency:
 	;-------------------------------
 	;Por
 	lda	__por_target,x
-	beq	F_Env
+	beq	F_Env			;ポルタメント中？
 
 	lda	__por_depth,x
-	beq	Por_S
+	beq	Por_S			;ターゲットに到達？
 
 	dec	__por_ctr,x		;MMLコンパイラではdecayを +1 する事。
 	bne	Por_S
@@ -141,7 +141,7 @@ Frequency:
 	ldy	#$00
 	lda	__por_depth,x
 	bpl	@PL
-	ldy	#$FF
+	dey
 @PL:	add	__por_now + 0,x
 	sta	__por_now + 0,x
 	tya
@@ -149,10 +149,10 @@ Frequency:
 	sta	__por_now + 1,x		;__por_now += __por_depth
 
 	shl	a, 4
-	sta	__ptr
+	sta	__ptr			;※ __ptr を __tmp + 2 として使用している。
 	lda	__por_now + 0,x
 	shr	a, 4
-	ora	__ptr			;a = __por_now >> 4;
+	ora	__ptr			;a = (char)(__por_now >> 4);
 
 	cpy	#$00
 	beq	Por_PL
@@ -160,10 +160,10 @@ Por_MI:	cmp	__por_target,x		;if (a - __por_target < 0) then
 	bcc	Por_O
 	bcs	Por_S
 Por_PL:	cmp	__por_target,x		;if (a - __por_target > 0) then 
-	bcs	Por_O
 	bcc	Por_S
+;	bcs	Por_O
 
-Por_O:	lda	__por_target,x
+Por_O:	lda	__por_target,x		;ターゲットに到達した時の処理
 	sta	__por_now + 1,x
 	shl	a, 4
 	sta	__por_now,x
@@ -176,7 +176,7 @@ Por_O:	lda	__por_target,x
 	lda	#$0
 	sta	__por_rate,x
 	sta	__por_depth,x
-Por_S:	lda	__por_now,x
+Por_S:	lda	__por_now,x		;音程にポルタメント値加算
 	add	__tmp
 	sta	__tmp
 	lda	__por_now + 1,x
@@ -187,22 +187,22 @@ Por_E:
 	;-------------------------------
 	;Envelop of Frequency
 F_Env:	lda	__env_frequency + 1,x
-	sta	__ptr + 1
 	beq	@Freq_Exit
+	sta	__ptr + 1
 	ENV	__env_frequency, __env_freq_ptr, __env_freq_now, __Envelop_F, 0
+	ldy	#$00
 	cmp	#$40
-	bcc	@Sigh
+	bcc	@L
+	dey
 	ora	#$80
-	add	__tmp
+@L:	add	__tmp
 	sta	__tmp
-	lda	#$FF
-	bne	@SetH
-@Sigh:	add	__tmp
-	sta	__tmp
-	lda	#$0
-@SetH:	adc	__tmp+1
+	tya
+	adc	__tmp+1
 	sta	__tmp+1
 @Freq_Exit:
+
+
 
 	;-------------------------------
 	;Detune of cent unit
@@ -210,17 +210,19 @@ Detune:
 	ldy	#$00
 	lda	__detune_cent,x
 	bpl	@L
-	ldy	#$FF			; ay = __detune_cent (sign expand)
+	dey				; ay = __detune_cent (sign expand)
 @L:	add	__tmp
 	sta	__tmp
 	tya
-	adc	__tmp + 1
-	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
+	adc	__tmp + 1		;__tmp += (signed int)__detune_cent
+
+;	sta	__tmp + 1
+;	ldx	__tmp + 1
+	tax				;これで済むよね。
 
 	;-----------------------
 	;Setting device (APU)
 	lda	__tmp
-	ldx	__tmp + 1
 	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
 
 
@@ -244,9 +246,10 @@ Voice:
 	jmp	Set_Voice
 
 @L:	lda	__env_voice + 1,x
-	bne	@Envelop
-	lda	__env_voice,x
-	jmp	Set_Voice
+	beq	Voice_Exit		;●●●　最適化　●●●
+;	bne	@Envelop		;KeyOn中で、
+;	lda	__env_voice,x		;且つ音色エンベロープOffの場合は
+;	jmp	Set_Voice		;飛ばす。設定は nsd_keyon() でやる。
 
 @Envelop:
 	sta	__ptr + 1
@@ -300,10 +303,9 @@ Volume:
 	cmp	#$01
 	beq	@L1		;mode = 1 で、リリース音量
 
-@L2:	lda	__env_volume + 1,x
+@L2:	;Release (Envelope)
+	lda	__env_volume + 1,x
 	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
-@L1:
-	lda	__volume,x
 
 .ifdef	VRC7
 	;VRC7は、mode 2の時はリリース処理しない。
@@ -311,14 +313,17 @@ Volume:
 	bcc	@VRC7L
 	cpx	#nsd::TR_VRC7 + 6*2
 	bcs	@VRC7L
+	lda	__volume,x
 	and	#$0F
 	jmp	@VRC7_Exit
-@VRC7:
-
-.endif
 @VRC7L:
+.endif
+
+@L1:	;Release (Volume)
+	lda	__volume,x
+
 .ifdef	VRC6
-	cpx	#nsd::TR_VRC6 + 4
+	cpx	#nsd::TR_VRC6 + 4	;VRC6 SAW ?
 	bne	@VRC6
 	and	#$F0
 	shr	a, 2
@@ -341,7 +346,10 @@ Volume:
 
 @L3:	lda	__env_volume + 1,x
 	bne	@Envelop
+
+	;Envelope 無効時の処理
 	lda	__volume,x
+
 .ifdef	VRC6
 	cpx	#nsd::TR_VRC6 + 4
 	bne	@VRC6V

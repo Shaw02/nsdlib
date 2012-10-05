@@ -28,14 +28,14 @@
 
 	lda	#nsd_flag::BGM
 	bit	__flag
-	bne	BGM_Exit		;BGM disable ?
+	jne	BGM_Exit		;BGM disable ?
 
 	;-------------------------------
 	;Tempo
 	lda	__Tempo_ctr
 	add	__Tempo
 	sta	__Tempo_ctr
-	bcc	BGM_SEQ_Exit
+	jcc	BGM_SEQ_Exit
 
 	;-------------------------------
 	;BGM
@@ -49,7 +49,7 @@ BGM_Begin:
 	sub	#150
 	sta	__Tempo_ctr
 	cmp	#106
-	bcc	BGM_Begin
+	jcc	BGM_Begin
 
 BGM_SEQ_Exit:
 

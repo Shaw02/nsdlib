@@ -13,7 +13,7 @@ AVRC7 = -D VRC7
 AMMC5 = -D MMC5
 AN163 = -D N163
 APSG  = -D PSG
-AALL  = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
+AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
 
 CC = cc65
 CFLAG = -t none
@@ -35,11 +35,11 @@ INC_FILES = nsd.inc
 FILES = nsd_func.s nsd_main.s nsd_seq.s nsd_env.s nsd_snd.s nsd_math.s nsd_work.s 
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_MMC5).lib
+clean: $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_MMC5).lib $(PROJ_ALL).lib
 	@del *.bak
 	@del *.o
 
-all:   $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_MMC5).lib
+all:   $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_MMC5).lib $(PROJ_ALL).lib
 
 $(PROJ).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) nsd_func.s
@@ -80,3 +80,14 @@ $(PROJ_MMC5).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AMMC5) nsd_math.s
 	@$(ASM) $(AFLAG) $(AMMC5) nsd_work.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
+
+$(PROJ_ALL).lib : $(FILES) $(INC_FILES)
+	@$(ASM) $(AFLAG) $(AALL) nsd_func.s
+	@$(ASM) $(AFLAG) $(AALL) nsd_main.s
+	@$(ASM) $(AFLAG) $(AALL) nsd_seq.s
+	@$(ASM) $(AFLAG) $(AALL) nsd_env.s
+	@$(ASM) $(AFLAG) $(AALL) nsd_snd.s
+	@$(ASM) $(AFLAG) $(AALL) nsd_math.s
+	@$(ASM) $(AFLAG) $(AALL) nsd_work.s
+	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
+

@@ -18,6 +18,10 @@
 	.include	"nsd.inc"
 
 ;=======================================================================
+;	Table of Frequency 
+;=======================================================================
+
+;=======================================================================
 ;	void	__fastcall__	nsd_snd_init(void);
 ;-----------------------------------------------------------------------
 ;<<Contents>>
@@ -117,7 +121,7 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	_nsd_nes_keyon		;BGM ch4 Noize
 	.addr	_nsd_dpcm_keyon		;BGM ch5 DPCM
 .ifdef	FDS
-;	.addr	
+	.addr	Exit
 .endif
 .ifdef	VRC6
 	.addr	Exit
@@ -137,14 +141,14 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	_nsd_nes_keyon		;
 .endif
 .ifdef	N163
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
 .endif
 .ifdef	PSG
 	.addr	Exit
@@ -154,9 +158,9 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	_nsd_nes_keyon		;SE  ch1 Pulse
 	.addr	_nsd_nes_keyon		;SE  ch2 Noize
 
+;---------------------------------------
 .code
 	ldx	__channel
-@Set:	;Set	(Don't need SE check)
 	ldy	JMPTBL,x
 	sty	__ptr
 	ldy	JMPTBL + 1,x
@@ -166,398 +170,7 @@ Exit:
 	rts
 .endproc
 
-;=======================================================================
-;	void	__fastcall__	_nsd_snd_keyoff(void);
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Key on the device
-;<<Input>>
-;	nothing
-;<<Output>>
-;	nothing
-;=======================================================================
-.proc	_nsd_snd_keyoff
-.rodata
-JMPTBL:	.addr	Exit			;BGM ch1 Pulse
-	.addr	Exit			;BGM ch2 Pulse
-	.addr	_nsd_ch3_keyoff		;BGM ch3 Triangle	-- no process --
-	.addr	Exit			;BGM ch4 Noize		-- no process --
-	.addr	_nsd_dpcm_keyoff	;BGM ch5 DPCM		-- no process --
-.ifdef	FDS
-;	.addr	
-.endif
-.ifdef	VRC6
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-.endif
-.ifdef	VRC7
-	.addr	_nsd_vrc7_keyoff	;KeyOffを書き込んでおく。
-	.addr	_nsd_vrc7_keyoff
-	.addr	_nsd_vrc7_keyoff
-	.addr	_nsd_vrc7_keyoff
-	.addr	_nsd_vrc7_keyoff
-	.addr	_nsd_vrc7_keyoff
-.endif
-.ifdef	MMC5
-	.addr	Exit
-	.addr	Exit
-.endif
-.ifdef	N163
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-.endif
-.ifdef	PSG
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-.endif
-	.addr	Exit			;SE  ch1 Pulse
-	.addr	Exit			;SE  ch2 Noize		-- no process --
-
-.code
-	ldx	__channel
-@Set:	;Set	(Don't need SE check)
-	ldy	JMPTBL,x
-	sty	__ptr
-	ldy	JMPTBL + 1,x
-	sty	__ptr + 1
-	jmp	(__ptr)
-Exit:
-	rts
-.endproc
-
-;=======================================================================
-;	void	__fastcall__	nsd_snd_voice(char voi);
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Ser the voice (instruction)
-;<<Input>>
-;	a	voice number
-;<<Output>>
-;	nothing
-;=======================================================================
-.proc	_nsd_snd_voice
-.rodata
-JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
-	.addr	_nsd_nes_voice		;BGM ch2 Pulse
-	.addr	Exit			;BGM ch3 Triangle	-- no process --
-	.addr	_nsd_noise_voice	;BGM ch4 Noize
-	.addr	Exit			;BGM ch5 DPCM
-.ifdef	FDS
-;	.addr	
-.endif
-.ifdef	VRC6
-	.addr	_nes_vrc6_voice
-	.addr	_nes_vrc6_voice
-	.addr	Exit			;Saw
-.endif
-.ifdef	VRC7
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-.endif
-.ifdef	MMC5
-	.addr	_nsd_nes_voice		;仕組みは同じ
-	.addr	_nsd_nes_voice		;
-.endif
-.ifdef	N163
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-.endif
-.ifdef	PSG
-;	.addr	
-;	.addr	
-;	.addr	
-.endif
-	.addr	_nsd_nes_voice		;SE  ch1 Pulse
-	.addr	_nsd_noise_voice	;SE  ch2 Noize
-
-.code
-	ldx	__channel
-@Set:	;Set	(Don't need SE check)
-	ldy	JMPTBL,x
-	sty	__ptr
-	ldy	JMPTBL + 1,x
-	sty	__ptr + 1
-	jmp	(__ptr)
-Exit:
-	rts
-.endproc
-;=======================================================================
-;	void	__fastcall__	nsd_snd_volume(char vol);
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Ser the volume
-;<<Input>>
-;	a	volume ( 0 to 255 )
-;<<Output>>
-;	nothing
-;=======================================================================
-.proc	_nsd_snd_volume
-.rodata
-JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
-	.addr	_nsd_ch2_volume		;BGM ch2 Pulse
-	.addr	Exit			;BGM ch3 Triangle	-- no process --
-	.addr	_nsd_ch4_volume		;BGM ch4 Noize
-	.addr	Exit			;BGM ch5 DPCM		-- no process --
-.ifdef	FDS
-;	.addr	
-.endif
-.ifdef	VRC6
-	.addr	_nsd_vrc6_ch1_volume
-	.addr	_nsd_vrc6_ch2_volume
-	.addr	_nsd_vrc6_ch3_volume
-.endif
-.ifdef	VRC7
-	.addr	_nsd_vrc7_volume
-	.addr	_nsd_vrc7_volume
-	.addr	_nsd_vrc7_volume
-	.addr	_nsd_vrc7_volume
-	.addr	_nsd_vrc7_volume
-	.addr	_nsd_vrc7_volume
-.endif
-.ifdef	MMC5
-	.addr	_nsd_mmc5_ch1_volume
-	.addr	_nsd_mmc5_ch2_volume
-.endif
-.ifdef	N163
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-.endif
-.ifdef	PSG
-;	.addr	
-;	.addr	
-;	.addr	
-.endif
-	.addr	_nsd_ch2_volume		;SE  ch1 Pulse
-	.addr	_nsd_ch4_volume		;SE  ch2 Noize
-.code
-	;always jmp except This ch's SE is enabale
-	ldx	__channel
-	;SE check
-@C2:	cpx	#nsd::TR_BGM2
-	bne	@C6
-	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
-	bne	Exit
-	jmp	@Set
-@C6:	cpx	#nsd::TR_BGM4
-	bne	@Set
-	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
-	bne	Exit
-@Set:
-	ldy	JMPTBL,x
-	sty	__ptr
-	ldy	JMPTBL + 1,x
-	sty	__ptr + 1
-	jmp	(__ptr)
-Exit:
-	rts
-.endproc
-;=======================================================================
-;	void	__fastcall__	nsd_snd_sweep(char vol);
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Ser the volume
-;<<Input>>
-;	a	volume ( 0 to 255 )
-;<<Output>>
-;	nothing
-;=======================================================================
-.proc	_nsd_snd_sweep
-.rodata
-JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
-	.addr	_nsd_ch2_sweep		;BGM ch2 Pulse
-	.addr	Exit			;BGM ch3 Triangle	-- no process --
-	.addr	Exit			;BGM ch4 Noize		-- no process --
-	.addr	Exit			;BGM ch5 DPCM		-- no process --
-.ifdef	FDS
-	.addr	Exit
-.endif
-.ifdef	VRC6
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-.endif
-.ifdef	VRC7
-	.addr	_nsd_vrc7_sustain
-	.addr	_nsd_vrc7_sustain
-	.addr	_nsd_vrc7_sustain
-	.addr	_nsd_vrc7_sustain
-	.addr	_nsd_vrc7_sustain
-	.addr	_nsd_vrc7_sustain
-.endif
-.ifdef	MMC5
-	.addr	Exit
-	.addr	Exit
-.endif
-.ifdef	N163
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-.endif
-.ifdef	PSG
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-.endif
-	.addr	_nsd_se2_sweep		;SE  ch1 Pulse
-	.addr	Exit			;SE  ch2 Noize		-- no process --
-.code
-	;always jmp except This ch's SE is enabale
-	ldx	__channel
-	;SE check
-@C2:	cpx	#nsd::TR_BGM2
-	bne	@C6
-	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
-	bne	Exit
-	jmp	@Set
-@C6:	cpx	#nsd::TR_BGM4
-	bne	@Set
-	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
-	bne	Exit
-@Set:
-	ldy	JMPTBL,x
-	sty	__ptr
-	ldy	JMPTBL + 1,x
-	sty	__ptr + 1
-	jmp	(__ptr)
-Exit:
-	rts
-.endproc
-;=======================================================================
-;	void	__fastcall__	nsd_snd_frequency(int freq);
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Ser the voice (instruction)
-;<<Input>>
-;	ax	frequency (16 = 100 cent, o0c = 0x0000)
-;<<Output>>
-;	nothing
-;=======================================================================
-.proc	_nsd_snd_frequency
-.rodata
-JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
-	.addr	_nsd_nes_ch2_frequency	;BGM ch2 Pulse
-	.addr	_nsd_nes_ch3_frequency	;BGM ch3 Triangle
-	.addr	_nsd_nes_ch4_frequency	;BGM ch4 Noise
-	.addr	Exit			;BGM ch5 DPCM
-.ifdef	FDS
-;	.addr	
-.endif
-.ifdef	VRC6
-	.addr	_nsd_vrc6_ch1_frequency
-	.addr	_nsd_vrc6_ch2_frequency
-	.addr	_nsd_vrc6_ch3_frequency
-.endif
-.ifdef	VRC7
-	.addr	_nsd_vrc7_frequency
-	.addr	_nsd_vrc7_frequency
-	.addr	_nsd_vrc7_frequency
-	.addr	_nsd_vrc7_frequency
-	.addr	_nsd_vrc7_frequency
-	.addr	_nsd_vrc7_frequency
-.endif
-.ifdef	MMC5
-	.addr	_nsd_mmc5_ch1_frequency
-	.addr	_nsd_mmc5_ch2_frequency
-.endif
-.ifdef	N163
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-;	.addr	
-.endif
-.ifdef	PSG
-;	.addr	
-;	.addr	
-;	.addr	
-.endif
-	.addr	_nsd_nes_ch2_frequency	;SE  ch1 Pulse
-	.addr	_nsd_nes_ch4_frequency	;SE  ch2 Noise
-.code
-	stx	__tmp
-	ldx	__channel
-	;SE check
-@C2:	cpx	#nsd::TR_BGM2
-	bne	@C6
-	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
-	bne	Exit
-	jmp	@Set
-@C6:	cpx	#nsd::TR_BGM4
-	bne	@Set
-	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
-	bne	Exit
-@Set:
-	ldy	JMPTBL,x
-	sty	__ptr
-	ldy	JMPTBL + 1,x
-	sty	__ptr + 1
-	ldx	__tmp
-
-	;-----------
-	;check the old frequency
-	ldy	__channel
-	cmp	__frequency,y
-	beq	@L
-	sta	__frequency,y
-	txa
-	sta	__frequency + 1,y
-	jmp	Set_Frequency
-@L:	txa
-	cmp	__frequency + 1,y
-	beq	Exit
-	sta	__frequency + 1,y
-	tax
-Set_Frequency:
-	lda	__frequency,y		;ax ← __frequency
-
-	jmp	(__ptr)
-Exit:
-	ldx	__channel
-	rts
-.endproc
-
-;=======================================================================
-;	void	__fastcall__	_nsd_nes_keyon(void);
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Key on the device
-;<<Input>>
-;	nothing
-;<<Output>>
-;	nothing
-;=======================================================================
+;---------------------------------------
 .proc	_nsd_nes_keyon
 
 	;For hardware Key on
@@ -668,7 +281,7 @@ Exit:
 	and	#~nsd_chflag::KeyOn
 	sta	__chflag,x
 
-	;書かれない可能性があるので、ここで書く。
+	;書かれない可能性があるので、ここでレジスタに書く。
 	txa
 	sub	#nsd::TR_VRC7
 	shr	a, 1
@@ -679,23 +292,147 @@ Exit:
 	and	#$EF			;[2]
 	sta	VRC7_Data		;
 
-;Exit:
 	rts
 .endproc
 .endif
+
 ;=======================================================================
-;	void	__fastcall__	nsd_nes_voice(char voice);
+;	void	__fastcall__	_nsd_snd_keyoff(void);
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	NES Sound device:	Set voice
+;	Key on the device
 ;<<Input>>
-;	a	voice	(0:12.5% / 1:25% / 2:50% / 3:75%)
-;	x	channel
+;	nothing
 ;<<Output>>
-;	nsd_work.Voice.voice_set  =  (voice << 6) | 0x30
+;	nothing
 ;=======================================================================
-.proc	_nsd_nes_voice
+.proc	_nsd_snd_keyoff
+.rodata
+JMPTBL:	.addr	Exit			;BGM ch1 Pulse
+	.addr	Exit			;BGM ch2 Pulse
+	.addr	_nsd_ch3_keyoff		;BGM ch3 Triangle	-- no process --
+	.addr	Exit			;BGM ch4 Noize		-- no process --
+	.addr	_nsd_dpcm_keyoff	;BGM ch5 DPCM		-- no process --
+.ifdef	FDS
+	.addr	Exit
+.endif
+.ifdef	VRC6
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	VRC7
+	.addr	_nsd_vrc7_keyoff	;KeyOffを書き込んでおく。
+	.addr	_nsd_vrc7_keyoff
+	.addr	_nsd_vrc7_keyoff
+	.addr	_nsd_vrc7_keyoff
+	.addr	_nsd_vrc7_keyoff
+	.addr	_nsd_vrc7_keyoff
+.endif
+.ifdef	MMC5
+	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	N163
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	PSG
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+	.addr	Exit			;SE  ch1 Pulse
+	.addr	Exit			;SE  ch2 Noize		-- no process --
+
+;---------------------------------------
 .code
+	ldx	__channel
+	ldy	JMPTBL,x
+	sty	__ptr
+	ldy	JMPTBL + 1,x
+	sty	__ptr + 1
+	jmp	(__ptr)
+Exit:
+	rts
+.endproc
+
+;=======================================================================
+;	void	__fastcall__	nsd_snd_voice(char voi);
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Ser the voice (instruction)
+;<<Input>>
+;	a	voice number
+;<<Output>>
+;	nothing
+;=======================================================================
+.proc	_nsd_snd_voice
+.rodata
+JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
+	.addr	_nsd_nes_voice		;BGM ch2 Pulse
+	.addr	Exit			;BGM ch3 Triangle	-- no process --
+	.addr	_nsd_noise_voice	;BGM ch4 Noize
+	.addr	Exit			;BGM ch5 DPCM
+.ifdef	FDS
+	.addr	Exit	;_nsd_fds_GainMod
+.endif
+.ifdef	VRC6
+	.addr	_nes_vrc6_voice
+	.addr	_nes_vrc6_voice
+	.addr	Exit			;Saw
+.endif
+.ifdef	VRC7
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+.endif
+.ifdef	MMC5
+	.addr	_nsd_nes_voice		;仕組みは同じ
+	.addr	_nsd_nes_voice		;
+.endif
+.ifdef	N163
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	PSG
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+	.addr	_nsd_nes_voice		;SE  ch1 Pulse
+	.addr	_nsd_noise_voice	;SE  ch2 Noize
+
+;---------------------------------------
+.code
+	ldx	__channel
+	ldy	JMPTBL,x
+	sty	__ptr
+	ldy	JMPTBL + 1,x
+	sty	__ptr + 1
+	jmp	(__ptr)
+Exit:
+	rts
+.endproc
+
+;---------------------------------------
+.proc	_nsd_nes_voice
+
 	;-------------------------------
 	; *** Calculate the voice
 	shl	a, 6	;a <<= 6
@@ -713,7 +450,7 @@ exit:
 
 ;---------------------------------------
 .proc	_nsd_noise_voice
-.code
+
 	;-------------------------------
 	; *** Calculate the voice
 	shl	a, 7	;a <<= 7
@@ -767,18 +504,74 @@ exit:
 .endproc
 .endif
 ;=======================================================================
-;	void	__fastcall__	nsd_nes_volume(char volume);
+;	void	__fastcall__	nsd_snd_volume(char vol);
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	NES Sound device:	Set volume
+;	Ser the volume
 ;<<Input>>
-;	a	volume	(0 to 255)	(volume is upper 4bit)
-;	x	channel
+;	a	volume ( 0 to 255 )
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.proc	_nsd_ch1_volume
+.proc	_nsd_snd_volume
+.rodata
+JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
+	.addr	_nsd_ch2_volume		;BGM ch2 Pulse
+	.addr	Exit			;BGM ch3 Triangle	-- no process --
+	.addr	_nsd_ch4_volume		;BGM ch4 Noize
+	.addr	Exit			;BGM ch5 DPCM		-- no process --
+.ifdef	FDS
+	.addr	Exit	;_nsd_fds_volume
+.endif
+.ifdef	VRC6
+	.addr	_nsd_vrc6_ch1_volume
+	.addr	_nsd_vrc6_ch2_volume
+	.addr	_nsd_vrc6_ch3_volume
+.endif
+.ifdef	VRC7
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+	.addr	_nsd_vrc7_volume
+.endif
+.ifdef	MMC5
+	.addr	_nsd_mmc5_ch1_volume
+	.addr	_nsd_mmc5_ch2_volume
+.endif
+.ifdef	N163
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	PSG
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+	.addr	_nsd_se1_volume		;SE  ch1 Pulse
+	.addr	_nsd_se2_volume		;SE  ch2 Noize
+
+;---------------------------------------
 .code
+	ldx	__channel
+	ldy	JMPTBL,x
+	sty	__ptr
+	ldy	JMPTBL + 1,x
+	sty	__ptr + 1
+	jmp	(__ptr)
+Exit:
+	rts
+.endproc
+
+;---------------------------------------
+.proc	_nsd_ch1_volume
 
 	;-------------------------------
 	; *** Mix voice and volume
@@ -800,7 +593,11 @@ exit:
 
 ;---------------------------------------
 .proc	_nsd_ch2_volume
-.code
+
+	;-------------------------------
+	;SE check
+	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+	bne	exit
 
 	;-------------------------------
 	; *** Mix voice and volume
@@ -822,7 +619,11 @@ exit:
 
 ;---------------------------------------
 .proc	_nsd_ch4_volume
-.code
+
+	;-------------------------------
+	;SE check
+	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
+	bne	exit
 
 	;-------------------------------
 	; *** Mix voice and volume
@@ -841,7 +642,46 @@ exit:
 	rts
 .endproc
 
+;---------------------------------------
+.proc	_nsd_se1_volume
 
+	;-------------------------------
+	; *** Mix voice and volume
+	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+	and	#$0F
+	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+	ora	__voice_set,x
+
+	;-------------------------------
+	; *** Output to NES sound device
+	;y = x << 1
+	sta	APU_PULSE2CTRL
+
+	;-------------------------------
+	; *** Exit
+exit:
+	rts
+.endproc
+
+;---------------------------------------
+.proc	_nsd_se2_volume
+
+	;-------------------------------
+	; *** Mix voice and volume
+	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+	and	#$0F
+	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+
+	;-------------------------------
+	; *** Output to NES sound device
+	;y = x << 1
+	sta	APU_NOISECTRL
+
+	;-------------------------------
+	; *** Exit
+exit:
+	rts
+.endproc
 
 ;---------------------------------------
 .ifdef	VRC6
@@ -892,8 +732,6 @@ exit:
 
 .endif
 
-
-
 ;---------------------------------------
 .ifdef	VRC7
 .proc	_nsd_vrc7_volume
@@ -916,8 +754,6 @@ exit:
 	rts
 .endproc
 .endif
-
-
 
 ;---------------------------------------
 .ifdef	MMC5
@@ -964,18 +800,74 @@ exit:
 .endif
 
 ;=======================================================================
-;	void	__fastcall__	nsd_nes_volume(char volume);
+;	void	__fastcall__	nsd_snd_sweep(char vol);
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	NES Sound device:	Set volume
+;	Ser the volume
 ;<<Input>>
-;	a	volume	(0 to 255)	(volume is upper 4bit)
-;	x	channel
+;	a	volume ( 0 to 255 )
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.proc	_nsd_ch1_sweep
+.proc	_nsd_snd_sweep
+.rodata
+JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
+	.addr	_nsd_ch2_sweep		;BGM ch2 Pulse
+	.addr	Exit			;BGM ch3 Triangle	-- no process --
+	.addr	Exit			;BGM ch4 Noize		-- no process --
+	.addr	Exit			;BGM ch5 DPCM		-- no process --
+.ifdef	FDS
+	.addr	Exit	;_nsd_fds_sweep_bias
+.endif
+.ifdef	VRC6
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	VRC7
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+.endif
+.ifdef	MMC5
+	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	N163
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	PSG
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
+	.addr	_nsd_se2_sweep		;SE  ch1 Pulse
+	.addr	Exit			;SE  ch2 Noize		-- no process --
+
+;---------------------------------------
 .code
+	ldx	__channel
+	ldy	JMPTBL,x
+	sty	__ptr
+	ldy	JMPTBL + 1,x
+	sty	__ptr + 1
+	jmp	(__ptr)
+Exit:
+	rts
+.endproc
+
+;---------------------------------------
+.proc	_nsd_ch1_sweep
 	sta	APU_PULSE1RAMP
 	sta	__sweep_ch1
 	rts
@@ -983,15 +875,21 @@ exit:
 
 ;---------------------------------------
 .proc	_nsd_ch2_sweep
-.code
+
+	;-------------------------------
+	;SE check
+	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+	bne	Exit
+
 	sta	APU_PULSE2RAMP
 	sta	__sweep_ch2
+Exit:
 	rts
 .endproc
 
 ;---------------------------------------
 .proc	_nsd_se2_sweep
-.code
+
 	sta	APU_PULSE2RAMP
 	rts
 .endproc
@@ -1012,19 +910,20 @@ exit:
 	rts
 .endproc
 .endif
+
 ;=======================================================================
-;	void	__fastcall__	nsd_nes_frequency(int freq);
+;	void	__fastcall__	nsd_snd_frequency(int freq);
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	NES Sound device:	Set frequency
+;	Ser the voice (instruction)
 ;<<Input>>
-;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
+;	ax	frequency (16 = 100 cent, o0c = 0x0000)
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-
 .rodata
 
+;---------------------------------------
 ;APU, MMC5, VRC6, FME7 Frequency table
 Freq:
 	.word	$0D4D	;C
@@ -1126,16 +1025,109 @@ Freq:
 
 
 
-;-----------------------
+;---------------------------------------
 ;FDS Frequency table
 .ifdef	FDS
 Freq_FDS:
-
+	.word	$99F
+	.word	$9B1
+	.word	$9C3
+	.word	$9D5
+	.word	$9E7
+	.word	$9F9
+	.word	$A0C
+	.word	$A1E
+	.word	$A31
+	.word	$A44
+	.word	$A57
+	.word	$A6A
+	.word	$A7E
+	.word	$A91
+	.word	$AA5
+	.word	$AB9
+	.word	$ACC
+	.word	$AE0
+	.word	$AF5
+	.word	$B09
+	.word	$B1D
+	.word	$B32
+	.word	$B47
+	.word	$B5C
+	.word	$B71
+	.word	$B86
+	.word	$B9B
+	.word	$BB1
+	.word	$BC7
+	.word	$BDD
+	.word	$BF3
+	.word	$C09
+	.word	$C1F
+	.word	$C36
+	.word	$C4C
+	.word	$C63
+	.word	$C7A
+	.word	$C91
+	.word	$CA8
+	.word	$CC0
+	.word	$CD8
+	.word	$CEF
+	.word	$D07
+	.word	$D20
+	.word	$D38
+	.word	$D50
+	.word	$D69
+	.word	$D82
+	.word	$D9B
+	.word	$DB4
+	.word	$DCE
+	.word	$DE7
+	.word	$E01
+	.word	$E1B
+	.word	$E35
+	.word	$E50
+	.word	$E6A
+	.word	$E85
+	.word	$EA0
+	.word	$EBB
+	.word	$ED6
+	.word	$EF2
+	.word	$F0E
+	.word	$F2A
+	.word	$F46
+	.word	$F62
+	.word	$F7F
+	.word	$F9B
+	.word	$FB8
+	.word	$FD5
+	.word	$FF3
+	.word	$1010
+	.word	$102E
+	.word	$104C
+	.word	$106B
+	.word	$1089
+	.word	$10A8
+	.word	$10C7
+	.word	$10E6
+	.word	$1105
+	.word	$1125
+	.word	$1144
+	.word	$1164
+	.word	$1185
+	.word	$11A5
+	.word	$11C6
+	.word	$11E7
+	.word	$1208
+	.word	$122A
+	.word	$124B
+	.word	$126D
+	.word	$128F
+	.word	$12B2
+	.word	$12D5
+	.word	$12F7
+	.word	$131B
 .endif
 
-
-
-;-----------------------
+;---------------------------------------
 ;SAW Frequency table
 .ifdef	VRC6
 Freq_SAW:
@@ -1237,9 +1229,7 @@ Freq_SAW:
 	.word	$07A8
 .endif
 
-
-
-;-----------------------
+;---------------------------------------
 ;VRC7 Frequency table
 .ifdef	VRC7
 Freq_VRC7:
@@ -1341,9 +1331,7 @@ Freq_VRC7:
 	.byte	$57
 .endif
 
-
-
-;-----------------------
+;---------------------------------------
 ;N163 Frequency table
 .ifdef	N163
 Freq_N163:
@@ -1541,9 +1529,85 @@ Freq_N163:
 	.word	$7EA7
 .endif
 
-;-----------------------
-;Code
 .code
+
+.proc	_nsd_snd_frequency
+.rodata
+
+JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
+	.addr	_nsd_nes_ch2_frequency	;BGM ch2 Pulse
+	.addr	_nsd_nes_ch3_frequency	;BGM ch3 Triangle
+	.addr	_nsd_nes_ch4_frequency	;BGM ch4 Noise
+	.addr	Exit			;BGM ch5 DPCM
+.ifdef	FDS
+	.addr	Exit	;_nsd_fds_frequency
+.endif
+.ifdef	VRC6
+	.addr	_nsd_vrc6_ch1_frequency
+	.addr	_nsd_vrc6_ch2_frequency
+	.addr	_nsd_vrc6_ch3_frequency
+.endif
+.ifdef	VRC7
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+	.addr	_nsd_vrc7_frequency
+.endif
+.ifdef	MMC5
+	.addr	_nsd_mmc5_ch1_frequency
+	.addr	_nsd_mmc5_ch2_frequency
+.endif
+.ifdef	N163
+	.addr	Exit	;_nsd_n163_frequency
+	.addr	Exit	;_nsd_n163_frequency
+	.addr	Exit	;_nsd_n163_frequency
+	.addr	Exit	;_nsd_n163_frequency
+	.addr	Exit	;_nsd_n163_frequency
+	.addr	Exit	;_nsd_n163_frequency
+	.addr	Exit	;_nsd_n163_frequency
+	.addr	Exit	;_nsd_n163_frequency
+.endif
+.ifdef	PSG
+	.addr	Exit	;_nsd_psg_ch1_frequency
+	.addr	Exit	;_nsd_psg_ch2_frequency
+	.addr	Exit	;_nsd_psg_ch3_frequency
+.endif
+	.addr	_nsd_nes_ch2_frequency	;SE  ch1 Pulse
+	.addr	_nsd_nes_ch4_frequency	;SE  ch2 Noise
+
+;---------------------------------------
+.code
+	;-----------
+	;check the old frequency
+	ldy	__channel
+	cmp	__frequency,y
+	beq	@L
+	sta	__frequency,y
+	txa
+	sta	__frequency + 1,y
+	jmp	Set_Frequency
+@L:	txa
+	cmp	__frequency + 1,y
+	beq	Exit
+	sta	__frequency + 1,y
+
+	;-----------
+	;Jump
+Set_Frequency:
+	lda	JMPTBL,y
+	sta	__ptr
+	lda	JMPTBL + 1,y
+	sta	__ptr + 1
+
+	lda	__frequency,y		;ax ← __frequency
+	jmp	(__ptr)
+Exit:
+	ldx	__channel
+	rts
+.endproc
+
 ;---------------------------------------
 .proc	_nsd_nes_ch1_frequency
 
@@ -1565,6 +1629,11 @@ Exit:
 
 ;---------------------------------------
 .proc	_nsd_nes_ch2_frequency
+
+	;-------------------------------
+	;SE check
+	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+	bne	Exit
 
 	jsr	Normal_frequency
 
@@ -1603,7 +1672,12 @@ Exit:
 
 ;---------------------------------------
 .proc	_nsd_nes_ch4_frequency
-.code
+
+	;-------------------------------
+	;SE check
+	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
+	bne	Exit
+
 	;-------------------------------
 	; *** Get the note number lower 4bit
 	;a >>= 4
@@ -1622,10 +1696,7 @@ Exit:
 	sta	APU_NOISEFREQ1
 	; to do note on?
 	lda	#$08
-;	cmp	__frequency_set + 1,x	;for flag
-;	beq	Exit
 	sta	APU_NOISEFREQ2		;Length counter load (L) 
-;	sta	__frequency_set + 1,x
 
 	;-------------------------------
 	; *** Exit
@@ -1709,8 +1780,6 @@ Detune:
 .endproc
 .endif
 
-
-
 ;---------------------------------------
 .ifdef	VRC7
 .proc	_nsd_vrc7_frequency
@@ -1768,8 +1837,6 @@ Detune:
 .endproc
 .endif
 
-
-
 ;---------------------------------------
 .ifdef	MMC5
 .proc	_nsd_mmc5_ch1_frequency
@@ -1807,8 +1874,6 @@ Exit:
 	rts
 .endproc
 .endif
-
-
 
 ;=======================================================================
 ;	void	__fastcall__	Normal_frequency(int freq);

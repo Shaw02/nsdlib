@@ -13,7 +13,7 @@ AVRC7 = -D VRC7
 AMMC5 = -D MMC5
 AN163 = -D N163
 APSG  = -D PSG
-AALL  = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
+AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
 
 CC = cl65
 CFLAG = -t none -Oi -Os -Or -c -l -o
@@ -47,11 +47,11 @@ INC_FILES =
 FILES = crt0.s
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin
+clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_ALL).bin
 	@del *.bak
 	@del *.o
 
-all:   $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin
+all:   $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_ALL).bin
 
 $(PROJ).bin : $(FILES) $(INC_FILES) $(LIB)
 	@$(ASM) $(AFLAG) $(FILES)
@@ -68,4 +68,8 @@ $(PROJ_VRC7).bin : $(FILES) $(INC_FILES) $(LIB_VRC7)
 $(PROJ_MMC5).bin : $(FILES) $(INC_FILES) $(LIB_MMC5)
 	@$(ASM) $(AMMC5) $(FILES)
 	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_MMC5)
+
+$(PROJ_ALL).bin : $(FILES) $(INC_FILES) $(LIB_ALL)
+	@$(ASM) $(AALL) $(FILES)
+	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_ALL)
 

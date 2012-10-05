@@ -87,8 +87,20 @@
 					<param name="Local" value="mml.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="最適化のためのヒント">
-					<param name="Local" value="mml_tips.html">
+					<param name="Name" value="エンベロープ記述ブロック">
+					<param name="Local" value="mml_envelope.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="⊿PCM記述ブロック">
+					<param name="Local" value="mml_dpcm.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="VRC7ユーザー音色定義ブロック">
+					<param name="Local" value="mml_vrc7.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="シーケンス記述ブロック">
+					<param name="Local" value="mml_sequence.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="MMLリファレンス">
@@ -199,6 +211,10 @@
 						<param name="Local" value="mml_transpose.html">
 						</OBJECT>
 				</UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="最適化のためのヒント">
+					<param name="Local" value="mml_tips.html">
+					</OBJECT>
 			</UL>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="出力するアセンブリ言語ソースについて">

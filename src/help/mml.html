@@ -38,24 +38,33 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 														アセンブリ言語ソースを出力する場合は、"#segmentPCM"コマンドで指定したセグメントについて
 														リンカー"ld65.exe"のコンフィグファイルにて設定した実アドレス指定して下さい。</td></tr>
 <tr><td>DPCM{<br> <var>Delta PCM define</var><br>}	</td>
-	<td>⊿PCMの記述ブロックです。<br>
-		⊿PCMの記述は、<a href="#dpcm">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
+	<td>⊿PCM定義の記述ブロックです。<br>
+		⊿PCM定義の記述は、<a href="mml_dpcm.html">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
+<tr><td>FDSC(<var>n</var>){<br> <var>wave table</var><br>}	</td>
+	<td>FDSのキャリア側の波形データ定義の記述ブロックです。<br>
+		<strong>（開発中）</strong></td></tr>
+<tr><td>FDSM(<var>n</var>){<br> <var>wave table</var><br>}	</td>
+	<td>FDSのモジュレータ側の波形データ定義の記述ブロックです。<br>
+		<strong>（開発中）</strong></td></tr>
 <tr><td>VRC7(<var>n</var>){<br> <var>VRC7 define</var><br>}	</td>
 	<td>VRC7ユーザー音色定義の記述ブロックです。<br>
-		VRC7ユーザー音色定義の記述は、<a href="#vrc7">VRC7 ユーザー音色定義（VRC7 User Instrument define）</a>の項を参照ください。</td></tr>
+		VRC7ユーザー音色定義の記述は、<a href="mml_vrc7.html">VRC7 ユーザー音色定義（VRC7 User Instrument define）</a>の項を参照ください。</td></tr>
+<tr><td>N163(<var>n</var>){<br> <var>wave table</var><br>}	</td>
+	<td>n163の波形データ定義の記述ブロックです。<br>
+		<strong>（開発中）</strong></td></tr>
 <tr><td>Envelop(<var>n</var>){<br> <var>Envelop data</var><br>}	</td>
-	<td><var>n</var>番のエンベロープパターンの記述ブロックです。<br>
-		エンベロープパターンの記述は、<a href="#envelop">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>
+	<td><var>n</var>番のエンベロープパターン定義の記述ブロックです。<br>
+		エンベロープパターンの記述は、<a href="mml_envelope.html">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>
 <tr><td>Sub(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
 	<td><var>n</var>番のサブルーチンの記述ブロックです。<br>
-		シーケンスパターンの記述は、<a href="#sequence">シーケンスデータ（Sequence data）</a>の項を参照ください。</td></tr>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。</td></tr>
 <tr><td>BGM(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
 	<td><var>n</var>番目のBGMのシーケンスの記述ブロックです。<br>
-		シーケンスパターンの記述は、<a href="#sequence">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
 		番号は0からカウントします。</td></tr>
 <tr><td>SE(<var>n</var>){<br> <var>Sequence data</var><br>}		</td>
 	<td><var>n</var>番目のSE のシーケンスの記述ブロックです。<br>
-		シーケンスパターンの記述は、<a href="#sequence">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
 		番号は0からカウントします。</td></tr>
 <tr><td>$<var>name</var>{<br> <var>Sequence data</var><br>}
 	</td><td>シーケンス用のマクロ定義です。<strong>（未実装）</strong></td></tr>
@@ -86,182 +95,8 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 								Ｃコンパイラは、Ｃ言語で記述されたラベル（シンボル）名の先頭に`_'を付加します。<br>
 								従い、Ｃ言語から曲データを参照する場合、MML側で設定するラベル名は先頭に`_'を追加してください。</td></tr>
 </table>
-</div>
-
-<div class='block'>
-<h3><a name="dpcm">⊿PCM定義（Delta PCM define）</a></h3>
-<p>
-⊿PCMを定義します。<br>
-⊿PCMは、音階毎に割り当てる事が可能です。<br>
-</p>
-<h4>書式</h4>
-<code><pre>
-	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)</span>
-</pre></code>
-
-<h4>note</h4>
-<p>⊿PCMの波形を割り当てる音階です</p>
-<dl>
-<dt>a … </dt><dd>A, La, ラ</dd>
-<dt>b … </dt><dd>H, Si, シ</dd>
-<dt>c … </dt><dd>C, Do, ド</dd>
-<dt>d … </dt><dd>D, Re, レ</dd>
-<dt>e … </dt><dd>E, Mi, ミ</dd>
-<dt>f … </dt><dd>F, Fa, ファ</dd>
-<dt>g … </dt><dd>G, Sol, ソ</dd>
-</dl>
-
-<h4>Accidentals</h4>
-<p>⊿PCMの波形を割り当てる音階に対する臨時記号です。省略可能です。</p>
-<dl>
-<dt>+ … </dt><dd>&#9839; Sharp</dd>
-<dt># … </dt><dd>&#9839; Sharp</dd>
-<dt>- … </dt><dd>&#9837; Flat</dd>
-<dt>= … </dt><dd>&#9838; Natural</dd>
-</dl>
-
-<h4>octave</h4>
-<p>⊿PCMの波形を割り当てるオクターブです。1～8で指定してください。</p>
-
-<h4>filename</h4>
-<p>割り当てる⊿PCMの波形ファイル（*.dmc）を指定してください。</p>
-
-<h4>mode</h4>
-<dl>
-<dt>0 … </dt><dd>1 shot</dd>
-<dt>1 … </dt><dd>loop</dd>
-</dl>
-
-<h4>volume</h4>
-<p>
-⊿PCMの初期ボリュームです。<br>
-0～127の範囲で指定した場合は、波形再生開始時に$4011番地に書く初期ボリュームとなります。<br>
--1を指定した場合は、波形再生開始時に$4011番地に何も書きません。<br>
-省略した場合は、0となります。<br>
-</p>
 
 </div>
-
-<div class='block'>
-<h3><a name="vrc7">VRC7 ユーザー音色定義（VRC7 User Instrument define）</a></h3>
-<p>
-VRC7のユーザー音色を定義します。<br>
-パラメータの詳細は、OPLLのデータシート等をご参照ください。<br>
-</p>
-<h4>書式</h4>
-<code><pre>
-	@<var>TL</var> <var>FB</var>
-	<var>AR</var> <var>DR</var> <var>SL</var> <var>RR</var> <var>KL</var> <var>MT</var> <var>AM</var> <var>VB</var> <var>EG</var> <var>KR</var> <var>DT</var>
-	<var>AR</var> <var>DR</var> <var>SL</var> <var>RR</var> <var>KL</var> <var>MT</var> <var>AM</var> <var>VB</var> <var>EG</var> <var>KR</var> <var>DT</var>
-
-</pre></code>
-<code><pre>
-	@R<var>reg1</var>,<var>reg2</var>,<var>reg3</var>,<var>reg4</var>,<var>reg5</var>,<var>reg6</var>,<var>reg7</var>,<var>reg8</var>
-</pre></code>
-
-
-</div>
-
-
-<div class='block'>
-<h3><a name="envelop">エンベロープパターン（Envelop pattern）</a></h3>
-<p>
-音色、音量、周波数、音程の推移パターンを定義します。<br>
-</p>
-<p>
-エンベロープパターンの定義は、フレーム毎の推移を数値で指定します。<br>
-MMLコンパイラは、各エンベロープ（音色、音量、周波数、音程）のパターンを一元管理します。<br>
-これにより、特定の１つのパターンを、どのエンベロープでも使用可能ですが、設定範囲は留意して下さい。<br>
-</p>
-
-<dl>
-<dt>音色	</dt><dd>各音源で対応する音色番号の範囲で指定してください。詳細は<a href="mml_voice.html">@コマンド</a>の項を参照。</dd>
-<dt>音量	</dt><dd>VRC6のSAW音源及び、FDS音源以外は、0～15の範囲で指定してください。<br>
-					VRC6のSAW音源及び、FDS音源は、0～63の範囲で指定してください。</dd>
-<dt>周波数	</dt><dd>-64～63の範囲で指定してください。16で半音に相当します（絶対値です）。</dd>
-<dt>音程	</dt><dd>-64～63の範囲で指定してください。 1で半音に相当します（絶対値です）。</dd>
-</dl>
-
-<table>
-<tr><th>Command</th><th>Contens</th></tr>
-<tr><td><var>n</var></td><td>エンベロープ値</td></tr>
-<tr><td>D<var>n</var></td><td>前回のエンベロープ値を<var>n</var>フレーム間維持します。</td></tr>
-<tr><td>L</td><td>エンベロープパターンがRコマンド、又はパターン最後まで行った時の戻り先を指定します。<br>
-				Rコマンドの後に書かれた場合は、キーオフ後のパターンにおける戻り先となります。<br>
-				Rコマンド前でLコマンドを省略した場合、Rコマンドの直前のコマンドを繰り返します。<br>
-				Rコマンド後でLコマンドを省略した場合、エンベロープ定義最後のコマンドを繰り返します。</td></tr>
-<tr><td>R</td><td>以後を、キーオフ後のエンベロープパターンとします。<br>
-				リリースのパターンを指定しない場合、キーオフ後もそのままエンベロープが継続されます（音量エンベロープも含め）。</td></tr>
-<tr><td>(<var>start</var>,<var>end</var>,<var>length</var>)</td><td><var>start</var>から<var>end</var>まで<var>length</var>フレームで変化します。<strong>（未実装）</strong></td></tr>
-</table>
-</div>
-
-
-
-<div class='block'>
-<h3><a name="sequence">シーケンスデータ（Sequence data）</a></h3>
-<p>
-BGM,SE,サブルーチンの演奏パターンを定義します。<br>
-シーケンスデータのサイズを最適化するためには、
-ぜひ、<a href="format_music.html">BGM,SEデータフォーマット（Format of BGM and SE）</a>を御一読ください。<br>
-</p>
-<table>
-<tr><th>Command</th><th>Contens</th></tr>
-<tr><td><a href="mml_note.html">a</a></td><td>音符 (A, La, ラ)</td></tr>
-<tr><td><a href="mml_note.html">b</a></td><td>音符 (B, Si, シ)</td></tr>
-<tr><td><a href="mml_note.html">c</a></td><td>音符 (C, Do, ド)</td></tr>
-<tr><td><a href="mml_note.html">d</a></td><td>音符 (D, Re, レ)</td></tr>
-<tr><td><a href="mml_note.html">e</a></td><td>音符 (E, Mi, ミ)</td></tr>
-<tr><td><a href="mml_note.html">f</a></td><td>音符 (F, Fa, ファ)</td></tr>
-<tr><td><a href="mml_note.html">g</a></td><td>音符 (G, Sol, ソ)</td></tr>
-<tr><td><a href="mml_length.html">l</a></td><td>音長を省略した時に適用する音長</td></tr>
-<tr><td><a href="mml_octave.html">o</a></td><td>オクターブ</td></tr>
-<tr><td><a href="mml_gate.html">q</a></td><td>後方からのゲートタイム</td></tr>
-<tr><td><a href="mml_rest.html">r</a></td><td>休符</td></tr>
-<tr><td><a href="mml_tie.html">^</a></td><td>タイ</td></tr>
-<tr><td><a href="mml_sweep.html">s</a></td><td>APU : スイープ<br>VRC7 : サスティン</td></tr>
-<tr><td><a href="mml_tempo.html">t</a></td><td>テンポ</td></tr>
-<tr><td><a href="mml_tempo.html">t_</a></td><td>相対テンポ</td></tr>
-<tr><td><a href="mml_gate.html">u</a></td><td>前方からのゲートタイム</td></tr>
-<tr><td><a href="mml_volume.html">v</a></td><td>音量</td></tr>
-<tr><td><a href="mml_poke.html">y</a></td><td>メモリ書き込み</td></tr>
-<tr><td><a href="mml_VRC7write.html">yV</a></td><td>VRC7レジスタ書き込み</td></tr>
-<tr><td><a href="mml_detune.html">D</a></td><td>ディチューン（cent単位）</td></tr>
-<tr><td><a href="mml_detune.html">D%</a></td><td>ディチューン（register単位）</td></tr>
-<tr><td><a href="mml_envelop.html">E@</a></td><td>音色エンベロープ・パターン</td></tr>
-<tr><td><a href="mml_envelop.html">Ev</a></td><td>音量エンベロープ・パターン</td></tr>
-<tr><td><a href="mml_envelop.html">Em</a></td><td>周波数エンベロープ・パターン</td></tr>
-<tr><td><a href="mml_envelop.html">En</a></td><td>音程エンベロープ・パターン</td></tr>
-<tr><td><a href="mml_KeySignature.html">K{}</a></td><td>調号（自動臨時記号）</td></tr>
-<tr><td><a href="mml_loop.html">L</a></td><td>無限ループ（サブルーチンの記述ブロック内では無効）</td></tr>
-<tr><td><a href="mml_portamento.html">P</a></td><td>ポルタメント</td></tr>
-<tr><td><a href="mml_release.html">R@</a></td><td>Key off時の音色</td></tr>
-<tr><td><a href="mml_release.html">Rv</a></td><td>Key off時の音量</td></tr>
-<tr><td><a href="mml_release.html">Rm</a></td><td>Key off時のモード</td></tr>
-<tr><td><a href="mml_sub.html">S</a></td><td>サブルーチン呼び出し（サブルーチンの記述ブロック内では無効です）</td></tr>
-<tr><td><a href="mml_TR.html">TR</a></td><td>トラック（サブルーチンの記述ブロック内では無効です）</td></tr>
-<tr><td><a href="mml_VRC7voice.html">@V</a></td><td>VRC7ユーザー音色設定</td></tr>
-<tr><td><a href="mml_voice.html">@</a></td><td>音色（音色エンベロープ無効）</td></tr>
-<tr><td><a href="mml_repeatA.html">[  :  ]</a></td><td>リピート(Ａ)</td></tr>
-<tr><td><a href="mml_repeatB.html">|:  \  :|</a></td><td>リピート(Ｂ)</td></tr>
-<tr><td><a href="mml_relative_octave.html">&lt;</a></td><td>オクターブ－１</td></tr>
-<tr><td><a href="mml_relative_octave.html">&gt;</a></td><td>オクターブ＋１</td></tr>
-<tr><td><a href="mml_relative_octave.html">"</a></td><td>オクターブ－１（次の音符のみ）</td></tr>
-<tr><td><a href="mml_relative_octave.html">'</a></td><td>オクターブ＋１（次の音符のみ）</td></tr>
-<tr><td><a href="mml_relative_volume.html">(</a></td><td>音量－１</td></tr>
-<tr><td><a href="mml_relative_volume.html">)</a></td><td>音量＋１</td></tr>
-<tr><td><a href="mml_transpose.html">_</a></td><td>移調（絶対値）。</td></tr>
-<tr><td><a href="mml_transpose.html">__</a></td><td>移調（相対値）。</td></tr>
-<tr><td>$<var>name</var></td><td>マクロ呼び出し<strong>（未実装）</strong></td></tr>
-<tr><td>|</td><td>小節線（コンパイルには反映されません）</td></tr>
-</table>
-</div>
-
-
-
-
-</div>
-
 
 </div>
 

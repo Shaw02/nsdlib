@@ -37,7 +37,7 @@ bgm(0){
 }
 
 bgm(1){
-	TR8	l4o2	v13		@3	u8	s0	<[8	c4d4e4f4g4a4b4>	]	c1
+	TR8	l4o2	v13		@3	u8	s0,1	<[8	c4d4e4f4g4a4b4>	]	c1
 }
 
 bgm(2){

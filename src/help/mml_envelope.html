@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Envelope block</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MML reference: Envelope block</h2>
+
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+Envelop(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>n</h4>
+<p>
+エンベロープ番号を指定します。
+</p>
+
+<h4>define</h4>
+<p>
+エンベロープのパターンです。<br>
+エンベロープパターンの定義は、フレーム毎の推移を数値で指定します。<br>
+以下表のコマンドを記述して下さい。
+</p>
+
+<table>
+<tr><th>Command</th><th>Contens</th></tr>
+<tr><td><var>n</var></td><td>エンベロープ値</td></tr>
+<tr><td>D<var>n</var></td><td>前回のエンベロープ値を<var>n</var>フレーム間維持します。</td></tr>
+<tr><td>L</td><td>エンベロープパターンがRコマンド、又はパターン最後まで行った時の戻り先を指定します。<br>
+				Rコマンドの後に書かれた場合は、キーオフ後のパターンにおける戻り先となります。<br>
+				Rコマンド前でLコマンドを省略した場合、Rコマンドの直前のコマンドを繰り返します。<br>
+				Rコマンド後でLコマンドを省略した場合、エンベロープ定義最後のコマンドを繰り返します。</td></tr>
+<tr><td>R</td><td>以後を、キーオフ後のエンベロープパターンとします。<br>
+				リリースのパターンを指定しない場合、キーオフ後もそのままエンベロープが継続されます（音量エンベロープも含め）。</td></tr>
+<tr><td>(<var>start</var>,<var>end</var>,<var>length</var>)</td><td><var>start</var>から<var>end</var>まで<var>length</var>フレームで変化します。<strong>（未実装）</strong></td></tr>
+</table>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+
+<p>
+音色、音量、周波数、音程の推移パターンを定義します。<br>
+エンベロープ値の設定範囲は以下の通りです。<br>
+</p>
+
+<h4>音色</h4>
+<dl>
+<dt>APU	パルス波	</dt><dd>0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
+<dt>APU	三角波		</dt><dd>音色エンベロープはありません。</dd>
+<dt>APU	ノイズ		</dt><dd>0～1　（0=長周期 / 1=短周期）</dd>
+<dt>APU	⊿PCM		</dt><dd>音色エンベロープはありません。</dd>
+<dt>FDS				</dt><dd>0～63<strong>（モジュレータのゲインに割り当てる予定）</strong></dd>
+<dt>VRC6 パルス波	</dt><dd>0～7　（0=6.25% ～ 7=50%）</dd>
+<dt>VRC6 SAW		</dt><dd>音色エンベロープはありません。</dd>
+<dt>VRC7			</dt><dd>0～15</dd>
+<dt>MMC5			</dt><dd>0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
+<dt>N168			</dt><dd>0～127　<strong>（n168のレジスターアドレスに相当する予定）</strong></dd>
+<dt>PSG				</dt><dd>0～3　（1=Tone / 2=Noise / 3:Tone & Noise）</dd>
+</dl>
+
+<h4>音量</h4>
+<dl>
+<dt>APU	パルス波	</dt><dd>0～15</dd>
+<dt>APU	三角波		</dt><dd>音量エンベロープはありません。</dd>
+<dt>APU	ノイズ		</dt><dd>0～15</dd>
+<dt>APU	⊿PCM		</dt><dd>音量エンベロープはありません。</dd>
+<dt>FDS				</dt><dd>0～63<strong>（キャリアのゲインに割り当てる予定）</strong></dd>
+<dt>VRC6 パルス波	</dt><dd>0～15</dd>
+<dt>VRC6 SAW		</dt><dd>0～63</dd>
+<dt>VRC7			</dt><dd>0～15</dd>
+<dt>MMC5			</dt><dd>0～15</dd>
+<dt>N168			</dt><dd>0～15</dd>
+<dt>PSG				</dt><dd>0～15</dd>
+</dl>
+
+<h4>周波数</h4>
+<p>
+-64～63の範囲で指定してください。<br>
+数値は、現在発音している音階を基準とした値で、16が100cent（半音）に相当します。<br>
+</p>
+
+<h4>音程</h4>
+<p>
+-64～63の範囲で指定してください。<br>
+数値は、現在発音している音階を基準とした値で、1が100cent（半音）に相当します。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+MMLコンパイラは、各エンベロープ（音色、音量、周波数、音程）のパターンを一元管理します。<br>
+特定の１つのパターンを、どのエンベロープでも使用可能ですが、設定範囲は留意して下さい。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+<span style="color:green;">// frequency envelop "Volume table"</span>
+Envelop(0){
+	15 D10 14 13 12  L 11 11 10 10 9 9 10 10 R 9 8 7 6 5 L 4 4 3 3 2 2 3 3
+}
+</pre></code>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

@@ -362,6 +362,7 @@ PSG_Data		= $E000
 ;-----------------------------------------------------------------------
 
 .MACPACK generic
+.MACPACK longbranch 
 
 .macro  ldax    arg
 	.if (.match (.left (1, {arg}), #))

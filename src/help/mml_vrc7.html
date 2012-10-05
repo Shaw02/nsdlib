@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: VRC7 User Instrument block</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MML reference: VRC7 User Instrument block</h2>
+
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+VRC7(<var>n</var>){
+	@<var>TL</var> <var>FB</var>
+	<var>AR(M)</var> <var>DR(M)</var> <var>SL(M)</var> <var>RR(M)</var> <var>KL(M)</var> <var>MT(M)</var> <var>AM(M)</var> <var>VB(M)</var> <var>EG(M)</var> <var>KR(M)</var> <var>D(M)</var>
+	<var>AR(C)</var> <var>DR(C)</var> <var>SL(C)</var> <var>RR(C)</var> <var>KL(C)</var> <var>MT(C)</var> <var>AM(C)</var> <var>VB(C)</var> <var>EG(C)</var> <var>KR(C)</var> <var>D(C)</var>
+}
+</pre></code>
+<code><pre>
+VRC7(<var>n</var>){
+	@R<var>reg1</var> <var>reg2</var> <var>reg3</var> <var>reg4</var> <var>reg5</var> <var>reg6</var> <var>reg7</var> <var>reg8</var>
+}
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>n</h4>
+<p>
+VRC7ユーザー定義音色の番号を指定します。
+</p>
+
+<h4>TL</h4>
+<p>
+"Total level"です。0～31で指定して下さい。<br>
+トータルレベルは、エンベロープジェネレーターの出力に対して減衰量を加算し、変調度(音色)の制御します。<br>
+</p>
+
+<h4>FB</h4>
+<p>
+"Feedback"です。0～7で指定して下さい。<br>
+モジュレータスロットのフィードバックFM変調の変調度です。<br>
+</p>
+
+<h4>AR</h4>
+<p>
+"Atack rate"です。0～15で指定して下さい。<br>
+音の立ち上がり時間の設定をします。<br>
+</p>
+
+<h4>DR</h4>
+<p>
+"Decay rate"です。0～15で指定して下さい。<br>
+アタック後の減衰時間です。<br>
+</p>
+
+<h4>SL</h4>
+<p>
+"Sustain level"です。0～15で指定して下さい。<br>
+持続音の場合は、ディケイモードでの減衰がこのレベルに到達するとその後はそのレベルを保持するという変化点を指定します。<br>
+減衰音の場合は、ディケイモードからリリースモードヘの変化点を指定します。<br>
+</p>
+
+<h4>RR</h4>
+<p>
+"Release rate"です。0～15で指定して下さい。<br>
+持続昔の場合は、KeyをOFFした時に音の減衰を指定します。<br>
+減衰音の場合は、サスティンレベルに達した後の減衰を指定します。<br>
+</p>
+
+<h4>KL</h4>
+<p>
+Levelに対するキースケールです。0～3の範囲で指定して下さい。<br>
+キースケールのモードは、音程が上がるほどレベルは減衰し、
+その減衰量は、減衰無し(0)、1.5dB/OCT(1)、3dB/OCT(2)、6dB/OCT(3)の4種類です。<br>
+</p>
+
+<h4>MT</h4>
+<p>
+"Multiple"です。
+周波数を制御します。
+0～15で指定して下さい。
+</p>
+
+<h4>AM</h4>
+<p>
+撮幅変調のON/OFFスイッチです。0～1の範囲で指定して下さい。<br>
+このビットが｢1｣にセットされたときには、そのスロットには振幅変調がかかります。<br>
+</p>
+
+<h4>VB</h4>
+<p>
+ビブラートのスイッチです。0～1の範囲で指定して下さい。<br>
+1にすると、そのスロットにビブラートがかかります。<br>
+</p>
+
+<h4>EG</h4>
+<p>
+持続音か減衰音かの切り換えをします。<br>
+0 : 減衰音<br>
+1 : 持続音<br>
+</p>
+
+<h4>KR</h4>
+<p>
+Rateに対するキースケールです。0～1の範囲で指定して下さい。<br>
+0 : キースケール無し<br>
+1 : キースケール有り<br>
+</p>
+
+<h4>D</h4>
+<p>
+半波整流のスイッチです。0～1の範囲で指定して下さい。<br>
+0 : 正弦波<br>
+1 : 正弦波を半波整流した波形<br>
+</p>
+
+
+<h4>reg1 ～ reg8</h4>
+<p>
+VRC7のレジスタ0x00～0x07に書く値をそれぞれ指定します。
+</p>
+
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+
+<p>
+VRC7のユーザー音色を定義します。<br>
+定義先頭が`@'の場合はパラメータベース、定義先頭が`@R'の場合はレジスタベースで音色定義します。<br>
+尚、各パラメータの途中にカンマ`,'を記述しても大丈夫です。<br>
+</p>
+
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+VRC7(1){	<span style="color:green;">//Piano</span>
+	<span style="color:green;">//	TL FB</span>
+	@	18  4
+	<span style="color:green;">//	AR DR SL RR KL MT AM VB EG KR DT</span>
+		15  1  3  3  2  1  0  0  0  1  1
+		15  2  3  1  0  1  0  0  0  1  0
+}
+</pre></code>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

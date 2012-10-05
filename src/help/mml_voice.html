@@ -27,22 +27,32 @@
 
 <h4>voice</h4>
 <p>
-音色です。<br>
+音色を指定します。<br>
 </p>
-
-<dl>
-<dt>2A03 Pluse	</dt><dd>0～3の範囲で指定してください。0=12.5% / 1=25% / 2=50% / 3=75%</dd>
-<dt>2A03 Noise	</dt><dd>0～1の範囲で指定してください。0=長周期 / 1=短周期</dd>
-</dl>
 
 </div>
 <!-- ──────────────── -->
 <div class='block'>
 <h3>内容（Contents）</h3>
 <p>
-音色を指定します。<br>
+以下の通り、音色を指定します。<br>
 また、このコマンドにより、音色エンベロープが無効になります。<br>
 </p>
+
+<dl>
+<dt>APU	パルス波	</dt><dd>0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
+<dt>APU	三角波		</dt><dd><strong>音色はありません。</strong></dd>
+<dt>APU	ノイズ		</dt><dd>0～1　（0=長周期 / 1=短周期）</dd>
+<dt>APU	⊿PCM		</dt><dd><strong>音色はありません。</strong></dd>
+<dt>FDS				</dt><dd>0～63<strong>（モジュレータのゲインに割り当てる予定）</strong></dd>
+<dt>VRC6 パルス波	</dt><dd>0～7　（0=6.25% ～ 7=50%）</dd>
+<dt>VRC6 SAW		</dt><dd><strong>音色はありません。</strong></dd>
+<dt>VRC7			</dt><dd>0～15</dd>
+<dt>MMC5			</dt><dd>0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
+<dt>N168			</dt><dd>0～127　<strong>（n168のレジスターアドレスに相当する予定）</strong></dd>
+<dt>PSG				</dt><dd>0～3　（1=Tone / 2=Noise / 3:Tone & Noise）</dd>
+</dl>
+
 </div>
 
 <!-- ──────────────── -->

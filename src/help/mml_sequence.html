@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Music Sequence block</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MML reference: Music Sequence block</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+Sub(<var>n</var>){
+	<var>sequence</var>
+}
+</pre></code>
+
+<code><pre>
+BGM(<var>n</var>){
+	<var>sequence</var>
+}
+</pre></code>
+
+<code><pre>
+Se(<var>n</var>){
+	<var>sequence</var>
+}
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>n</h4>
+<p>
+各ブロックの番号を指定します。
+</p>
+
+<h4>sequence</h4>
+<p>
+曲シーケンスのデータです。<br>
+以下表のコマンドを記述して下さい。
+</p>
+
+<table>
+<tr><th>Command</th><th>Contens</th></tr>
+<tr><td><a href="mml_note.html">a</a></td><td>音符 (A, La, ラ)</td></tr>
+<tr><td><a href="mml_note.html">b</a></td><td>音符 (B, Si, シ)</td></tr>
+<tr><td><a href="mml_note.html">c</a></td><td>音符 (C, Do, ド)</td></tr>
+<tr><td><a href="mml_note.html">d</a></td><td>音符 (D, Re, レ)</td></tr>
+<tr><td><a href="mml_note.html">e</a></td><td>音符 (E, Mi, ミ)</td></tr>
+<tr><td><a href="mml_note.html">f</a></td><td>音符 (F, Fa, ファ)</td></tr>
+<tr><td><a href="mml_note.html">g</a></td><td>音符 (G, Sol, ソ)</td></tr>
+<tr><td><a href="mml_length.html">l</a></td><td>音長を省略した時に適用する音長</td></tr>
+<tr><td><a href="mml_octave.html">o</a></td><td>オクターブ</td></tr>
+<tr><td><a href="mml_gate.html">q</a></td><td>後方からのゲートタイム</td></tr>
+<tr><td><a href="mml_rest.html">r</a></td><td>休符</td></tr>
+<tr><td><a href="mml_tie.html">^</a></td><td>タイ</td></tr>
+<tr><td><a href="mml_sweep.html">s</a></td><td>APU : スイープ<br>VRC7 : サスティン</td></tr>
+<tr><td><a href="mml_tempo.html">t</a></td><td>テンポ</td></tr>
+<tr><td><a href="mml_tempo.html">t_</a></td><td>相対テンポ</td></tr>
+<tr><td><a href="mml_gate.html">u</a></td><td>前方からのゲートタイム</td></tr>
+<tr><td><a href="mml_volume.html">v</a></td><td>音量</td></tr>
+<tr><td><a href="mml_poke.html">y</a></td><td>メモリ書き込み</td></tr>
+<tr><td><a href="mml_VRC7write.html">yV</a></td><td>VRC7レジスタ書き込み</td></tr>
+<tr><td>yP</a></td><td>PSG レジスタ書き込み<strong>（開発中）</strong></td></tr>
+<tr><td>yN</a></td><td>n163レジスタ書き込み<strong>（開発中）</strong></td></tr>
+<tr><td><a href="mml_detune.html">D</a></td><td>ディチューン（cent単位）</td></tr>
+<tr><td><a href="mml_detune.html">D%</a></td><td>ディチューン（register単位）</td></tr>
+<tr><td><a href="mml_envelop.html">E@</a></td><td>音色エンベロープ・パターン</td></tr>
+<tr><td><a href="mml_envelop.html">Ev</a></td><td>音量エンベロープ・パターン</td></tr>
+<tr><td><a href="mml_envelop.html">Em</a></td><td>周波数エンベロープ・パターン</td></tr>
+<tr><td><a href="mml_envelop.html">En</a></td><td>音程エンベロープ・パターン</td></tr>
+<tr><td><a href="mml_KeySignature.html">K{}</a></td><td>調号（自動臨時記号）</td></tr>
+<tr><td><a href="mml_loop.html">L</a></td><td>無限ループ（サブルーチンの記述ブロック内では無効）</td></tr>
+<tr><td><a href="mml_portamento.html">P</a></td><td>ポルタメント</td></tr>
+<tr><td><a href="mml_release.html">R@</a></td><td>Key off時の音色</td></tr>
+<tr><td><a href="mml_release.html">Rv</a></td><td>Key off時の音量</td></tr>
+<tr><td><a href="mml_release.html">Rm</a></td><td>Key off時のモード</td></tr>
+<tr><td><a href="mml_sub.html">S</a></td><td>サブルーチン呼び出し（サブルーチンの記述ブロック内では無効です）</td></tr>
+<tr><td><a href="mml_TR.html">TR</a></td><td>トラック（サブルーチンの記述ブロック内では無効です）</td></tr>
+<tr><td><a href="mml_voice.html">@</a></td><td>音色（音色エンベロープ無効）</td></tr>
+<tr><td>@FC</a></td><td>FDS キャリア波形設定<strong>（開発中）</strong></td></tr>
+<tr><td>@FM</a></td><td>FDS モジュレータ波形設定<strong>（開発中）</strong></td></tr>
+<tr><td>@FF</a></td><td>FDS モジュレータ周波数設定<strong>（開発中）</strong></td></tr>
+<tr><td><a href="mml_VRC7voice.html">@V</a></td><td>VRC7ユーザー音色設定</td></tr>
+<tr><td>@N</a></td><td>n163 波形設定<strong>（開発中）</strong></td></tr>
+<tr><td>@NL</a></td><td>n163 波形長設定<strong>（開発中）</strong></td></tr>
+<tr><td><a href="mml_repeatA.html">[  :  ]</a></td><td>リピート(Ａ)</td></tr>
+<tr><td><a href="mml_repeatB.html">|:  \  :|</a></td><td>リピート(Ｂ)</td></tr>
+<tr><td><a href="mml_relative_octave.html">&lt;</a></td><td>オクターブ－１</td></tr>
+<tr><td><a href="mml_relative_octave.html">&gt;</a></td><td>オクターブ＋１</td></tr>
+<tr><td><a href="mml_relative_octave.html">"</a></td><td>オクターブ－１（次の音符のみ）</td></tr>
+<tr><td><a href="mml_relative_octave.html">'</a></td><td>オクターブ＋１（次の音符のみ）</td></tr>
+<tr><td><a href="mml_relative_volume.html">(</a></td><td>音量－１</td></tr>
+<tr><td><a href="mml_relative_volume.html">)</a></td><td>音量＋１</td></tr>
+<tr><td><a href="mml_transpose.html">_</a></td><td>移調（絶対値）。</td></tr>
+<tr><td><a href="mml_transpose.html">__</a></td><td>移調（相対値）。</td></tr>
+<tr><td>$<var>name</var></td><td>マクロ呼び出し<strong>（未実装）</strong></td></tr>
+<tr><td>|</td><td>小節線（コンパイルには反映されません）</td></tr>
+</table>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+
+<p>
+BGM,SE,サブルーチンの演奏パターンを定義します。<br>
+シーケンスデータのサイズを最適化するためには、
+ぜひ、<a href="format_music.html">BGM,SEデータフォーマット（Format of BGM and SE）</a>を御一読ください。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<p>
+各コマンドのサンプルを参照して下さい。
+</p>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

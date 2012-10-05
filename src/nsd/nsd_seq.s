@@ -6,6 +6,7 @@
 	.import		_nsd_snd_keyon
 	.import		_nsd_snd_keyoff
 	.import		_nsd_snd_sweep
+	.import		_nsd_snd_voice
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
@@ -49,6 +50,12 @@
 
 	;Hardware key on
 	jsr	_nsd_snd_keyon
+
+	lda	__env_voice + 1,x	;●●●　最適化　●●●
+	bne	@L2			;音量エンベロープが無効だったら
+	lda	__env_voice,x		;ここでKeyOn時の音色にする。
+	jsr	_nsd_snd_voice		;
+@L2:
 
 	lda	#$00
 	sta	__Envelop_F,x
@@ -847,7 +854,7 @@ nsd_op1B:
 	sta	__env_voice,x
 	jmp	Sequence
 ;=======================================================================
-;		opcode	0x1C:	VRC6 : Set user instrument 
+;		opcode	0x1C:	VRC7 : Set user instrument 
 ;-----------------------------------------------------------------------
 nsd_op1C:
 
@@ -896,7 +903,7 @@ nsd_op1C:
 .endif
 	jmp	Sequence
 ;=======================================================================
-;		opcode	0x1D:	VRC6 : Set resister
+;		opcode	0x1D:	VRC7 : Set resister
 ;-----------------------------------------------------------------------
 nsd_op1D:
 
