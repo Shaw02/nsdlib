@@ -78,7 +78,7 @@
 													VRC6: -							<br>
 													VRC7: Sustain Switch			<br>
 													MMC5: -							<br>
-													N163: Enabled Channels		<strong>（未実装）</strong>	<br>
+													N163: Sample length				<br>
 													PSG : Envelop Switch & Type	<strong>（未実装）</strong>	</td></tr>
 <tr><td>0x17		</td><td>n1 n2 n3 n4</td><td>Portamento							<br>
 												n1 = Decay  (1 = 1 VBlank)			<br>
@@ -95,11 +95,11 @@
 <tr><td>0x1D		</td><td>n1 n2		</td><td>VRC6: Set resister					<br>
 												n1 : Resister						<br>
 												n2 : Data							</td></tr>
-<tr><td>0x1E		</td><td>n1 n2 n3	</td><td>N163: Set wave table	<strong>（未実装）</strong>	<br>
+<tr><td>0x1E		</td><td>n1 n2 n3	</td><td>N163: Set wave table				<br>
 												n1 = Addres							<br>
 												n1::n2 = Pointer.					</td></tr>
-<tr><td>0x1F		</td><td>n1			</td><td>N163: Set wave length	<strong>（未実装）</strong>	<br>
-												n1 = Wave length					</td></tr>
+<tr><td>0x1F		</td><td>n1			</td><td>N163: Set Channel number			<br>
+												n1 = number of channel				</td></tr>
 <tr><td>0x20		</td><td>			</td><td>Volume down	(-1)				</td></tr>
 <tr><td>0x21		</td><td>			</td><td>Volume up		(+1)				</td></tr>
 <tr><td>0x22		</td><td>n1 n2		</td><td>FDS : Set career wave table	<strong>の予定（未実装）</strong>	<br>

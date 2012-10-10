@@ -215,12 +215,54 @@ void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetVRC7(MMLfile* MML)
 {
-	mml_Address*		_event = new mml_Address(nsc_VRC7, "Subroutine");
+	mml_Address*		_event = new mml_Address(nsc_VRC7, "VRC7 user instruments");
 	unsigned	int		_no = MML->GetInt();
 
 	_event->set_id(_no);
 	SetEvent(_event);
 	ptcOPLL.push_back(_event);
+}
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetN163(MMLfile* MML)
+{
+	unsigned	char	cData;
+	mml_Address*		_event = new mml_Address(nsc_N163,MML->GetInt(),"n163 wave table");
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err("@N コマンドのパラメータが足りません。２つ指定してください。");
+	}
+
+	_event->set_id(MML->GetInt());
+	SetEvent(_event);
+	ptcWave.push_back(_event);
+}
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetN163Channel(MMLfile* MML)
+{
+	int	i = MML->GetInt();
+
+	if( (i <= 8) && (i >=1) ){
+		SetEvent(new mml_general(nsc_N163_Channel,i-1,"n163 channel"));
+	} else {
+		MML->Err("n163のチャンネル数は1～8の範囲で指定してください。");
+	}
+
+
 }
 //==============================================================
 //		
@@ -248,13 +290,14 @@ void	MusicTrack::SetSubroutine(MMLfile* MML)
 //	●返値
 //				無し
 //==============================================================
-void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv, map<int, VRC7*>* ptcVRC7)
+void	MusicTrack::Fix_Address(MusicFile* MUS)
 {
 	//----------------------
 	//Local変数
 	vector<	mml_Address*	>::iterator	itSub;
 	vector<	mml_Address*	>::iterator	itEnv;
 	vector<	mml_Address*	>::iterator	itVRC7;
+	vector<	mml_Address*	>::iterator	itN163;
 	unsigned	int	_no;
 	unsigned	int	_sub_offset;
 	unsigned	int	_com_offset;
@@ -266,11 +309,11 @@ void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv,
 		while(itSub != ptcSubroutine.end()){
 			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
 			_com_offset	= (*itSub)->getOffset();
-			if( ptcSub->count(_no) == 0){
+			if( MUS->ptcSub.count(_no) == 0){
 				printf("サブルーチン %d 番が存在しません。",_no);
 				exit(-1);
 			}
-			_sub_offset = (*ptcSub)[_no]->getOffset();	//指定サブルーチンが存在するオフセット
+			_sub_offset = MUS->ptcSub[_no]->getOffset();	//指定サブルーチンが存在するオフセット
 			(*itSub)->set_Address(_sub_offset - _com_offset - 1);
 			itSub++;
 		}
@@ -282,11 +325,11 @@ void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv,
 		while(itEnv != ptcEnvelop.end()){
 			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itEnv)->getOffset();
-			if( ptcEnv->count(_no) == 0){
+			if( MUS->ptcEnv.count(_no) == 0){
 				printf("エンベロープ %d 番が存在しません。",_no);
 				exit(-1);
 			}
-			_sub_offset = (*ptcEnv)[_no]->getOffset();	//指定エンベロープが存在するオフセット
+			_sub_offset = MUS->ptcEnv[_no]->getOffset();	//指定エンベロープが存在するオフセット
 			(*itEnv)->set_Address(_sub_offset - _com_offset - 1);
 			itEnv++;
 		}
@@ -298,13 +341,29 @@ void	MusicTrack::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv,
 		while(itVRC7 != ptcOPLL.end()){
 			_no			= (*itVRC7)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itVRC7)->getOffset();
-			if( ptcVRC7->count(_no) == 0){
+			if( MUS->ptcVRC7.count(_no) == 0){
 				printf("VRC7 %d 番が存在しません。",_no);
 				exit(-1);
 			}
-			_sub_offset = (*ptcVRC7)[_no]->getOffset();	//指定エンベロープが存在するオフセット
+			_sub_offset = MUS->ptcVRC7[_no]->getOffset();	//指定エンベロープが存在するオフセット
 			(*itVRC7)->set_Address(_sub_offset - _com_offset - 1);
 			itVRC7++;
+		}
+	}
+
+	//
+	if(!ptcWave.empty()){
+		itN163 = ptcWave.begin();
+		while(itN163 != ptcWave.end()){
+			_no			= (*itN163)->get_id();		//エンベロープNo.の取得
+			_com_offset	= (*itN163)->getOffset();
+			if( MUS->ptcN163.count(_no) == 0){
+				printf("N163 %d 番が存在しません。",_no);
+				exit(-1);
+			}
+			_sub_offset = MUS->ptcN163[_no]->getOffset();	//指定エンベロープが存在するオフセット
+			(*itN163)->set_Address(_sub_offset - _com_offset - 2);
+			itN163++;
 		}
 	}
 
@@ -629,23 +688,25 @@ void	MusicTrack::SetSweep(MMLfile* MML)
 	unsigned	char	cData;
 
 	iSpeed = MML->GetInt();
-	if( (iSpeed < 0) || (iSpeed > 15) ){
-		MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
-	}
 
 	cData = MML->GetChar();
 	if(cData != ','){
+		if( (iSpeed < 0) || (iSpeed > 255) ){
+			MML->Err("0～255の範囲で指定してください。");
+		}
 		MML->Back();
-		iDepth = iSpeed;
-		iSpeed = 0;
+		_data = iSpeed;
 	} else {
+		if( (iSpeed < 0) || (iSpeed > 15) ){
+			MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
+		}
 		iDepth = MML->GetInt();
 		if( (iDepth < 0) || (iDepth > 15) ){
 			MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
 		}
+		_data = ((iSpeed & 0x0F) << 4) | (iDepth & 0x0F);
 	}
 
-	_data = ((iSpeed & 0x0F) << 4) | (iDepth & 0x0F);
 	SetEvent(new mml_general(nsd_Sweep, _data, "Sweep"));
 }
 

@@ -23,6 +23,17 @@ mml_Address::mml_Address(unsigned char _code, const char _strName[]):
 	code[2] = 0;
 }
 
+mml_Address::mml_Address(unsigned char _code, unsigned char _data, const char _strName[]):
+	MusicEvent(_strName)
+{
+	iSize = 4;
+	code.resize(iSize);
+	code[0] = _code;
+	code[1] = _data;
+	code[2] = 0;
+	code[3] = 0;
+}
+
 //==============================================================
 //		デストラクタ
 //--------------------------------------------------------------
@@ -45,8 +56,22 @@ mml_Address::~mml_Address(void)
 //==============================================================
 void	mml_Address::set_Address(unsigned int _addr)
 {
-	code[1] = ((_addr     ) & 0xFF);
-	code[2] = ((_addr >> 8) & 0xFF);
+	switch(iSize){
+		case(3):
+			code[1] = ((_addr     ) & 0xFF);
+			code[2] = ((_addr >> 8) & 0xFF);
+			break;
+		case(4):
+			code[2] = ((_addr     ) & 0xFF);
+			code[3] = ((_addr >> 8) & 0xFF);
+			break;
+		default:
+			cout << "mml_Address::set_Address()関数でエラーが発生しました。" << endl;
+			exit(-1);
+			break;
+	}
+	
+
 }
 
 //==============================================================

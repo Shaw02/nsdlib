@@ -16,7 +16,7 @@ VRC7(1){	//Piano
 	@	18  4
 	//	AR DR SL RR KL MT AM VB EG KR DT
 		15  1  3  3  2  1  0  0  0  1  1
-		15  2  3  1  0  1  0  0  0  1  0
+		15  7  1  1  0  1  0  0  0  1  0
 }
 
 //	frequency envelop "Volume table"
@@ -30,7 +30,7 @@ Envelop(200){	0 1 2 3 4 5 6 L 7	}
 bgm(0){
 	t120
 
-	TR6	l4o4	v15		@0	@V1		s0 cdefgab> s1 yV0,255	c1
+	TR6	l4o4	v15		@2	u8	s0 cdef s1 gab> yV0,255	c1
 //	TR7	l4o4	v9		Em100	Ev0	@4	r-8.	cdefgab> c1
 //	TR8	l4o2	v13		Em100	Ev0	@2			cdefgab> c1
 

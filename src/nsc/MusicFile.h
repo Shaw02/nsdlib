@@ -33,11 +33,8 @@ class MusicFile :
 //メンバー変数
 public:
 			MusicHeader			Header;		//Header			
-
-private:
-//static	const	Command_Info	Command[];
-					string		dpcm_code;
 	map<	int, VRC7*		>	ptcVRC7;	//VRC7 User Instrument
+	map<	int, N163*		>	ptcN163;	//N163 wave table
 	map<	int, Envelop*	>	ptcEnv;		//Envelop
 	map<	int, BGM*		>	ptcBGM;		//BGM
 	map<	int, SE*		>	ptcSE;		//SE 
@@ -45,6 +42,9 @@ private:
 	map< string, MusicTrack*>	ptcMac;		//Macro
 				DPCMinfo*		cDPCMinfo;
 
+private:
+//static	const	Command_Info	Command[];
+					string		dpcm_code;
 	unsigned	int				nsf_size;
 
 //メンバー関数

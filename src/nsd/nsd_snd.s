@@ -401,14 +401,14 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	_nsd_nes_voice		;
 .endif
 .ifdef	N163
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_n163_ch1_voice
+	.addr	_nsd_n163_ch2_voice
+	.addr	_nsd_n163_ch3_voice
+	.addr	_nsd_n163_ch4_voice
+	.addr	_nsd_n163_ch5_voice
+	.addr	_nsd_n163_ch6_voice
+	.addr	_nsd_n163_ch7_voice
+	.addr	_nsd_n163_ch8_voice
 .endif
 .ifdef	PSG
 	.addr	Exit
@@ -503,6 +503,103 @@ exit:
 	rts
 .endproc
 .endif
+
+;---------------------------------------
+.ifdef	N163
+.proc	_nsd_n163_ch1_voice
+	ldy	#N163_Waveform - (8 * 0)
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+	rts
+.endproc
+
+.proc	_nsd_n163_ch2_voice
+	ldy	__n163_num
+	cpy	#10
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Waveform - (8 * 1)
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch3_voice
+	ldy	__n163_num
+	cpy	#20
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Waveform - (8 * 2)
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch4_voice
+	ldy	__n163_num
+	cpy	#30
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Waveform - (8 * 3)
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch5_voice
+	ldy	__n163_num
+	cpy	#40
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Waveform - (8 * 4)
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch6_voice
+	ldy	__n163_num
+	cpy	#50
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Waveform - (8 * 5)
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch7_voice
+	ldy	__n163_num
+	cpy	#60
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Waveform - (8 * 6)
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch8_voice
+	ldy	__n163_num
+	cpy	#70
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Waveform - (8 * 7)
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.endif
+
 ;=======================================================================
 ;	void	__fastcall__	nsd_snd_volume(char vol);
 ;-----------------------------------------------------------------------
@@ -541,14 +638,14 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	.addr	_nsd_mmc5_ch2_volume
 .endif
 .ifdef	N163
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_n163_ch1_volume
+	.addr	_nsd_n163_ch2_volume
+	.addr	_nsd_n163_ch3_volume
+	.addr	_nsd_n163_ch4_volume
+	.addr	_nsd_n163_ch5_volume
+	.addr	_nsd_n163_ch6_volume
+	.addr	_nsd_n163_ch7_volume
+	.addr	_nsd_n163_ch8_volume
 .endif
 .ifdef	PSG
 	.addr	Exit
@@ -799,6 +896,103 @@ exit:
 .endproc
 .endif
 
+;---------------------------------------
+.ifdef	N163
+.proc	_nsd_n163_ch1_volume
+	ldy	#N163_Volume - (8 * 0)
+	sty	N163_Resister
+	and	#$0F
+	ora	__n163_num
+	sta	N163_Data
+	rts
+.endproc
+
+.proc	_nsd_n163_ch2_volume
+	ldy	__n163_num
+	cpy	#10
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Volume - (8 * 1)
+	sty	N163_Resister
+	and	#$0F
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch3_volume
+	ldy	__n163_num
+	cpy	#20
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Volume - (8 * 2)
+	sty	N163_Resister
+	and	#$0F
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch4_volume
+	ldy	__n163_num
+	cpy	#30
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Volume - (8 * 3)
+	sty	N163_Resister
+	and	#$0F
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch5_volume
+	ldy	__n163_num
+	cpy	#40
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Volume - (8 * 4)
+	sty	N163_Resister
+	and	#$0F
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch6_volume
+	ldy	__n163_num
+	cpy	#50
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Volume - (8 * 5)
+	sty	N163_Resister
+	and	#$0F
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch7_volume
+	ldy	__n163_num
+	cpy	#60
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Volume - (8 * 6)
+	sty	N163_Resister
+	and	#$0F
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch8_volume
+	ldy	__n163_num
+	cpy	#70
+	bcc	Exit			;1未満だったら終了
+	ldy	#N163_Volume - (8 * 7)
+	sty	N163_Resister
+	and	#$0F
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.endif
+
 ;=======================================================================
 ;	void	__fastcall__	nsd_snd_sweep(char vol);
 ;-----------------------------------------------------------------------
@@ -837,14 +1031,14 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	.addr	Exit
 .endif
 .ifdef	N163
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_n163_sample_length
+	.addr	_nsd_n163_sample_length
+	.addr	_nsd_n163_sample_length
+	.addr	_nsd_n163_sample_length
+	.addr	_nsd_n163_sample_length
+	.addr	_nsd_n163_sample_length
+	.addr	_nsd_n163_sample_length
+	.addr	_nsd_n163_sample_length
 .endif
 .ifdef	PSG
 	.addr	Exit
@@ -907,6 +1101,16 @@ Exit:
 @L:	ora	#nsd_chflag::Sustain
 @Set:	sta	__chflag,x
 
+	rts
+.endproc
+.endif
+
+;---------------------------------------
+.ifdef	N163
+.proc	_nsd_n163_sample_length
+	shl	a, 2
+;	ora	#$E0
+	sta	__frequency_set + 1,x
 	rts
 .endproc
 .endif
@@ -1415,6 +1619,7 @@ Freq_N163:
 	.word	$FA71
 	.word	$FD33
 	.word	$FFF8
+Freq_N163_50:
 	.word	$02BF		;$50
 	.word	$0589
 	.word	$0855
@@ -1560,14 +1765,14 @@ JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
 	.addr	_nsd_mmc5_ch2_frequency
 .endif
 .ifdef	N163
-	.addr	Exit	;_nsd_n163_frequency
-	.addr	Exit	;_nsd_n163_frequency
-	.addr	Exit	;_nsd_n163_frequency
-	.addr	Exit	;_nsd_n163_frequency
-	.addr	Exit	;_nsd_n163_frequency
-	.addr	Exit	;_nsd_n163_frequency
-	.addr	Exit	;_nsd_n163_frequency
-	.addr	Exit	;_nsd_n163_frequency
+	.addr	_nsd_n163_ch1_frequency
+	.addr	_nsd_n163_ch2_frequency
+	.addr	_nsd_n163_ch3_frequency
+	.addr	_nsd_n163_ch4_frequency
+	.addr	_nsd_n163_ch5_frequency
+	.addr	_nsd_n163_ch6_frequency
+	.addr	_nsd_n163_ch7_frequency
+	.addr	_nsd_n163_ch8_frequency
 .endif
 .ifdef	PSG
 	.addr	Exit	;_nsd_psg_ch1_frequency
@@ -1875,14 +2080,236 @@ Exit:
 .endproc
 .endif
 
+;---------------------------------------
+.ifdef	N163
+.proc	_nsd_n163_ch1_frequency
+
+	jsr	N163_frequency
+
+	lda	#N163_Frequency_Low - (8 * 0)
+	sta	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	lda	#N163_Frequency_Middle - (8 * 0)
+	sta	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	lda	#N163_Frequency_High - (8 * 0)
+	sta	N163_Resister
+	lda	__ptr
+	ora	__frequency_set + 1,x
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch2_frequency
+	ldy	__n163_num
+	cpy	#10
+	bcc	Exit			;1未満だったら終了
+
+	jsr	N163_frequency
+
+	lda	#N163_Frequency_Low - (8 * 1)
+	sta	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	lda	#N163_Frequency_Middle - (8 * 1)
+	sta	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	lda	#N163_Frequency_High - (8 * 1)
+	sta	N163_Resister
+	lda	__ptr
+	ora	__frequency_set + 1,x
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch3_frequency
+	ldy	__n163_num
+	cpy	#20
+	bcc	Exit			;1未満だったら終了
+
+	jsr	N163_frequency
+
+	lda	#N163_Frequency_Low - (8 * 2)
+	sta	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	lda	#N163_Frequency_Middle - (8 * 2)
+	sta	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	lda	#N163_Frequency_High - (8 * 2)
+	sta	N163_Resister
+	lda	__ptr
+	ora	__frequency_set + 1,x
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch4_frequency
+	ldy	__n163_num
+	cpy	#30
+	bcc	Exit			;1未満だったら終了
+
+	jsr	N163_frequency
+
+	lda	#N163_Frequency_Low - (8 * 3)
+	sta	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	lda	#N163_Frequency_Middle - (8 * 3)
+	sta	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	lda	#N163_Frequency_High - (8 * 3)
+	sta	N163_Resister
+	lda	__ptr
+	ora	__frequency_set + 1,x
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch5_frequency
+	ldy	__n163_num
+	cpy	#40
+	bcc	Exit			;1未満だったら終了
+
+	jsr	N163_frequency
+
+	lda	#N163_Frequency_Low - (8 * 4)
+	sta	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	lda	#N163_Frequency_Middle - (8 * 4)
+	sta	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	lda	#N163_Frequency_High - (8 * 4)
+	sta	N163_Resister
+	lda	__ptr
+	ora	__frequency_set + 1,x
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch6_frequency
+	ldy	__n163_num
+	cpy	#50
+	bcc	Exit			;1未満だったら終了
+
+	jsr	N163_frequency
+
+	lda	#N163_Frequency_Low - (8 * 5)
+	sta	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	lda	#N163_Frequency_Middle - (8 * 5)
+	sta	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	lda	#N163_Frequency_High - (8 * 5)
+	sta	N163_Resister
+	lda	__ptr
+	ora	__frequency_set + 1,x
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch7_frequency
+	ldy	__n163_num
+	cpy	#60
+	bcc	Exit			;1未満だったら終了
+
+	jsr	N163_frequency
+
+	lda	#N163_Frequency_Low - (8 * 6)
+	sta	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	lda	#N163_Frequency_Middle - (8 * 6)
+	sta	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	lda	#N163_Frequency_High - (8 * 6)
+	sta	N163_Resister
+	lda	__ptr
+	ora	__frequency_set + 1,x
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_n163_ch8_frequency
+	ldy	__n163_num
+	cpy	#70
+	bcc	Exit			;1未満だったら終了
+
+	jsr	N163_frequency
+
+	lda	#N163_Frequency_Low - (8 * 7)
+	sta	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	lda	#N163_Frequency_Middle - (8 * 7)
+	sta	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	lda	#N163_Frequency_High - (8 * 7)
+	sta	N163_Resister
+	lda	__ptr
+	ora	__frequency_set + 1,x
+	sta	N163_Data
+Exit:
+	rts
+.endproc
+
+
+.endif
+
+;---------------------------------------
+.ifdef	PSG
+.proc	_nsd_psg_frequency
+
+	
+
+Exit:
+	rts
+.endproc
+.endif
+
+
 ;=======================================================================
 ;	void	__fastcall__	Normal_frequency(int freq);
 ;-----------------------------------------------------------------------
 ;<<Input>>
 ;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
 ;<<Output>>
-;	__frequency_set		frequency lower 8bit
-;	__tmp + 1		frequency upper 8bit
+;	__tmp + 1	frequency upper 8bit
+;	__tmp		frequency lower 8bit
 ;=======================================================================
 .proc	Normal_frequency
 
@@ -1954,8 +2381,8 @@ Exit:
 ;<<Input>>
 ;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
 ;<<Output>>
-;	__frequency_set		frequency lower 8bit
-;	__tmp + 1		frequency upper 8bit
+;	__tmp + 1	frequency upper 8bit
+;	__tmp		frequency lower 8bit
 ;=======================================================================
 .proc	MMC5_frequency
 
@@ -1998,6 +2425,95 @@ Detune:
 	tya
 	adc	__tmp + 1
 	sta	__tmp + 1		;__tmp += (signed int)__detune_cent
+
+	;-------------------------------
+	; *** Exit
+Exit:
+	rts
+.endproc
+.endif
+
+
+
+.ifdef	N163
+;=======================================================================
+;	void	__fastcall__	N163_frequency(int freq);
+;-----------------------------------------------------------------------
+;<<Input>>
+;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
+;<<Output>>
+;	__ptr		frequency HSB 8bit
+;	__tmp + 1	frequency MSB 8bit
+;	__tmp		frequency LSB 8bit
+;=======================================================================
+.proc	N163_frequency
+
+	jsr	_nsd_div192		; 
+	cmp	#$50
+	bcc	@L50
+	cmp	#$9F
+	bcc	@L9F
+	ldy	#4
+	bne	@L
+@L9F:	ldy	#3
+@L:	sty	__ptr		;frequency HSB
+	sub	#$50
+	shl	a, 1
+	tay
+	lda	Freq_N163_50 + 1,y
+	sta	__tmp + 1	;frequency MSB
+	lda	Freq_N163_50,y	;frequency LSB
+	jmp	@L2
+
+@L50:	ldy	#2
+	sty	__ptr		;frequency HSB
+	shl	a, 1
+	tay
+	lda	Freq_N163 + 1,y
+	sta	__tmp + 1	;frequency MSB
+	lda	Freq_N163,y	;frequency LSB
+@L2:
+
+	;-------------------------------
+	; *** Octave caluclate  and  overflow check
+	cpx	#$08
+	bcc	Octave_Loop
+	bne	@Over
+	sta	__tmp
+	lda	__ptr
+	cmp	#4		;if (frequency >= 0x040000) {
+	bcc	Detune
+@Over:	lda	#$3
+	sta	__ptr
+	lda	#$FF
+	sta	__tmp		;
+	sta	__tmp + 1	;	frequency = 0x03FFFF;1
+	bne	Detune		;
+Octave_Loop:
+	lsr	__ptr		;高速化のため、
+	ror	__tmp + 1	;ゼロページとaレジスターで
+	ror	a		;シフト演算する。
+	inx
+	cpx	#$08
+	bne	Octave_Loop
+Octave_Exit:
+	sta	__tmp
+
+Detune:	
+	ldy	#$00
+	ldx	__channel
+	lda	__detune_fine,x
+	bpl	@L
+	ldy	#$FF			; ay = __detune_fine (sign expand)
+@L:	sty	__ptr + 1
+	add	__tmp
+	sta	__tmp
+	tya
+	adc	__tmp + 1
+	sta	__tmp + 1
+	lda	__ptr + 1
+	adc	__ptr
+	sta	__ptr
 
 	;-------------------------------
 	; *** Exit

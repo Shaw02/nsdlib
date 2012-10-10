@@ -5,13 +5,13 @@
 <meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>MML reference: Sweep</Title>
+<Title>MML reference: APU:Sweep / VRC7:Sustain / N163:Sample length</Title>
 </HEAD>
 <BODY>
 
 <div id='contents'>
 <h1>NSDL（NES Sound Driver Library）</h1>
-<h2>MML reference: Sweep</h2>
+<h2>MML reference: APU:Sweep / VRC7:Sustain / N163:Sample length</h2>
 
 <!-- ──────────────── -->
 <div class='block'>
@@ -25,6 +25,11 @@
 <h4>VRC7</h4>
 <code><pre>
         s<var>sustain</var>
+</pre></code>
+
+<h4>N163</h4>
+<code><pre>
+        s<var>length</var>
 </pre></code>
 
 </div>
@@ -81,6 +86,25 @@
 1 … サスティンを有効にします。<br>
 </p>
 
+<h4>length</h4>
+<p>
+n163の波形長を (64-<var>length</var>)×4 サンプルに設定します。<br>
+エミュレータによっては、以下表の56～63の範囲にしか対応していませんので、注意して下さい。<br>
+また、サンプル長と、使用するチャンネル数によって音程が変動しますので、注意して下さい。<br>
+</p>
+
+<table>
+<tr><th>value	</th><th>Sample length	</th></tr>
+<tr><td>56		</td><td>32	(16 byte)	</td></tr>
+<tr><td>57		</td><td>28	(14 byte)	</td></tr>
+<tr><td>58		</td><td>24	(12 byte)	</td></tr>
+<tr><td>59		</td><td>20	(10 byte)	</td></tr>
+<tr><td>60		</td><td>16	( 8 byte)	</td></tr>
+<tr><td>61		</td><td>12	( 6 byte)	</td></tr>
+<tr><td>62		</td><td> 8	( 4 byte)	</td></tr>
+<tr><td>63		</td><td> 4	( 2 byte)	</td></tr>
+</table>
+
 
 </div>
 <!-- ──────────────── -->
@@ -92,6 +116,10 @@
 <p>
 VRC7では、サスティンを設定します。<br>
 1を設定すると、KeyOff時のRRが5になります。<br>
+</p>
+<p>
+n163では、サンプル長を設定します。<br>
+サンプル長は、転送した音色テーブルに応じて必ず設定して下さい。<br>
 </p>
 </div>
 

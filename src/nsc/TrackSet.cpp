@@ -63,8 +63,13 @@ enum	Command_ID_mml {
 	mml_Release_Voice,
 	mml_Release_Volume,
 
+	mml_FDSC,
+	mml_FDSM,
+	mml_FDSF,
 	mml_VRC7,
+	mml_N163,
 	mml_Voice,
+	mml_N163_Channel,
 
 	mml_Octave,
 	mml_Octave_Up,
@@ -134,8 +139,13 @@ const	static	Command_Info	Command[] = {
 		{	"R@",	mml_Release_Voice		},
 		{	"Rv",	mml_Release_Volume		},
 
-		{	"@V",	mml_VRC7				},		//ñ¢é¿ëï
-		{	"@",	mml_Voice				},		//ñ¢é¿ëï
+		{	"@FC",	mml_FDSC				},
+		{	"@FM",	mml_FDSM				},
+		{	"@FF",	mml_FDSF				},
+		{	"@V",	mml_VRC7				},
+		{	"@N",	mml_N163				},
+		{	"@",	mml_Voice				},
+		{	"NC",	mml_N163_Channel		},
 
 		{	"o",	mml_Octave				},
 		{	">",	mml_Octave_Up			},
@@ -146,7 +156,7 @@ const	static	Command_Info	Command[] = {
 		{	"D",	mml_Detune_Cent			},
 		{	"__",	mml_Transpose_Relative	},
 		{	"_",	mml_Transpose			},
-		{	"P",	mml_Protament			},		//ñ¢é¿ëï
+		{	"P",	mml_Protament			},
 		{	"s",	mml_Sweep				},
 
 		{	"v",	mml_Volume				},
@@ -353,12 +363,32 @@ const	static	Command_Info	Command[] = {
 				nowTrack->SetReleaseVolume(MML);
 				break;
 
+			case(mml_FDSC):
+				//Å°Å°Å° to do
+				break;
+
+			case(mml_FDSM):
+				//Å°Å°Å° to do
+				break;
+
+			case(mml_FDSF):
+				//Å°Å°Å° to do
+				break;
+
 			case(mml_VRC7):
 				nowTrack->SetVRC7(MML);
 				break;
 
 			case(mml_Voice):
 				nowTrack->SetEvent(new mml_general(nsd_Voice, MML, "Voice"));
+				break;
+
+			case(mml_N163):
+				nowTrack->SetN163(MML);
+				break;
+
+			case(mml_N163_Channel):
+				nowTrack->SetN163Channel(MML);
 				break;
 
 			case(mml_Octave):
@@ -488,11 +518,11 @@ TrackSet::~TrackSet(void)
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-void	TrackSet::Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnvelop, map<int, VRC7*>* ptcVRC7)
+void	TrackSet::Fix_Address(MusicFile* MUS)
 {
 	iTrack = 0;
 	while(iTrack <= maxTrack){
-		ptcTrack[iTrack]->Fix_Address(ptcSub, ptcEnvelop, ptcVRC7);
+		ptcTrack[iTrack]->Fix_Address(MUS);
 		iTrack++;
 	}
 

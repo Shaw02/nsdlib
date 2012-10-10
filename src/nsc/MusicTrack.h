@@ -25,6 +25,7 @@ private:
 	mml_Address*		_old_repeatA_Branch;
 
 	vector<	mml_Address*	>	ptcOPLL;		//VRC7
+	vector<	mml_Address*	>	ptcWave;		//VRC7
 	vector<	mml_Address*	>	ptcSubroutine;	//サブルーチンコマンド一覧
 	vector<	mml_Address*	>	ptcEnvelop;		//エンベロープコマンド一覧
 
@@ -35,10 +36,12 @@ public:
 
 				void	SetEvent(MusicItem* _item);		//イベントの追加
 
-				void	Fix_Address(map<int, Sub*>* ptcSub, map<int, Envelop*>* ptcEnv, map<int, VRC7*>* ptcVRC7);
+				void	Fix_Address(MusicFile* MUS);
 
 				size_t	SetEnd(void);
 				void	SetVRC7(MMLfile* MML);
+				void	SetN163(MMLfile* MML);
+				void	SetN163Channel(MMLfile* MML);
 				void	SetSubroutine(MMLfile* MML);
 				void	SetEnvelop(unsigned char _opcode, MMLfile* MML);
 				void	SetLoop();

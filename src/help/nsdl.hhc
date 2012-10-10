@@ -99,6 +99,10 @@
 					<param name="Local" value="mml_vrc7.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="n163音色波形記述ブロック">
+					<param name="Local" value="mml_N163.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="シーケンス記述ブロック">
 					<param name="Local" value="mml_sequence.html">
 					</OBJECT>
@@ -127,7 +131,15 @@
 						<param name="Local" value="mml_rest.html">
 						</OBJECT>
 					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="s：スイープ">
+						<param name="Name" value="s：スイープ(APU)">
+						<param name="Local" value="mml_sweep.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="s：サスティン(VRC7)">
+						<param name="Local" value="mml_sweep.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="s：サンプル長設定(n163)">
 						<param name="Local" value="mml_sweep.html">
 						</OBJECT>
 					<LI> <OBJECT type="text/sitemap">
@@ -183,12 +195,20 @@
 						<param name="Local" value="mml_voice.html">
 						</OBJECT>
 					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="(,)：相対ボリューム">
-						<param name="Local" value="mml_relative_volume.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
 						<param name="Name" value="@V：VRC7ユーザ定義音色">
 						<param name="Local" value="mml_VRC7voice.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="@N：n163音色波形設定">
+						<param name="Local" value="mml_N163voice.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="NC:n163チャンネル数設定">
+						<param name="Local" value="mml_N163_channel.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="(,)：相対ボリューム">
+						<param name="Local" value="mml_relative_volume.html">
 						</OBJECT>
 					<LI> <OBJECT type="text/sitemap">
 						<param name="Name" value="&lt;,&gt;,&quot;,'：相対オクターブ">

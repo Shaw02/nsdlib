@@ -41,6 +41,7 @@ enum	Command_ID_MusicFile {
 	//Block
 	id_DPCM,
 	id_VRC7,
+	id_N163,
 	id_Envelop,
 	id_Macro,
 	id_Sub,
@@ -82,6 +83,7 @@ const	static	Command_Info	Command[] = {
 		//Block
 		{	"DPCM",				id_DPCM			},
 		{	"VRC7",				id_VRC7			},
+		{	"N163",				id_N163			},
 		{	"Envelope",			id_Envelop		},
 		{	"envelope",			id_Envelop		},
 		{	"Envelop",			id_Envelop		},
@@ -99,6 +101,7 @@ const	static	Command_Info	Command[] = {
 	unsigned	int			i;
 	unsigned	char		cData;
 				VRC7*		_vrc7;
+				N163*		_n163;
 				Envelop*	_env;
 				BGM*		_bgm;
 				SE*			_se;
@@ -186,6 +189,18 @@ const	static	Command_Info	Command[] = {
 				ptcItem.push_back(_vrc7);
 				ptcVRC7[i] = _vrc7;
 				iSize += _vrc7->getSize();	//BGMのサイズを更新
+				break;
+			case(id_N163):
+				i = MML->GetNum();
+
+				//重複チェック
+				if(ptcN163.count(i) != 0){
+					MML->Err("N163()ブロックで同じ番号が指定されました。");
+				}
+				_n163 = new N163(MML, i);
+				ptcItem.push_back(_n163);
+				ptcN163[i] = _n163;
+				iSize += _n163->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Envelop):
 				i = MML->GetNum();
@@ -323,18 +338,18 @@ void	MusicFile::Fix_Address(void)
 	unsigned	int			iSE		= 0;
 
 	while(iBGM < Header.iBGM){
-		ptcBGM[iBGM]->Fix_Address(&ptcSub, &ptcEnv, &ptcVRC7);
+		ptcBGM[iBGM]->Fix_Address(this);
 		iBGM++;
 	}
 	while(iSE < Header.iSE){
-		ptcSE[iSE]->Fix_Address(&ptcSub, &ptcEnv, &ptcVRC7);
+		ptcSE[iSE]->Fix_Address(this);
 		iSE++;
 	}
 
 	if(!ptcSub.empty()){
 		itSub = ptcSub.begin();
 		while(itSub != ptcSub.end()){
-			itSub->second->Fix_Address(&ptcSub, &ptcEnv, &ptcVRC7);
+			itSub->second->Fix_Address(this);
 			itSub++;
 		}
 	}

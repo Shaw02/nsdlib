@@ -14,6 +14,7 @@ class mml_Address :
 //ƒƒ“ƒo[ŠÖ”
 public:
 	mml_Address(unsigned char _code, const char _strName[]="Address");
+	mml_Address(unsigned char _code, unsigned char _data, const char _strName[]);
 	~mml_Address(void);
 
 				void	set_Address(unsigned int _addr);

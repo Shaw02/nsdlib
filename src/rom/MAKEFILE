@@ -47,11 +47,11 @@ INC_FILES =
 FILES = crt0.s
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_ALL).bin
+clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_ALL).bin
 	@del *.bak
 	@del *.o
 
-all:   $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_ALL).bin
+all:   $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_ALL).bin
 
 $(PROJ).bin : $(FILES) $(INC_FILES) $(LIB)
 	@$(ASM) $(AFLAG) $(FILES)
@@ -68,6 +68,10 @@ $(PROJ_VRC7).bin : $(FILES) $(INC_FILES) $(LIB_VRC7)
 $(PROJ_MMC5).bin : $(FILES) $(INC_FILES) $(LIB_MMC5)
 	@$(ASM) $(AMMC5) $(FILES)
 	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_MMC5)
+
+$(PROJ_N163).bin : $(FILES) $(INC_FILES) $(LIB_N163)
+	@$(ASM) $(AN163) $(FILES)
+	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_N163)
 
 $(PROJ_ALL).bin : $(FILES) $(INC_FILES) $(LIB_ALL)
 	@$(ASM) $(AALL) $(FILES)

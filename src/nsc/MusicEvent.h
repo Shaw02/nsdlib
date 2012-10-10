@@ -35,6 +35,8 @@
 #define	nsd_Voice				0x1B
 #define	nsc_VRC7				0x1C
 #define	nsc_VRC7_reg			0x1D
+#define	nsc_N163				0x1E
+#define	nsc_N163_Channel		0x1F
 #define	nsd_Volume_Down			0x20
 #define	nsd_Volume_Up			0x21
 #define	nsd_Octave_Down			0x28

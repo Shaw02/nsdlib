@@ -919,8 +919,66 @@ nsd_op1D:
 	sta	VRC7_Data
 .endif
 
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x1E:	n163 : Set wave table
+;-----------------------------------------------------------------------
 nsd_op1E:
+	jsr	nsd_load_sequence
+
+.ifdef	N163
+	shl	a, 1
+	ora	#$80
+	sta	N163_Resister
+
+	ldy	__Sequence_ptr,x
+	sty	__ptr			;
+	ldy	__Sequence_ptr + 1,x
+	sty	__ptr + 1		;__ptr = __Sequence_ptr
+.endif
+
+	jsr	nsd_load_sequence
+	sta	__tmp
+	jsr	nsd_load_sequence
+	sta	__tmp + 1		;__tmp = value
+
+.ifdef	N163
+	lda	__ptr
+	add	__tmp
+	sta	__ptr
+
+	lda	__ptr + 1
+	adc	__tmp + 1
+	sta	__ptr + 1		;__ptr テーブルのポインタ
+
+	ldy	#0
+	lda	(__ptr),y
+	iny
+	tax				;x <- size of table
+@L:
+	lda	(__ptr),y
+	iny
+	sta	N163_Data
+
+	dex
+	bne	@L
+
+	ldx	__channel
+
+.endif
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x1F:	n163 : Set channel number
+;-----------------------------------------------------------------------
 nsd_op1F:
+	jsr	nsd_load_sequence
+.ifdef	N163
+	shl	a, 4
+	and	#$70
+	sta	__n163_num
+.endif
 	jmp	Sequence
 
 ;=======================================================================

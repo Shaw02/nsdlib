@@ -128,12 +128,11 @@ MMC5_CHANCTRL		= $5015         ;
 N163_Resister		= $F800
 N163_Data		= $4800
 
-N163_Frequency_Low	= $40
-N163_Frequency_Middle	= $42
-N163_Frequency_High	= $44
-N163_Waveform		= $46
-N163_Volume		= $47
-N163_EnableChannel	= $7F
+N163_Frequency_Low	= $78
+N163_Frequency_Middle	= $7A
+N163_Frequency_High	= $7C
+N163_Waveform		= $7E
+N163_Volume		= $7F
 
 ;---------------------------------------
 ;PSG define
@@ -217,7 +216,7 @@ PSG_Data		= $E000
 
 .Struct		NSD_volume
 	volume		.byte		;`v' & `vR' command value
-	volume_env	.byte		;now envelop volume
+	volume_env	.byte		;now envelop volume	(ch3,5 : sweep value of ch1,2)
 .Endstruct
 
 .Struct		NSD_voice
@@ -225,7 +224,8 @@ PSG_Data		= $E000
 	voice_set	.byte		;deveice setting value
 .Endstruct
 
-.Struct		NSD_Env_V_Ptr
+					;(ch3 : n163 channnel number)
+.Struct		NSD_Env_V_Ptr		;(ch5 : pointer of ‡™PCM information)
 	Volume		.byte		;Volume
 	Voice		.byte		;Voice
 .Endstruct
@@ -285,6 +285,7 @@ PSG_Data		= $E000
 .define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
 .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
 .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
+
 .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
 .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 
@@ -323,7 +324,7 @@ PSG_Data		= $E000
 .define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
 .define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set
 .define	__frequency	nsd_work + NSD_work::Frequency
-.define	__frequency_set	nsd_work + NSD_work::Frequency_Set
+.define	__frequency_set	nsd_work + NSD_work::Frequency_Set	;APU, MMC5, VRC6, N163
 .define	__subroutine	nsd_work + NSD_work::SubRoutine
 .define	__repeat2	nsd_work + NSD_work::Repeat2
 .define	__env_volume	nsd_work + NSD_work::Envelop_Volume
@@ -343,6 +344,7 @@ PSG_Data		= $E000
 .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 
 .define	__dpcm_info	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5
+.define	__n163_num	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3
 
 
 ;=======================================================================
