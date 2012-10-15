@@ -8,7 +8,7 @@ crt0.o:
     ZEROPAGE          Offs = 000000   Size = 000004
     NULL              Offs = 000000   Size = 000000
     HEADER            Offs = 000000   Size = 000080
-    STARTUP           Offs = 000000   Size = 000074
+    STARTUP           Offs = 000000   Size = 000082
 ../nsd/nsd_all.lib(nsd_func.o):
     CODE              Offs = 000000   Size = 00013E
     RODATA            Offs = 000000   Size = 000000
@@ -69,37 +69,37 @@ NULL                  000000  000000  000000
 ZEROPAGE              000002  0000B9  0000B8
 BSS                   000200  000736  000537
 DATA                  000200  000200  000000
-STARTUP               008000  008073  000074
-CODE                  008074  0091CF  00115C
-RODATA                0091D0  00971B  00054C
+STARTUP               008000  008081  000082
+CODE                  008082  0091DD  00115C
+RODATA                0091DE  009729  00054C
 
 
 Exports list:
 -------------
 __BSS_LOAD__              000200  LA    __BSS_RUN__               000200  LA    
-__BSS_SIZE__              000537  EA    __CODE_LOAD__             008074  LA    
-__CODE_RUN__              008074  LA    __CODE_SIZE__             00115C  EA    
-__DATA_LOAD__             00971C  LA    __DATA_RUN__              000200  LA    
+__BSS_SIZE__              000537  EA    __CODE_LOAD__             008082  LA    
+__CODE_RUN__              008082  LA    __CODE_SIZE__             00115C  EA    
+__DATA_LOAD__             00972A  LA    __DATA_RUN__              000200  LA    
 __DATA_SIZE__             000000  EA    __RAM_LAST__              006000  LA    
 __RAM_SIZE__              002000  EA    __RAM_START__             006000  LA    
-__RODATA_LOAD__           0091D0  LA    __RODATA_RUN__            0091D0  LA    
-__RODATA_SIZE__           00054C  EA    __ROM0_LAST__             00971C RLA    
+__RODATA_LOAD__           0091DE  LA    __RODATA_RUN__            0091DE  LA    
+__RODATA_SIZE__           00054C  EA    __ROM0_LAST__             00972A RLA    
 __ROM0_SIZE__             007FF0  EA    __ROM0_START__            008000  LA    
 __SRAM_LAST__             000737  LA    __SRAM_SIZE__             000600  EA    
 __SRAM_START__            000200  LA    __STACKSIZE__             000300  EA    
 __STARTUP_LOAD__          008000  LA    __STARTUP_RUN__           008000  LA    
-__STARTUP_SIZE__          000074  EA    __STARTUP__               000001  EA    
+__STARTUP_SIZE__          000082  EA    __STARTUP__               000001  EA    
 __ZP_LAST__               0000BA  LA    __ZP_SIZE__               0000FE  EA    
-__ZP_START__              000002  LA    _nsd_div192               009167 RLA    
-_nsd_init                 008074 RLA    _nsd_main                 0081B2 RLA    
-_nsd_mul                  0091A7 RLA    _nsd_play_bgm             008085 RLA    
-_nsd_play_se              0080D3 RLA    _nsd_set_dpcm             00807E RLA    
-_nsd_snd_frequency        008D8D RLA    _nsd_snd_init             008A86 RLA    
-_nsd_snd_keyoff           008B5F RLA    _nsd_snd_keyon            008AC2 RLA    
-_nsd_snd_sweep            008D4E RLA    _nsd_snd_voice            008B6F RLA    
-_nsd_snd_volume           008C35 RLA    _nsd_stop_bgm             0080C1  LA    
-_nsd_stop_se              008106  LA    nsd_envelop               008837 RLA    
-nsd_sequence              0083D7 RLA    nsd_work                  000201 RLA    
+__ZP_START__              000002  LA    _nsd_div192               009175 RLA    
+_nsd_init                 008082 RLA    _nsd_main                 0081C0 RLA    
+_nsd_mul                  0091B5 RLA    _nsd_play_bgm             008093 RLA    
+_nsd_play_se              0080E1 RLA    _nsd_set_dpcm             00808C RLA    
+_nsd_snd_frequency        008D9B RLA    _nsd_snd_init             008A94 RLA    
+_nsd_snd_keyoff           008B6D RLA    _nsd_snd_keyon            008AD0 RLA    
+_nsd_snd_sweep            008D5C RLA    _nsd_snd_voice            008B7D RLA    
+_nsd_snd_volume           008C43 RLA    _nsd_stop_bgm             0080CF  LA    
+_nsd_stop_se              008114  LA    nsd_envelop               008845 RLA    
+nsd_sequence              0083E5 RLA    nsd_work                  000201 RLA    
 nsd_work_zp               000006 RLZ    
 
 

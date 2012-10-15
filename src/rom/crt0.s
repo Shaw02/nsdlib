@@ -124,6 +124,34 @@ _eff:	.byte	0		;SE start number
 ; ------------------------------------------------------------------------
 .segment	"STARTUP"
 
+.proc	_nmi_main
+
+	pha			;register push
+	tya
+	pha
+	txa
+	pha
+
+	jsr	_nsd_main
+
+	pla			;register pop
+	tax
+	pla
+	tay
+	pla
+
+	; Interrupt exit
+irq2:
+irq1:
+timerirq:
+irq:
+	rti
+
+.endproc
+
+; ------------------------------------------------------------------------
+; 
+; ------------------------------------------------------------------------
 .proc	_nsf_main
 
 	jsr	_nsd_main

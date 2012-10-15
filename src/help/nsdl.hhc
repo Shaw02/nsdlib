@@ -107,6 +107,10 @@
 					<param name="Local" value="mml_sequence.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="出力するアセンブリ言語ソースについて">
+					<param name="Local" value="nsc_asm.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="MMLリファレンス">
 					</OBJECT>
 				<UL>
@@ -232,14 +236,19 @@
 						</OBJECT>
 				</UL>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="最適化のためのヒント">
-					<param name="Local" value="mml_tips.html">
+					<param name="Name" value="Tips">
 					</OBJECT>
+				<UL>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="最適化のためのヒント">
+						<param name="Local" value="mml_tips.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="n106/n163の使い方">
+						<param name="Local" value="n163.html">
+						</OBJECT>
+				</UL>
 			</UL>
-			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="出力するアセンブリ言語ソースについて">
-				<param name="Local" value="nsc_asm.html">
-				</OBJECT>
 		</UL>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">

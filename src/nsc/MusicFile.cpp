@@ -500,6 +500,11 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	if(cDPCMinfo == NULL){
 		write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
 		write(code.c_str(), code.size());	//シーケンスの書き込み
+	//	//0 padding
+	//	while(mus_size < ((unsigned int)mus_bank<<12)){
+	//		put(0);		//0 padding
+	//		mus_size++;
+	//	}
 	} else {
 		//ヘッダーにバンク情報を書く。
 		i = 0;
