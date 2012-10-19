@@ -28,7 +28,17 @@
 	;tai check
 	lda	__tai,x
 	and	#$02
-	bne	exit
+	bne	exit		;前回の音符がタイ・スラーだった終了
+
+	;Hardware key on
+	jsr	_nsd_snd_keyon
+
+	;Portamento
+	lda	__por_depth,x
+	bne	@L		;ポルタメントが終了していたら、無効化する。
+	lda	#0
+	sta	__por_target,x
+@L:
 
 	;周波数設定を必ず呼ぶように。
 	lda	#$FF
@@ -40,22 +50,6 @@
 	and	#~nsd_chflag::KeyOff
 	ora	#nsd_chflag::KeyOff
 	sta	__chflag,x
-
-	;Portamento
-	lda	__por_depth,x
-	bne	@L		;ポルタメントが終了していたら、無効化する。
-	lda	#0
-	sta	__por_target,x
-@L:
-
-	;Hardware key on
-	jsr	_nsd_snd_keyon
-
-	lda	__env_voice + 1,x	;●●●　最適化　●●●
-	bne	@L2			;音量エンベロープが無効だったら
-	lda	__env_voice,x		;ここでKeyOn時の音色にする。
-	jsr	_nsd_snd_voice		;
-@L2:
 
 	lda	#$00
 	sta	__Envelop_F,x
@@ -73,6 +67,13 @@
 	lda	#$01
 	sta	__env_voi_ptr,x
 	sta	__env_vol_ptr,x
+
+	;音色エンベロープ
+	lda	__env_voice + 1,x	;●●●　最適化　●●●
+	bne	@L2			;音量エンベロープが無効だったら
+	lda	__env_voice,x		;ここでKeyOn時の音色にする。
+	jsr	_nsd_snd_voice		;
+@L2:
 
 exit:	rts
 .endproc
@@ -92,33 +93,39 @@ exit:	rts
 	; to do	tai check
 	lda	__tai,x
 	and	#$01
-	bne	@E
-
-	lda	__chflag,x
+	beq	@L			;今回の音符がタイ・スラーだった終了
+@E:	rts
+@L:	lda	__chflag,x
 	and	#nsd_chflag::KeyOff
 	cmp	#nsd_chflag::KeyOff
-	beq	@L			;Key Onの時のみ、処理。
+	bne	@E			;Key On(=3)の時のみ、処理。
 
-@E:	rts
-@L:
+	;Hardware key off
+	jsr	_nsd_snd_keyoff
+
 	;Software key Off
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
 	ora	__gatemode,x
 	sta	__chflag,x
 
-	;Hardware key off
-	jsr	_nsd_snd_keyoff
+	and	#$01			;●●●　最適化　●●●
+	beq	@VoiceE			;gatemode = 1 だったら、
+	lda	__voice,x		;ここでKeyOff時の音色にする。
+	shr	a, 4			; a = release voice
+	jsr	_nsd_snd_voice		;
+@VoiceE:
 
 	lda	#$00
 	tay
-;	sta	__por_target,x		;Por off
+	sta	__por_depth,x		;ポルタメントを終了させる。
 
 	;Frequency Envelop keyoff
+	lda	__env_frequency + 1,x
+	beq	Freq_End
+	sta	__ptr + 1
 	lda	__env_frequency,x
 	sta	__ptr
-	lda	__env_frequency + 1,x
-	sta	__ptr + 1
 	lda	(__ptr),y
 	beq	Freq_End
 	sta	__env_freq_ptr,x
@@ -128,10 +135,11 @@ exit:	rts
 Freq_End:
 
 	;Note Envelop keyoff
+	lda	__env_note + 1,x
+	beq	Note_End
+	sta	__ptr + 1
 	lda	__env_note,x
 	sta	__ptr
-	lda	__env_note + 1,x
-	sta	__ptr + 1
 	lda	(__ptr),y
 	beq	Note_End
 	sta	__env_note_ptr,x
@@ -146,10 +154,11 @@ Note_End:
 	beq	exit
 
 	;Voice Envelop keyoff
+	lda	__env_voice + 1,x
+	beq	Voice_End
+	sta	__ptr + 1
 	lda	__env_voice,x
 	sta	__ptr
-	lda	__env_voice + 1,x
-	sta	__ptr + 1
 	lda	(__ptr),y
 	beq	Voice_End
 	sta	__env_voi_ptr,x
@@ -159,10 +168,11 @@ Note_End:
 Voice_End:
 
 	;Volume Envelop keyoff
+	lda	__env_volume + 1,x
+;	beq	Volume_End		;基本的には有効だろうので、コメントアウトしておく。
+	sta	__ptr + 1
 	lda	__env_volume,x
 	sta	__ptr
-	lda	__env_volume + 1,x
-	sta	__ptr + 1
 	lda	(__ptr),y
 	beq	Volume_End
 	sta	__env_vol_ptr,x

@@ -215,7 +215,6 @@ Detune:
 	sta	__tmp
 	tya
 	adc	__tmp + 1		;__tmp += (signed int)__detune_cent
-
 ;	sta	__tmp + 1
 ;	ldx	__tmp + 1
 	tax				;これで済むよね。
@@ -237,22 +236,27 @@ exit:	rts
 	;-------------------------------
 	;Envelop of Voice
 Voice:
-	lda	__chflag,x
-	and	#$02
-	bne	@L
+	ldy	__env_voice + 1,x	;●●●　最適化　●●●
+	beq	Voice_Exit		;音色エンベロープOffの場合は飛ばす
 
-	lda	__voice,x
-	shr	a, 4			; a = release voice
-	jmp	Set_Voice
+	lda	__chflag,x		;且つ(gatemode==1)でも飛ばす。設定は
+	and	#$02			;nsd_key_on()関数及び
+	beq	Voice_Exit		;nsd_key_off()関数でやる。
 
-@L:	lda	__env_voice + 1,x
-	beq	Voice_Exit		;●●●　最適化　●●●
+;	bne	@L
+;
+;	lda	__voice,x
+;	shr	a, 4			; a = release voice
+;	jmp	Set_Voice
+;
+;@L:	lda	__env_voice + 1,x	;上に移動。うまくいったら、消す。
+;	beq	Voice_Exit		;●●●　最適化　●●●
+
 ;	bne	@Envelop		;KeyOn中で、
 ;	lda	__env_voice,x		;且つ音色エンベロープOffの場合は
 ;	jmp	Set_Voice		;飛ばす。設定は nsd_keyon() でやる。
 
 @Envelop:
-	sta	__ptr + 1
 	lda	__Envelop_V,x
 	and	#$F0			;
 	beq	@Done			;if(counter != 0){
@@ -261,7 +265,8 @@ Voice:
 	sta	__Envelop_V,x		;
 	jmp	Voice_Exit		;} else {
 
-@Done:	lda	__env_voice,x
+@Done:	sty	__ptr + 1
+	lda	__env_voice,x
 	sta	__ptr			;  __ptr = (table address of envelop)
 	ldy	__env_voi_ptr,x		;  y     = (_envelop pointer)
 @Loop:	lda	(__ptr),y		;  do{

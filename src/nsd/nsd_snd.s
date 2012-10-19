@@ -516,7 +516,7 @@ exit:
 
 .proc	_nsd_n163_ch2_voice
 	ldy	__n163_num
-	cpy	#10
+	cpy	#$10
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 1)
 	sty	N163_Resister
@@ -528,7 +528,7 @@ Exit:
 
 .proc	_nsd_n163_ch3_voice
 	ldy	__n163_num
-	cpy	#20
+	cpy	#$20
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 2)
 	sty	N163_Resister
@@ -540,7 +540,7 @@ Exit:
 
 .proc	_nsd_n163_ch4_voice
 	ldy	__n163_num
-	cpy	#30
+	cpy	#$30
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 3)
 	sty	N163_Resister
@@ -552,7 +552,7 @@ Exit:
 
 .proc	_nsd_n163_ch5_voice
 	ldy	__n163_num
-	cpy	#40
+	cpy	#$40
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 4)
 	sty	N163_Resister
@@ -564,7 +564,7 @@ Exit:
 
 .proc	_nsd_n163_ch6_voice
 	ldy	__n163_num
-	cpy	#50
+	cpy	#$50
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 5)
 	sty	N163_Resister
@@ -576,7 +576,7 @@ Exit:
 
 .proc	_nsd_n163_ch7_voice
 	ldy	__n163_num
-	cpy	#60
+	cpy	#$60
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 6)
 	sty	N163_Resister
@@ -588,7 +588,7 @@ Exit:
 
 .proc	_nsd_n163_ch8_voice
 	ldy	__n163_num
-	cpy	#70
+	cpy	#$70
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 7)
 	sty	N163_Resister
@@ -909,7 +909,7 @@ exit:
 
 .proc	_nsd_n163_ch2_volume
 	ldy	__n163_num
-	cpy	#10
+	cpy	#$10
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Volume - (8 * 1)
 	sty	N163_Resister
@@ -921,7 +921,7 @@ Exit:
 
 .proc	_nsd_n163_ch3_volume
 	ldy	__n163_num
-	cpy	#20
+	cpy	#$20
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Volume - (8 * 2)
 	sty	N163_Resister
@@ -933,7 +933,7 @@ Exit:
 
 .proc	_nsd_n163_ch4_volume
 	ldy	__n163_num
-	cpy	#30
+	cpy	#$30
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Volume - (8 * 3)
 	sty	N163_Resister
@@ -945,7 +945,7 @@ Exit:
 
 .proc	_nsd_n163_ch5_volume
 	ldy	__n163_num
-	cpy	#40
+	cpy	#$40
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Volume - (8 * 4)
 	sty	N163_Resister
@@ -957,7 +957,7 @@ Exit:
 
 .proc	_nsd_n163_ch6_volume
 	ldy	__n163_num
-	cpy	#50
+	cpy	#$50
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Volume - (8 * 5)
 	sty	N163_Resister
@@ -969,7 +969,7 @@ Exit:
 
 .proc	_nsd_n163_ch7_volume
 	ldy	__n163_num
-	cpy	#60
+	cpy	#$60
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Volume - (8 * 6)
 	sty	N163_Resister
@@ -981,7 +981,7 @@ Exit:
 
 .proc	_nsd_n163_ch8_volume
 	ldy	__n163_num
-	cpy	#70
+	cpy	#$70
 	bcc	Exit			;1未満だったら終了
 	ldy	#N163_Volume - (8 * 7)
 	sty	N163_Resister
@@ -2107,7 +2107,7 @@ Exit:
 
 .proc	_nsd_n163_ch2_frequency
 	ldy	__n163_num
-	cpy	#10
+	cpy	#$10
 	bcc	Exit			;1未満だったら終了
 
 	jsr	N163_frequency
@@ -2133,7 +2133,7 @@ Exit:
 
 .proc	_nsd_n163_ch3_frequency
 	ldy	__n163_num
-	cpy	#20
+	cpy	#$20
 	bcc	Exit			;1未満だったら終了
 
 	jsr	N163_frequency
@@ -2159,7 +2159,7 @@ Exit:
 
 .proc	_nsd_n163_ch4_frequency
 	ldy	__n163_num
-	cpy	#30
+	cpy	#$30
 	bcc	Exit			;1未満だったら終了
 
 	jsr	N163_frequency
@@ -2185,7 +2185,7 @@ Exit:
 
 .proc	_nsd_n163_ch5_frequency
 	ldy	__n163_num
-	cpy	#40
+	cpy	#$40
 	bcc	Exit			;1未満だったら終了
 
 	jsr	N163_frequency
@@ -2211,7 +2211,7 @@ Exit:
 
 .proc	_nsd_n163_ch6_frequency
 	ldy	__n163_num
-	cpy	#50
+	cpy	#$50
 	bcc	Exit			;1未満だったら終了
 
 	jsr	N163_frequency
@@ -2237,7 +2237,7 @@ Exit:
 
 .proc	_nsd_n163_ch7_frequency
 	ldy	__n163_num
-	cpy	#60
+	cpy	#$60
 	bcc	Exit			;1未満だったら終了
 
 	jsr	N163_frequency
@@ -2263,7 +2263,7 @@ Exit:
 
 .proc	_nsd_n163_ch8_frequency
 	ldy	__n163_num
-	cpy	#70
+	cpy	#$70
 	bcc	Exit			;1未満だったら終了
 
 	jsr	N163_frequency

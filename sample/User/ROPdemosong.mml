@@ -2,7 +2,7 @@
 #Copyright	"Ropchiptune Labo."
 #Composer	"Ropchiptune Labo."
 
-#Code		"../../bin/nsd_mmc5.bin"
+#Code		"../../bin/nsd_all.bin"
 
 #bgm		2
 #se		0
@@ -27,6 +27,13 @@ Envelop(16) = { 63 L -64 }
 Envelop(26) = { 15 12 9 L 5 5 4 4 3 3 2 3 4 R 4 L 2 }
 Envelop(34) = { 8 6 5 4 3 L 2 }
 
+N163(0) {
+	07 07 03 03 11 11 07 07 11 11 07 07 14 14 07 07
+	03 03 00 00 07 07 03 03 07 07 03 03 11 11 07 07 }
+N163(1) {
+	07 10 12 13 14 13 12 10 07 04 02 01 00 01 02 04
+	07 11 13 14 13 11 07 03 01 00 01 03 07 14 07 00 }
+
 
 DPCM{
 //	音階, "ファイル名", 周波数, モード(0:shot / 1:loop)
@@ -38,72 +45,6 @@ DPCM{
 }
 
 
-
-// ----------------------------------------------------------------------------------------
-//
-// 酩酊宴  for NSD.Lib 0.12beta
-//
-//	Original Music Composed by ROPchiptune Laboratory 2010 (for ppmck)
-//	Customize for NSD.Lib 0.12beta by ROPchiptune Laboratory. 2012
-//      - Using MMC5 extra track
-//
-// ----------------------------------------------------------------------------------------
-bgm(0) {
-
-TR6 t150 @0 o5 l8  Ev34 Em4
-TR7      @0 o5 l8  Ev34 Em3
-TR1      @2 o5 l16 Ev05
-TR2      @0 o2 l16 Ev26 q4
-TR3         o6 l16  v15 En15 Em16
-TR4         o2 l16 Ev10
-TR5         o4 l8
-
-TR5 L [7 cfdf ] cfdd [7 cfdf ] cfd16d16d
-
-TR6 L [4 g.g.g.g.>cd< g.g.g.g. cd  ]
-TR7 L [4 c.c.c.c. cc  c.c.c.c.<gg> ]
-TR1 L [8 r-1]
-TR2 L [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
-TR3 L [4 cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
-TR4 L [16  Ev10ffv12dEv10eEv5a8v12dEv10f]
-
-TR1 crargra>c rrcr<argr eedrergr arrcrrcr crargra>c rrcr<argr eegrar>cc drergrer<
-TR1 [4 r1]
-TR6 [4 g.g.g.g.>cd< g.g.g.g. cd  ]
-TR7 [4 c.c.c.c. cc  c.c.c.c.<gg> ]
-TR2 [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
-TR3 [4 cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
-TR4 [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
-
-TR1 crargra>c rrcr<argr eedrergr arrcrrcr crargra>c rrcr<argr eegrar>cc drergrer<
-TR1 [4 r1]
-TR6 [4 g.g.g.g.>cd< g.g.g.g. cd  ]
-TR7 [4 c.c.c.c. cc  c.c.c.c.<gg> ]
-TR2 [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
-TR3 [4  cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
-TR4 [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
-
-TR1 <br>erdre<a rrar>crdr cc<br>ccdr crcrergr <br>erdre<a rrar>crdr ggar>cr<ar ggerdrcr
-TR1 <br>erdre<a rrar>crdr cc<br>ccdr crcrergr <br>erdre<a rrar>crdr rrerrdre ddcrc8.r
-TR6   [4 e.e.e.e. ab e.e.e.e. <ab> ]
-TR7 < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
-TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
-TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
-TR3   [8 cr-r-r-cr-r-r-cr-r-r-cr-cr-]
-TR4   [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
-
-TR1 <br>erdre<a rrar>crdr cc<br>ccdr crcrergr <br>erdre<a rrar>crdr ggar>cr<ar ggerdrcr
-TR1 <br>erdre<a rrar>crdr cc<br>ccdr crcrergr <br>erdre<a rrar>crdr rrerrdre drcderg8
-TR6   [4 e.e.e.e. ab e.e.e.e. <ab> ]
-TR7 < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
-TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
-TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
-TR3   [8 cr-r-r-cr-r-r-cr-r-r-cr-cr-]
-TR4   [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
-
-
-}
-
 // ----------------------------------------------------------------------------------------
 //
 // Stardust Chaser  for NSD.Lib 0.06a  (MCKwatch Sample music - RopMusicDayomon.mml)
@@ -113,12 +54,12 @@ TR4   [16 Ev10ffv12dEv10eEv5a8v12dEv10f]
 //
 // ----------------------------------------------------------------------------------------
 
-bgm(1) {
+bgm(0) {
 
 	TR1 t150 l8 v15 o4 @3 Ev1     L
 	TR2      l8 v15 o2 @0 Ev1 l16 L
 	TR3      l8 v15 o4            L
-	TR4      l8 v15 o2            L
+	TR4      l8 v15 o3            L
 	TR5      l8 v15 o4            L
 
 	TR1 d4f+4g4f+4e4d4c2 d4f+4g4f+4>c2<a4g4
@@ -143,3 +84,132 @@ bgm(1) {
 	TR5 [7 c4d4 ] c8d8d8d8
 
 }
+
+// ----------------------------------------------------------------------------------------
+//
+// 酩酊宴  for NSD.Lib 0.16beta
+//
+//	Original Music Composed by ROPchiptune Laboratory 2010 (for ppmck)
+//	Customize for NSD.Lib 0.12beta by ROPchiptune Laboratory. 2012
+//      - Using NSD_ALL.BIN (2A03+MMC5+VRC6+NRC7+N163)
+//
+// ----------------------------------------------------------------------------------------
+bgm(1) {
+
+
+TR1      @2 o5 l16 Ev05 r-32
+TR2      @0 o2 l16 Ev26 q4
+TR3         o6 l16  v15 En15 Em16
+TR4         o3 l16 Ev10
+TR5         o4 l8
+TR6      @1 o4 l8  v12 Ev34 Em4
+TR7      @2 o4 l8  v12 Ev34 Em3
+TR8         o3 l16 v12 Ev5 q6
+TR9      @8 o6 l16 v12 //Ev5
+TR10     @4 o4 l8  v15 Ev5
+TR11     @4 o4 l8  v15 Ev5
+TR15 t150 @0 o5 l8  Ev34 Em4
+TR16      @0 o5 l8  Ev34 Em3
+TR17 @N16,0 s56 @17 v6 NC2 o6 l16 r32
+TR18 @N17,1 s56 @16 v4     o6 l16 r24
+
+TR5 L [7 cfdf ] cfdd [7 cfdf ] cfd16d16d
+
+TR6  L [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR7  L [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR10 L [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR11 L [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR15 L [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR16 L [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR1 L [8 r-1]
+TR9 L [8 r-1]
+TR17 L [8 r-1]
+TR18 L [8 r-1]
+TR2 L [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR8 L [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR3 L [4 cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4 L [16  Ev10ffedEv*v8dv6d<Ev5a8>]
+
+TR1 cr-ar-gr-a>c r-r-cr-<ar-gr- eedr-er-gr- ar-r-cr-r-cr- cr-ar-gr-a>c r-r-cr-<ar-gr- eegr-ar->cc dr-er-gr-er-<
+TR1 [4 r-1]
+TR9 cr-ar-gr-a>c r-r-cr-<ar-gr- eedr-er-gr- ar-r-cr-r-cr- cr-ar-gr-a>c r-r-cr-<ar-gr- eegr-ar->cc dr-er-gr-er-<
+TR9 [4 r-1]
+TR17 cr-ar-gr-a>c r-r-cr-<ar-gr- eedr-er-gr- ar-r-cr-r-cr- cr-ar-gr-a>c r-r-cr-<ar-gr- eegr-ar->cc dr-er-gr-er-<
+TR17 [4 r-1]
+TR18 cr-ar-gr-a>c r-r-cr-<ar-gr- eedr-er-gr- ar-r-cr-r-cr- cr-ar-gr-a>c r-r-cr-<ar-gr- eegr-ar->cc dr-er-gr-er-<
+TR18 [4 r-1]
+TR6  [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR7  [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR10 [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR11 [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR15 [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR16 [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR2 [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR8 [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR3 [4 cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4 [16  Ev10ffedEv*v8dv6d<Ev5a8>]
+
+TR1 cr-ar-gr-a>c r-r-cr-<ar-gr- eedr-er-gr- ar-r-cr-r-cr- cr-ar-gr-a>c r-r-cr-<ar-gr- eegr-ar->cc dr-er-gr-er-<
+TR1 [4 r-1]
+TR9 cr-ar-gr-a>c r-r-cr-<ar-gr- eedr-er-gr- ar-r-cr-r-cr- cr-ar-gr-a>c r-r-cr-<ar-gr- eegr-ar->cc dr-er-gr-er-<
+TR9 [4 r-1]
+TR17 cr-ar-gr-a>c r-r-cr-<ar-gr- eedr-er-gr- ar-r-cr-r-cr- cr-ar-gr-a>c r-r-cr-<ar-gr- eegr-ar->cc dr-er-gr-er-<
+TR17 [4 r-1]
+TR18 cr-ar-gr-a>c r-r-cr-<ar-gr- eedr-er-gr- ar-r-cr-r-cr- cr-ar-gr-a>c r-r-cr-<ar-gr- eegr-ar->cc dr-er-gr-er-<
+TR18 [4 r-1]
+TR6  [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR7  [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR10 [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR11 [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR15 [4 g.g.g.g.>cd< g.g.g.g. cd  ]
+TR16 [4 c.c.c.c. cc  c.c.c.c.<gg> ]
+TR2 [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR8 [4 cc>c<c>g<c>c<c  c>c<cc>g<cc>>c<< cc>c<c>g<c>c<c  c>c<cc>g<cgc ]
+TR3 [4  cr-r-r-cr-r-r-cr-r-r-cr-r-r- cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4 [16  Ev10ffedEv*v8dv6d<Ev5a8>]
+
+TR1 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- ggar->cr-<ar- gger-dr-cr-
+TR1 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- r-r-er-r-dr-e ddcr-c8.r-
+TR9 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- ggar->cr-<ar- gger-dr-cr-
+TR9 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- r-r-er-r-dr-e ddcr-c8.r-
+TR17 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- ggar->cr-<ar- gger-dr-cr-
+TR17 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- r-r-er-r-dr-e ddcr-c8.r-
+TR18 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- ggar->cr-<ar- gger-dr-cr-
+TR18 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- r-r-er-r-dr-e ddcr-c8.r-
+TR6    [4 e.e.e.e. ab e.e.e.e. <ab> ]
+TR7  < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
+TR10   [4 e.e.e.e. ab e.e.e.e. <ab> ]
+TR11 < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
+TR15   [4 e.e.e.e. ab e.e.e.e. <ab> ]
+TR16 < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
+TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR8   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR8   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR3   [8 cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4   [16  Ev10ffedEv*v8dv6d<Ev5a8>]
+
+TR1 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- ggar->cr-<ar- gger-dr-cr-
+TR1 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- r-r-er-r-dr-e ddcr-c8.r-
+TR9 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- ggar->cr-<ar- gger-dr-cr-
+TR9 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- r-r-er-r-dr-e ddcr-c8.r-
+TR17 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- ggar->cr-<ar- gger-dr-cr-
+TR17 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- r-r-er-r-dr-e ddcr-c8.r-
+TR18 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- ggar->cr-<ar- gger-dr-cr-
+TR18 <br->er-dr-e<a r-r-ar->cr-dr- cc<br->ccdr- cr-cr-er-gr- <br->er-dr-e<a r-r-ar->cr-dr- r-r-er-r-dr-e ddcr-c8.r-
+TR6    [4 e.e.e.e. ab e.e.e.e. <ab> ]
+TR7  < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
+TR10   [4 e.e.e.e. ab e.e.e.e. <ab> ]
+TR11 < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
+TR15   [4 e.e.e.e. ab e.e.e.e. <ab> ]
+TR16 < [4 a.a.a.a. aa a.a.a.a. <ee> ] >
+TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR2   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR8   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR8   [7 <aa>a<a>e<a>a<a> ] <aa>a<a>>>a<ae<a
+TR3   [8 cr-r-r-cr-r-r-cr-r-r-cr-cr-]
+TR4   [16  Ev10ffedEv*v8dv6d<Ev5a8>]
+
+
+}
+
