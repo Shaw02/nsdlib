@@ -96,8 +96,8 @@ const	static	Command_Info	Command[] = {
 			case(Env_Num):
 				MML->Back();
 				i = MML->GetInt();
-				if( (i<-64) || (i>63)){
-					MML->Err("エンベロープは、-64～63の範囲で指定して下さい。");
+				if( (i<-64) || (i>127)){
+					MML->Err("エンベロープは、-64～127の範囲で指定して下さい。");
 				}
 				code.append((char)1, (char)i & 0x7F);
 				ptEnvelop++;
@@ -176,6 +176,10 @@ const	static	Command_Info	Command[] = {
 			}
 			code.append((char)1, (char)(Loop_Normal | 0xC0));
 		}
+	}
+
+	if(code.size() > 256){
+		MML->Err("エンベロープの定義長が256Byteを越えました。");
 	}
 
 	iSize = code.size();

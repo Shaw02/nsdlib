@@ -253,11 +253,6 @@ Exit:
 	lda	#$0F
 	sta	APU_CHANCTRL
 
-	lda	#$00
-	sta	APU_MODDA
-
-	lda	#$00
-	sta	APU_MODLEN
 Exit:
 	rts
 .endproc
@@ -411,9 +406,9 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	_nsd_n163_ch8_voice
 .endif
 .ifdef	PSG
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_psg_ch1_voice
+	.addr	_nsd_psg_ch2_voice
+	.addr	_nsd_psg_ch3_voice
 .endif
 	.addr	_nsd_nes_voice		;SE  ch1 Pulse
 	.addr	_nsd_noise_voice	;SE  ch2 Noize
@@ -600,6 +595,122 @@ Exit:
 
 .endif
 
+;---------------------------------------
+.ifdef	PSG
+;0ppn-nnnn
+;	n nnnn	frequency
+;	pp	00 noise	0-15
+;		01 tone + noise	16-31
+;		10 tone		32
+;		11 none
+.proc	_nsd_psg_ch1_voice
+	tay
+
+	lda	__psg_switch
+	and	#%00110110	;mask
+
+	cpy	#$40
+	bcs	@L40
+
+	pha
+	lda	#PSG_Noise_Frequency
+	sta	PSG_Register
+	tya
+	and	#$1F
+	sta	PSG_Data
+	pla
+
+	cpy	#$20
+	bcc	@L60
+	bcs	SET
+
+@L40:
+	ora	#%00001000	;noise off
+	cpy	#$60
+	bcc	SET
+@L60:
+	ora	#%00000001	;tone off
+SET:
+	ldy	#PSG_Switch
+	sty	PSG_Register
+	sta	__psg_switch
+	sta	PSG_Data
+	rts
+.endproc
+
+.proc	_nsd_psg_ch2_voice
+	tay
+
+	lda	__psg_switch
+	and	#%00101101	;mask
+
+	cpy	#$40
+	bcs	@L40
+
+	pha
+	lda	#PSG_Noise_Frequency
+	sta	PSG_Register
+	tya
+	and	#$1F
+	sta	PSG_Data
+	pla
+
+	cpy	#$20
+	bcc	@L60
+	bcs	SET
+
+@L40:
+	ora	#%00010000	;noise off
+	cpy	#$60
+	bcc	SET
+@L60:
+	ora	#%00000010	;tone off
+SET:
+	ldy	#PSG_Switch
+	sty	PSG_Register
+	sta	__psg_switch
+	sta	PSG_Data
+	rts
+.endproc
+
+.proc	_nsd_psg_ch3_voice
+	tay
+
+	lda	__psg_switch
+	and	#%00011011	;mask
+
+	cpy	#$40
+	bcs	@L40
+
+	pha
+	lda	#PSG_Noise_Frequency
+	sta	PSG_Register
+	tya
+	and	#$1F
+	sta	PSG_Data
+	pla
+
+	cpy	#$20
+	bcc	@L60
+	bcs	SET
+
+@L40:
+	ora	#%00100000	;noise off
+	cpy	#$60
+	bcc	SET
+@L60:
+	ora	#%00000100	;tone off
+SET:
+	ldy	#PSG_Switch
+	sty	PSG_Register
+	sta	__psg_switch
+	sta	PSG_Data
+	rts
+.endproc
+
+.endif
+
+
 ;=======================================================================
 ;	void	__fastcall__	nsd_snd_volume(char vol);
 ;-----------------------------------------------------------------------
@@ -648,9 +759,9 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	.addr	_nsd_n163_ch8_volume
 .endif
 .ifdef	PSG
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_psg_ch1_volume
+	.addr	_nsd_psg_ch2_volume
+	.addr	_nsd_psg_ch3_volume
 .endif
 	.addr	_nsd_se1_volume		;SE  ch1 Pulse
 	.addr	_nsd_se2_volume		;SE  ch2 Noize
@@ -993,6 +1104,50 @@ Exit:
 
 .endif
 
+;---------------------------------------
+.ifdef	PSG
+.proc	_nsd_psg_ch1_volume
+	ldy	#PSG_1_Volume
+	sty	PSG_Register
+
+	and	#$0F
+	sta	__tmp
+	lda	__chflag,x
+	and	#nsd_chflag::Envelop
+	ora	__tmp
+	sta	PSG_Data
+	rts
+.endproc
+
+.proc	_nsd_psg_ch2_volume
+	ldy	#PSG_2_Volume
+	sty	PSG_Register
+
+	and	#$0F
+	sta	__tmp
+	lda	__chflag,x
+	and	#nsd_chflag::Envelop
+	ora	__tmp
+	sta	PSG_Data
+	rts
+.endproc
+
+.proc	_nsd_psg_ch3_volume
+	ldy	#PSG_3_Volume
+	sty	PSG_Register
+
+	and	#$0F
+	sta	__tmp
+	lda	__chflag,x
+	and	#nsd_chflag::Envelop
+	ora	__tmp
+	sta	PSG_Data
+	rts
+.endproc
+
+.endif
+
+
 ;=======================================================================
 ;	void	__fastcall__	nsd_snd_sweep(char vol);
 ;-----------------------------------------------------------------------
@@ -1041,9 +1196,9 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	.addr	_nsd_n163_sample_length
 .endif
 .ifdef	PSG
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_psg_envelop
+	.addr	_nsd_psg_envelop
+	.addr	_nsd_psg_envelop
 .endif
 	.addr	_nsd_se2_sweep		;SE  ch1 Pulse
 	.addr	Exit			;SE  ch2 Noize		-- no process --
@@ -1115,6 +1270,24 @@ Exit:
 .endproc
 .endif
 
+;---------------------------------------
+.ifdef	PSG
+.proc	_nsd_psg_envelop
+	ldy	#PSG_Envelope_Form
+	sty	PSG_Register
+	tay
+	and	#$0F
+	sta	PSG_Data
+	tya
+	and	#nsd_chflag::Envelop
+	sta	__tmp
+	lda	__chflag,x
+	and	#~nsd_chflag::Envelop
+	ora	__tmp
+	sta	__chflag,x
+	rts
+.endproc
+.endif
 ;=======================================================================
 ;	void	__fastcall__	nsd_snd_frequency(int freq);
 ;-----------------------------------------------------------------------
@@ -1775,9 +1948,9 @@ JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
 	.addr	_nsd_n163_ch8_frequency
 .endif
 .ifdef	PSG
-	.addr	Exit	;_nsd_psg_ch1_frequency
-	.addr	Exit	;_nsd_psg_ch2_frequency
-	.addr	Exit	;_nsd_psg_ch3_frequency
+	.addr	_nsd_psg_ch1_frequency
+	.addr	_nsd_psg_ch2_frequency
+	.addr	_nsd_psg_ch3_frequency
 .endif
 	.addr	_nsd_nes_ch2_frequency	;SE  ch1 Pulse
 	.addr	_nsd_nes_ch4_frequency	;SE  ch2 Noise
@@ -1912,7 +2085,7 @@ Exit:
 ;---------------------------------------
 .ifdef	VRC6
 .proc	_nsd_vrc6_ch1_frequency
-	jsr	Normal_frequency
+	jsr	Normal12_frequency
 
 	lda	__tmp
 	sta	VRC6_Pulse1_FTUNE
@@ -1925,7 +2098,7 @@ Exit:
 
 ;---------------------------------------
 .proc	_nsd_vrc6_ch2_frequency
-	jsr	Normal_frequency
+	jsr	Normal12_frequency
 
 	lda	__tmp
 	sta	VRC6_Pulse2_FTUNE
@@ -2045,7 +2218,7 @@ Detune:
 ;---------------------------------------
 .ifdef	MMC5
 .proc	_nsd_mmc5_ch1_frequency
-	jsr	MMC5_frequency
+	jsr	Normal_frequency
 
 	lda	__tmp
 	sta	__frequency_set,x
@@ -2063,7 +2236,7 @@ Exit:
 
 ;---------------------------------------
 .proc	_nsd_mmc5_ch2_frequency
-	jsr	MMC5_frequency
+	jsr	Normal_frequency
 
 	lda	__tmp
 	sta	__frequency_set,x
@@ -2292,13 +2465,48 @@ Exit:
 
 ;---------------------------------------
 .ifdef	PSG
-.proc	_nsd_psg_frequency
-
-	
-
+.proc	_nsd_psg_ch1_frequency
+	jsr	Normal12_frequency
+	ldy	#PSG_1_Frequency_Low
+	sty	PSG_Register
+	lda	__tmp
+	sta	PSG_Data
+	iny
+	sty	PSG_Register
+	lda	__tmp + 1
+	sta	PSG_Data
 Exit:
 	rts
 .endproc
+
+.proc	_nsd_psg_ch2_frequency
+	jsr	Normal12_frequency
+	ldy	#PSG_2_Frequency_Low
+	sty	PSG_Register
+	lda	__tmp
+	sta	PSG_Data
+	iny
+	sty	PSG_Register
+	lda	__tmp + 1
+	sta	PSG_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_psg_ch3_frequency
+	jsr	Normal12_frequency
+	ldy	#PSG_3_Frequency_Low
+	sty	PSG_Register
+	lda	__tmp
+	sta	PSG_Data
+	iny
+	sty	PSG_Register
+	lda	__tmp + 1
+	sta	PSG_Data
+Exit:
+	rts
+.endproc
+
 .endif
 
 
@@ -2308,8 +2516,8 @@ Exit:
 ;<<Input>>
 ;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
 ;<<Output>>
-;	__tmp + 1	frequency upper 8bit
-;	__tmp		frequency lower 8bit
+;	__tmp + 1	frequency upper 3bit
+;	__tmp		frequency lower 8bit	(total = 11bit)
 ;=======================================================================
 .proc	Normal_frequency
 
@@ -2374,17 +2582,17 @@ Exit:
 
 
 
-.ifdef	MMC5
+.if	.defined(VRC6) || .defined(PSG)
 ;=======================================================================
-;	void	__fastcall__	MMC5_frequency(int freq);
+;	void	__fastcall__	Normal12_frequency(int freq);
 ;-----------------------------------------------------------------------
 ;<<Input>>
-;	ax	frequency (Range : 0x008E - 0x07FF )	(16 = 100 cent)
+;	ax	frequency (Range : 0x0000 - 0x07FF )	(16 = 100 cent)
 ;<<Output>>
-;	__tmp + 1	frequency upper 8bit
-;	__tmp		frequency lower 8bit
+;	__tmp + 1	frequency upper 4bit
+;	__tmp		frequency lower 8bit	(total = 12bit)
 ;=======================================================================
-.proc	MMC5_frequency
+.proc	Normal12_frequency
 
 	jsr	_nsd_div192		; 
 	and	#$FE			; x =  ax  /  192

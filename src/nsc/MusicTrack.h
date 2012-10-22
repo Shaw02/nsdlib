@@ -42,6 +42,7 @@ public:
 				void	SetVRC7(MMLfile* MML);
 				void	SetN163(MMLfile* MML);
 				void	SetN163Channel(MMLfile* MML);
+				void	Set_FME7_Frequency(MMLfile* MML);
 				void	SetSubroutine(MMLfile* MML);
 				void	SetEnvelop(unsigned char _opcode, MMLfile* MML);
 				void	SetLoop();

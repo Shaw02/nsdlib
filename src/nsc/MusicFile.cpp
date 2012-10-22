@@ -433,7 +433,7 @@ void	MusicFile::make_bin(unsigned int rom_size)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::saveNSF(const char*	strFileName)
+void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 {
 
 	unsigned	int		i,j;
@@ -460,10 +460,15 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	make_bin(bin_size);
 
 	mus_size = bin_size - 0x80 + code.size();
-	mus_bank = mus_size >> 12;
-	if((mus_size & 0x0FFF) != 0){
-		mus_bank++;
+	if(opt == true){
+		mus_bank = mus_size >> 12;
+		if((mus_size & 0x0FFF) != 0){
+			mus_bank++;
+		}
+	} else {
+		mus_bank = (Header.offsetPCM - 0x8000) >> 12; 
 	}
+
 
 	//サイズチェック
 	if((0x8000 + mus_size) > Header.offsetPCM){

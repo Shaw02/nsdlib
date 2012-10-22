@@ -148,8 +148,10 @@ Sub(100){
 
 //Cent base ‚Ì Detune
 bgm(2){
-	TR1		t83			S100
+	TR1		t150			S100
 	TR2	r-16. ((((((D-2	S100
+	TR5	o2	c2,8	Rm0	d2,8	Rm1	f+2,8	Rm2	a+2,8	>	Rm0	c+2,8	d2,8	c2,8<	b2,8	a2,8	g2,8	f2,8
+
 }
 
 //Register base ‚Ì Detune

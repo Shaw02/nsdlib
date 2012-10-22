@@ -39,6 +39,7 @@
 #define	nsc_N163_Channel		0x1F
 #define	nsd_Volume_Down			0x20
 #define	nsd_Volume_Up			0x21
+#define	nsc_FME7_frequency		0x26
 #define	nsd_Octave_Down			0x28
 #define	nsd_Octave_Up			0x29
 #define	nsd_Transpose			0x2A

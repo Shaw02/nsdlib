@@ -100,9 +100,6 @@ exit:	rts
 	cmp	#nsd_chflag::KeyOff
 	bne	@E			;Key On(=3)ÇÃéûÇÃÇ›ÅAèàóùÅB
 
-	;Hardware key off
-	jsr	_nsd_snd_keyoff
-
 	;Software key Off
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
@@ -115,6 +112,8 @@ exit:	rts
 	shr	a, 4			; a = release voice
 	jsr	_nsd_snd_voice		;
 @VoiceE:
+	;Hardware key off
+	jsr	_nsd_snd_keyoff
 
 	lda	#$00
 	tay
@@ -1016,7 +1015,32 @@ nsd_op22:
 nsd_op23:
 nsd_op24:
 nsd_op25:
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x26:	 FME7: Envelope frequency
+;-----------------------------------------------------------------------
 nsd_op26:
+
+.ifdef	PSG
+	ldy	#PSG_Envelope_Low
+	sty	PSG_Register
+.endif
+
+	jsr	nsd_load_sequence
+
+.ifdef	PSG
+	sta	PSG_Data
+	iny
+	sty	PSG_Register
+.endif
+
+	jsr	nsd_load_sequence
+	
+.ifdef	PSG
+	sta	PSG_Data
+.endif
+
 nsd_op27:
 	jmp	Sequence
 

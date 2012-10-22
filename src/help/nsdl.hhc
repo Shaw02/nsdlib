@@ -147,6 +147,10 @@
 						<param name="Local" value="mml_sweep.html">
 						</OBJECT>
 					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="s：ハードウェアエンベロープ（Sunsoft 5B）">
+						<param name="Local" value="mml_sweep.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
 						<param name="Name" value="t：テンポ">
 						<param name="Local" value="mml_tempo.html">
 						</OBJECT>
@@ -209,6 +213,10 @@
 					<LI> <OBJECT type="text/sitemap">
 						<param name="Name" value="NC:n163チャンネル数設定">
 						<param name="Local" value="mml_N163_channel.html">
+						</OBJECT>
+					<LI> <OBJECT type="text/sitemap">
+						<param name="Name" value="F：Sunsoft 5Bエンベロープ周波数">
+						<param name="Local" value="mml_s5b_envelope.html">
 						</OBJECT>
 					<LI> <OBJECT type="text/sitemap">
 						<param name="Name" value="(,)：相対ボリューム">

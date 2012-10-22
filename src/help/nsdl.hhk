@@ -36,6 +36,11 @@
 		<param name="Local" value="mml_voice.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@N">
+		<param name="Name" value="MML reference: N163 Setting wave table">
+		<param name="Local" value="mml_N163voice.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="@V">
 		<param name="Name" value="MML reference: VRC7 User Instrument">
 		<param name="Local" value="mml_VRC7voice.html">
@@ -156,6 +161,11 @@
 		<param name="Local" value="mml_envelop.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="F">
+		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
+		<param name="Local" value="mml_s5b_envelope.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="f">
 		<param name="Name" value="MML reference: Note">
 		<param name="Local" value="mml_note.html">
@@ -209,6 +219,11 @@
 		<param name="Name" value="n163">
 		<param name="Name" value="n106 / n163 ‚ÌŽg‚¢•û">
 		<param name="Local" value="n163.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="NC">
+		<param name="Name" value="MML reference: N163 channel ">
+		<param name="Local" value="mml_N163_channel.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="nsc.exe">
@@ -286,14 +301,14 @@
 		<param name="Local" value="mml_release.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="s">
-		<param name="Name" value="MML reference: Sweep">
-		<param name="Local" value="mml_sweep.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="S">
 		<param name="Name" value="MML reference: Subroutine">
 		<param name="Local" value="mml_sub.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="s">
+		<param name="Name" value="MML reference: Sweep">
+		<param name="Local" value="mml_sweep.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="t">

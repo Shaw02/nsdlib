@@ -45,7 +45,7 @@ int	__cdecl	_tmain(int argc, _TCHAR* argv[])
 	//==================================
 	//•Û‘¶
 	if(cOptionSW->saveNSF == true){
-		cSND->saveNSF(cOptionSW->strNSFname.c_str());
+		cSND->saveNSF(cOptionSW->strNSFname.c_str(), cOptionSW->opt);
 	}
 
 	if(cOptionSW->saveASM == true){

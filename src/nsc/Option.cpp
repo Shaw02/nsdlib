@@ -18,6 +18,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 	fHelp(0),		//ヘルプは、デフォルトは表示しない。
 	saveNSF(false),
 	saveASM(false),
+	opt(false),
 	cDebug(0)
 {
 
@@ -49,6 +50,12 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 				case 'H' :
 				case '?' :
 					fHelp=1;
+					break;
+				//--------
+				//アセンブリ言語へ
+				case 'o' :
+				case 'O' :
+					opt = true;
 					break;
 				//--------
 				//アセンブリ言語へ

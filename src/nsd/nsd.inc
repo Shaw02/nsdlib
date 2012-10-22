@@ -140,6 +140,21 @@ N163_Volume		= $7F
 PSG_Register		= $C000
 PSG_Data		= $E000
 
+PSG_1_Frequency_Low	= $00
+PSG_1_Frequency_High	= $01
+PSG_2_Frequency_Low	= $02
+PSG_2_Frequency_High	= $03
+PSG_3_Frequency_Low	= $04
+PSG_3_Frequency_High	= $05
+PSG_Noise_Frequency	= $06
+PSG_Switch		= $07	;00ABCabc
+PSG_1_Volume		= $08
+PSG_2_Volume		= $09
+PSG_3_Volume		= $0A
+PSG_Envelope_Low	= $0B
+PSG_Envelope_High	= $0C
+PSG_Envelope_Form	= $0D
+
 ;=======================================================================
 ;	Working Struct define in Zero-page area
 ;-----------------------------------------------------------------------
@@ -294,6 +309,7 @@ PSG_Data		= $E000
 	SE1	= $40
 	Sustain	= $20		;for VRC7
 	KeyOn	= $10		;for VRC7
+	Envelop	= $10		;for PSG
 	KeyOff	= $03		;00	Key Off	: Vol = 0
 				;01	Key Off	: Release command
 				;10	Key Off	:  envelop
@@ -345,6 +361,7 @@ PSG_Data		= $E000
 
 .define	__dpcm_info	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5
 .define	__n163_num	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3
+.define	__psg_switch	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3 + 1
 
 
 ;=======================================================================

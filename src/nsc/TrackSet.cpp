@@ -70,6 +70,7 @@ enum	Command_ID_mml {
 	mml_N163,
 	mml_Voice,
 	mml_N163_Channel,
+	mml_FME7_frequency,
 
 	mml_Octave,
 	mml_Octave_Up,
@@ -146,6 +147,7 @@ const	static	Command_Info	Command[] = {
 		{	"@N",	mml_N163				},
 		{	"@",	mml_Voice				},
 		{	"NC",	mml_N163_Channel		},
+		{	"F",	mml_FME7_frequency		},
 
 		{	"o",	mml_Octave				},
 		{	">",	mml_Octave_Up			},
@@ -389,6 +391,10 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_N163_Channel):
 				nowTrack->SetN163Channel(MML);
+				break;
+
+			case(mml_FME7_frequency):
+				nowTrack->Set_FME7_Frequency(MML);
 				break;
 
 			case(mml_Octave):

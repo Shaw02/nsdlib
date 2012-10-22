@@ -30,7 +30,7 @@ PROJ_VRC6 = nsd_vrc6
 PROJ_VRC7 = nsd_vrc7
 PROJ_MMC5 = nsd_mmc5
 PROJ_N163 = nsd_n163
-PROJ_PSG  = nsd_psg
+PROJ_PSG  = nsd_s5b
 PROJ_ALL  = nsd_all
 
 LIB      = ../nsd/nsd.lib
@@ -39,7 +39,7 @@ LIB_VRC6 = ../nsd/nsd_vrc6.lib
 LIB_VRC7 = ../nsd/nsd_vrc7.lib
 LIB_MMC5 = ../nsd/nsd_mmc5.lib
 LIB_N163 = ../nsd/nsd_n163.lib
-LIB_PSG  = ../nsd/nsd_psg.lib
+LIB_PSG  = ../nsd/nsd_s5b.lib
 LIB_ALL  = ../nsd/nsd_all.lib
 
 INC_FILES = 
@@ -47,11 +47,11 @@ INC_FILES =
 FILES = crt0.s
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_ALL).bin
+clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin
 	@del *.bak
 	@del *.o
 
-all:   $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_ALL).bin
+all:   $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin
 
 $(PROJ).bin : $(FILES) $(INC_FILES) $(LIB)
 	@$(ASM) $(AFLAG) $(FILES)
@@ -72,6 +72,10 @@ $(PROJ_MMC5).bin : $(FILES) $(INC_FILES) $(LIB_MMC5)
 $(PROJ_N163).bin : $(FILES) $(INC_FILES) $(LIB_N163)
 	@$(ASM) $(AN163) $(FILES)
 	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_N163)
+
+$(PROJ_PSG).bin : $(FILES) $(INC_FILES) $(LIB_PSG)
+	@$(ASM) $(APSG) $(FILES)
+	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_PSG)
 
 $(PROJ_ALL).bin : $(FILES) $(INC_FILES) $(LIB_ALL)
 	@$(ASM) $(AALL) $(FILES)

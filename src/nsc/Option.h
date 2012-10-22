@@ -12,6 +12,7 @@ public:
 	unsigned	char		cDebug;			//デバッグ用
 				bool		saveNSF;
 				bool		saveASM;
+				bool		opt;
 				char		fHelp;			//ヘルプを指定したか？
 				string		strMMLname;		//指定したMMLファイル名
 				string		strNSFname;		//指定したNSFファイル名
