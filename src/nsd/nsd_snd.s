@@ -84,6 +84,10 @@
 	;初期化は特に無し？
 .endif
 
+.ifdef	OPLL
+
+.endif
+
 .ifdef	MMC5
 	lda	#$00
 	sta	MMC5_Pulse1_CTRL
@@ -136,6 +140,22 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	_nsd_vrc7_keyon
 	.addr	_nsd_vrc7_keyon
 .endif
+.ifdef	OPLL
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_opll_BD_keyon
+	.addr	_nsd_opll_SD_keyon
+	.addr	_nsd_opll_HH_keyon
+	.addr	_nsd_opll_Cym_keyon
+	.addr	_nsd_opll_Tom_keyon
+.endif
 .ifdef	MMC5
 	.addr	_nsd_nes_keyon		;仕組みは同じ。
 	.addr	_nsd_nes_keyon		;
@@ -153,6 +173,9 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 .ifdef	PSG
 	.addr	Exit
 	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	NULL
 	.addr	Exit
 .endif
 	.addr	_nsd_nes_keyon		;SE  ch1 Pulse
@@ -258,7 +281,7 @@ Exit:
 .endproc
 
 ;---------------------------------------
-.ifdef	VRC7
+.if	.defined(VRC7) || .defined(OPLL)
 .proc	_nsd_vrc7_keyon
 
 	lda	__chflag,x
@@ -267,8 +290,9 @@ Exit:
 
 	rts
 .endproc
-
+.endif
 ;---------------------------------------
+.ifdef	VRC7
 .proc	_nsd_vrc7_keyoff
 
 ;	取りあえず、必ずKeyOffする。
@@ -289,6 +313,126 @@ Exit:
 
 	rts
 .endproc
+.endif
+
+;---------------------------------------
+.ifdef	OPLL
+.proc	_nsd_OPLL_keyoff
+
+;	取りあえず、必ずKeyOffする。
+	lda	__chflag,x
+	and	#~nsd_chflag::KeyOn
+	sta	__chflag,x
+
+	;書かれない可能性があるので、ここでレジスタに書く。
+	txa
+	sub	#nsd::TR_OPLL
+	shr	a, 1
+	add	#OPLL_Octave
+	sta	OPLL_Resister		;レジスターをセット
+
+	lda	__frequency_set + 1,x	;[5]
+	and	#$EF			;[2]
+	sta	OPLL_Data		;
+
+	rts
+.endproc
+
+.proc	_nsd_OPLL_keyoff_R
+
+	;OPLL_Rhythm check
+	lda	__opll_ryhthm
+	cmp	#$20
+	bcc	_nsd_OPLL_keyoff
+	rts
+.endproc
+
+.proc	_nsd_opll_rhythm_set
+	;OPLL_Rhythm check
+	ldy	__opll_ryhthm
+	cpy	#$20
+	bcc	Exit
+
+	ldy	#OPLL_RHYTHM
+	sty	OPLL_Resister
+	lda	__opll_ryhthm
+	tay
+	tay
+	sta	OPLL_Data
+Exit:
+	rts
+.endproc
+
+.proc	_nsd_opll_BD_keyon
+	lda	__opll_ryhthm
+	ora	#$10
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_SD_keyon
+	lda	__opll_ryhthm
+	ora	#$08
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_HH_keyon
+	lda	__opll_ryhthm
+	ora	#$01
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_Cym_keyon
+	lda	__opll_ryhthm
+	ora	#$02
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_Tom_keyon
+	lda	__opll_ryhthm
+	ora	#$04
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_BD_keyoff
+	lda	__opll_ryhthm
+	and	#~$10
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_SD_keyoff
+	lda	__opll_ryhthm
+	and	#~$08
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_HH_keyoff
+	lda	__opll_ryhthm
+	and	#~$01
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_Cym_keyoff
+	lda	__opll_ryhthm
+	and	#~$02
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
+.proc	_nsd_opll_Tom_keyoff
+	lda	__opll_ryhthm
+	and	#~$04
+	sta	__opll_ryhthm
+	jmp	_nsd_opll_rhythm_set
+.endproc
+
 .endif
 
 ;=======================================================================
@@ -324,6 +468,22 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 	.addr	_nsd_vrc7_keyoff
 	.addr	_nsd_vrc7_keyoff
 .endif
+.ifdef	OPLL
+	.addr	_nsd_OPLL_keyoff
+	.addr	_nsd_OPLL_keyoff
+	.addr	_nsd_OPLL_keyoff
+	.addr	_nsd_OPLL_keyoff
+	.addr	_nsd_OPLL_keyoff
+	.addr	_nsd_OPLL_keyoff
+	.addr	_nsd_OPLL_keyoff_R
+	.addr	_nsd_OPLL_keyoff_R
+	.addr	_nsd_OPLL_keyoff_R
+	.addr	_nsd_opll_BD_keyoff
+	.addr	_nsd_opll_SD_keyoff
+	.addr	_nsd_opll_HH_keyoff
+	.addr	_nsd_opll_Cym_keyoff
+	.addr	_nsd_opll_Tom_keyoff
+.endif
 .ifdef	MMC5
 	.addr	Exit
 	.addr	Exit
@@ -341,6 +501,9 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 .ifdef	PSG
 	.addr	Exit
 	.addr	Exit
+	.addr	Exit
+.endif
+.ifdef	NULL
 	.addr	Exit
 .endif
 	.addr	Exit			;SE  ch1 Pulse
@@ -391,6 +554,22 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	_nes_vrc7_voice
 	.addr	_nes_vrc7_voice
 .endif
+.ifdef	OPLL
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	_nes_vrc7_voice
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
 .ifdef	MMC5
 	.addr	_nsd_nes_voice		;仕組みは同じ
 	.addr	_nsd_nes_voice		;
@@ -409,6 +588,9 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	_nsd_psg_ch1_voice
 	.addr	_nsd_psg_ch2_voice
 	.addr	_nsd_psg_ch3_voice
+.endif
+.ifdef	NULL
+	.addr	Exit
 .endif
 	.addr	_nsd_nes_voice		;SE  ch1 Pulse
 	.addr	_nsd_noise_voice	;SE  ch2 Noize
@@ -481,7 +663,7 @@ exit:
 .endif
 
 ;---------------------------------------
-.ifdef	VRC7
+.if	.defined(VRC7) || .defined(OPLL)
 .proc	_nes_vrc7_voice
 	;-------------------------------
 	; *** Calculate the voice
@@ -744,6 +926,22 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	.addr	_nsd_vrc7_volume
 	.addr	_nsd_vrc7_volume
 .endif
+.ifdef	OPLL
+	.addr	_nsd_OPLL_volume
+	.addr	_nsd_OPLL_volume
+	.addr	_nsd_OPLL_volume
+	.addr	_nsd_OPLL_volume
+	.addr	_nsd_OPLL_volume
+	.addr	_nsd_OPLL_volume
+	.addr	_nsd_OPLL_volume_R
+	.addr	_nsd_OPLL_volume_R
+	.addr	_nsd_OPLL_volume_R
+	.addr	_nsd_opll_BD_volume
+	.addr	_nsd_opll_SD_HH_volume
+	.addr	_nsd_opll_SD_HH_volume
+	.addr	_nsd_opll_Cym_Tom_volume
+	.addr	_nsd_opll_Cym_Tom_volume
+.endif
 .ifdef	MMC5
 	.addr	_nsd_mmc5_ch1_volume
 	.addr	_nsd_mmc5_ch2_volume
@@ -762,6 +960,9 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	.addr	_nsd_psg_ch1_volume
 	.addr	_nsd_psg_ch2_volume
 	.addr	_nsd_psg_ch3_volume
+.endif
+.ifdef	NULL
+	.addr	Exit
 .endif
 	.addr	_nsd_se1_volume		;SE  ch1 Pulse
 	.addr	_nsd_se2_volume		;SE  ch2 Noize
@@ -961,6 +1162,93 @@ exit:
 
 	rts
 .endproc
+.endif
+
+;---------------------------------------
+.ifdef	OPLL
+.proc	_nsd_OPLL_volume
+
+	eor	#$FF
+	tay
+
+	txa
+	sub	#nsd::TR_OPLL
+	shr	a, 1
+	add	#OPLL_Volume
+	sta	OPLL_Resister		;
+
+	tya				;[2]
+	and	#$0F			;[2]
+	ora	__voice_set,x		;[4]
+
+	sta	OPLL_Data
+
+	rts
+.endproc
+
+.proc	_nsd_OPLL_volume_R
+
+	;OPLL_Rhythm check
+	ldy	__opll_ryhthm
+	cpy	#$20
+	bcc	_nsd_OPLL_volume
+	rts
+.endproc
+
+.proc	_nsd_opll_BD_volume
+	;OPLL_Rhythm check
+	lda	__opll_ryhthm
+	cmp	#$20
+	bcc	Exit
+
+	ldy	#OPLL_BD
+	sty	OPLL_Resister
+	lda	__volume + nsd::TR_OPLL + 18
+	eor	#$FF
+	and	#$0F
+	sta	OPLL_Data
+Exit:
+	rts
+.endproc
+.proc	_nsd_opll_SD_HH_volume
+	;OPLL_Rhythm check
+	lda	__opll_ryhthm
+	cmp	#$20
+	bcc	Exit
+
+	ldy	#OPLL_HH_SD
+	sty	OPLL_Resister
+	lda	__volume + nsd::TR_OPLL + 22
+	shl	a, 4
+	sta	__tmp
+	lda	__volume + nsd::TR_OPLL + 20
+	and	#$0F
+	ora	__tmp
+	eor	#$FF
+	sta	OPLL_Data
+Exit:
+	rts
+.endproc
+.proc	_nsd_opll_Cym_Tom_volume
+	;OPLL_Rhythm check
+	lda	__opll_ryhthm
+	cmp	#$20
+	bcc	Exit
+
+	ldy	#OPLL_TOM_CYM
+	sty	OPLL_Resister
+	lda	__volume + nsd::TR_OPLL + 26
+	shl	a, 4
+	sta	__tmp
+	lda	__volume + nsd::TR_OPLL + 24
+	and	#$0F
+	ora	__tmp
+	eor	#$FF
+	sta	OPLL_Data
+Exit:
+	rts
+.endproc
+
 .endif
 
 ;---------------------------------------
@@ -1181,6 +1469,22 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	.addr	_nsd_vrc7_sustain
 	.addr	_nsd_vrc7_sustain
 .endif
+.ifdef	OPLL
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_vrc7_sustain
+	.addr	_nsd_OPLL_ryhthm
+	.addr	_nsd_OPLL_ryhthm
+	.addr	_nsd_OPLL_ryhthm
+	.addr	_nsd_OPLL_ryhthm
+	.addr	_nsd_OPLL_ryhthm
+.endif
 .ifdef	MMC5
 	.addr	Exit
 	.addr	Exit
@@ -1199,6 +1503,9 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	.addr	_nsd_psg_envelop
 	.addr	_nsd_psg_envelop
 	.addr	_nsd_psg_envelop
+.endif
+.ifdef	NULL
+	.addr	Exit
 .endif
 	.addr	_nsd_se2_sweep		;SE  ch1 Pulse
 	.addr	Exit			;SE  ch2 Noize		-- no process --
@@ -1244,7 +1551,7 @@ Exit:
 .endproc
 
 ;---------------------------------------
-.ifdef	VRC7
+.if	.defined(VRC7) || .defined(OPLL)
 .proc	_nsd_vrc7_sustain
 
 	tay
@@ -1256,6 +1563,88 @@ Exit:
 @L:	ora	#nsd_chflag::Sustain
 @Set:	sta	__chflag,x
 
+	rts
+.endproc
+.endif
+
+.ifdef	OPLL
+.proc	_nsd_OPLL_ryhthm
+
+	shl	a, 5
+	and	#$20
+	sta	__tmp
+
+	ldy	#OPLL_RHYTHM
+	sty	OPLL_Resister
+
+	lda	__opll_ryhthm
+	and	#$1F
+	ora	__tmp
+	sta	__opll_ryhthm
+	sta	OPLL_Data
+
+	cmp	#$20
+	bcc	Exit
+
+L01:
+	ldy	#$16
+	sty	OPLL_Resister
+	lda	#$20
+	tay
+	ldy	#10
+	sta	OPLL_Data
+@L:	dey
+	bne	@L
+
+L02:
+	ldy	#$17
+	sty	OPLL_Resister
+	lda	#$50
+	tay
+	ldy	#10
+	sta	OPLL_Data
+@L:	dey
+	bne	@L
+
+L03:
+	ldy	#$18
+	sty	OPLL_Resister
+	lda	#$C0
+	tay
+	ldy	#10
+	sta	OPLL_Data
+@L:	dey
+	bne	@L
+
+L04:
+	ldy	#$26
+	sty	OPLL_Resister
+	lda	#$05
+	tay
+	ldy	#10
+	sta	OPLL_Data
+@L:	dey
+	bne	@L
+
+L05:
+	ldy	#$27
+	sty	OPLL_Resister
+	lda	#$05
+	tay
+	ldy	#10
+	sta	OPLL_Data
+@L:	dey
+	bne	@L
+
+L06:
+	ldy	#$28
+	sty	OPLL_Resister
+	lda	#$01
+	tay
+	tay
+	sta	OPLL_Data
+
+Exit:
 	rts
 .endproc
 .endif
@@ -1608,7 +1997,7 @@ Freq_SAW:
 
 ;---------------------------------------
 ;VRC7 Frequency table
-.ifdef	VRC7
+.if	.defined(VRC7) || .defined(OPLL)
 Freq_VRC7:
 	.byte	$AD
 	.byte	$AE
@@ -1933,6 +2322,22 @@ JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
 	.addr	_nsd_vrc7_frequency
 	.addr	_nsd_vrc7_frequency
 .endif
+.ifdef	OPLL
+	.addr	_nsd_OPLL_frequency
+	.addr	_nsd_OPLL_frequency
+	.addr	_nsd_OPLL_frequency
+	.addr	_nsd_OPLL_frequency
+	.addr	_nsd_OPLL_frequency
+	.addr	_nsd_OPLL_frequency
+	.addr	_nsd_OPLL_frequency_R
+	.addr	_nsd_OPLL_frequency_R
+	.addr	_nsd_OPLL_frequency_R
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+	.addr	Exit
+.endif
 .ifdef	MMC5
 	.addr	_nsd_mmc5_ch1_frequency
 	.addr	_nsd_mmc5_ch2_frequency
@@ -1952,8 +2357,11 @@ JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
 	.addr	_nsd_psg_ch2_frequency
 	.addr	_nsd_psg_ch3_frequency
 .endif
-	.addr	_nsd_nes_ch2_frequency	;SE  ch1 Pulse
-	.addr	_nsd_nes_ch4_frequency	;SE  ch2 Noise
+.ifdef	NULL
+	.addr	Exit
+.endif
+	.addr	_nsd_nes_se1_frequency	;SE  ch1 Pulse
+	.addr	_nsd_nes_se2_frequency	;SE  ch2 Noise
 
 ;---------------------------------------
 .code
@@ -2055,6 +2463,54 @@ Exit:
 	;SE check
 	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
 	bne	Exit
+
+	;-------------------------------
+	; *** Get the note number lower 4bit
+	;a >>= 4
+	eor	#$FF
+	shr	a,4
+
+	;-------------------------------
+	; *** Mix voice and frequency
+	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+	ldx	__channel
+	and	#$0F
+	ora	__voice_set,x
+	
+	;-------------------------------
+	; *** Output to NES sound device
+	sta	APU_NOISEFREQ1
+	; to do note on?
+	lda	#$08
+	sta	APU_NOISEFREQ2		;Length counter load (L) 
+
+	;-------------------------------
+	; *** Exit
+Exit:
+	rts
+.endproc
+
+;---------------------------------------
+.proc	_nsd_nes_se1_frequency
+
+	jsr	Normal_frequency
+
+	lda	__tmp
+	sta	__frequency_set,x
+	sta	APU_PULSE2FTUNE
+	lda	__tmp + 1
+	ora	#$08
+	cmp	__frequency_set + 1,x
+	beq	Exit
+	sta	APU_PULSE2STUNE		;nes.inc 間違えてる。
+	sta	__frequency_set + 1,x
+
+Exit:
+	rts
+.endproc
+
+;---------------------------------------
+.proc	_nsd_nes_se2_frequency
 
 	;-------------------------------
 	; *** Get the note number lower 4bit
@@ -2211,6 +2667,72 @@ Detune:
 	sta	__frequency_set + 1,x	;[5]8 clock > 6 clock
 	sta	VRC7_Data		;●Data Write
 
+	rts
+.endproc
+.endif
+
+;---------------------------------------
+.ifdef	OPLL
+.proc	_nsd_OPLL_frequency
+
+	;除算
+	jsr	_nsd_div192		;Wait変わりに使える？
+	stx	__tmp + 1
+	cmp	#$6E
+	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
+
+	shr	a, 1			;
+	tay				;y = (ax mod 192) >> 1
+	lda	Freq_VRC7,y		;
+	sta	__tmp			;__tmp + 0 = Note_LSB
+
+	;チャンネルの計算
+	ldx	__channel
+	txa
+	sub	#nsd::TR_OPLL
+	shr	a, 1
+	pha				;push OPLLでのチャンネル番号
+	;オクターブ
+	add	#OPLL_Frequency
+	sta	OPLL_Resister		;●Resister Write
+
+Detune:	
+	ldy	#$00			;[2]
+	lda	__detune_fine,x		;[4]6
+	bpl	@L			;[2]8
+	ldy	#$FF			;	ay = __detune_fine (sign expand)
+@L:	add	__tmp			;[5]13	clock > 6 clock
+	sta	OPLL_Data		;●Data Write
+	sta	__frequency_set + 0,x	;[5]
+	tya				;[2]7
+	adc	__tmp + 1		;[3]10
+	and	#$0F			;[2]12
+	sta	__tmp + 1		;[3]15	__tmp += (signed int)__detune_cent
+	lda	__chflag,x		;[4]19
+	and	#$30			;[2]21	 00XX 0000 <2>
+	ora	__tmp + 1		;[3]24	flag と octave をマージ
+	sta	__tmp + 1		;[3]27
+
+	pha				;[3]30
+	pla				;[4]34	
+
+	pla				;[4]38	a ← OPLLでのチャンネル番号
+	add	#OPLL_Octave		;[4]42 clock !! (OPLLのwait)
+
+	sta	OPLL_Resister		;●Resister Write
+	lda	__tmp + 1		;[3]3
+	sta	__frequency_set + 1,x	;[5]8 clock > 6 clock
+	sta	OPLL_Data		;●Data Write
+
+	rts
+.endproc
+
+.proc	_nsd_OPLL_frequency_R
+
+	;OPLL_Rhythm check
+	ldy	__opll_ryhthm
+	cpy	#$20
+	bcc	_nsd_OPLL_frequency
 	rts
 .endproc
 .endif

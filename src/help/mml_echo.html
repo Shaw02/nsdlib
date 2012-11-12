@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Echo</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<h2>MML reference: Echo</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        EC<var>delay</var>,<var>volume</var>
+        EC*
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<p>
+引数の替わりに`*'を指定することで、疑似エコーを無効化できます。<br>
+</p>
+
+<h4>delay</h4>
+<p>
+何音前のノートを、エコーとして発音するかを指定します。<br>
+</p>
+
+<h4>volume</h4>
+<p>
+疑似エコーで鳴らす音符の音量を指定します。<br>
+</p>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+疑似エコーです。<br>
+ＭＭＬコンパイラの疑似命令であり、シーケンス上は、<br>
+・音符コマンド<br>
+・音量コマンド<br>
+・相対オクターブコマンド<br>
+により、疑似エコーのシーケンスを作成します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+リピートと相対音量、相対移調、相対オクターブを組み合わせた場合、正常に疑似エコーのシーケンスを作成できません。<br>
+疑似エコーが有効になっている時は、それらのコマンドを組み合わせて使わないで下さい。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+	v15	EC1,2	<span style="color:green;">//疑似エコー有り</span>
+	l16	crdrerfrgrarbr>	crdrerfrgrarbr `cr brargr frerdrcr < brargrfr erdrcr "br c1	
+		EC*	<span style="color:green;">//疑似エコー無効</span>
+</pre></code>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

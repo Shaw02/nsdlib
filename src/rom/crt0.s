@@ -75,7 +75,7 @@ _eff:	.byte	0		;SE start number
 		VRC6_Flag	= 0		;
 	.endif
 
-	.ifdef	VRC7
+	.if	.defined(VRC7) || .defined(OPLL)
 		VRC7_Flag	= $02		;
 	.else
 		VRC7_Flag	= 0		;

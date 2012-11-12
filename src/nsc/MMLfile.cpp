@@ -251,7 +251,6 @@ char	MMLfile::GetChar(void)		//1Byte‚Ì“Ç‚İ‚İ
 						Back();					//StreamPointerAdd(-1);
 					} while(cData != '/');
 							cRead();			//StreamPointerAdd(+1); ‚ğ‚µ‚½‚¢B
-					cData = cRead();
 					break;
 
 				//‚»‚êˆÈŠO

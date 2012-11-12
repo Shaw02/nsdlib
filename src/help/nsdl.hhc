@@ -5,6 +5,7 @@
 <!-- Sitemap 1.0 -->
 </HEAD><BODY>
 <OBJECT type="text/site properties">
+	<param name="Window Styles" value="0x800025">
 	<param name="ImageType" value="Folder">
 </OBJECT>
 <UL>
@@ -15,252 +16,269 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="NES Sound Driver Library">
 		<param name="Local" value="index.html">
+		<param name="ImageNumber" value="12">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="はじめに">
+		<param name="Local" value="start.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="使い方">
+		<param name="Local" value="usage.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="MMLコンパイラ（nsc.exe）">
+		<param name="New" value="1">
+		<param name="ImageNumber" value="1">
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="概要">
-			<param name="Local" value="usage.html">
+			<param name="Name" value="nsc.exeについて">
+			<param name="Local" value="usage_nsc.html">
+			<param name="ImageNumber" value="12">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="サウンドドライバー（nsd.lib）">
+			<param name="Name" value="コマンドラインオプション">
+			<param name="Local" value="nsc_option.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="出力アセンブリ言語ソースの仕様">
+			<param name="Local" value="nsc_asm.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="MML(Music Macro Language)">
+			<param name="ImageNumber" value="1">
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="nsd.libについて">
-				<param name="Local" value="usage_nsd.html">
+				<param name="Name" value="MML文法">
+				<param name="Local" value="mml.html">
+				<param name="ImageNumber" value="12">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="関数リファレンス">
+				<param name="Name" value="エンベロープ記述ブロック">
+				<param name="Local" value="mml_envelope.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="⊿PCM記述ブロック">
+				<param name="Local" value="mml_dpcm.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="VRC7ユーザー音色定義ブロック">
+				<param name="Local" value="mml_vrc7.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="n163音色波形記述ブロック">
+				<param name="Local" value="mml_N163.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="シーケンス記述ブロック">
+				<param name="Local" value="mml_sequence.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="MMLリファレンス">
+				<param name="ImageNumber" value="1">
 				</OBJECT>
 			<UL>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="nsd_init()">
-					<param name="Local" value="func_nsd_init.html">
+					<param name="Name" value="a,b,c,d,e,f,g：音符">
+					<param name="Local" value="mml_note.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="nsd_main()">
-					<param name="Local" value="func_nsd_main.html">
+					<param name="Name" value="l：省略時の音長">
+					<param name="Local" value="mml_length.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="nsd_set_dpcm()">
-					<param name="Local" value="func_nsd_set_dpcm.html">
+					<param name="Name" value="o：オクターブ">
+					<param name="Local" value="mml_octave.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="nsd_play_bgm()">
-					<param name="Local" value="func_nsd_play_bgm.html">
+					<param name="Name" value="q,u：省略時のゲートタイム">
+					<param name="Local" value="mml_gate.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="nsd_stop_bgm()">
-					<param name="Local" value="func_nsd_stop_bgm.html">
+					<param name="Name" value="r：休符">
+					<param name="Local" value="mml_rest.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="nsd_play_se()">
-					<param name="Local" value="func_nsd_play_se.html">
+					<param name="Name" value="s：スイープ(APU)">
+					<param name="Local" value="mml_sweep.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="nsd_stop_se()">
-					<param name="Local" value="func_nsd_stop_se.html">
+					<param name="Name" value="s：サスティン(VRC7)">
+					<param name="Local" value="mml_sweep.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="s：サンプル長設定(n163)">
+					<param name="Local" value="mml_sweep.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="s：ハードウェアエンベロープ（Sunsoft 5B）">
+					<param name="Local" value="mml_sweep.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="t：テンポ">
+					<param name="Local" value="mml_tempo.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="v：音量">
+					<param name="Local" value="mml_volume.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="y：メモリ書き込み">
+					<param name="Local" value="mml_poke.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="D,D%：ディチューン">
+					<param name="Local" value="mml_detune.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="yV：VRC7レジスタ書き込み">
+					<param name="Local" value="mml_VRC7write.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="L：無限ループ">
+					<param name="Local" value="mml_loop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="E@,Ev,Em,En：エンベロープ">
+					<param name="Local" value="mml_envelop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="EC：疑似エコー">
+					<param name="Local" value="mml_echo.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="K{}：調号">
+					<param name="Local" value="mml_KeySignature.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="P：ポルタメント">
+					<param name="Local" value="mml_portamento.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Rm,R@,Rv：リリース処理">
+					<param name="Local" value="mml_release.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="S：サブルーチン・コール">
+					<param name="Local" value="mml_sub.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="TR：トラック">
+					<param name="Local" value="mml_TR.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@：音色">
+					<param name="Local" value="mml_voice.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@V：VRC7ユーザ定義音色">
+					<param name="Local" value="mml_VRC7voice.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@N：n163音色波形設定">
+					<param name="Local" value="mml_N163voice.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="NC:n163チャンネル数設定">
+					<param name="Local" value="mml_N163_channel.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="F：Sunsoft 5Bエンベロープ周波数">
+					<param name="Local" value="mml_s5b_envelope.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="(,)：相対ボリューム">
+					<param name="Local" value="mml_relative_volume.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="&lt;,&gt;,&quot;,'：相対オクターブ">
+					<param name="Local" value="mml_relative_octave.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="[ : ]：リピート(A)">
+					<param name="Local" value="mml_repeatA.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="|: \ :|：リピート(B)">
+					<param name="Local" value="mml_repeatB.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="^：タイ">
+					<param name="Local" value="mml_tie.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="_.__：移調">
+					<param name="Local" value="mml_transpose.html">
 					</OBJECT>
 			</UL>
-		</UL>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="MMLコンパイラ（nsc.exe）">
-			</OBJECT>
-		<UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="nsc.exeについて">
-				<param name="Local" value="usage_nsc.html">
-				</OBJECT>
-			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="コマンドラインオプション">
-				<param name="Local" value="nsc_option.html">
-				</OBJECT>
-			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="MML(Music Macro Language)">
+				<param name="Name" value="Tips">
+				<param name="ImageNumber" value="1">
 				</OBJECT>
 			<UL>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="MML文法">
-					<param name="Local" value="mml.html">
+					<param name="Name" value="最適化のためのヒント">
+					<param name="Local" value="mml_tips.html">
+					<param name="ImageNumber" value="37">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="エンベロープ記述ブロック">
-					<param name="Local" value="mml_envelope.html">
+					<param name="Name" value="n106/n163の使い方">
+					<param name="Local" value="n163.html">
+					<param name="ImageNumber" value="37">
 					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="⊿PCM記述ブロック">
-					<param name="Local" value="mml_dpcm.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="VRC7ユーザー音色定義ブロック">
-					<param name="Local" value="mml_vrc7.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="n163音色波形記述ブロック">
-					<param name="Local" value="mml_N163.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="シーケンス記述ブロック">
-					<param name="Local" value="mml_sequence.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="出力するアセンブリ言語ソースについて">
-					<param name="Local" value="nsc_asm.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="MMLリファレンス">
-					</OBJECT>
-				<UL>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="a,b,c,d,e,f,g：音符">
-						<param name="Local" value="mml_note.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="l：省略時の音長">
-						<param name="Local" value="mml_length.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="o：オクターブ">
-						<param name="Local" value="mml_octave.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="q,u：省略時のゲートタイム">
-						<param name="Local" value="mml_gate.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="r：休符">
-						<param name="Local" value="mml_rest.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="s：スイープ(APU)">
-						<param name="Local" value="mml_sweep.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="s：サスティン(VRC7)">
-						<param name="Local" value="mml_sweep.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="s：サンプル長設定(n163)">
-						<param name="Local" value="mml_sweep.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="s：ハードウェアエンベロープ（Sunsoft 5B）">
-						<param name="Local" value="mml_sweep.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="t：テンポ">
-						<param name="Local" value="mml_tempo.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="v：音量">
-						<param name="Local" value="mml_volume.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="y：メモリ書き込み">
-						<param name="Local" value="mml_poke.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="D,D%：ディチューン">
-						<param name="Local" value="mml_detune.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="yV：VRC7レジスタ書き込み">
-						<param name="Local" value="mml_VRC7write.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="L：無限ループ">
-						<param name="Local" value="mml_loop.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="E@,Ev,Em,En：エンベロープ">
-						<param name="Local" value="mml_envelop.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="K{}：調号">
-						<param name="Local" value="mml_KeySignature.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="P：ポルタメント">
-						<param name="Local" value="mml_portamento.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="Rm,R@,Rv：リリース処理">
-						<param name="Local" value="mml_release.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="S：サブルーチン・コール">
-						<param name="Local" value="mml_sub.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="TR：トラック">
-						<param name="Local" value="mml_TR.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="@：音色">
-						<param name="Local" value="mml_voice.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="@V：VRC7ユーザ定義音色">
-						<param name="Local" value="mml_VRC7voice.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="@N：n163音色波形設定">
-						<param name="Local" value="mml_N163voice.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="NC:n163チャンネル数設定">
-						<param name="Local" value="mml_N163_channel.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="F：Sunsoft 5Bエンベロープ周波数">
-						<param name="Local" value="mml_s5b_envelope.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="(,)：相対ボリューム">
-						<param name="Local" value="mml_relative_volume.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="&lt;,&gt;,&quot;,'：相対オクターブ">
-						<param name="Local" value="mml_relative_octave.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="[ : ]：リピート(A)">
-						<param name="Local" value="mml_repeatA.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="|: \ :|：リピート(B)">
-						<param name="Local" value="mml_repeatB.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="^：タイ">
-						<param name="Local" value="mml_tie.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="_.__：移調">
-						<param name="Local" value="mml_transpose.html">
-						</OBJECT>
-				</UL>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="Tips">
-					</OBJECT>
-				<UL>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="最適化のためのヒント">
-						<param name="Local" value="mml_tips.html">
-						</OBJECT>
-					<LI> <OBJECT type="text/sitemap">
-						<param name="Name" value="n106/n163の使い方">
-						<param name="Local" value="n163.html">
-						</OBJECT>
-				</UL>
 			</UL>
 		</UL>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="音源ドライバー（nsd.lib）">
+		<param name="ImageNumber" value="1">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="nsd.libについて">
+			<param name="Local" value="usage_nsd.html">
+			<param name="ImageNumber" value="12">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="関数リファレンス">
+			<param name="ImageNumber" value="1">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_init()">
+				<param name="Local" value="func_nsd_init.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_main()">
+				<param name="Local" value="func_nsd_main.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_set_dpcm()">
+				<param name="Local" value="func_nsd_set_dpcm.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_play_bgm()">
+				<param name="Local" value="func_nsd_play_bgm.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_stop_bgm()">
+				<param name="Local" value="func_nsd_stop_bgm.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_play_se()">
+				<param name="Local" value="func_nsd_play_se.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_stop_se()">
+				<param name="Local" value="func_nsd_stop_se.html">
+				</OBJECT>
+		</UL>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="仕様">
+		<param name="ImageNumber" value="1">
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
@@ -271,18 +289,22 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="FAQ">
 		<param name="Local" value="faq.html">
+		<param name="ImageNumber" value="35">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="著作権">
 		<param name="Local" value="copyright.html">
+		<param name="ImageNumber" value="27">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="再配布">
 		<param name="Local" value="redistribution.html">
+		<param name="ImageNumber" value="23">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="改訂履歴">
 		<param name="Local" value="revision.html">
+		<param name="ImageNumber" value="39">
 		</OBJECT>
 </UL>
 </BODY></HTML>

@@ -38,21 +38,21 @@ crt0.o:
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc7.lib(nsd_snd.o):
-    CODE              Offs = 000942   Size = 0002CC
+    CODE              Offs = 000942   Size = 0002FD
     RODATA            Offs = 000090   Size = 0001BC
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc7.lib(nsd_math.o):
-    CODE              Offs = 000C0E   Size = 000069
+    CODE              Offs = 000C3F   Size = 000069
     RODATA            Offs = 00024C   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc7.lib(nsd_work.o):
-    CODE              Offs = 000C77   Size = 000000
+    CODE              Offs = 000CA8   Size = 000000
     RODATA            Offs = 00024C   Size = 000000
     BSS               Offs = 000001   Size = 000256
     DATA              Offs = 000000   Size = 000000
@@ -70,29 +70,29 @@ ZEROPAGE              000002  000059  000058
 BSS                   000200  000456  000257
 DATA                  000200  000200  000000
 STARTUP               008000  008084  000085
-CODE                  008085  008CFB  000C77
-RODATA                008CFC  008F47  00024C
+CODE                  008085  008D2C  000CA8
+RODATA                008D2D  008F78  00024C
 
 
 Exports list:
 -------------
 __BSS_LOAD__              000200  LA    __BSS_RUN__               000200  LA    
 __BSS_SIZE__              000257  EA    __CODE_LOAD__             008085  LA    
-__CODE_RUN__              008085  LA    __CODE_SIZE__             000C77  EA    
-__DATA_LOAD__             008F48  LA    __DATA_RUN__              000200  LA    
+__CODE_RUN__              008085  LA    __CODE_SIZE__             000CA8  EA    
+__DATA_LOAD__             008F79  LA    __DATA_RUN__              000200  LA    
 __DATA_SIZE__             000000  EA    __RAM_LAST__              006000  LA    
 __RAM_SIZE__              002000  EA    __RAM_START__             006000  LA    
-__RODATA_LOAD__           008CFC  LA    __RODATA_RUN__            008CFC  LA    
-__RODATA_SIZE__           00024C  EA    __ROM0_LAST__             008F48 RLA    
+__RODATA_LOAD__           008D2D  LA    __RODATA_RUN__            008D2D  LA    
+__RODATA_SIZE__           00024C  EA    __ROM0_LAST__             008F79 RLA    
 __ROM0_SIZE__             007FF0  EA    __ROM0_START__            008000  LA    
 __SRAM_LAST__             000457  LA    __SRAM_SIZE__             000600  EA    
 __SRAM_START__            000200  LA    __STACKSIZE__             000300  EA    
 __STARTUP_LOAD__          008000  LA    __STARTUP_RUN__           008000  LA    
 __STARTUP_SIZE__          000085  EA    __STARTUP__               000001  EA    
 __ZP_LAST__               00005A  LA    __ZP_SIZE__               0000FE  EA    
-__ZP_START__              000002  LA    _nsd_div192               008C93 RLA    
+__ZP_START__              000002  LA    _nsd_div192               008CC4 RLA    
 _nsd_init                 008085 RLA    _nsd_main                 0081C3 RLA    
-_nsd_mul                  008CD3 RLA    _nsd_play_bgm             008096 RLA    
+_nsd_mul                  008D04 RLA    _nsd_play_bgm             008096 RLA    
 _nsd_play_se              0080E4 RLA    _nsd_set_dpcm             00808F RLA    
 _nsd_snd_frequency        008B58 RLA    _nsd_snd_init             0089C7 RLA    
 _nsd_snd_keyoff           008A7B RLA    _nsd_snd_keyon            0089E8 RLA    

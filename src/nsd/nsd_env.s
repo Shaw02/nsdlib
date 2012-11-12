@@ -323,6 +323,17 @@ Volume:
 	jmp	@VRC7_Exit
 @VRC7L:
 .endif
+.ifdef	OPLL
+	;OPLLは、mode 2の時はリリース処理しない。
+	cpx	#nsd::TR_OPLL
+	bcc	@OPLLL
+	cpx	#nsd::TR_OPLL + 9*2
+	bcs	@OPLLL
+	lda	__volume,x
+	and	#$0F
+	jmp	@OPLL_Exit
+@OPLLL:
+.endif
 
 @L1:	;Release (Volume)
 	lda	__volume,x
@@ -346,6 +357,7 @@ Volume:
 .endif
 	shr	a, 4
 @VRC7_Exit:
+@OPLL_Exit:
 @EX:
 	jmp	Set_Volume
 

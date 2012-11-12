@@ -25,7 +25,14 @@
 		VRC7_Track	= 0		;
 	.endif
 
-	TR_MMC5		= TR_VRC7 + VRC7_Track * 2
+	TR_OPLL		= TR_VRC7 + VRC7_Track * 2
+	.ifdef	OPLL
+		OPLL_Track	= 9+5		;
+	.else
+		OPLL_Track	= 0		;
+	.endif
+
+	TR_MMC5		= TR_OPLL + OPLL_Track * 2
 	.ifdef	MMC5
 		MMC5_Track	= 2		; (without DPCM)
 	.else
@@ -46,7 +53,14 @@
 		PSG_Track	= 0		;
 	.endif
 
-	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + MMC5_Track + N163_Track + PSG_Track
+	TR_NULL		= TR_PSG + PSG_Track * 2
+	.ifdef	PSG
+		NULL_Track	= 1		;
+	.else
+		NULL_Track	= 0		;
+	.endif
+
+	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + OPLL_Track + MMC5_Track + N163_Track + PSG_Track + NULL_Track
 	SE_Track	= 2		;
 
 	Track		= BGM_Track + SE_Track
@@ -110,6 +124,29 @@ VRC7_Patch7		= $07
 VRC7_Frequency		= $10
 VRC7_Octave		= $20
 VRC7_Volume		= $30
+
+;---------------------------------------
+;OPLL define
+
+OPLL_Resister		= $9010		;wait  6 clk
+OPLL_Data		= $9030		;wait 42 clk
+
+OPLL_Patch0		= $00
+OPLL_Patch1		= $01
+OPLL_Patch2		= $02
+OPLL_Patch3		= $03
+OPLL_Patch4		= $04
+OPLL_Patch5		= $05
+OPLL_Patch6		= $06
+OPLL_Patch7		= $07
+
+OPLL_RHYTHM		= $0E
+OPLL_Frequency		= $10
+OPLL_Octave		= $20
+OPLL_Volume		= $30
+OPLL_BD			= $36
+OPLL_HH_SD		= $37
+OPLL_TOM_CYM		= $38
 
 ;---------------------------------------
 ;MMC5 define
@@ -279,6 +316,9 @@ PSG_Envelope_Form	= $0D
 	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
 	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
 	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
+.ifdef	OPLL
+	OPLL_Rhythm	.byte
+.endif
 .Endstruct
 
 ;=======================================================================
@@ -363,6 +403,9 @@ PSG_Envelope_Form	= $0D
 .define	__n163_num	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3
 .define	__psg_switch	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3 + 1
 
+.ifdef	OPLL
+.define	__opll_ryhthm	nsd_work + NSD_work::OPLL_Rhythm
+.endif
 
 ;=======================================================================
 ;		Struct of DPCM					*

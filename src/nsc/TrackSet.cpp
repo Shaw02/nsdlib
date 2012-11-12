@@ -49,6 +49,9 @@ enum	Command_ID_mml {
 	mml_Gate_q,
 	mml_Gate_u,
 
+	mml_Echo,
+	mml_Echo_Off,
+
 	mml_Envelop_Voice,
 	mml_Envelop_Volume,
 	mml_Envelop_Frequency,
@@ -125,6 +128,9 @@ const	static	Command_Info	Command[] = {
 		{	"l",	mml_Length				},
 		{	"q",	mml_Gate_q				},
 		{	"u",	mml_Gate_u				},
+
+		{	"EC*",	mml_Echo_Off			},
+		{	"EC",	mml_Echo				},
 
 		{	"E@*",	mml_Envelop_Off_Voice		},
 		{	"Ev*",	mml_Envelop_Off_Volume		},
@@ -321,6 +327,14 @@ const	static	Command_Info	Command[] = {
 				nowTrack->SetGatetime_u(MML);
 				break;
 
+			case(mml_Echo_Off):
+				nowTrack->SetEcho();
+				break;
+
+			case(mml_Echo):
+				nowTrack->SetEcho(MML);
+				break;
+
 			case(mml_Envelop_Voice):
 				nowTrack->SetEnvelop(nsd_Envelop_Voice, MML);
 				break;
@@ -403,26 +417,26 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Octave_Up):
 				if(MML->octave_reverse == true){
-					nowTrack->SetEvent(new mml_general(nsd_Octave_Down, "Octave Down"));
+					nowTrack->SetOctaveDec();
 				} else {
-					nowTrack->SetEvent(new mml_general(nsd_Octave_Up, "Octave Up"));
+					nowTrack->SetOctaveInc();
 				}
 				break;
 
 			case(mml_Octave_Down):
 				if(MML->octave_reverse == true){
-					nowTrack->SetEvent(new mml_general(nsd_Octave_Up, "Octave Up"));
+					nowTrack->SetOctaveInc();
 				} else {
-					nowTrack->SetEvent(new mml_general(nsd_Octave_Down, "Octave Down"));
+					nowTrack->SetOctaveDec();
 				}
 				break;
 
 			case(mml_Octave_Up1):
-				nowTrack->SetEvent(new mml_general(nsd_Octave_Up_1, "One time octave up"));
+				nowTrack->SetOctaveOne_Inc();
 				break;
 
 			case(mml_Octave_Down1):
-				nowTrack->SetEvent(new mml_general(nsd_Octave_Down_1, "One time octave down"));
+				nowTrack->SetOctaveOne_Dec();
 				break;
 
 			case(mml_Detune_Cent):
@@ -454,11 +468,11 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Volume_Up):
-				nowTrack->SetEvent(new mml_general(nsd_Volume_Up, "Volume up"));
+				nowTrack->SetVolumeInc();
 				break;
 
 			case(mml_Volume_Down):
-				nowTrack->SetEvent(new mml_general(nsd_Volume_Down, "Volume down"));
+				nowTrack->SetVolumeDec();
 				break;
 
 			case(mml_VRC7_Write):

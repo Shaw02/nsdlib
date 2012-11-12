@@ -20,6 +20,15 @@ private:
 				bool	loop_flag;
 
 				char	KeySignature[8];	//í≤çÜ(c,d,e,f,g,a,b,r)
+				char	oldNote[256];
+	unsigned	char	pt_oldNote;
+				char	volume;
+				char	octave;
+				char	octave1;
+				char	octave1_old;
+				bool	echo_flag;
+	unsigned	char	echo_volume;
+	unsigned	char	echo_value;
 
 	mml_note*			_old_note;
 	mml_Address*		_old_repeatA_Branch;
@@ -44,6 +53,8 @@ public:
 				void	SetN163Channel(MMLfile* MML);
 				void	Set_FME7_Frequency(MMLfile* MML);
 				void	SetSubroutine(MMLfile* MML);
+				void	SetEcho(void);
+				void	SetEcho(MMLfile* MML);
 				void	SetEnvelop(unsigned char _opcode, MMLfile* MML);
 				void	SetLoop();
 				void	SetRepeat_A_Start(MMLfile* MML);
@@ -58,10 +69,16 @@ public:
 				void	SetTai(MMLfile* MML);
 				void	SetLength(MMLfile* MML);
 				void	SetOctave(MMLfile* MML);
+				void	SetOctaveInc();
+				void	SetOctaveDec();
+				void	SetOctaveOne_Inc();
+				void	SetOctaveOne_Dec();
 				void	SetGatetime(MMLfile* MML);
 				void	SetGatetime_u(MMLfile* MML);
 				void	SetSweep(MMLfile* MML);
 				void	SetVolume(MMLfile* MML);
+				void	SetVolumeInc();
+				void	SetVolumeDec();
 				void	SetReleaseMode(MMLfile* MML);
 				void	SetReleaseVoice(MMLfile* MML);
 				void	SetReleaseVolume(MMLfile* MML);

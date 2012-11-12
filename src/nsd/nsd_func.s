@@ -110,6 +110,16 @@ Loop_End:
 	and	__flag
 	sta	__flag			;BGM Enable
 
+.ifdef	OPLL
+	lda	#OPLL_RHYTHM
+	sta	OPLL_Resister
+
+	lda	#$00
+	sta	__opll_ryhthm
+	tay
+	sta	OPLL_Data
+.endif
+
 	rts
 .endproc
 

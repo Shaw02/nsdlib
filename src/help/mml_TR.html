@@ -139,6 +139,36 @@
 </p>
 <br>
 
+<table>
+<caption>nsd_opll.lib / nsd_opll.bin</caption>
+<tr><th>トラック</th><th>音源</th></tr>
+<tr><td>TR6		</td><td>OPLL FM音源 ch1	</td></tr>
+<tr><td>TR7		</td><td>OPLL FM音源 ch2	</td></tr>
+<tr><td>TR8		</td><td>OPLL FM音源 ch3	</td></tr>
+<tr><td>TR9		</td><td>OPLL FM音源 ch4	</td></tr>
+<tr><td>TR10	</td><td>OPLL FM音源 ch5	</td></tr>
+<tr><td>TR11	</td><td>OPLL FM音源 ch6	</td></tr>
+<tr><td>TR12	</td><td>OPLL FM音源 ch7		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR13	</td><td>OPLL FM音源 ch8		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR14	</td><td>OPLL FM音源 ch9		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR15	</td><td>OPLL Rhythm Bass Drum	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR16	</td><td>OPLL Rhythm Snare Drum	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR17	</td><td>OPLL Rhythm Hi Hat		<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR18	</td><td>OPLL Rhythm Top Cymbal	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR19	</td><td>OPLL Rhythm Tom Tom	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+</table>
+<p>
+※"nsd_opll.lib" 及び "nsd_opll.bin" は、VRC7をOPLL（YM2413）に換装した、改造拡張音源用の音源ドライバーです。<br>
+ファミコン実機でOPLLを鳴らしたい方は、個人の責任にて改造して下さい。<br>
+</p>
+<p>
+ch7～9のFM音源／リズム音源の切り替えは、TR15～19の`s'コマンドにて設定します。<br>
+曲中での切り替えにも対応しており、デフォルトは、FM音源 9ch（s0）です。<br>
+s0	…	FM音源 9ch	（TR15～19の発音は無効になります。休符を置いてください。）<br>
+s1	…	FM音源 6ch + リズム音源 5ch	（TR12～14の発音は無効になります。休符を置いてください。）<br>
+</p>
+<br>
+
 
 <h4>SE記述ブロック</h4>
 <p>

@@ -867,7 +867,7 @@ nsd_op1B:
 ;-----------------------------------------------------------------------
 nsd_op1C:
 
-.ifdef	VRC7
+.if	.defined(VRC7) || .defined(OPLL)
 	ldy	__Sequence_ptr,x
 	sty	__ptr			;
 	ldy	__Sequence_ptr + 1,x
@@ -879,7 +879,7 @@ nsd_op1C:
 	jsr	nsd_load_sequence
 	sta	__tmp + 1		;__tmp = value
 
-.ifdef	VRC7
+.if	.defined(VRC7) || .defined(OPLL)
 	lda	__ptr
 	add	__tmp
 	sta	__ptr
@@ -887,6 +887,11 @@ nsd_op1C:
 	lda	__ptr + 1
 	adc	__tmp + 1
 	sta	__ptr + 1		;__ptr テーブルのポインタ
+
+.ifdef	OPLL
+	cpx	#nsd::TR_OPLL
+	bcs	@OPLL
+.endif
 
 	ldx	#0			;8 byte table
 	ldy	#0
@@ -908,9 +913,38 @@ nsd_op1C:
 	bne	@L			;[2]	6 + 36 = 42
 
 	ldx	__channel
-
 .endif
 	jmp	Sequence
+
+
+.ifdef	OPLL
+@OPLL:
+	ldx	#0			;8 byte table
+	ldy	#0
+@L2:
+	stx	OPLL_Resister		;●Resister Write
+	lda	(__ptr),y		;[5]
+	iny				;[2]
+	sta	OPLL_Data		;●Data Write
+
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]
+	lda	(__ptr,x)		;[6]	36
+
+	inx				;[2]
+	cpx	#8			;[2]
+	bne	@L2			;[2]	6 + 36 = 42
+
+	ldx	__channel
+
+	jmp	Sequence
+.endif
+
+
+
 ;=======================================================================
 ;		opcode	0x1D:	VRC7 : Set resister
 ;-----------------------------------------------------------------------
@@ -918,17 +952,27 @@ nsd_op1D:
 
 	jsr	nsd_load_sequence
 
+.ifdef	OPLL
+	cpx	#nsd::TR_OPLL
+	bcs	@OPLL
+.endif
+
 .ifdef	VRC7
 	sta	VRC7_Resister
 .endif
-
 	jsr	nsd_load_sequence
-
 .ifdef	VRC7
 	sta	VRC7_Data
 .endif
-
 	jmp	Sequence
+
+.ifdef	OPLL
+@OPLL:
+	sta	OPLL_Resister
+	jsr	nsd_load_sequence
+	sta	OPLL_Data
+	jmp	Sequence
+.endif
 
 ;=======================================================================
 ;		opcode	0x1E:	n163 : Set wave table
