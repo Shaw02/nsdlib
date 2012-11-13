@@ -17,9 +17,6 @@
 ;～～			BGM,SE,エンベロープ、音色データ ＆ ⊿PCM構造体
 ;0xC000-		⊿PCM実体
 ;0xE000-		プログラムコード
-;
-;	NSF Headerは、MMLコンパイラが作る。
-;
 
 ; ------------------------------------------------------------------------
 ; Define for C Langage
@@ -120,15 +117,13 @@ _eff:	.byte	0		;SE start number
 	.byte	0,0,0,0			;78
 
 ; ------------------------------------------------------------------------
-; 	実機ROM用	配置：0x8000番地
+; 	実機ROM用	Reset
 ; ------------------------------------------------------------------------
 .segment	"STARTUP"
 
-_ROM_MAIM:
-	jmp	_nsf_init
-
+.ifdef	DPCMBank
 ; ------------------------------------------------------------------------
-; 	実機ROM用	配置：0x8003番地
+; 	実機ROM用	NMI	(Vblank)
 ; ------------------------------------------------------------------------
 .proc	_nmi_main
 
@@ -146,23 +141,39 @@ _ROM_MAIM:
 	tay
 	pla
 
-	; Interrupt exit
-irq2:
-irq1:
-timerirq:
-irq:
 	rti
 
 .endproc
 
 ; ------------------------------------------------------------------------
+; 	実機ROM用	IRQ	(DPCM)
+; ------------------------------------------------------------------------
+.proc	_irq_main
+
+	pha			;register push
+	tya
+	pha
+	txa
+	pha
+
+;	jsr	_nsd_irq_main
+
+	pla			;register pop
+	tax
+	pla
+	tay
+	pla
+
+	rti
+.endproc
+.endif
+; ------------------------------------------------------------------------
 ; 	NSF用
 ; ------------------------------------------------------------------------
 .proc	_nsf_main
 
-	jsr	_nsd_main
+	jmp	_nsd_main
 
-	rts
 .endproc
 
 ; ------------------------------------------------------------------------
@@ -196,42 +207,82 @@ irq:
 	sta	$0500,x
 	sta	$0600,x
 	sta	$0700,x
-
-;	使っていないので、クリアしない。
-;	sta	$6000,x
-;	sta	$6100,x
-;	sta	$6200,x
-;	sta	$6300,x
-;	sta	$6400,x
-;	sta	$6500,x
-;	sta	$6600,x
-;	sta	$6700,x
-;	sta	$6800,x
-;	sta	$6900,x
-;	sta	$6A00,x
-;	sta	$6B00,x
-;	sta	$6C00,x
-;	sta	$6D00,x
-;	sta	$6E00,x
-;	sta	$6F00,x
-;	sta	$7000,x
-;	sta	$7100,x
-;	sta	$7200,x
-;	sta	$7300,x
-;	sta	$7400,x
-;	sta	$7500,x
-;	sta	$7600,x
-;	sta	$7700,x
-;	sta	$7800,x
-;	sta	$7900,x
-;	sta	$7A00,x
-;	sta	$7B00,x
-;	sta	$7C00,x
-;	sta	$7D00,x
-;	sta	$7E00,x
-;	sta	$7F00,x
 	inx
 	bne	@L
+
+	;コピー
+.ifdef	DPCMBank
+	ldx	#0
+@L2:
+	lda	$8000,x
+	sta	$6000,x
+	lda	$8100,x
+	sta	$6100,x
+	lda	$8200,x
+	sta	$6200,x
+	lda	$8300,x
+	sta	$6300,x
+	lda	$8400,x
+	sta	$6400,x
+	lda	$8500,x
+	sta	$6500,x
+	lda	$8600,x
+	sta	$6600,x
+	lda	$8700,x
+	sta	$6700,x
+	lda	$8800,x
+	sta	$6800,x
+	lda	$8900,x
+	sta	$6900,x
+	lda	$8A00,x
+	sta	$6A00,x
+	lda	$8B00,x
+	sta	$6B00,x
+	lda	$8C00,x
+	sta	$6C00,x
+	lda	$8D00,x
+	sta	$6D00,x
+	lda	$8E00,x
+	sta	$6E00,x
+	lda	$8F00,x
+	sta	$6F00,x
+
+	lda	$9000,x
+	sta	$7000,x
+	lda	$9100,x
+	sta	$7100,x
+	lda	$9200,x
+	sta	$7200,x
+	lda	$9300,x
+	sta	$7300,x
+	lda	$9400,x
+	sta	$7400,x
+	lda	$9500,x
+	sta	$7500,x
+	lda	$9600,x
+	sta	$7600,x
+	lda	$9700,x
+	sta	$7700,x
+	lda	$9800,x
+	sta	$7800,x
+	lda	$9900,x
+	sta	$7900,x
+	lda	$9A00,x
+	sta	$7A00,x
+	lda	$9B00,x
+	sta	$7B00,x
+	lda	$9C00,x
+	sta	$7C00,x
+	lda	$9D00,x
+	sta	$7D00,x
+	lda	$9E00,x
+	sta	$7E00,x
+	lda	$9F00,x
+	sta	$7F00,x
+
+	inx
+	bne	@L
+.endif
 
 	rts
 .endproc
@@ -301,16 +352,9 @@ irq:
 ; hardware vectors
 ; ------------------------------------------------------------------------
 
-;.segment	"COPYRIGHT"
-;	.asciiz	"(c) 2012 S.W."
-;
-;.segment	"VECTORS"
-;	.word	_nsf_init	; $fff0		MMLコンパイラが参照して、NSFヘッダーに埋め込む。
-;	.word	_nsf_main	; $fff2		MMLコンパイラが参照して、NSFヘッダーに埋め込む。
-;	.word	irq2		; $fff4 ?
-;	.word	irq1		; $fff6 ?
-;	.word	timerirq	; $fff8 ?
-;	.word	nmi		; $fffa vblank nmi
-;	.word	start		; $fffc reset
-;	.word	irq		; $fffe irq / brk
-;
+.ifdef	DPCMBank
+.segment	"VECTORS"
+	.word	_nmi_main	; $fffa vblank nmi
+	.word	_nsf_init	; $fffc reset
+	.word	_irq_main	; $fffe irq / brk
+.endif

@@ -54,7 +54,7 @@
 	.endif
 
 	TR_NULL		= TR_PSG + PSG_Track * 2
-	.ifdef	PSG
+	.ifdef	NULL
 		NULL_Track	= 1		;
 	.else
 		NULL_Track	= 0		;
@@ -415,6 +415,10 @@ PSG_Envelope_Form	= $0D
 	DA		.byte		;I/O 0x4011
 	Address		.byte		;I/O 0x4012
 	Size		.byte		;I/O 0x4013
+.ifdef	DPCMBank
+	Bank		.byte		;Bank number
+	Next		.byte		;Next number(note)
+.endif
 .Endstruct
 
 

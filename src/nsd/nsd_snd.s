@@ -233,15 +233,33 @@ Exit:
 	lda	#$0F
 	sta	APU_CHANCTRL
 
+	lda	#0
+	sta	__tmp + 1
+	lda	__note,x
+	asl	a
+	rol	__tmp + 1
+.ifdef	DPCMBank
+	sta	__tmp
+.endif
+	asl	a
+	rol	__tmp + 1
+.ifdef	DPCMBank
+	add	__tmp
+.endif
+	tay			;y <- address
+.ifdef	DPCMBank
+	lda	#0
+	adc	__tmp + 1
+	sta	__tmp + 1
+.endif
+
 	lda	__dpcm_info + 0
 	sta	__ptr + 0
 	lda	__dpcm_info + 1
+	add	__tmp + 1
 	sta	__ptr + 1
 
-	lda	__note,x
-	shl	a, 2
-
-	tay
+	;Set the DPCM resister
 	lda	(__ptr),y
 	sta	APU_MODCTRL
 
@@ -261,6 +279,10 @@ Exit:
 
 	lda	#$1F
 	sta	APU_CHANCTRL
+
+.ifdef	DPCMBank
+
+.endif
 
 	rts
 .endproc
@@ -1002,56 +1024,13 @@ exit:
 
 ;---------------------------------------
 .proc	_nsd_ch2_volume
-
 	;-------------------------------
 	;SE check
 	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
-	bne	exit
-
-	;-------------------------------
-	; *** Mix voice and volume
-	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-	and	#$0F
-	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-	ora	__voice_set,x
-
-	;-------------------------------
-	; *** Output to NES sound device
-	;y = x << 1
-	sta	APU_PULSE2CTRL
-
-	;-------------------------------
-	; *** Exit
-exit:
+	beq	_nsd_se1_volume
 	rts
 .endproc
 
-;---------------------------------------
-.proc	_nsd_ch4_volume
-
-	;-------------------------------
-	;SE check
-	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
-	bne	exit
-
-	;-------------------------------
-	; *** Mix voice and volume
-	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-	and	#$0F
-	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-
-	;-------------------------------
-	; *** Output to NES sound device
-	;y = x << 1
-	sta	APU_NOISECTRL
-
-	;-------------------------------
-	; *** Exit
-exit:
-	rts
-.endproc
-
-;---------------------------------------
 .proc	_nsd_se1_volume
 
 	;-------------------------------
@@ -1073,6 +1052,14 @@ exit:
 .endproc
 
 ;---------------------------------------
+.proc	_nsd_ch4_volume
+	;-------------------------------
+	;SE check
+	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
+	beq	_nsd_se2_volume
+	rts
+.endproc
+
 .proc	_nsd_se2_volume
 
 	;-------------------------------
@@ -2415,11 +2402,14 @@ Exit:
 
 ;---------------------------------------
 .proc	_nsd_nes_ch2_frequency
-
 	;-------------------------------
 	;SE check
 	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
-	bne	Exit
+	beq	_nsd_nes_se1_frequency
+	rts
+.endproc
+
+.proc	_nsd_nes_se1_frequency
 
 	jsr	Normal_frequency
 
@@ -2458,58 +2448,13 @@ Exit:
 
 ;---------------------------------------
 .proc	_nsd_nes_ch4_frequency
-
 	;-------------------------------
 	;SE check
 	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
-	bne	Exit
-
-	;-------------------------------
-	; *** Get the note number lower 4bit
-	;a >>= 4
-	eor	#$FF
-	shr	a,4
-
-	;-------------------------------
-	; *** Mix voice and frequency
-	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-	ldx	__channel
-	and	#$0F
-	ora	__voice_set,x
-	
-	;-------------------------------
-	; *** Output to NES sound device
-	sta	APU_NOISEFREQ1
-	; to do note on?
-	lda	#$08
-	sta	APU_NOISEFREQ2		;Length counter load (L) 
-
-	;-------------------------------
-	; *** Exit
-Exit:
+	beq	_nsd_nes_se2_frequency
 	rts
 .endproc
 
-;---------------------------------------
-.proc	_nsd_nes_se1_frequency
-
-	jsr	Normal_frequency
-
-	lda	__tmp
-	sta	__frequency_set,x
-	sta	APU_PULSE2FTUNE
-	lda	__tmp + 1
-	ora	#$08
-	cmp	__frequency_set + 1,x
-	beq	Exit
-	sta	APU_PULSE2STUNE		;nes.inc ä‘à·Ç¶ÇƒÇÈÅB
-	sta	__frequency_set + 1,x
-
-Exit:
-	rts
-.endproc
-
-;---------------------------------------
 .proc	_nsd_nes_se2_frequency
 
 	;-------------------------------

@@ -21,6 +21,7 @@ CFLAG = -t none -Oi -Os -Or -c -l -o
 
 LINKER = ld65
 LFLAG = -C config.cfg -m $*.map -vm -o
+LFLAGALL = -C all.cfg -m $*.map -vm -o
 
 LIBER = ar65
 LIBFLAG = a

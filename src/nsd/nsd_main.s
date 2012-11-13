@@ -56,7 +56,8 @@ BGM_SEQ_Exit:
 	;-------
 	;Envelop
 	.repeat	nsd::BGM_Track, I
-	  .if	I <> 4		;DPCM is no envelope
+	  ;No envelope: DPCM, OPLL Rhythm, NULL
+	  .if	(I <> 4) && (!(.defined(OPLL) && (I >= (nsd::TR_OPLL / 2 + 9)) && (I <= (nsd::TR_OPLL / 2 + 13)))) && (!(.defined(NULL) && (I = (nsd::TR_NULL / 2))))
 		ldx	#I*2 + nsd::TR_BGM1
 		jsr	nsd_envelop
 	  .endif

@@ -512,24 +512,26 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 	//	}
 	} else {
 		//ヘッダーにバンク情報を書く。
-		i = 0;
-		while(i < mus_bank){
-			nsf->Bank[i] = i;
-			i++;
-		}
-		while(i < ((Header.offsetPCM - 0x8000)>>12)){
-			nsf->Bank[i] = 0;
-			i++;
-		}
-		j = 0;
-		while(i < 8){
-			if(j < pcm_bank){
-				nsf->Bank[i] = mus_bank + j;
-			} else {
-				nsf->Bank[i] = 0;
+		if(opt == true){
+			i = 0;
+			while(i < mus_bank){
+				nsf->Bank[i] = i;
+				i++;
 			}
-			i++;
-			j++;
+			while(i < ((Header.offsetPCM - 0x8000)>>12)){
+				nsf->Bank[i] = 0;
+				i++;
+			}
+			j = 0;
+			while(i < 8){
+				if(j < pcm_bank){
+					nsf->Bank[i] = mus_bank + j;
+				} else {
+					nsf->Bank[i] = 0;
+				}
+				i++;
+				j++;
+			}
 		}
 		//コード＆シーケンス
 		write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
@@ -540,9 +542,11 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		}
 		//ΔPCM
 		write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
-		while(pcm_size < ((unsigned int)pcm_bank<<12)){
-			put(0);		//0 padding
-			pcm_size++;
+		if(opt == true){
+			while(pcm_size < ((unsigned int)pcm_bank<<12)){
+				put(0);		//0 padding
+				pcm_size++;
+			}
 		}
 	}
 
