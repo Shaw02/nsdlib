@@ -26,9 +26,36 @@ public:
 				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const char _strName[] = "==== [ Track Set ]====");
 				~TrackSet(void);
 
+		void	getAsm(MusicFile* MUS);
 		void	Fix_Address(MusicFile* MUS);
 
 	MusicTrack*	makeTrack(int _track);
 	MusicTrack*	getTrack(int _track);
-	void	getAsm(MusicFile* MUS);
+
+		void	SetEvent(MusicItem* _item);		//ƒCƒxƒ“ƒg‚Ì’Ç‰Á
+
+		void	SetOctave(MMLfile* MML);
+		void	SetOctaveInc();
+		void	SetOctaveDec();
+		void	SetOctaveOne_Inc();
+		void	SetOctaveOne_Dec();
+
+		void	SetVolume(MMLfile* MML);
+		void	SetVolumeInc();
+		void	SetVolumeDec();
+
+		void	SetReleaseMode(MMLfile* MML);
+		void	SetReleaseVoice(MMLfile* MML);
+		void	SetReleaseVolume(MMLfile* MML);
+
+		void	SetGatetime(MMLfile* MML);
+		void	SetGatetime_u(MMLfile* MML);
+
+		void	SetProtament(MMLfile* MML);
+		void	SetSweep(MMLfile* MML);
+
+		void	SetPoke(MMLfile* MML);
+		void	SetVRC7_Write(MMLfile* MML);
+		void	SetN163Channel(MMLfile* MML);
+		void	Set_FME7_Frequency(MMLfile* MML);
 };

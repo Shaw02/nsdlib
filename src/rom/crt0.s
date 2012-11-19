@@ -123,6 +123,28 @@ _eff:	.byte	0		;SE start number
 
 .ifdef	DPCMBank
 ; ------------------------------------------------------------------------
+; 	実機ROM用	IRQ	(DPCM)
+; ------------------------------------------------------------------------
+.proc	_irq_main
+
+	pha			;register push
+	tya
+	pha
+	txa
+	pha
+
+;	jsr	_nsd_irq_main
+
+	pla			;register pop
+	tax
+	pla
+	tay
+	pla
+
+	rti
+.endproc
+
+; ------------------------------------------------------------------------
 ; 	実機ROM用	NMI	(Vblank)
 ; ------------------------------------------------------------------------
 .proc	_nmi_main
@@ -145,27 +167,6 @@ _eff:	.byte	0		;SE start number
 
 .endproc
 
-; ------------------------------------------------------------------------
-; 	実機ROM用	IRQ	(DPCM)
-; ------------------------------------------------------------------------
-.proc	_irq_main
-
-	pha			;register push
-	tya
-	pha
-	txa
-	pha
-
-;	jsr	_nsd_irq_main
-
-	pla			;register pop
-	tax
-	pla
-	tay
-	pla
-
-	rti
-.endproc
 .endif
 ; ------------------------------------------------------------------------
 ; 	NSF用

@@ -56,8 +56,8 @@ BGM_SEQ_Exit:
 	;-------
 	;Envelop
 	.repeat	nsd::BGM_Track, I
-	  ;No envelope: DPCM, OPLL Rhythm, NULL
-	  .if	(I <> 4) && (!(.defined(OPLL) && (I >= (nsd::TR_OPLL / 2 + 9)) && (I <= (nsd::TR_OPLL / 2 + 13)))) && (!(.defined(NULL) && (I = (nsd::TR_NULL / 2))))
+	  ;No envelope: DPCM, NULL
+	  .if	(I <> 4) && (!(.defined(NULL) && (I = (nsd::TR_NULL / 2))))
 		ldx	#I*2 + nsd::TR_BGM1
 		jsr	nsd_envelop
 	  .endif
@@ -78,13 +78,6 @@ BGM_Exit:
 		jsr	nsd_sequence
 		jsr	nsd_envelop
 	.endrepeat
-
-;	;-------
-;	;Envelop
-;	.repeat	nsd::SE_Track, I
-;		ldx	#I * 2 + nsd::TR_SE1
-;		jsr	nsd_envelop
-;	.endrepeat
 
 SE_Exit:
 

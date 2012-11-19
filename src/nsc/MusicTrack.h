@@ -43,20 +43,12 @@ public:
 			MusicTrack(const char _strName[] = "==== [ Music Track ]====");
 			~MusicTrack(void);
 
+				void	Fix_Address(MusicFile* MUS);
 				void	SetEvent(MusicItem* _item);		//ƒCƒxƒ“ƒg‚Ì’Ç‰Á
 
-				void	Fix_Address(MusicFile* MUS);
-
 				size_t	SetEnd(void);
-				void	SetVRC7(MMLfile* MML);
-				void	SetN163(MMLfile* MML);
-				void	SetN163Channel(MMLfile* MML);
-				void	Set_FME7_Frequency(MMLfile* MML);
-				void	SetSubroutine(MMLfile* MML);
-				void	SetEcho(void);
-				void	SetEcho(MMLfile* MML);
-				void	SetEnvelop(unsigned char _opcode, MMLfile* MML);
 				void	SetLoop();
+
 				void	SetRepeat_A_Start(MMLfile* MML);
 				void	SetRepeat_A_Branch(MMLfile* MML);
 				void	SetRepeat_A_End(MMLfile* MML);
@@ -64,26 +56,28 @@ public:
 				void	SetRepeat_B_Branch(MMLfile* MML);
 				void	SetRepeat_B_End(MMLfile* MML);
 
+				void	SetSubroutine(MMLfile* MML);
+				void	SetEnvelop(unsigned char _opcode, MMLfile* MML);
+				void	SetVRC7(MMLfile* MML);
+				void	SetN163(MMLfile* MML);
+
+				void	SetEcho(void);
+				void	SetEcho(MMLfile* MML);
+				void	SetKeySignature(MMLfile* MML);	//’²†‚ÌÝ’è
 				void	SetNote(MMLfile* MML, int note);
 				void	SetRest(MMLfile* MML);
 				void	SetTai(MMLfile* MML);
 				void	SetLength(MMLfile* MML);
-				void	SetOctave(MMLfile* MML);
-				void	SetOctaveInc();
-				void	SetOctaveDec();
-				void	SetOctaveOne_Inc();
-				void	SetOctaveOne_Dec();
-				void	SetGatetime(MMLfile* MML);
-				void	SetGatetime_u(MMLfile* MML);
-				void	SetSweep(MMLfile* MML);
-				void	SetVolume(MMLfile* MML);
-				void	SetVolumeInc();
-				void	SetVolumeDec();
-				void	SetReleaseMode(MMLfile* MML);
-				void	SetReleaseVoice(MMLfile* MML);
-				void	SetReleaseVolume(MMLfile* MML);
-				void	SetProtament(MMLfile* MML);
-				void	SetVRC7_Write(MMLfile* MML);
-				void	SetPoke(MMLfile* MML);
-				void	SetKeySignature(MMLfile* MML);	//’²†‚ÌÝ’è
+
+				void	SetOctave(char _o){octave = _o;};
+				void	IncOctave(void){octave++;};
+				void	DecOctave(void){octave--;};
+				void	IncOctave1(void){octave1++;};
+				void	DecOctave1(void){octave1--;};
+
+				void	SetVolume(char _v){volume = _v;};
+				void	IncVolume(void){	volume++;	if(volume>15){volume = 15;}	};
+				void	DecVolume(void){	volume--;	if(volume<0){volume = 0;}	};
+	unsigned	int		GetDefaultLength(void){return(DefaultLength);};
+
 };

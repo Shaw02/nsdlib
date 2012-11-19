@@ -15,6 +15,7 @@ AMMC5 = -D MMC5
 AN163 = -D N163
 APSG  = -D PSG
 AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D NULL
+AOALL  = -D VRC6 -D OPLL -D MMC5 -D N163 -D PSG -D NULL
 
 CC = cc65
 CFLAG = -t none
@@ -31,17 +32,18 @@ PROJ_MMC5 = NSD_MMC5
 PROJ_N163 = NSD_N163
 PROJ_PSG  = NSD_s5b
 PROJ_ALL  = NSD_ALL
+PROJ_OALL  = NSD_OALL
 
 INC_FILES = nsd.inc
 
 FILES = nsd_func.s nsd_main.s nsd_seq.s nsd_env.s nsd_snd.s nsd_math.s nsd_work.s 
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib
+clean: $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_OALL).lib
 	@del *.bak
 	@del *.o
 
-all:   $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib
+all:   $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_OALL).lib
 
 $(PROJ).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) nsd_func.s
@@ -121,5 +123,15 @@ $(PROJ_ALL).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AALL) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AALL) nsd_math.s
 	@$(ASM) $(AFLAG) $(AALL) nsd_work.s
+	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
+
+$(PROJ_OALL).lib : $(FILES) $(INC_FILES)
+	@$(ASM) $(AFLAG) $(AOALL) nsd_func.s
+	@$(ASM) $(AFLAG) $(AOALL) nsd_main.s
+	@$(ASM) $(AFLAG) $(AOALL) nsd_seq.s
+	@$(ASM) $(AFLAG) $(AOALL) nsd_env.s
+	@$(ASM) $(AFLAG) $(AOALL) nsd_snd.s
+	@$(ASM) $(AFLAG) $(AOALL) nsd_math.s
+	@$(ASM) $(AFLAG) $(AOALL) nsd_work.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 

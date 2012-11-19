@@ -54,315 +54,6 @@ MusicTrack::~MusicTrack(void)
 }
 
 //==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetLoop()
-{
-	offset_loop = offset_now;
-	loop_flag	= true;
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_A_Start(MMLfile* MML)
-{
-	SetEvent(new mml_general(nsd_Repeat_A_Start, MML, "Repeat(A) Start"));
-	offset_repeat_a_s = offset_now;	// ] コマンドでは、次のコマンドに戻る。
-	offset_repeat_a_b = 0;
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_A_Branch(MMLfile* MML)
-{
-	if(offset_repeat_a_s != 0){
-		if(offset_repeat_a_b == 0){
-			offset_repeat_a_b = offset_now + 1;	//引数の位置
-			_old_repeatA_Branch = new mml_Address(nsd_Repeat_A_Branch, "Repeat(A) Branch");
-			SetEvent(_old_repeatA_Branch);
-		} else {
-			MML->Err("リピート(A)内で : コマンドが重複しています。");
-		}
-	} else {
-		MML->Err("リピート(A)の開始 [ コマンドがありません。");
-	}
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
-{
-	mml_Address*	_event;
-
-	if(offset_repeat_a_s != 0){
-		_event = new mml_Address(nsd_Repeat_A_End, "Repeat(A) End");
-		_event->set_Address(offset_repeat_a_s - offset_now - 1);
-		SetEvent(_event);
-		//条件分岐があったら。
-		if(offset_repeat_a_b != 0){
-			_old_repeatA_Branch->set_Address(offset_now - offset_repeat_a_b);
-		}
-		offset_repeat_a_s = 0;
-	} else {
-		MML->Err("リピート(A)の開始 [ コマンドがありません。");
-	}
-
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_B_Start(MMLfile* MML)
-{
-	SetEvent(new mml_general(nsd_Repeat_B_Start, "Repeat(B) Start"));
-	offset_repeat_b_s = offset_now;	// :| コマンドでは、次のコマンドに戻る。
-	offset_repeat_b_b = 0;
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_B_Branch(MMLfile* MML)
-{
-	if(offset_repeat_b_s != 0){
-		if(offset_repeat_b_b == 0){
-			offset_repeat_b_b = offset_now;	//コマンドがあった事を示す。
-			SetEvent(new mml_general(nsd_Repeat_B_Branch, "Repeat(B) Branch"));
-		} else {
-			MML->Err("リピート(B)内で \\ コマンドが重複しています。");
-		}
-	} else {
-		MML->Err("リピート(B)の開始 |: コマンドがありません。");
-	}
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
-{
-	mml_Address*	_event;
-
-	if(offset_repeat_b_s != 0){
-		if(offset_repeat_b_b != 0){
-			if(offset_repeat_b_s < offset_repeat_a_s){
-				MML->Err("リピート(A)の区間の途中です。");
-			}
-			_event = new mml_Address(nsd_Repeat_B_End, "Repeat(B) End");
-			_event->set_Address(offset_repeat_b_s - offset_now - 1);
-			SetEvent(_event);
-		} else {
-			MML->Err("リピート(B)内で \\ コマンドがありませんでした。必ず分岐点 \\ は指定してください。");
-		}
-	} else {
-		MML->Err("リピート(B)の開始 |: コマンドがありません。");
-	}
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetEcho(void)
-{
-	echo_flag = false;
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetEcho(MMLfile* MML)
-{
-	unsigned	char	cData;
-	unsigned	char	_value;
-	unsigned	char	_volume;
-
-	_value = MML->GetInt();
-	if((_value<0) || (_value>255)){
-		MML->Err("ECコマンドの第１パラメータは0～255の範囲で指定してください。");
-	}
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err("EC コマンドのパラメータが足りません。２つ指定してください。");
-	}
-
-	_volume = MML->GetInt();
-	if((_volume<0) || (_volume>15)){
-		MML->Err("ECコマンドの第２パラメータは0～15の範囲で指定してください。");
-	}
-
-	echo_flag = true;
-	echo_value	= _value;
-	echo_volume	= _volume;
-
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML)
-{
-	mml_Address*		_event = new mml_Address(_opcode, "Envelop");
-	unsigned	int		_no = MML->GetInt();
-
-	_event->set_id(_no);
-	SetEvent(_event);
-	ptcEnvelop.push_back(_event);
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetVRC7(MMLfile* MML)
-{
-	mml_Address*		_event = new mml_Address(nsc_VRC7, "VRC7 user instruments");
-	unsigned	int		_no = MML->GetInt();
-
-	_event->set_id(_no);
-	SetEvent(_event);
-	ptcOPLL.push_back(_event);
-}
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetN163(MMLfile* MML)
-{
-	unsigned	char	cData;
-	mml_Address*		_event = new mml_Address(nsc_N163,MML->GetInt(),"n163 wave table");
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err("@N コマンドのパラメータが足りません。２つ指定してください。");
-	}
-
-	_event->set_id(MML->GetInt());
-	SetEvent(_event);
-	ptcWave.push_back(_event);
-}
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetN163Channel(MMLfile* MML)
-{
-	int	i = MML->GetInt();
-
-	if( (i <= 8) && (i >=1) ){
-		SetEvent(new mml_general(nsc_N163_Channel,i-1,"n163 channel"));
-	} else {
-		MML->Err("n163のチャンネル数は1～8の範囲で指定してください。");
-	}
-
-
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::Set_FME7_Frequency(MMLfile* MML)
-{
-	int	i = MML->GetInt();
-
-	if( (i <= 0xFFFF) && (i >=0) ){
-		unsigned	char	c0 = ( i       & 0xFF);
-		unsigned	char	c1 = ((i >> 8) & 0xFF);
-		SetEvent(new mml_general(nsc_FME7_frequency,c0,c1,"FME7 envelop frequency"));
-	} else {
-		MML->Err("FME7のハードウェアエンベロープ周波数は、0～65535の範囲で指定して下さい。");
-	}
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetSubroutine(MMLfile* MML)
-{
-	mml_Address*		_event = new mml_Address(nsd_Call, "Subroutine");
-	unsigned	int		_no = MML->GetInt();
-
-	_event->set_id(_no);
-	SetEvent(_event);
-	ptcSubroutine.push_back(_event);
-}
-
-//==============================================================
 //		アドレス情報を決定する。
 //--------------------------------------------------------------
 //	●引数
@@ -448,6 +139,466 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 	}
 
 }
+
+//==============================================================
+//		シーケンス・オブジェクトの追加
+//--------------------------------------------------------------
+//	●引数
+//		MusicItem* _item	シーケンス・オブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetEvent(MusicItem* _item)
+{
+	//サイズの分、オフセットを増やす。
+	offset_now += (unsigned int)_item->getSize();
+
+	//作ったobjectのポインタを保存しておく。
+	ptcItem.push_back(_item);
+}
+
+//==============================================================
+//		記述ブロックの終了（End of Trackの追加）
+//--------------------------------------------------------------
+//	●引数
+//		無し
+//	●返値
+//		無し
+//==============================================================
+size_t	MusicTrack::SetEnd(void)
+{
+	mml_Address*	_event;
+
+	if(loop_flag == false){
+		SetEvent(new mml_general(nsd_EndOfTrack,"End of Track"));
+	} else {
+		_event = new mml_Address(nsd_Jump, "End of Track with LOOP");
+		_event->set_Address(offset_loop - offset_now - 1);
+		SetEvent(_event);
+	}
+	iSize = offset_now;
+
+	return(iSize);
+}
+
+//==============================================================
+//		L	無限ループ
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetLoop()
+{
+	offset_loop = offset_now;
+	loop_flag	= true;
+}
+
+//==============================================================
+//		[	リピート(A)	開始
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_A_Start(MMLfile* MML)
+{
+	int	times = MML->GetInt();
+
+	if( (times <= 255) && (times >=1) ){
+		SetEvent(new mml_general(nsd_Repeat_A_Start, times, "Repeat(A) Start"));
+		offset_repeat_a_s = offset_now;	// ] コマンドでは、次のコマンドに戻る。
+		offset_repeat_a_b = 0;
+	} else {
+		MML->Err("リピート回数は1～255の範囲で指定して下さい。");
+	}
+
+}
+
+//==============================================================
+//		:	リピート(A)	分岐
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_A_Branch(MMLfile* MML)
+{
+	if(offset_repeat_a_s != 0){
+		if(offset_repeat_a_b == 0){
+			offset_repeat_a_b = offset_now + 1;	//引数の位置
+			_old_repeatA_Branch = new mml_Address(nsd_Repeat_A_Branch, "Repeat(A) Branch");
+			SetEvent(_old_repeatA_Branch);
+		} else {
+			MML->Err("リピート(A)内で : コマンドが重複しています。");
+		}
+	} else {
+		MML->Err("リピート(A)の開始 [ コマンドがありません。");
+	}
+}
+
+//==============================================================
+//		]	リピート(A)	終了
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
+{
+	mml_Address*	_event;
+
+	if(offset_repeat_a_s != 0){
+		_event = new mml_Address(nsd_Repeat_A_End, "Repeat(A) End");
+		_event->set_Address(offset_repeat_a_s - offset_now - 1);
+		SetEvent(_event);
+		//条件分岐があったら。
+		if(offset_repeat_a_b != 0){
+			_old_repeatA_Branch->set_Address(offset_now - offset_repeat_a_b);
+		}
+		offset_repeat_a_s = 0;
+	} else {
+		MML->Err("リピート(A)の開始 [ コマンドがありません。");
+	}
+
+}
+
+//==============================================================
+//		|:	リピート(B)	開始
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_B_Start(MMLfile* MML)
+{
+	SetEvent(new mml_general(nsd_Repeat_B_Start, "Repeat(B) Start"));
+	offset_repeat_b_s = offset_now;	// :| コマンドでは、次のコマンドに戻る。
+	offset_repeat_b_b = 0;
+}
+
+//==============================================================
+//		\	リピート(B)	分岐
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_B_Branch(MMLfile* MML)
+{
+	if(offset_repeat_b_s != 0){
+		if(offset_repeat_b_b == 0){
+			offset_repeat_b_b = offset_now;	//コマンドがあった事を示す。
+			SetEvent(new mml_general(nsd_Repeat_B_Branch, "Repeat(B) Branch"));
+		} else {
+			MML->Err("リピート(B)内で \\ コマンドが重複しています。");
+		}
+	} else {
+		MML->Err("リピート(B)の開始 |: コマンドがありません。");
+	}
+}
+
+//==============================================================
+//		:|	リピート(B)	終了
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
+{
+	mml_Address*	_event;
+
+	if(offset_repeat_b_s != 0){
+		if(offset_repeat_b_b != 0){
+			if(offset_repeat_b_s < offset_repeat_a_s){
+				MML->Err("リピート(A)の区間の途中です。");
+			}
+			_event = new mml_Address(nsd_Repeat_B_End, "Repeat(B) End");
+			_event->set_Address(offset_repeat_b_s - offset_now - 1);
+			SetEvent(_event);
+		} else {
+			MML->Err("リピート(B)内で \\ コマンドがありませんでした。必ず分岐点 \\ は指定してください。");
+		}
+	} else {
+		MML->Err("リピート(B)の開始 |: コマンドがありません。");
+	}
+}
+
+//==============================================================
+//		S	サブルーチン呼び出し
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetSubroutine(MMLfile* MML)
+{
+	mml_Address*		_event = new mml_Address(nsd_Call, "Subroutine");
+	unsigned	int		_no = MML->GetInt();
+
+	_event->set_id(_no);
+	SetEvent(_event);
+	ptcSubroutine.push_back(_event);
+}
+
+//==============================================================
+//		E	エンベロープ設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML)
+{
+	mml_Address*		_event = new mml_Address(_opcode, "Envelop");
+	unsigned	int		_no = MML->GetInt();
+
+	_event->set_id(_no);
+	SetEvent(_event);
+	ptcEnvelop.push_back(_event);
+}
+
+//==============================================================
+//		@V	VRC7ユーザ定義音色設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetVRC7(MMLfile* MML)
+{
+	mml_Address*		_event = new mml_Address(nsc_VRC7, "VRC7 user instruments");
+	unsigned	int		_no = MML->GetInt();
+
+	_event->set_id(_no);
+	SetEvent(_event);
+	ptcOPLL.push_back(_event);
+}
+
+//==============================================================
+//		@N	n163音色設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetN163(MMLfile* MML)
+{
+	unsigned	char	cData;
+	mml_Address*		_event = new mml_Address(nsc_N163,MML->GetInt(),"n163 wave table");
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err("@N コマンドのパラメータが足りません。２つ指定してください。");
+	}
+
+	_event->set_id(MML->GetInt());
+	SetEvent(_event);
+	ptcWave.push_back(_event);
+}
+
+//==============================================================
+//		EC*	疑似エコー解除
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetEcho(void)
+{
+	echo_flag = false;
+}
+
+//==============================================================
+//		EC	疑似エコー設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetEcho(MMLfile* MML)
+{
+	unsigned	char	cData;
+	unsigned	char	_value;
+	unsigned	char	_volume;
+
+	_value = MML->GetInt();
+	if((_value<0) || (_value>255)){
+		MML->Err("ECコマンドの第１パラメータは0～255の範囲で指定してください。");
+	}
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err("EC コマンドのパラメータが足りません。２つ指定してください。");
+	}
+
+	_volume = MML->GetInt();
+	if((_volume<0) || (_volume>15)){
+		MML->Err("ECコマンドの第２パラメータは0～15の範囲で指定してください。");
+	}
+
+	echo_flag = true;
+	echo_value	= _value;
+	echo_volume	= _volume;
+
+}
+
+//==============================================================
+//		調号の設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetKeySignature(MMLfile*	MML)
+{
+	//調号コマンドのID
+	enum	KeySignature_ID {
+		ks_Sharp,
+		ks_Flat,
+		ks_Natural,
+		ks_c,
+		ks_d,
+		ks_e,
+		ks_f,
+		ks_g,
+		ks_a,
+		ks_b,
+		ks_r,
+		ks_0,
+		ks_s1,
+		ks_s2,
+		ks_s3,
+		ks_s4,
+		ks_s5,
+		ks_s6,
+		ks_s7,
+		ks_f1,
+		ks_f2,
+		ks_f3,
+		ks_f4,
+		ks_f5,
+		ks_f6,
+		ks_f7
+	};
+
+	//調号コマンド内の定義
+	static	const	Command_Info	KS_Command[] = {
+		{	"+",		ks_Sharp	},
+		{	"#",		ks_Sharp	},
+		{	"-",		ks_Flat		},
+		{	"=",		ks_Natural	},
+		{	"*",		ks_Natural	},
+		{	"c",		ks_c		},
+		{	"d",		ks_d		},
+		{	"e",		ks_e		},
+		{	"f",		ks_f		},
+		{	"g",		ks_g		},
+		{	"a",		ks_a		},
+		{	"b",		ks_b		},
+		{	"r",		ks_r		},
+		{	"C_Dur",	ks_0		},	//
+		{	"Cis_Dur",	ks_f5		},	//bbbbb
+		{	"D_Dur",	ks_s2		},	//##
+		{	"Dis_Dur",	ks_f3		},	//bbb
+		{	"E_Dur",	ks_s4		},	//####
+		{	"F_Dur",	ks_f1		},	//b
+		{	"Fis_Dur",	ks_s6		},	//######
+		{	"Gs_Dur",	ks_f6		},	//bbbbbb
+		{	"G_Dur",	ks_s1		},	//#
+		{	"As_Dur",	ks_f4		},	//bbbb
+		{	"A_Dur",	ks_s3		},	//###
+		{	"B_Dur",	ks_f2		},	//bb
+		{	"H_Dur",	ks_s5		}	//#####
+	};
+
+	unsigned	char	cData;
+				char	sign = 0;
+
+	while(MML->cRead() != '{'){
+		if(MML->eof()){
+			MML->Err("調号コマンド・ブロックの開始を示す{が見つかりません。");
+		}
+	}
+
+	// } が来るまで、記述ブロック内をコンパイルする。
+	while((cData = MML->GetChar()) != '}'){
+		
+		// } が来る前に、[EOF]が来たらエラー
+		if( MML->eof() ){
+			MML->Err("調号コマンド・ブロックの終端を示す`}'がありません。");
+		}
+
+		//１つ戻る
+		MML->StreamPointerAdd(-1);
+
+		switch(MML->GetCommandID(KS_Command, sizeof(KS_Command)/sizeof(Command_Info))){
+			case(ks_c):
+				KeySignature[0] = sign;
+				break;
+			case(ks_d):
+				KeySignature[1] = sign;
+				break;
+			case(ks_e):
+				KeySignature[2] = sign;
+				break;
+			case(ks_f):
+				KeySignature[3] = sign;
+				break;
+			case(ks_g):
+				KeySignature[4] = sign;
+				break;
+			case(ks_a):
+				KeySignature[5] = sign;
+				break;
+			case(ks_b):
+				KeySignature[6] = sign;
+				break;
+			case(ks_r):
+				KeySignature[7] = sign;
+				break;
+			case(ks_Natural):
+				sign = 0;
+				break;
+			case(ks_Sharp):
+				sign = 1;
+				break;
+			case(ks_Flat):
+				sign = -1;
+				break;
+			default:
+				MML->Err("調号 K{} コマンドの引数で未知の文字が指定されました。");
+				break;
+		}
+	}
+
+	//for Debug
+/*
+	cout << "[0] c = " << (int)KeySignature[0] << endl;
+	cout << "[1] d = " << (int)KeySignature[1] << endl;
+	cout << "[2] e = " << (int)KeySignature[2] << endl;
+	cout << "[3] f = " << (int)KeySignature[3] << endl;
+	cout << "[4] g = " << (int)KeySignature[4] << endl;
+	cout << "[5] a = " << (int)KeySignature[5] << endl;
+	cout << "[6] b = " << (int)KeySignature[6] << endl;
+*/
+}
+
 //==============================================================
 //		音符のイベント作成
 //--------------------------------------------------------------
@@ -722,541 +873,5 @@ void	MusicTrack::SetLength(MMLfile* MML)
 			break;
 	}
 	SetEvent(_event);
-}
-
-//==============================================================
-//		オクターブ
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetOctave(MMLfile* MML)
-{
-	unsigned	int	iOctave = MML->GetInt();
-
-	octave = iOctave - 2;
-	if( (iOctave <= 9) && (iOctave >=2) ){
-		SetEvent(new mml_general(nsd_Octave + octave, "Octave"));
-	} else {
-		MML->Err("オクターブは2～9の範囲で指定してください。o1の領域は、相対オクターブをご利用ください。");
-	}
-}
-
-void	MusicTrack::SetOctaveInc()
-{
-	SetEvent(new mml_general(nsd_Octave_Up, "Octave Up"));
-	octave++;
-}
-
-void	MusicTrack::SetOctaveDec()
-{
-	SetEvent(new mml_general(nsd_Octave_Down, "Octave Down"));
-	octave--;
-}
-
-void	MusicTrack::SetOctaveOne_Inc()
-{
-	SetEvent(new mml_general(nsd_Octave_Up_1, "One time octave up"));
-	octave1++;
-}
-
-void	MusicTrack::SetOctaveOne_Dec()
-{
-	SetEvent(new mml_general(nsd_Octave_Down_1, "One time octave down"));
-	octave1--;
-}
-
-//==============================================================
-//		ゲートタイム(q)
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetGatetime(MMLfile* MML)
-{
-	unsigned	int	i = MML->GetInt();
-
-	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_GateTime_Byte + i, "Gatetime(q) Byte"));
-	} else if( i <= 255) {
-		SetEvent(new mml_general(nsd_GateTime_q, i, "Gatetime(q)"));
-	} else {
-		MML->Err("パラメータの値が範囲を越えました。");
-	}
-}
-
-//==============================================================
-//		ゲートタイム(u)
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetGatetime_u(MMLfile* MML)
-{
-	unsigned		int	i;
-	unsigned		char	cData;
-
-	//休符のモード
-	cData = MML->GetChar();
-	if(cData == '0'){
-		i = 0;
-	} else {
-		MML->Back();
-		i = MML->GetLength(DefaultLength);
-	}
-	SetEvent(new mml_general(nsd_GateTime_u, i & 0xFF , "GateTime(u)"));
-	
-}
-
-//==============================================================
-//		スイープ
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetSweep(MMLfile* MML)
-{
-				int		iSpeed;
-				int		iDepth;
-	unsigned	char	_data;
-	unsigned	char	cData;
-
-	iSpeed = MML->GetInt();
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		if( (iSpeed < 0) || (iSpeed > 255) ){
-			MML->Err("0～255の範囲で指定してください。");
-		}
-		MML->Back();
-		_data = iSpeed;
-	} else {
-		if( (iSpeed < 0) || (iSpeed > 15) ){
-			MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
-		}
-		iDepth = MML->GetInt();
-		if( (iDepth < 0) || (iDepth > 15) ){
-			MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
-		}
-		_data = ((iSpeed & 0x0F) << 4) | (iDepth & 0x0F);
-	}
-
-	SetEvent(new mml_general(nsd_Sweep, _data, "Sweep"));
-}
-
-//==============================================================
-//		音量
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetVolume(MMLfile* MML)
-{
-	unsigned	int	i = MML->GetInt();
-
-	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Volume + i, "Volume"));
-		volume = i;
-	} else {
-		MML->Err("音量で指定できる範囲を超えています。0～15の範囲で指定してください。");
-	}
-}
-
-void	MusicTrack::SetVolumeInc()
-{
-	SetEvent(new mml_general(nsd_Volume_Up, "Volume up"));
-	volume++;
-	if(volume>15){
-		volume = 15;
-	}
-}
-
-void	MusicTrack::SetVolumeDec()
-{
-	SetEvent(new mml_general(nsd_Volume_Down, "Volume down"));
-	volume--;
-	if(volume<0){
-		volume = 0;
-	}
-}
-
-//==============================================================
-//		リリースモード
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetReleaseMode(MMLfile* MML)
-{
-	unsigned	int	i = MML->GetInt();
-	mml_general*	_event;
-
-	switch(i){
-		case(0):
-			_event = new mml_general(nsd_GateMode_0,  "GateMode 0");
-			break;
-		case(1):
-			_event = new mml_general(nsd_GateMode_1,  "GateMode 1");
-			break;
-		case(2):
-			_event = new mml_general(nsd_GateMode_2,  "GateMode 2");
-			break;
-		default:
-			MML->Err("リリースモードで指定できる範囲を超えています。0～2の範囲で指定してください。");
-			break;
-	}
-	SetEvent(_event);
-}
-
-//==============================================================
-//		リリース音色
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetReleaseVoice(MMLfile* MML)
-{
-	unsigned	int	i = MML->GetInt();
-
-	if( (i <= 7) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Release_Voice + i, "Release Voice"));
-	} else {
-		MML->Err("リリース音色で指定できる範囲を超えています。0～7の範囲で指定してください。");
-	}
-}
-
-//==============================================================
-//		リリース音量
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetReleaseVolume(MMLfile* MML)
-{
-	unsigned	int	i = MML->GetInt();
-
-	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Release_Volume + i, "Release Volume"));
-	} else {
-		MML->Err("音量で指定できる範囲を超えています。0～15の範囲で指定してください。");
-	}
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetProtament(MMLfile* MML)
-{
-	unsigned	char	cData;
-
-				int		_Decay;
-				int		_Rate;
-				int		_Depth;
-				int		_Target;
-
-	_Decay = MML->GetInt();
-	if( (_Decay < 0) || (_Decay > 255) ){
-		MML->Err("ポルタメントの第1パラメータは、0～255の範囲で指定してください。");
-	}
-	_Decay++;
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
-	}
-
-	_Rate = MML->GetInt();
-	if( (_Rate < 1) || (_Rate > 256) ){
-		MML->Err("ポルタメントの第2パラメータは、1～256の範囲で指定してください。");
-	}
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
-	}
-
-	_Depth = MML->GetInt();
-	if( (_Depth < -128) || (_Depth > 127) ){
-		MML->Err("ポルタメントの第3パラメータは、-128～127の範囲で指定してください。");
-	}
-	_Decay++;
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
-	}
-
-	_Target = MML->GetInt();
-	if( (_Target < -128) || (_Target > 127) ){
-		MML->Err("ポルタメントの第4パラメータは、-128～127の範囲で指定してください。");
-	}
-	SetEvent(new mml_general(nsd_Portamento, _Decay & 0xFF,_Rate & 0xFF,_Depth & 0xFF,_Target & 0xFF, "Portamento"));
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetVRC7_Write(MMLfile* MML)
-{
-	unsigned	char	cData;
-
-				int		_Reg;
-				int		_Dat;
-
-	_Reg = MML->GetInt();
-	if( (_Reg < 0) || (_Reg > 0x40) ){
-		MML->Err("ポルタメントの第1パラメータは、0～63の範囲で指定してください。");
-	}
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
-	}
-
-	_Dat = MML->GetInt();
-	if( (_Dat < 0) || (_Dat > 255) ){
-		MML->Err("ポルタメントの第2パラメータは、0～255の範囲で指定してください。");
-	}
-
-	SetEvent(new mml_general(nsc_VRC7_reg,_Reg,_Dat, "VRC7 Register Write"));
-}
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetPoke(MMLfile* MML)
-{
-	unsigned	int	addr;
-	unsigned	int	data;
-	unsigned	char	cData;
-
-	addr = MML->GetInt();
-	if( (addr < 0x0000) || (addr > 0xFFFF) ){
-		MML->Err("パラメータの値が範囲を越えました。");
-	}
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err("y コマンドのパラメータが足りません。２つ指定してください。");
-	}
-
-	data = MML->GetInt();
-	if(data > 255){
-		MML->Err("パラメータの値が範囲を越えました。");
-	}
-	SetEvent(new mml_poke(addr, data & 0xFF));
-}
-
-//==============================================================
-//		調号の設定
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetKeySignature(MMLfile*	MML)
-{
-	//調号コマンドのID
-	enum	KeySignature_ID {
-		ks_Sharp,
-		ks_Flat,
-		ks_Natural,
-		ks_c,
-		ks_d,
-		ks_e,
-		ks_f,
-		ks_g,
-		ks_a,
-		ks_b,
-		ks_r,
-		ks_0,
-		ks_s1,
-		ks_s2,
-		ks_s3,
-		ks_s4,
-		ks_s5,
-		ks_s6,
-		ks_s7,
-		ks_f1,
-		ks_f2,
-		ks_f3,
-		ks_f4,
-		ks_f5,
-		ks_f6,
-		ks_f7
-	};
-
-	//調号コマンド内の定義
-	static	const	Command_Info	KS_Command[] = {
-		{	"+",		ks_Sharp	},
-		{	"#",		ks_Sharp	},
-		{	"-",		ks_Flat		},
-		{	"=",		ks_Natural	},
-		{	"*",		ks_Natural	},
-		{	"c",		ks_c		},
-		{	"d",		ks_d		},
-		{	"e",		ks_e		},
-		{	"f",		ks_f		},
-		{	"g",		ks_g		},
-		{	"a",		ks_a		},
-		{	"b",		ks_b		},
-		{	"r",		ks_r		},
-		{	"C_Dur",	ks_0		},	//
-		{	"Cis_Dur",	ks_f5		},	//bbbbb
-		{	"D_Dur",	ks_s2		},	//##
-		{	"Dis_Dur",	ks_f3		},	//bbb
-		{	"E_Dur",	ks_s4		},	//####
-		{	"F_Dur",	ks_f1		},	//b
-		{	"Fis_Dur",	ks_s6		},	//######
-		{	"Gs_Dur",	ks_f6		},	//bbbbbb
-		{	"G_Dur",	ks_s1		},	//#
-		{	"As_Dur",	ks_f4		},	//bbbb
-		{	"A_Dur",	ks_s3		},	//###
-		{	"B_Dur",	ks_f2		},	//bb
-		{	"H_Dur",	ks_s5		}	//#####
-	};
-
-	unsigned	char	cData;
-				char	sign = 0;
-
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err("調号コマンド・ブロックの開始を示す{が見つかりません。");
-		}
-	}
-
-	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err("調号コマンド・ブロックの終端を示す`}'がありません。");
-		}
-
-		//１つ戻る
-		MML->StreamPointerAdd(-1);
-
-		switch(MML->GetCommandID(KS_Command, sizeof(KS_Command)/sizeof(Command_Info))){
-			case(ks_c):
-				KeySignature[0] = sign;
-				break;
-			case(ks_d):
-				KeySignature[1] = sign;
-				break;
-			case(ks_e):
-				KeySignature[2] = sign;
-				break;
-			case(ks_f):
-				KeySignature[3] = sign;
-				break;
-			case(ks_g):
-				KeySignature[4] = sign;
-				break;
-			case(ks_a):
-				KeySignature[5] = sign;
-				break;
-			case(ks_b):
-				KeySignature[6] = sign;
-				break;
-			case(ks_r):
-				KeySignature[7] = sign;
-				break;
-			case(ks_Natural):
-				sign = 0;
-				break;
-			case(ks_Sharp):
-				sign = 1;
-				break;
-			case(ks_Flat):
-				sign = -1;
-				break;
-			default:
-				MML->Err("調号 K{} コマンドの引数で未知の文字が指定されました。");
-				break;
-		}
-	}
-
-	//for Debug
-/*
-	cout << "[0] c = " << (int)KeySignature[0] << endl;
-	cout << "[1] d = " << (int)KeySignature[1] << endl;
-	cout << "[2] e = " << (int)KeySignature[2] << endl;
-	cout << "[3] f = " << (int)KeySignature[3] << endl;
-	cout << "[4] g = " << (int)KeySignature[4] << endl;
-	cout << "[5] a = " << (int)KeySignature[5] << endl;
-	cout << "[6] b = " << (int)KeySignature[6] << endl;
-*/
-}
-
-//==============================================================
-//		記述ブロックの終了（End of Trackの追加）
-//--------------------------------------------------------------
-//	●引数
-//		無し
-//	●返値
-//		無し
-//==============================================================
-size_t	MusicTrack::SetEnd(void)
-{
-	mml_Address*	_event;
-
-	if(loop_flag == false){
-		SetEvent(new mml_general(nsd_EndOfTrack,"End of Track"));
-	} else {
-		_event = new mml_Address(nsd_Jump, "End of Track with LOOP");
-		_event->set_Address(offset_loop - offset_now - 1);
-		SetEvent(_event);
-	}
-	iSize = offset_now;
-
-	return(iSize);
-}
-
-//==============================================================
-//		シーケンス・オブジェクトの追加
-//--------------------------------------------------------------
-//	●引数
-//		MusicItem* _item	シーケンス・オブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetEvent(MusicItem* _item)
-{
-	//サイズの分、オフセットを増やす。
-	offset_now += (unsigned int)_item->getSize();
-
-	//作ったobjectのポインタを保存しておく。
-	ptcItem.push_back(_item);
 }
 

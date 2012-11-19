@@ -15,6 +15,7 @@ AMMC5 = -D MMC5
 AN163 = -D N163
 APSG  = -D PSG
 AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
+AOALL  = -D VRC6 -D OPLL -D MMC5 -D N163 -D PSG
 
 CC = cl65
 CFLAG = -t none -Oi -Os -Or -c -l -o
@@ -22,6 +23,7 @@ CFLAG = -t none -Oi -Os -Or -c -l -o
 LINKER = ld65
 LFLAG = -C config.cfg -m $*.map -vm -o
 LFLAGALL = -C all.cfg -m $*.map -vm -o
+LFLAGOALL = -C opllall.cfg -m $*.map -vm -o
 
 LIBER = ar65
 LIBFLAG = a
@@ -35,6 +37,7 @@ PROJ_MMC5 = nsd_mmc5
 PROJ_N163 = nsd_n163
 PROJ_PSG  = nsd_s5b
 PROJ_ALL  = nsd_all
+PROJ_OALL  = nsd_oall
 
 LIB      = ../nsd/nsd.lib
 LIB_FDS  = ../nsd/nsd_fds.lib
@@ -45,17 +48,18 @@ LIB_MMC5 = ../nsd/nsd_mmc5.lib
 LIB_N163 = ../nsd/nsd_n163.lib
 LIB_PSG  = ../nsd/nsd_s5b.lib
 LIB_ALL  = ../nsd/nsd_all.lib
+LIB_OALL  = ../nsd/nsd_oall.lib
 
 INC_FILES = 
 
 FILES = crt0.s
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_OPLL).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin
+clean: $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_OPLL).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin $(PROJ_OALL).bin
 	@del *.bak
 	@del *.o
 
-all:   $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_OPLL).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin
+all:   $(PROJ).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_OPLL).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin $(PROJ_OALL).bin
 
 $(PROJ).bin : $(FILES) $(INC_FILES) $(LIB)
 	@$(ASM) $(AFLAG) $(FILES)
@@ -88,4 +92,8 @@ $(PROJ_PSG).bin : $(FILES) $(INC_FILES) $(LIB_PSG)
 $(PROJ_ALL).bin : $(FILES) $(INC_FILES) $(LIB_ALL)
 	@$(ASM) $(AALL) $(FILES)
 	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_ALL)
+
+$(PROJ_OALL).bin : $(FILES) $(INC_FILES) $(LIB_OALL)
+	@$(ASM) $(AOALL) $(FILES)
+	@$(LINKER) $(LFLAGOALL) $*.bin $(OFILES) $(LIB_OALL)
 

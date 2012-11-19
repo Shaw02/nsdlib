@@ -144,9 +144,19 @@ OPLL_RHYTHM		= $0E
 OPLL_Frequency		= $10
 OPLL_Octave		= $20
 OPLL_Volume		= $30
+
+OPLL_Frequency_BD	= $16
+OPLL_Frequency_HH_SD	= $17
+OPLL_Frequency_TOM_CYM	= $18
+
+OPLL_Octave_BD		= $26
+OPLL_Octave_HH_SD	= $27
+OPLL_Octave_TOM_CYM	= $28
+
 OPLL_BD			= $36
 OPLL_HH_SD		= $37
 OPLL_TOM_CYM		= $38
+
 
 ;---------------------------------------
 ;MMC5 define
