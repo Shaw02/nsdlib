@@ -15,16 +15,16 @@ class MusicItem
 {
 //メンバー変数
 protected:
-	const		char*	strName;		//オブジェクトの名称
-	vector<MusicItem*>	ptcItem;		//構造化
-				string	code;
-				size_t	iSize;
-	unsigned	int		iOffset;		//SNDファイルポインタ
+	const		wchar_t*	strName;		//オブジェクトの名称
+	vector<MusicItem*>		ptcItem;		//構造化
+				string		code;
+				size_t		iSize;
+	unsigned	int			iOffset;		//SNDファイルポインタ
 	
 
 //メンバー関数
 public:
-	MusicItem(const char _strName[]="");
+	MusicItem(const wchar_t _strName[]=L"");
 	~MusicItem(void);
 
 				size_t	getSize();

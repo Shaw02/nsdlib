@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\bgm.h"
+#include "bgm.h"
 
 //==============================================================
 //		コンストラクタ
@@ -9,7 +9,7 @@
 //	●返値
 //					無し
 //==============================================================
-BGM::BGM(MMLfile* MML, unsigned int _id, const char _strName[]):
+BGM::BGM(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
 	TrackSet(MML, _id, false, _strName)
 {
 }

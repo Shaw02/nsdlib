@@ -23,7 +23,7 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const char _strName[] = "==== [ Track Set ]====");
+				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const wchar_t _strName[] = L"==== [ Track Set ]====");
 				~TrackSet(void);
 
 		void	getAsm(MusicFile* MUS);

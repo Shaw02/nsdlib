@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\mml_note.h"
+#include "mml_note.h"
 
 //==============================================================
 //		コンストラクタ
@@ -13,14 +13,14 @@
 //	●返値
 //				無し
 //==============================================================
-mml_note::mml_note(int _code, int length, int gatetime, bool slur, const char _strName[]):
+mml_note::mml_note(int _code, int length, int gatetime, bool slur, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	unsigned	char	opcode = nsd_Note | _code;
 	unsigned	int		i = 0;
 
 	if((_code<0) || (_code>15) || (_code==12)){
-		cout << "mml_note::mml_note()関数で、エラーが発生しました。" << endl;
+		wcout << L"mml_note::mml_note()関数で、エラーが発生しました。" << endl;
 		exit(-1);
 	}
 

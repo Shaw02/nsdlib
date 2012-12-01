@@ -5,15 +5,15 @@ struct	NSF_Header{
 	unsigned	char	Version;			//05
 	unsigned	char	MusicNumber;		//06
 	unsigned	char	StartMusicNumber;	//07
-	unsigned	__int16	LoadAddress;		//08
-	unsigned	__int16	InitAddress;		//0A
-	unsigned	__int16	MainAddress;		//0C
+	unsigned	short	LoadAddress;		//08
+	unsigned	short	InitAddress;		//0A
+	unsigned	short	MainAddress;		//0C
 				char	Title[32];			//0E
 				char	Composer[32];		//2E
 				char	Copyright[32];		//4E
-	unsigned	__int16	Frequency_NTSC;		//6E
+	unsigned	short	Frequency_NTSC;		//6E
 	unsigned	char	Bank[8];			//70
-	unsigned	__int16	Frequency_PAL;		//78
+	unsigned	short	Frequency_PAL;		//78
 	unsigned	char	Video;				//7A
 	unsigned	char	External;			//7B
 	unsigned	char	Null1;				//7C
@@ -49,7 +49,7 @@ private:
 
 //メンバー関数
 public:
-	MusicFile(MMLfile* MML, string _code, const char _strName[]="==== [ Music ] ====");
+	MusicFile(MMLfile* MML, string _code, const wchar_t _strName[]=L"==== [ Music ] ====");
 	~MusicFile(void);
 
 	unsigned	int		SetDPCMOffset(void);
@@ -57,13 +57,13 @@ public:
 	void	Fix_Address(void);
 
 	//バイナリーを作る
-	void	make_bin(unsigned int rom_size);
+	void	make_bin(size_t rom_size);
 
 	//保存フェーズ
 	void	saveNSF(const char*	strFileName, bool opt);
 	void	saveASM(const char*	strFileName);
 
-	void	Err(const char* msg);
-	void	Warning(const char* msg);
+	void	Err(const wchar_t msg[]);
+	void	Warning(const wchar_t msg[]);
 
 };

@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\DPCMinfo.h"
+#include "DPCMinfo.h"
 
 //==============================================================
 //		コンストラクタ
@@ -10,7 +10,7 @@
 //	●返値
 //					無し
 //==============================================================
-DPCMinfo::DPCMinfo(MMLfile* MML, const char _strName[]):
+DPCMinfo::DPCMinfo(MMLfile* MML, const wchar_t _strName[]):
 	MusicItem(_strName)
 {
 	//----------------------
@@ -66,10 +66,6 @@ const	static	Command_Info	Command[] = {
 };
 
 	unsigned	char	cData;
-				int		Loop_Normal		= -1;
-				int		Loop_Release	= -1;
-				bool	Release			= false;
-	unsigned	int		ptEnvelop		= 1;
 
 	//------------------------------
 	//クラスの初期設定
@@ -82,7 +78,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err("ブロックの開始を示す{が見つかりません。");
+			MML->Err(L"ブロックの開始を示す{が見つかりません。");
 		}
 	}
 
@@ -91,7 +87,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err("ブロックの終端を示す`}'がありません。");
+			MML->Err(L"ブロックの終端を示す`}'がありません。");
 		}
 
 		//１つ戻る
@@ -155,7 +151,7 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err("unknown command");
+				MML->Err(L"unknown command");
 				break;
 		}
 	}
@@ -215,7 +211,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	FileInput	_DPCM_file;
 
 	if((note<0) || (note>127)){
-		MML->Err("音階の範囲を超えています。");
+		MML->Err(L"音階の範囲を超えています。");
 	}
 
 	if(max_number < note){
@@ -225,7 +221,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	//ファイル名
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("⊿PCM定義のパラメータが足りません。");
+		MML->Err(L"⊿PCM定義のパラメータが足りません。");
 	}
 
 	infoDPCM[note].file = MML->GetString();
@@ -233,7 +229,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		//新しいファイルだったら、DPCMオブジェクトを生成する。
 		_DPCM_file.fileopen(infoDPCM[note].file.c_str());
 		if(_DPCM_file.GetSize() > 4081){
-			MML->Err("⊿PCMは、4081Byte以下にしてください。");
+			MML->Err(L"⊿PCMは、4081Byte以下にしてください。");
 		}
 		_DPCM = new DPCM(&_DPCM_file, m_id);
 		m_id++;
@@ -246,22 +242,22 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	//再生周波数
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("⊿PCM定義のパラメータが足りません。");
+		MML->Err(L"⊿PCM定義のパラメータが足りません。");
 	}
 	play_frequency = MML->GetInt();
 	if((play_frequency<0) || (play_frequency>15)){
-		MML->Err("⊿PCMの周波数は0～15の範囲で指定して下さい。");
+		MML->Err(L"⊿PCMの周波数は0～15の範囲で指定して下さい。");
 	}
 
 	//モード
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("⊿PCM定義のパラメータが足りません。");
+		MML->Err(L"⊿PCM定義のパラメータが足りません。");
 	}
 
 	mode = MML->GetInt();
 	if((mode<0) || (mode>1)){
-		MML->Err("⊿PCMの周波数は0～1の範囲で指定して下さい。");
+		MML->Err(L"⊿PCMの周波数は0～1の範囲で指定して下さい。");
 	}
 	infoDPCM[note].ctrl = (mode<<6) + play_frequency;
 
@@ -270,7 +266,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	if(cData == ','){
 		start_volume = MML->GetInt();	
 		if((start_volume<-1) || (start_volume>127)){
-			MML->Err("⊿PCMの周波数は-1～127の範囲で指定して下さい。");
+			MML->Err(L"⊿PCMの周波数は-1～127の範囲で指定して下さい。");
 		}
 		infoDPCM[note].DA = start_volume;
 	} else {
@@ -306,7 +302,7 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset)
 				_DPCM = itDPCM->second;
 				_DPCM->SetOffset(_offset);
 				_size	= (_DPCM->getSize() & 0xFFC0) + 0x0040;
-				_offset	+= _size;
+				_offset	+= (unsigned int)_size;
 				itDPCM++;
 			}
 		}

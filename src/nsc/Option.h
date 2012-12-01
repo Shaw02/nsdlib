@@ -22,9 +22,9 @@ public:
 //メンバー関数
 public:
 		OPSW();								//初期化のみ
-		OPSW(int argc, _TCHAR* argv[]);		//引数内容から、クラスを初期化＆ファイルオープン
+		OPSW(int argc, char* argv[]);		//引数内容から、クラスを初期化＆ファイルオープン
 		~OPSW();							//ファイルクローズ
 private:
-void	opError(const char *stErrMsg);		//オプションエラー
+void	opError(const wchar_t *stErrMsg);		//オプションエラー
 void	print_help();						//help message
 };

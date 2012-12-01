@@ -7,7 +7,7 @@
 #SE			2
 
 #OffsetPCM	$C000
-
+/*
 DPCM{
 	b1,	"../dmc/bd.dmc",14,0,64
 	c2,	"../dmc/bd.dmc",15,0,64
@@ -23,8 +23,14 @@ DPCM{
 	b2,	"../dmc/tom.dmc",13,0,64
 	c3,	"../dmc/tom.dmc",14,0,64
 	d3,	"../dmc/tom.dmc",15,0,64
-}
 
+	c7,	"../dmc/bd.dmc",14,0,64
+	d7,	"../dmc/bd.dmc",15,0,64
+	e7,	"../dmc/sd.dmc",15,0,64
+	f7,	"../dmc/sd.dmc",14,0,64
+
+}
+*/
 VRC7(1){	//Piano
 	//	TL FB
 	@	18  4
@@ -55,6 +61,7 @@ Envelop(300){	4 3 2 1 0}
 Sub(1000000){	l4 o5 cc+ dd+ e ff+ gg+ aa+ b > cc+ dd+ e1	}
 
 bgm(10){
+	TR5	o7	c4	d4	e4	f4
 	TR9	@0	s1	v15	EC1,8	l16	crdrerfrgrarbr>	crdrerfrgrarbr `cr brargr frerdrcr < brargrfr erdrcr "br c1
 					EC*		l16	crdrerfrgrarbr>	crdrerfrgrarbr `cr brargr frerdrcr < brargrfr erdrcr "br c1
 	TR28	t120	@V1	|:	[48	r16	t_-1	]	[48	r16	t_+1	]	\	:|

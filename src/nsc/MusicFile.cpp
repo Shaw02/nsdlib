@@ -9,7 +9,7 @@
 //	●返値
 //				無し
 //==============================================================
-MusicFile::MusicFile(MMLfile* MML, string _code, const char _strName[]):
+MusicFile::MusicFile(MMLfile* MML, string _code, const wchar_t _strName[]):
 	MusicItem(_strName),
 	cDPCMinfo(NULL),
 	Header(MML, _code)
@@ -172,7 +172,7 @@ const	static	Command_Info	Command[] = {
 			//MML
 			case(id_DPCM):
 				if(cDPCMinfo != NULL){
-					MML->Err("DPCMブロックは１つまでです。");
+					MML->Err(L"DPCMブロックは１つまでです。");
 				}
 				cDPCMinfo = new DPCMinfo(MML);
 				ptcItem.push_back(cDPCMinfo);
@@ -183,7 +183,7 @@ const	static	Command_Info	Command[] = {
 
 				//重複チェック
 				if(ptcVRC7.count(i) != 0){
-					MML->Err("VRC7()ブロックで同じ番号が指定されました。");
+					MML->Err(L"VRC7()ブロックで同じ番号が指定されました。");
 				}
 				_vrc7 = new VRC7(MML, i);
 				ptcItem.push_back(_vrc7);
@@ -195,7 +195,7 @@ const	static	Command_Info	Command[] = {
 
 				//重複チェック
 				if(ptcN163.count(i) != 0){
-					MML->Err("N163()ブロックで同じ番号が指定されました。");
+					MML->Err(L"N163()ブロックで同じ番号が指定されました。");
 				}
 				_n163 = new N163(MML, i);
 				ptcItem.push_back(_n163);
@@ -206,7 +206,7 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcEnv.count(i) != 0){
-					MML->Err("Envelop()ブロックで同じ番号が指定されました。");
+					MML->Err(L"Envelop()ブロックで同じ番号が指定されました。");
 				}
 				_env = new Envelop(MML, i);
 				ptcItem.push_back(_env);
@@ -220,7 +220,7 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcSub.count(i) != 0){
-					MML->Err("Sub()ブロックで同じ番号が指定されました。");
+					MML->Err(L"Sub()ブロックで同じ番号が指定されました。");
 				}
 				//範囲チェック
 				_sub = new Sub(MML, i);
@@ -232,11 +232,11 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcBGM.count(i) != 0){
-					MML->Err("BGM()ブロックで同じ番号が指定されました。");
+					MML->Err(L"BGM()ブロックで同じ番号が指定されました。");
 				}
 				//範囲チェック
 				if((Header.iBGM <= i) || (i<0)){
-					MML->Err("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。");
+					MML->Err(L"BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。");
 				}
 				_bgm = new BGM(MML, i);
 				ptcItem.push_back(_bgm);
@@ -247,11 +247,11 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcSE.count(i) != 0){
-					MML->Err("SE()ブロックで同じ番号が指定されました。");
+					MML->Err(L"SE()ブロックで同じ番号が指定されました。");
 				}
 				//範囲チェック
 				if((Header.iSE <= i) || (i<0)){
-					MML->Err("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。");
+					MML->Err(L"SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。");
 				}
 				_se = new SE(MML, i);
 				ptcItem.push_back(_se);
@@ -259,7 +259,7 @@ const	static	Command_Info	Command[] = {
 				iSize += _se->getSize();	//BGMのサイズを更新
 				break;
 			default:
-				MML->Err("unknown command");
+				MML->Err(L"unknown command");
 				break;
 		}
 		
@@ -267,13 +267,13 @@ const	static	Command_Info	Command[] = {
 
 	//Check
 	if( Header.iBGM + Header.iSE > 255){
-		Err("BGMとSEの数が、合計で255を越えました。");
+		Err(L"BGMとSEの数が、合計で255を越えました。");
 	}
 
 	i = 0;
 	while(i < Header.iBGM){
 		if(ptcBGM.count(i) == 0){
-			Err("BGMデータが足りません。");
+			Err(L"BGMデータが足りません。");
 		};
 		i++;
 	}
@@ -281,7 +281,7 @@ const	static	Command_Info	Command[] = {
 	i = 0;
 	while(i < Header.iSE){
 		if(ptcSE.count(i) == 0){
-			Err("SE データが足りません。");
+			Err(L"SE データが足りません。");
 		};
 		i++;
 	}
@@ -377,39 +377,39 @@ void	MusicFile::make_binary(void)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::make_bin(unsigned int rom_size)
+void	MusicFile::make_bin(size_t rom_size)
 {
 				string		_str;
 	unsigned	int			i		= 2;
 	unsigned	int			iBGM	= 0;
 	unsigned	int			iSE		= 0;
-	unsigned	__int16*	pt;
+	unsigned	short*		pt;
 
-	unsigned	int			_size	= 4 + (Header.iBGM + Header.iSE)*2;
+				size_t		_size	= 4 + (Header.iBGM + Header.iSE)*2;
 
 
 	//曲バイナリーの作成
 	_str.clear();
 	_str.resize(_size);
 
-	pt = (unsigned __int16*)_str.c_str();
+	pt = (unsigned short*)_str.c_str();
 
 	_str[0] = Header.iBGM;
 	_str[1] = Header.iSE;
 
 	if(cDPCMinfo != NULL){
-		pt[1]	= 0x8000 + rom_size - 0x80 + _size + cDPCMinfo->getOffset();	//ΔPCM info のアドレス
+		pt[1]	= 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + cDPCMinfo->getOffset();	//ΔPCM info のアドレス
 	} else {
 		pt[1]	= 0;
 	}
 
 	while(iBGM < Header.iBGM){
-		pt[i] = 0x8000 + rom_size - 0x80 + _size + ptcBGM[iBGM]->getOffset();
+		pt[i] = 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + ptcBGM[iBGM]->getOffset();
 		i++;
 		iBGM++;
 	}
 	while(iSE < Header.iSE){
-		pt[i] = 0x8000 + rom_size - 0x80 + _size + ptcSE[iSE]->getOffset();
+		pt[i] = 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + ptcSE[iSE]->getOffset();
 		i++;
 		iSE++;
 	}
@@ -437,9 +437,9 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 {
 
 	unsigned	int		i,j;
-	unsigned	int		bin_size;
-	unsigned	int		mus_size;
-	unsigned	int		pcm_size;
+				size_t	bin_size;
+				size_t	mus_size;
+				size_t	pcm_size;
 	unsigned	char	mus_bank;
 	unsigned	char	pcm_bank;
 				char*	romimg		= new char[0x8000+0x80];
@@ -461,7 +461,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 	mus_size = bin_size - 0x80 + code.size();
 	if(opt == true){
-		mus_bank = mus_size >> 12;
+		mus_bank = (unsigned char)(mus_size >> 12);
 		if((mus_size & 0x0FFF) != 0){
 			mus_bank++;
 		}
@@ -472,23 +472,23 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 	//サイズチェック
 	if((0x8000 + mus_size) > Header.offsetPCM){
-		cout << "コード・シーケンスのサイズが許容値を越えました。" << endl;
-		cout << "　許容値：" << Header.offsetPCM - 0x8000 << "[Byte]" << endl;
-		cout << "　サイズ：" << mus_size << "[Byte]" << endl;
+		wcout << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
+		wcout << L"　許容値：" << Header.offsetPCM - 0x8000 << L"[Byte]" << endl;
+		wcout << L"　サイズ：" << (unsigned int)mus_size << L"[Byte]" << endl;
 		exit(-1);
 	}
 
 	//⊿PCM
 	pcm_size = dpcm_code.size();
-	pcm_bank = pcm_size >> 12;
+	pcm_bank = (unsigned char)(pcm_size >> 12);
 	if((pcm_size & 0x0FFF) != 0){
 		pcm_bank++;
 	}
 	//⊿PCMサイズチェック
 	if(	(Header.offsetPCM + pcm_size) > 0x10000	){
-		cout << "⊿PCMのサイズが許容値を越えました。" << endl;
-		cout << "　許容値：" << 0x10000 - Header.offsetPCM << "[Byte]" << endl;
-		cout << "　サイズ：" << pcm_size << "[Byte]" << endl;
+		wcout << L"⊿PCMのサイズが許容値を越えました。" << endl;
+		wcout << L"　許容値：" << 0x10000 - Header.offsetPCM << L"[Byte]" << endl;
+		wcout << L"　サイズ：" << (unsigned int)pcm_size << L"[Byte]" << endl;
 		exit(-1);
 	}
 
@@ -613,9 +613,9 @@ void	MusicFile::saveASM(const char*	strFileName)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::Err(const char* msg)
+void	MusicFile::Err(const wchar_t msg[])
 {
-	cout << "[ ERROR ] : " << msg << endl;
+	wcout << L"[ ERROR ] : " << msg << endl;
 
 	//異常終了
 	exit(-1);
@@ -629,8 +629,8 @@ void	MusicFile::Err(const char* msg)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::Warning(const char* msg)
+void	MusicFile::Warning(const wchar_t msg[])
 {
 	//現在のファイル名と、行数を表示
-	cout << "[WARNING] : " << msg << endl;
+	wcout << L"[WARNING] : " << msg << endl;
 }

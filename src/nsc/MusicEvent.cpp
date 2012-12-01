@@ -9,7 +9,7 @@
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-MusicEvent::MusicEvent(const char _strName[]):
+MusicEvent::MusicEvent(const wchar_t _strName[]):
 	MusicItem(_strName)
 {
 }

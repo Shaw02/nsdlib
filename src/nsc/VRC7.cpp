@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\VRC7.h"
+#include "VRC7.h"
 
 //==============================================================
 //		コンストラクタ
@@ -10,7 +10,7 @@
 //	●返値
 //					無し
 //==============================================================
-VRC7::VRC7(MMLfile* MML, unsigned int _id, const char _strName[]):
+VRC7::VRC7(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
 	MusicItem(_strName),
 	m_id(_id)
 {
@@ -63,7 +63,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err("ブロックの開始を示す{が見つかりません。");
+			MML->Err(L"ブロックの開始を示す{が見つかりません。");
 		}
 	}
 
@@ -73,7 +73,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err("ブロックの終端を示す`}'がありません。");
+			MML->Err(L"ブロックの終端を示す`}'がありません。");
 		}
 
 		//１つ戻る
@@ -85,7 +85,7 @@ const	static	Command_Info	Command[] = {
 
 			case(VRC7_Normal):
 				if(_mset == true){
-					MML->Err("@, @Rコマンドは１回だけ指定して下さい。");
+					MML->Err(L"@, @Rコマンドは１回だけ指定して下さい。");
 				}
 				_mset = true;
 				_mode = 0;
@@ -93,7 +93,7 @@ const	static	Command_Info	Command[] = {
 
 			case(VRC7_Resister):
 				if(_mset == true){
-					MML->Err("@, @Rコマンドは１回だけ指定して下さい。");
+					MML->Err(L"@, @Rコマンドは１回だけ指定して下さい。");
 				}
 				_mset = true;
 				_mode = 1;
@@ -101,22 +101,22 @@ const	static	Command_Info	Command[] = {
 
 			case(VRC7_Num):
 				if(_mset == false){
-					MML->Err("先ずは@, @Rコマンドを記述して下さい。");
+					MML->Err(L"先ずは@, @Rコマンドを記述して下さい。");
 				}
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<0) || (i>255) ){
-					MML->Err("0～255の範囲で指定して下さい。");
+					MML->Err(L"0～255の範囲で指定して下さい。");
 				}
 
 				if(_mode == 0){
 					if(_pt >= 24){
-						MML->Err("VRC7のパラメータの数が多いです。");
+						MML->Err(L"VRC7のパラメータの数が多いです。");
 					}
 					_opll[_pt] = i & 0xFF;
 				} else {
 					if(_pt >= 8){
-						MML->Err("VRC7のパラメータの数が多いです。");
+						MML->Err(L"VRC7のパラメータの数が多いです。");
 					}
 					code[_pt] = i & 0xFF;
 				}
@@ -127,14 +127,14 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err("unknown command");
+				MML->Err(L"unknown command");
 				break;
 		}
 	}
 
 	if(_mode == 0){
 		if(_pt < 24){
-			MML->Err("VRC7のパラメータの数が少ないです。");
+			MML->Err(L"VRC7のパラメータの数が少ないです。");
 		}
 
 		//TL FB
@@ -154,7 +154,7 @@ const	static	Command_Info	Command[] = {
 		code[7] = ((_opll[15] & 0x0F) << 4) |  (_opll[16] & 0x0F);
 	} else {
 		if(_pt < 8){
-			MML->Err("VRC7のパラメータの数が少ないです。");
+			MML->Err(L"VRC7のパラメータの数が少ないです。");
 		}
 	}
 }

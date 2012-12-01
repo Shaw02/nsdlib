@@ -16,7 +16,7 @@ class Sub : public TrackSet
 
 public:
 
-	Sub(MMLfile* MML, unsigned int _id, char _strName[] = "==== [ Sub ]====");
+	Sub(MMLfile* MML, unsigned int _id, wchar_t _strName[] = L"==== [ Sub ]====");
 	~Sub();
 	void	getAsm(MusicFile* MUS);
 

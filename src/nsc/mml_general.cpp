@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\mml_general.h"
+#include "mml_general.h"
 
 //==============================================================
 //		コンストラクタ（引数0Byte）
@@ -10,7 +10,7 @@
 //	●返値
 //				無し
 //==============================================================
-mml_general::mml_general(unsigned char _code, const char _strName[]):
+mml_general::mml_general(unsigned char _code, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 1;
@@ -28,13 +28,13 @@ mml_general::mml_general(unsigned char _code, const char _strName[]):
 //	●返値
 //				無し
 //==============================================================
-mml_general::mml_general(unsigned char _code, MMLfile* MML, const char _strName[]="General"):
+mml_general::mml_general(unsigned char _code, MMLfile* MML, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	int		_data = MML->GetInt();
 
 	if( (_data<-128) || (_data>255) ){
-		MML->Err("パラメータの値が範囲を越えました。");
+		MML->Err(L"パラメータの値が範囲を越えました。");
 	}
 
 	iSize = 2;
@@ -53,7 +53,7 @@ mml_general::mml_general(unsigned char _code, MMLfile* MML, const char _strName[
 //	●返値
 //				無し
 //==============================================================
-mml_general::mml_general(unsigned char _code, const char _data, const char _strName[]/*="General"*/):
+mml_general::mml_general(unsigned char _code, const char _data, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 2;
@@ -72,7 +72,7 @@ mml_general::mml_general(unsigned char _code, const char _data, const char _strN
 //	●返値
 //				無し
 //==============================================================
-mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, const char _strName[]/*="General"*/):
+mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 3;
@@ -92,7 +92,7 @@ mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, co
 //	●返値
 //				無し
 //==============================================================
-mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, const char _n3, const char _n4, const char _strName[]/*="General"*/):
+mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, const char _n3, const char _n4, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 5;

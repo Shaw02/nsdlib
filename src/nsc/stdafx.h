@@ -5,6 +5,17 @@
 
 #pragma once
 
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef	_WIN32
+	#include <locale>
+#else
+	#include <locale.h>
+#endif
+
+
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -13,7 +24,7 @@
 
 #include <iomanip>
 
-#include <tchar.h>
+//#include <tchar.h>
 
 
 /****************************************************************/

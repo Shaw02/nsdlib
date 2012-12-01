@@ -70,7 +70,7 @@ void	MMLfile::include()
 	itFiles = ptcFiles.begin();
 	while(itFiles != ptcFiles.end()){
 		if( *(*itFiles)->GetFilename() == _name ){
-			Err("既に同じファイルが#includeで開かれています。");
+			Err(L"既に同じファイルが#includeで開かれています。");
 		}
 		itFiles++;
 	}
@@ -106,7 +106,7 @@ int		MMLfile::tellg(void)
 //	●返値
 //			無し
 //==============================================================
-void	MMLfile::StreamPointerAdd(__int32 iSize)
+void	MMLfile::StreamPointerAdd(long iSize)
 {
 	nowFile->StreamPointerAdd(iSize);
 }
@@ -119,7 +119,7 @@ void	MMLfile::StreamPointerAdd(__int32 iSize)
 //	●返値
 //			無し
 //==============================================================
-void	MMLfile::StreamPointerMove(__int32 iSize)
+void	MMLfile::StreamPointerMove(long iSize)
 {
 	nowFile->StreamPointerMove(iSize);
 }
@@ -244,7 +244,7 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 						do{
 							cData = cRead();		//次のバイトを読み込み
 							if(eof()){
-								Err("コメント終端 */ がありません。");
+								Err(L"コメント終端 */ がありません。");
 							}
 						}while(cData != '*');
 						cData = cRead();
@@ -255,7 +255,7 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 
 				//それ以外
 				default:
-					Err("コメントですか？");
+					Err(L"コメントですか？");
 					break;
 			}
 
@@ -286,13 +286,13 @@ string	MMLfile::GetString(void)
 	string	_str;
 	while(cRead() != '"'){
 		if(eof()){
-			Err("文字列開始を示す\"が見つかりません。");
+			Err(L"文字列開始を示す\"が見つかりません。");
 		}
 	}
 
 	while('"' != (cData = cRead())){
 		if(eof()){
-			Err("文字列終了を示す\"が見つかりません。");
+			Err(L"文字列終了を示す\"が見つかりません。");
 		}
 		_str += cData;
 	}
@@ -316,7 +316,7 @@ int	MMLfile::GetNum(void)
 
 	while(cRead() != '('){
 		if(eof()){
-			Err("数値開始を示す(が見つかりません。");
+			Err(L"数値開始を示す(が見つかりません。");
 		}
 	}
 
@@ -324,7 +324,7 @@ int	MMLfile::GetNum(void)
 
 	while(')' != (cData = cRead())){
 		if(eof()){
-			Err("数値終了を示す)が見つかりません。");
+			Err(L"数値終了を示す)が見つかりません。");
 		}
 	}
 	return(iResult);
@@ -397,7 +397,7 @@ int		MMLfile::GetInt(void)
 		}
 
 	} else {
-			Err("数値以外が指定されました。");
+			Err(L"数値以外が指定されました。");
 	}
 
 	//ポインタを１つ戻す
@@ -441,7 +441,7 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 			iLength = (MML_timebase * 4) / i;
 			iMod	= (MML_timebase * 4) % i;
 			if(iMod != 0){
-				Warning("音長の計算で割り切れませんでした。小数点は切捨てします。");
+				Warning(L"音長の計算で割り切れませんでした。小数点は切捨てします。");
 			}
 		} else {
 			iLength = DefaultLength;
@@ -453,7 +453,7 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 			iMod = (iDot & 0x01);
 			iDot >>= 1;
 			if(iMod != 0){
-				Warning("付点の計算で割り切れませんでした。小数点は切捨てします。");
+				Warning(L"付点の計算で割り切れませんでした。小数点は切捨てします。");
 			}
 			iLength += iDot;
 		};
@@ -505,7 +505,7 @@ int		MMLfile::GetLength(unsigned int DefaultLength)	//
 		}
 		iCalc = readLength(DefaultLength);
 		if(iCalc == -1){
-			Err("音長の加減算値に数値以外が指定されています。");
+			Err(L"音長の加減算値に数値以外が指定されています。");
 		}
 		if(add == true){
 			iLength += iCalc;
@@ -517,7 +517,7 @@ int		MMLfile::GetLength(unsigned int DefaultLength)	//
 	Back();							//StreamPointerAdd(-1);
 
 	if((iLength < 1) || (iLength > 255)){
-		Err("音長は、%1（96）～%255（1+1+2+8）の間で指定して下さい。255[tick]を超える場合はタイ`&', `^'を使って下さい。");
+		Err(L"音長は、%1（96）～%255（1+1+2+8）の間で指定して下さい。255[tick]を超える場合はタイ`&', `^'を使って下さい。");
 	}
 
 	return(iLength);
@@ -560,13 +560,13 @@ int	MMLfile::GetCommandID(const Command_Info _command[], unsigned int _size)
 //	●返値
 //				無し
 //==============================================================
-void	MMLfile::Err(const char* msg)
+void	MMLfile::Err(const wchar_t msg[])
 {
 	//現在のファイル名と、行数を表示
 	cout << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 
 	//エラー内容を表示
-	cout << msg << endl;
+	wcout << msg << endl;
 
 	//異常終了
 	exit(-1);
@@ -580,11 +580,11 @@ void	MMLfile::Err(const char* msg)
 //	●返値
 //				無し
 //==============================================================
-void	MMLfile::Warning(const char* msg)
+void	MMLfile::Warning(const wchar_t msg[])
 {
 	//現在のファイル名と、行数を表示
 	cout << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 
 	//ワーニング内容を表示
-	cout << msg << endl;
+	wcout << msg << endl;
 }

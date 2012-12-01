@@ -40,7 +40,7 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-			MusicTrack(const char _strName[] = "==== [ Music Track ]====");
+			MusicTrack(const wchar_t _strName[] = L"==== [ Music Track ]====");
 			~MusicTrack(void);
 
 				void	Fix_Address(MusicFile* MUS);

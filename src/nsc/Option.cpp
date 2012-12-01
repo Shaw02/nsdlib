@@ -13,7 +13,7 @@
 //	●備考
 //			オプションにファイル名が指定されない場合は、ヘルプ表示して終了
 //==============================================================
-OPSW::OPSW(int argc, _TCHAR* argv[]):
+OPSW::OPSW(int argc, char* argv[]):
 	//初期化設定
 	fHelp(0),		//ヘルプは、デフォルトは表示しない。
 	saveNSF(false),
@@ -74,7 +74,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 				case 'D' :
 					iResult=sscanf(argv[iCount],"/D%d",&cDebug);
 					if((iResult==NULL)||(iResult==EOF)){
-						opError("-D");
+						opError(L"-D");
 						break;
 					};
 					break;
@@ -96,7 +96,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 							strCodeName+=".bin";
 						};
 					} else {
-						opError("-l Code ファイルが2回以上指定されました。");
+						opError(L"-l Code ファイルが2回以上指定されました。");
 						break;
 					};
 					break;
@@ -106,7 +106,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 				case 'F' :
 					//先に、ファイル名が書いてあるかチェック。
 					if(argv[iCount][3]==0){
-						opError("/F ファイル名が書いてありません。");
+						opError(L"/F ファイル名が書いてありません。");
 						break;
 					};
 					switch(argv[iCount][2]){
@@ -128,7 +128,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 								strASMname+=".s";
 							};
 						} else {
-							opError("-fa ASM ファイルが2回以上指定されました。");
+							opError(L"-fa ASM ファイルが2回以上指定されました。");
 							break;
 						};
 						break;
@@ -148,19 +148,19 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 								strNSFname+=".nsf";
 							};
 						} else {
-							opError("-fn NSF ファイルが2回以上指定されました。");
+							opError(L"-fn NSF ファイルが2回以上指定されました。");
 							break;
 						};
 						break;
 					default :
-						opError("-f");
+						opError(L"-f");
 						break;
 					};
 				break;
 				//--------
 				//デフォルト
 				default :
-					opError("");
+					opError(L"");
 					break;
 			};
 
@@ -182,7 +182,7 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 					strMMLname+=".mml";
 				};
 			} else {
-				opError("MMLファイルが2回以上指定されました。");
+				opError(L"MMLファイルが2回以上指定されました。");
 				break;
 			};
 
@@ -247,16 +247,16 @@ OPSW::OPSW(int argc, _TCHAR* argv[]):
 //==============================================================
 void	OPSW::print_help(){
 
-	cout	<<	"MML Compiler for NES Sound Driver & Library\n"
-				"\n"
-				"  Usage : nsc [ -options ] [file(.mml)]\n"
-				"\n"
-				"  -a			Compile to assembly langage.\n"
-				"  -n			Compile to NSF music format.\n"
-				"  -l[file(.bin)]	Filename of the rom code for NSF.\n"
-				"  -fa[file(.s  )]	Filename of the output assembly langage file.\n"
-				"  -fn[file(.nsf)]	Filename of the output NSF music format.\n"
-				"  -h			Print the this help."	<<	endl;
+	wcout	<<	L"MML Compiler for NES Sound Driver & Library\n"
+				L"\n"
+				L"  Usage : nsc [ -options ] [file(.mml)]\n"
+				L"\n"
+				L"  -a			Compile to assembly langage.\n"
+				L"  -n			Compile to NSF music format.\n"
+				L"  -l[file(.bin)]	Filename of the rom code for NSF.\n"
+				L"  -fa[file(.s  )]	Filename of the output assembly langage file.\n"
+				L"  -fn[file(.nsf)]	Filename of the output NSF music format.\n"
+				L"  -h			Print the this help."	<<	endl;
 
 	exit(EXIT_SUCCESS);
 
@@ -281,9 +281,9 @@ OPSW::~OPSW(){
 //	●返値
 //			無し
 //==============================================================
-void OPSW::opError(const char *stErrMsg){
+void OPSW::opError(const wchar_t *stErrMsg){
 
-	cerr << "オプションが不正です。：" << stErrMsg << endl;
+	wcerr << L"オプションが不正です。：" << stErrMsg << endl;
 	exit(EXIT_FAILURE);
 
 };

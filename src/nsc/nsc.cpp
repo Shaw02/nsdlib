@@ -17,15 +17,21 @@
 //	●返値
 //		int			エラーコード
 //==============================================================
-int	__cdecl	_tmain(int argc, _TCHAR* argv[])
+int	main(int argc, char* argv[])
 {
 	unsigned	int	i;
+
+#ifdef	_WIN32
+	locale::global(std::locale("japanese"));
+#else
+	setlocale(LC_ALL, "ja_JP.UTF-8");
+#endif
 
 	//==================================
 	//クラスの作成
 	cOptionSW	= new OPSW(argc,argv);							//オプション処理
 	if(cOptionSW->cDebug & 0x01){
-		cout << "\n============ [ 1st phase : Create Object ] ============\n" << endl;
+		wcout << L"\n============ [ 1st phase : Create Object ] ============\n" << endl;
 	}
 	MMLfile*	cMML		= new MMLfile(cOptionSW->strMMLname.c_str());
 	MusicFile*	cSND		= new MusicFile(cMML, cOptionSW->strCodeName);
@@ -33,12 +39,12 @@ int	__cdecl	_tmain(int argc, _TCHAR* argv[])
 	//==================================
 	//アドレスの解決
 	if(cOptionSW->cDebug & 0x02){
-		cout << "\n============ [ 2nd phase : Address Setting ] ============\n" << endl;
+		wcout << L"\n============ [ 2nd phase : Address Setting ] ============\n" << endl;
 	}
 	i = cSND->SetOffset(0);
-	cout << "Music Size = " << i << endl;
+	wcout << L"Music Size = " << i << endl;
 	i = cSND->SetDPCMOffset();
-	cout << "DPCM Size = " << i << endl;
+	wcout << L"DPCM Size = " << i << endl;
 
 	cSND->Fix_Address();
 

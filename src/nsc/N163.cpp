@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\N163.h"
+#include "N163.h"
 
 //==============================================================
 //		コンストラクタ
@@ -10,7 +10,7 @@
 //	●返値
 //					無し
 //==============================================================
-N163::N163(MMLfile* MML, unsigned int _id, const char _strName[]):
+N163::N163(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
 	MusicItem(_strName),
 	m_id(_id)
 {
@@ -56,7 +56,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err("ブロックの開始を示す{が見つかりません。");
+			MML->Err(L"ブロックの開始を示す{が見つかりません。");
 		}
 	}
 
@@ -67,7 +67,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err("ブロックの終端を示す`}'がありません。");
+			MML->Err(L"ブロックの終端を示す`}'がありません。");
 		}
 
 		//１つ戻る
@@ -81,7 +81,7 @@ const	static	Command_Info	Command[] = {
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<0) || (i>15)){
-					MML->Err("n163の波形定義は、0～15の範囲で指定して下さい。");
+					MML->Err(L"n163の波形定義は、0～15の範囲で指定して下さい。");
 				}
 				WAVE.append((char)1, (char)i & 0x0F);
 				ptN163++;
@@ -92,15 +92,15 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err("unknown command");
+				MML->Err(L"unknown command");
 				break;
 		}
 	}
 	if(ptN163 > 128){
-		MML->Err("サンプル長が128個を越えています。");
+		MML->Err(L"サンプル長が128個を越えています。");
 	}
 	if((ptN163 & 0x03) != 0){
-		MML->Err("サンプル長は、４の倍数として下さい。");
+		MML->Err(L"サンプル長は、４の倍数として下さい。");
 	}
 	ptN163 >>= 1;
 	code.append((char)1, ptN163);

@@ -14,8 +14,8 @@ public:
 					FileInput(void);
 					~FileInput(void);
 			void	fileopen(const char*	_strFileName);
-			void	StreamPointerAdd(__int32 iSize);
-			void	StreamPointerMove(__int32 iSize);
+			void	StreamPointerAdd(long iSize);
+			void	StreamPointerMove(long iSize);
 			void	Back(void);
 			string*	GetFilename(void){return(&strFilename);};
 unsigned	int		GetLine(void){return(iLine);};

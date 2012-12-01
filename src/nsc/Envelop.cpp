@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\Envelop.h"
+#include "Envelop.h"
 
 //==============================================================
 //		コンストラクタ
@@ -10,7 +10,7 @@
 //	●返値
 //					無し
 //==============================================================
-Envelop::Envelop(MMLfile* MML, unsigned int _id, const char _strName[]):
+Envelop::Envelop(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
 	MusicItem(_strName),
 	m_id(_id)
 {
@@ -71,7 +71,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err("ブロックの開始を示す{が見つかりません。");
+			MML->Err(L"ブロックの開始を示す{が見つかりません。");
 		}
 	}
 
@@ -83,7 +83,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err("ブロックの終端を示す`}'がありません。");
+			MML->Err(L"ブロックの終端を示す`}'がありません。");
 		}
 
 		//１つ戻る
@@ -97,7 +97,7 @@ const	static	Command_Info	Command[] = {
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<-64) || (i>127)){
-					MML->Err("エンベロープは、-64～127の範囲で指定して下さい。");
+					MML->Err(L"エンベロープは、-64～127の範囲で指定して下さい。");
 				}
 				code.append((char)1, (char)i & 0x7F);
 				ptEnvelop++;
@@ -109,7 +109,7 @@ const	static	Command_Info	Command[] = {
 			case(Env_Hold):
 				i = MML->GetInt();
 				if( (i<0) || (i>255)){
-					MML->Err("維持時間は、0～255の範囲で指定して下さい。");
+					MML->Err(L"維持時間は、0～255の範囲で指定して下さい。");
 				}
 				while(i>15){
 					code.append((char)1, (char)0x8F);
@@ -122,7 +122,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Env_Loop):
 				if(ptEnvelop > 0x3F){
-					MML->Err("ループ位置を指定できる範囲を超えました。");
+					MML->Err(L"ループ位置を指定できる範囲を超えました。");
 				}
 				if(Release == false){
 					Loop_Normal		= ptEnvelop;
@@ -133,11 +133,11 @@ const	static	Command_Info	Command[] = {
 
 			case(Env_Release):
 				if(Loop_Normal == -1){
-					MML->Warning("ループポイントがありません。最後の値をループします。");
+					MML->Warning(L"ループポイントがありません。最後の値をループします。");
 					code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
 				} else {
 					if(ptEnvelop == Loop_Normal){
-						MML->Err("Lコマンドの直後にRコマンドを置くことはできません。");
+						MML->Err(L"Lコマンドの直後にRコマンドを置くことはできません。");
 					}
 					code.append((char)1, (char)(Loop_Normal | 0xC0));
 				}
@@ -151,35 +151,35 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err("unknown command");
+				MML->Err(L"unknown command");
 				break;
 		}
 	}
 
 	if(Release == true){
 		if(Loop_Release == -1){
-			MML->Warning("リリース時のループポイントがありません。最後の値をループします。");
+			MML->Warning(L"リリース時のループポイントがありません。最後の値をループします。");
 			code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
 		} else {
 			if(ptEnvelop == Loop_Release){
-				MML->Err("Lコマンドでパターン定義を終わることはできません。");
+				MML->Err(L"Lコマンドでパターン定義を終わることはできません。");
 			}
 			code.append((char)1, (char)(Loop_Release | 0xC0));
 		}
 	} else {
 		if(Loop_Normal == -1){
-			MML->Warning("ループポイントがありません。最後の値をループします。");
+			MML->Warning(L"ループポイントがありません。最後の値をループします。");
 			code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
 		} else {
 			if(ptEnvelop == Loop_Normal){
-				MML->Err("Lコマンドでパターン定義を終わることはできません。");
+				MML->Err(L"Lコマンドでパターン定義を終わることはできません。");
 			}
 			code.append((char)1, (char)(Loop_Normal | 0xC0));
 		}
 	}
 
 	if(code.size() > 256){
-		MML->Err("エンベロープの定義長が256Byteを越えました。");
+		MML->Err(L"エンベロープの定義長が256Byteを越えました。");
 	}
 
 	iSize = code.size();

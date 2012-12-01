@@ -77,10 +77,10 @@ void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 	offsetPCM = MML->GetInt();
 
 	if((offsetPCM < 0xC000) || (offsetPCM > 0x10000)){
-		MML->Err("$C000 ～ $10000（⊿PCM未使用）の範囲で指定して下さい。");
+		MML->Err(L"$C000 ～ $10000（⊿PCM未使用）の範囲で指定して下さい。");
 	}
 	if((offsetPCM & 0x0FFF) != 0){
-		MML->Warning("⊿PCMの配置アドレスは4096（$1000）Byteでアライメントします。");
+		MML->Warning(L"⊿PCMの配置アドレスは4096（$1000）Byteでアライメントします。");
 		offsetPCM &= 0xF000;
 		offsetPCM += 0x1000;
 	}
@@ -89,7 +89,7 @@ void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 void	MusicHeader::Set_RomCode(MMLfile* MML)
 {
 	if(op_code == true){
-		MML->Warning("オプションスイッチでリンクするコードが指定されているので、#codeは無視します。");
+		MML->Warning(L"オプションスイッチでリンクするコードが指定されているので、#codeは無視します。");
 		MML->GetString();
 	} else {
 		romcode = MML->GetString();
@@ -101,7 +101,7 @@ void	MusicHeader::Set_Number_BGM(MMLfile* MML)
 	int	_n = MML->GetInt();
 
 	if((_n > 255) || (_n < 0)){
-		MML->Err("#BGMは0～255以下の値で指定してください。");
+		MML->Err(L"#BGMは0～255以下の値で指定してください。");
 	}
 	iBGM = _n;
 }
@@ -111,7 +111,7 @@ void	MusicHeader::Set_Number_SE(MMLfile* MML)
 	int	_n = MML->GetInt();
 
 	if((_n > 255) || (_n < 0)){
-		MML->Err("#SEは0～255以下の値で指定してください。");
+		MML->Err(L"#SEは0～255以下の値で指定してください。");
 	}
 	iSE = _n;
 }

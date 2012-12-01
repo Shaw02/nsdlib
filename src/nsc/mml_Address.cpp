@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\mml_Address.h"
+#include "mml_Address.h"
 
 //==============================================================
 //		コンストラクタ
@@ -13,7 +13,7 @@
 //	●返値
 //				無し
 //==============================================================
-mml_Address::mml_Address(unsigned char _code, const char _strName[]):
+mml_Address::mml_Address(unsigned char _code, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 3;
@@ -23,7 +23,7 @@ mml_Address::mml_Address(unsigned char _code, const char _strName[]):
 	code[2] = 0;
 }
 
-mml_Address::mml_Address(unsigned char _code, unsigned char _data, const char _strName[]):
+mml_Address::mml_Address(unsigned char _code, unsigned char _data, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 4;
@@ -66,7 +66,7 @@ void	mml_Address::set_Address(unsigned int _addr)
 			code[3] = ((_addr >> 8) & 0xFF);
 			break;
 		default:
-			cout << "mml_Address::set_Address()関数でエラーが発生しました。" << endl;
+			wcout << L"mml_Address::set_Address()関数でエラーが発生しました。" << endl;
 			exit(-1);
 			break;
 	}

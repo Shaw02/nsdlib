@@ -16,7 +16,7 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-				Envelop(MMLfile* MML, unsigned int _id, const char _strName[] = "==== [ Envelop ]====");
+				Envelop(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"==== [ Envelop ]====");
 				~Envelop(void);
 		void	getAsm(MusicFile* MUS);
 };

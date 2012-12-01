@@ -41,14 +41,14 @@ void	FileOutput::fileopen(const char*	strFileName){
 //--------------------------------
 //相対シーク
 //--------------------------------
-void	FileOutput::StreamPointerAdd(__int32 iSize){
+void	FileOutput::StreamPointerAdd(long iSize){
 	seekp((long)iSize,ios::cur);
 };
 
 //--------------------------------
 //絶対シーク
 //--------------------------------
-void	FileOutput::StreamPointerMove(__int32 iSize){
+void	FileOutput::StreamPointerMove(long iSize){
 	seekp((long)iSize,ios::beg);
 };
 

@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\DPCM.h"
+#include "DPCM.h"
 
 //==============================================================
 //		コンストラクタ
@@ -10,7 +10,7 @@
 //	●返値
 //					無し
 //==============================================================
-DPCM::DPCM(FileInput* DPCMfile, unsigned int _id, const char _strName[]):
+DPCM::DPCM(FileInput* DPCMfile, unsigned int _id, const wchar_t _strName[]):
 	MusicItem(_strName),
 	m_id(_id)
 {

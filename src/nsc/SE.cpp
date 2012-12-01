@@ -10,7 +10,7 @@
 //	Åúï‘íl
 //					ñ≥Çµ
 //==============================================================
-SE::SE(MMLfile* MML, unsigned int _id, char _strName[]/* = "==== [ SE ]===="*/):
+SE::SE(MMLfile* MML, unsigned int _id, wchar_t _strName[]):
 	TrackSet(MML, _id, false, _strName)
 {
 	

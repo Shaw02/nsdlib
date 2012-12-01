@@ -34,8 +34,8 @@ public:
 				bool	eom(void);				//ＭＭＬの終了チェック
 
 				int		tellg(void);						//現在のファイルのポインタ取得
-				void	StreamPointerAdd(__int32 iSize);	//現在のファイルのポインタ移動
-				void	StreamPointerMove(__int32 iSize);	//現在のファイルのポインタ移動
+				void	StreamPointerAdd(long iSize);	//現在のファイルのポインタ移動
+				void	StreamPointerMove(long iSize);	//現在のファイルのポインタ移動
 				void	Back(void);
 
 				char	cRead(void);		//1Byte読み込み
@@ -48,6 +48,6 @@ public:
 
 				int		GetCommandID(const Command_Info _command[], unsigned int _size);	//コマンドIDを取得
 
-	void		Err(const char* msg);
-	void		Warning(const char* msg);
+	void		Err(const wchar_t msg[]);
+	void		Warning(const wchar_t msg[]);
 };

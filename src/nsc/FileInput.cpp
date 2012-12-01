@@ -35,7 +35,7 @@ void	FileInput::fileopen(const char*	_strFileName){
 	open(_strFileName,ios_base::in | ios_base::binary);
 	if(good()==false){
 		perror(_strFileName);
-		exit(EXIT_FAILURE);
+		exit(-1);
 	};
 	strFilename = _strFileName;
 };
@@ -43,14 +43,14 @@ void	FileInput::fileopen(const char*	_strFileName){
 //--------------------------------
 //相対シーク
 //--------------------------------
-void	FileInput::StreamPointerAdd(__int32 iSize){
+void	FileInput::StreamPointerAdd(long iSize){
 	seekg((long)iSize,ios::cur);
 };
 
 //--------------------------------
 //絶対シーク
 //--------------------------------
-void	FileInput::StreamPointerMove(__int32 iSize){
+void	FileInput::StreamPointerMove(long iSize){
 		seekg((long)iSize,ios::beg);
 };
 

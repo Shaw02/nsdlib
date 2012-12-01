@@ -16,7 +16,7 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-				VRC7(MMLfile* MML, unsigned int _id, const char _strName[] = "==== [ VRC7 ]====");
+				VRC7(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"==== [ VRC7 ]====");
 				~VRC7(void);
 		void	getAsm(MusicFile* MUS);
 };

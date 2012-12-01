@@ -33,7 +33,7 @@ private:
 
 //ÉÅÉìÉoÅ[ä÷êî
 public:
-						DPCMinfo(MMLfile* MML, const char _strName[] = "==== [ DPCMinfo ]====");
+						DPCMinfo(MMLfile* MML, const wchar_t _strName[] = L"==== [ DPCMinfo ]====");
 						~DPCMinfo(void);
 				void	setKey(MMLfile* MML, int key);
 				void	setNote(MMLfile* MML, int note);

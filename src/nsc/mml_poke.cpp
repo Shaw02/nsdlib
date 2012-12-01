@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\mml_poke.h"
+#include "mml_poke.h"
 
 //==============================================================
 //		コンストラクタ
@@ -13,7 +13,7 @@
 //	●返値
 //				無し
 //==============================================================
-mml_poke::mml_poke(unsigned int _addr , unsigned char _data, const char _strName[]):
+mml_poke::mml_poke(unsigned int _addr , unsigned char _data, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 4;

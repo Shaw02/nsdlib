@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\trackset.h"
+#include "trackset.h"
 
 //==============================================================
 //		コンストラクタ
@@ -10,7 +10,7 @@
 //	●返値
 //					無し
 //==============================================================
-TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const char _strName[]):
+TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const wchar_t _strName[]):
 	MusicItem(_strName),
 	m_id(_id)
 {
@@ -197,7 +197,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err("ブロックの開始を示す{が見つかりません。");
+			MML->Err(L"ブロックの開始を示す{が見つかりません。");
 		}
 	}
 
@@ -206,7 +206,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err("ブロックの終端を示す`}'がありません。");
+			MML->Err(L"ブロックの終端を示す`}'がありません。");
 		}
 
 		//１つ戻る
@@ -218,11 +218,11 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Track):
 				if(fSub == true){
-					MML->Warning("Subブロックないではトラック指定はできません。無視します。");
+					MML->Warning(L"Subブロックないではトラック指定はできません。無視します。");
 				}
 				iTrack = MML->GetInt() - 1;
 				if( (iTrack < 0) ){
-					MML->Err("トラック番号で指定できる範囲を超えています。");
+					MML->Err(L"トラック番号で指定できる範囲を超えています。");
 				}
 				nowTrack = getTrack(iTrack);
 				break;
@@ -241,7 +241,7 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Loop):
 				if(fSub == true){
-					MML->Warning("Subブロックないでは無限ループはできません。無視します。");
+					MML->Warning(L"Subブロックないでは無限ループはできません。無視します。");
 				} else {
 					nowTrack->SetLoop();
 				}
@@ -272,11 +272,11 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Tempo):
-				SetEvent(new mml_general(nsd_Tempo, MML, "Tempo"));
+				SetEvent(new mml_general(nsd_Tempo, MML, L"Tempo"));
 				break;
 
 			case(mml_Tempo_Relative):
-				SetEvent(new mml_general(nsd_Relative_Tempo, MML, "Relative Tempo"));
+				SetEvent(new mml_general(nsd_Relative_Tempo, MML, L"Relative Tempo"));
 				break;
 
 			case(mml_La):
@@ -352,7 +352,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Envelop_Off_Voice):
-				MML->Err("音色エンベロープは、@コマンドで無効にできます。");
+				MML->Err(L"音色エンベロープは、@コマンドで無効にできます。");
 				break;
 
 			case(mml_Envelop_Off_Volume):
@@ -396,7 +396,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Voice):
-				SetEvent(new mml_general(nsd_Voice, MML, "Voice"));
+				SetEvent(new mml_general(nsd_Voice, MML, L"Voice"));
 				break;
 
 			case(mml_N163):
@@ -440,19 +440,19 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Detune_Cent):
-				SetEvent(new mml_general(nsd_Detune_Cent, MML, "Detune Cent"));
+				SetEvent(new mml_general(nsd_Detune_Cent, MML, L"Detune Cent"));
 				break;
 
 			case(mml_Detune_Register):
-				SetEvent(new mml_general(nsd_Derune_Register, MML, "Derune Register"));
+				SetEvent(new mml_general(nsd_Derune_Register, MML, L"Derune Register"));
 				break;
 
 			case(mml_Transpose):
-				SetEvent(new mml_general(nsd_Transpose, MML, "Transpose"));
+				SetEvent(new mml_general(nsd_Transpose, MML, L"Transpose"));
 				break;
 
 			case(mml_Transpose_Relative):
-				SetEvent(new mml_general(nsd_Relative_Transpose, MML, "Relative Transpose"));
+				SetEvent(new mml_general(nsd_Relative_Transpose, MML, L"Relative Transpose"));
 				break;
 
 			case(mml_Protament):
@@ -488,7 +488,7 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err("unknown command");
+				MML->Err(L"unknown command");
 				break;
 		}
 	}
@@ -631,7 +631,7 @@ MusicTrack*	TrackSet::getTrack(int _track)
 		if(ptcTrack.count(i) == 0){
 			_getTrack	= makeTrack(i);
 		} else {
-			cout << "MusicTrack* TrackSet::getTrack()関数でエラーが発生しました。" << endl;
+			wcout << L"MusicTrack* TrackSet::getTrack()関数でエラーが発生しました。" << endl;
 			exit(-1);
 		}
 	}
@@ -669,34 +669,34 @@ void	TrackSet::SetOctave(MMLfile* MML)
 	unsigned	int	iOctave = MML->GetInt() - 2;
 
 	if( (iOctave <= 7) && (iOctave >=0) ){
-		SetEvent(new mml_general(nsd_Octave + iOctave, "Octave"));
+		SetEvent(new mml_general(nsd_Octave + iOctave, L"Octave"));
 		nowTrack->SetOctave(iOctave);
 	} else {
-		MML->Err("オクターブは2～9の範囲で指定してください。o1の領域は、相対オクターブをご利用ください。");
+		MML->Err(L"オクターブは2～9の範囲で指定してください。o1の領域は、相対オクターブをご利用ください。");
 	}
 }
 
 void	TrackSet::SetOctaveInc()
 {
-	SetEvent(new mml_general(nsd_Octave_Up, "Octave Up"));
+	SetEvent(new mml_general(nsd_Octave_Up, L"Octave Up"));
 	nowTrack->IncOctave();
 }
 
 void	TrackSet::SetOctaveDec()
 {
-	SetEvent(new mml_general(nsd_Octave_Down, "Octave Down"));
+	SetEvent(new mml_general(nsd_Octave_Down, L"Octave Down"));
 	nowTrack->DecOctave();
 }
 
 void	TrackSet::SetOctaveOne_Inc()
 {
-	SetEvent(new mml_general(nsd_Octave_Up_1, "One time octave up"));
+	SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
 	nowTrack->IncOctave1();
 }
 
 void	TrackSet::SetOctaveOne_Dec()
 {
-	SetEvent(new mml_general(nsd_Octave_Down_1, "One time octave down"));
+	SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
 	nowTrack->DecOctave1();
 }
 
@@ -713,22 +713,22 @@ void	TrackSet::SetVolume(MMLfile* MML)
 	unsigned	int	i = MML->GetInt();
 
 	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Volume + i, "Volume"));
+		SetEvent(new mml_general(nsd_Volume + i, L"Volume"));
 		nowTrack->SetVolume(i);
 	} else {
-		MML->Err("音量で指定できる範囲を超えています。0～15の範囲で指定してください。");
+		MML->Err(L"音量で指定できる範囲を超えています。0～15の範囲で指定してください。");
 	}
 }
 
 void	TrackSet::SetVolumeInc()
 {
-	SetEvent(new mml_general(nsd_Volume_Up, "Volume up"));
+	SetEvent(new mml_general(nsd_Volume_Up, L"Volume up"));
 	nowTrack->IncVolume();
 }
 
 void	TrackSet::SetVolumeDec()
 {
-	SetEvent(new mml_general(nsd_Volume_Down, "Volume down"));
+	SetEvent(new mml_general(nsd_Volume_Down, L"Volume down"));
 	nowTrack->DecVolume();
 }
 
@@ -747,16 +747,16 @@ void	TrackSet::SetReleaseMode(MMLfile* MML)
 
 	switch(i){
 		case(0):
-			_event = new mml_general(nsd_GateMode_0,  "GateMode 0");
+			_event = new mml_general(nsd_GateMode_0,  L"GateMode 0");
 			break;
 		case(1):
-			_event = new mml_general(nsd_GateMode_1,  "GateMode 1");
+			_event = new mml_general(nsd_GateMode_1,  L"GateMode 1");
 			break;
 		case(2):
-			_event = new mml_general(nsd_GateMode_2,  "GateMode 2");
+			_event = new mml_general(nsd_GateMode_2,  L"GateMode 2");
 			break;
 		default:
-			MML->Err("リリースモードで指定できる範囲を超えています。0～2の範囲で指定してください。");
+			MML->Err(L"リリースモードで指定できる範囲を超えています。0～2の範囲で指定してください。");
 			break;
 	}
 	SetEvent(_event);
@@ -775,9 +775,9 @@ void	TrackSet::SetReleaseVoice(MMLfile* MML)
 	unsigned	int	i = MML->GetInt();
 
 	if( (i <= 7) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Release_Voice + i, "Release Voice"));
+		SetEvent(new mml_general(nsd_Release_Voice + i, L"Release Voice"));
 	} else {
-		MML->Err("リリース音色で指定できる範囲を超えています。0～7の範囲で指定してください。");
+		MML->Err(L"リリース音色で指定できる範囲を超えています。0～7の範囲で指定してください。");
 	}
 }
 
@@ -794,9 +794,9 @@ void	TrackSet::SetReleaseVolume(MMLfile* MML)
 	unsigned	int	i = MML->GetInt();
 
 	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Release_Volume + i, "Release Volume"));
+		SetEvent(new mml_general(nsd_Release_Volume + i, L"Release Volume"));
 	} else {
-		MML->Err("音量で指定できる範囲を超えています。0～15の範囲で指定してください。");
+		MML->Err(L"音量で指定できる範囲を超えています。0～15の範囲で指定してください。");
 	}
 }
 
@@ -813,11 +813,11 @@ void	TrackSet::SetGatetime(MMLfile* MML)
 	unsigned	int	i = MML->GetInt();
 
 	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_GateTime_Byte + i, "Gatetime(q) Byte"));
+		SetEvent(new mml_general(nsd_GateTime_Byte + i, L"Gatetime(q) Byte"));
 	} else if( i <= 255) {
-		SetEvent(new mml_general(nsd_GateTime_q, i, "Gatetime(q)"));
+		SetEvent(new mml_general(nsd_GateTime_q, i, L"Gatetime(q)"));
 	} else {
-		MML->Err("パラメータの値が範囲を越えました。");
+		MML->Err(L"パラメータの値が範囲を越えました。");
 	}
 }
 
@@ -842,7 +842,7 @@ void	TrackSet::SetGatetime_u(MMLfile* MML)
 		MML->Back();
 		i = MML->GetLength(nowTrack->GetDefaultLength());
 	}
-	SetEvent(new mml_general(nsd_GateTime_u, i & 0xFF , "GateTime(u)"));
+	SetEvent(new mml_general(nsd_GateTime_u, i & 0xFF , L"GateTime(u)"));
 	
 }
 
@@ -865,41 +865,41 @@ void	TrackSet::SetProtament(MMLfile* MML)
 
 	_Decay = MML->GetInt();
 	if( (_Decay < 0) || (_Decay > 255) ){
-		MML->Err("ポルタメントの第1パラメータは、0～255の範囲で指定してください。");
+		MML->Err(L"ポルタメントの第1パラメータは、0～255の範囲で指定してください。");
 	}
 	_Decay++;
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
+		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
 	}
 
 	_Rate = MML->GetInt();
 	if( (_Rate < 1) || (_Rate > 256) ){
-		MML->Err("ポルタメントの第2パラメータは、1～256の範囲で指定してください。");
+		MML->Err(L"ポルタメントの第2パラメータは、1～256の範囲で指定してください。");
 	}
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
+		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
 	}
 
 	_Depth = MML->GetInt();
 	if( (_Depth < -128) || (_Depth > 127) ){
-		MML->Err("ポルタメントの第3パラメータは、-128～127の範囲で指定してください。");
+		MML->Err(L"ポルタメントの第3パラメータは、-128～127の範囲で指定してください。");
 	}
 	_Decay++;
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
+		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
 	}
 
 	_Target = MML->GetInt();
 	if( (_Target < -128) || (_Target > 127) ){
-		MML->Err("ポルタメントの第4パラメータは、-128～127の範囲で指定してください。");
+		MML->Err(L"ポルタメントの第4パラメータは、-128～127の範囲で指定してください。");
 	}
-	SetEvent(new mml_general(nsd_Portamento, _Decay & 0xFF,_Rate & 0xFF,_Depth & 0xFF,_Target & 0xFF, "Portamento"));
+	SetEvent(new mml_general(nsd_Portamento, _Decay & 0xFF,_Rate & 0xFF,_Depth & 0xFF,_Target & 0xFF, L"Portamento"));
 }
 
 //==============================================================
@@ -922,22 +922,22 @@ void	TrackSet::SetSweep(MMLfile* MML)
 	cData = MML->GetChar();
 	if(cData != ','){
 		if( (iSpeed < 0) || (iSpeed > 255) ){
-			MML->Err("0～255の範囲で指定してください。");
+			MML->Err(L"0～255の範囲で指定してください。");
 		}
 		MML->Back();
 		_data = iSpeed;
 	} else {
 		if( (iSpeed < 0) || (iSpeed > 15) ){
-			MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
+			MML->Err(L"スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
 		}
 		iDepth = MML->GetInt();
 		if( (iDepth < 0) || (iDepth > 15) ){
-			MML->Err("スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
+			MML->Err(L"スイープで指定できる範囲を超えています。0～15の範囲で指定してください。");
 		}
 		_data = ((iSpeed & 0x0F) << 4) | (iDepth & 0x0F);
 	}
 
-	SetEvent(new mml_general(nsd_Sweep, _data, "Sweep"));
+	SetEvent(new mml_general(nsd_Sweep, _data, L"Sweep"));
 }
 
 //==============================================================
@@ -956,17 +956,17 @@ void	TrackSet::SetPoke(MMLfile* MML)
 
 	addr = MML->GetInt();
 	if( (addr < 0x0000) || (addr > 0xFFFF) ){
-		MML->Err("パラメータの値が範囲を越えました。");
+		MML->Err(L"パラメータの値が範囲を越えました。");
 	}
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("y コマンドのパラメータが足りません。２つ指定してください。");
+		MML->Err(L"y コマンドのパラメータが足りません。２つ指定してください。");
 	}
 
 	data = MML->GetInt();
 	if(data > 255){
-		MML->Err("パラメータの値が範囲を越えました。");
+		MML->Err(L"パラメータの値が範囲を越えました。");
 	}
 	SetEvent(new mml_poke(addr, data & 0xFF));
 }
@@ -988,20 +988,20 @@ void	TrackSet::SetVRC7_Write(MMLfile* MML)
 
 	_Reg = MML->GetInt();
 	if( (_Reg < 0) || (_Reg > 0x40) ){
-		MML->Err("ポルタメントの第1パラメータは、0～63の範囲で指定してください。");
+		MML->Err(L"ポルタメントの第1パラメータは、0～63の範囲で指定してください。");
 	}
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err("P コマンドのパラメータが足りません。４つ指定してください。");
+		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
 	}
 
 	_Dat = MML->GetInt();
 	if( (_Dat < 0) || (_Dat > 255) ){
-		MML->Err("ポルタメントの第2パラメータは、0～255の範囲で指定してください。");
+		MML->Err(L"ポルタメントの第2パラメータは、0～255の範囲で指定してください。");
 	}
 
-	SetEvent(new mml_general(nsc_VRC7_reg,_Reg,_Dat, "VRC7 Register Write"));
+	SetEvent(new mml_general(nsc_VRC7_reg,_Reg,_Dat, L"VRC7 Register Write"));
 }
 
 //==============================================================
@@ -1017,9 +1017,9 @@ void	TrackSet::SetN163Channel(MMLfile* MML)
 	int	i = MML->GetInt();
 
 	if( (i <= 8) && (i >=1) ){
-		SetEvent(new mml_general(nsc_N163_Channel,i-1,"n163 channel"));
+		SetEvent(new mml_general(nsc_N163_Channel,i-1,L"n163 channel"));
 	} else {
-		MML->Err("n163のチャンネル数は1～8の範囲で指定してください。");
+		MML->Err(L"n163のチャンネル数は1～8の範囲で指定してください。");
 	}
 
 }
@@ -1039,9 +1039,9 @@ void	TrackSet::Set_FME7_Frequency(MMLfile* MML)
 	if( (i <= 0xFFFF) && (i >=0) ){
 		unsigned	char	c0 = ( i       & 0xFF);
 		unsigned	char	c1 = ((i >> 8) & 0xFF);
-		SetEvent(new mml_general(nsc_FME7_frequency,c0,c1,"FME7 envelop frequency"));
+		SetEvent(new mml_general(nsc_FME7_frequency,c0,c1,L"FME7 envelop frequency"));
 	} else {
-		MML->Err("FME7のハードウェアエンベロープ周波数は、0～65535の範囲で指定して下さい。");
+		MML->Err(L"FME7のハードウェアエンベロープ周波数は、0～65535の範囲で指定して下さい。");
 	}
 }
 

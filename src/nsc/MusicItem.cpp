@@ -15,13 +15,13 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //	●返値
 //				無し
 //==============================================================
-MusicItem::MusicItem(const char _strName[]):
+MusicItem::MusicItem(const wchar_t _strName[]):
 	iOffset(0),
 	strName(_strName)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){
-		cout << "Create Music Object : " << strName << endl;
+		wcout << L"Create Music Object : " << strName << endl;
 	}
 }
 
@@ -93,7 +93,7 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x02){
-		cout << "Object Address [0x" << hex << _offset << dec << "]: " << strName << endl;
+		wcout << L"Object Address [0x" << hex << _offset << dec << L"]: " << strName << endl;
 	}
 
 	iOffset = _offset;

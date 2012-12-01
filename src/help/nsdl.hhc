@@ -297,8 +297,8 @@
 		<param name="ImageNumber" value="27">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="再配布">
-		<param name="Local" value="redistribution.html">
+		<param name="Name" value="ライセンス">
+		<param name="Local" value="licence.html">
 		<param name="ImageNumber" value="23">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">

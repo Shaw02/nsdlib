@@ -16,7 +16,7 @@ class SE : public TrackSet
 
 public:
 
-	SE(MMLfile* MML, unsigned int _id,	 char _strName[] = "==== [ SE ]====");
+	SE(MMLfile* MML, unsigned int _id,	 wchar_t _strName[] = L"==== [ SE ]====");
 	~SE();
 	void	getAsm(MusicFile* MUS);
 

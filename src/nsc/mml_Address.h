@@ -13,8 +13,8 @@ class mml_Address :
 	unsigned	int	m_id;
 //ƒƒ“ƒo[ŠÖ”
 public:
-	mml_Address(unsigned char _code, const char _strName[]="Address");
-	mml_Address(unsigned char _code, unsigned char _data, const char _strName[]);
+	mml_Address(unsigned char _code, const wchar_t _strName[]=L"Address");
+	mml_Address(unsigned char _code, unsigned char _data, const wchar_t _strName[]=L"Address");
 	~mml_Address(void);
 
 				void	set_Address(unsigned int _addr);
