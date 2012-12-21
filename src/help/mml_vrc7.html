@@ -45,12 +45,20 @@ VRC7ユーザー定義音色の番号を指定します。
 "Total level"です。0～63で指定して下さい。<br>
 トータルレベルは、エンベロープジェネレーターの出力に対して減衰量を加算し、変調度(音色)の制御します。<br>
 </p>
+<table>
+<tr><th>TL		</th><th>D5</th><th>D4</th><th>D3</th><th>D2</th><th>D1</th><th>D0</th></tr>
+<tr><th>減衰量	</th><td>-24dB</td><td>-12dB</td><td>-6dB</td><td>-3dB</td><td>-1.5dB</td><td>-0.75dB</td></tr>
+</table>
 
 <h4>FB</h4>
 <p>
 "Feedback"です。0～7で指定して下さい。<br>
 モジュレータスロットのフィードバックFM変調の変調度です。<br>
 </p>
+<table>
+<tr><th>FB		</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+<tr><th>変調度	</th><td>0</td><td>π/16</td><td>π/8</td><td>π/4</td><td>π/2</td><td>π</td><td>2π</td><td>4π</td></tr>
+</table>
 
 <h4>AR</h4>
 <p>
@@ -58,11 +66,163 @@ VRC7ユーザー定義音色の番号を指定します。
 音の立ち上がり時間の設定をします。<br>
 </p>
 
+<p>
+AR,DR,RRの各種レートは、先ず、以下の式で、キースケール後のレートを求めます。<br>
+Attack Rate = AR × 4 + Rks<br>
+Decay Rate = DR × 4 + Rks<br>
+Release Rate = RR × 4 + Rks<br>
+</p>
+
+<table>
+<caption>Attack time [msec]</caption>
+</tr><th>	Rate</th><th>0dB - 40dB	</th><th>10% - 90%	</th></tr>
+</tr><td>	63	</td><td>	0		</td><td>	0		</td></tr>
+</tr><td>	62	</td><td>	0		</td><td>	0		</td></tr>
+</tr><td>	61	</td><td>	0		</td><td>	0		</td></tr>
+</tr><td>	60	</td><td>	0		</td><td>	0		</td></tr>
+</tr><td>	59	</td><td>	0.14	</td><td>	0.1		</td></tr>
+</tr><td>	58	</td><td>	0.18	</td><td>	0.12	</td></tr>
+</tr><td>	57	</td><td>	0.22	</td><td>	0.14	</td></tr>
+</tr><td>	56	</td><td>	0.28	</td><td>	0.18	</td></tr>
+</tr><td>	55	</td><td>	0.3		</td><td>	0.22	</td></tr>
+</tr><td>	54	</td><td>	0.34	</td><td>	0.22	</td></tr>
+</tr><td>	53	</td><td>	0.42	</td><td>	0.26	</td></tr>
+</tr><td>	52	</td><td>	0.5		</td><td>	0.32	</td></tr>
+</tr><td>	51	</td><td>	0.54	</td><td>	0.36	</td></tr>
+</tr><td>	50	</td><td>	0.6		</td><td>	0.38	</td></tr>
+</tr><td>	49	</td><td>	0.7		</td><td>	0.44	</td></tr>
+</tr><td>	48	</td><td>	0.84	</td><td>	0.54	</td></tr>
+</tr><td>	47	</td><td>	0.97	</td><td>	0.64	</td></tr>
+</tr><td>	46	</td><td>	1.13	</td><td>	0.72	</td></tr>
+</tr><td>	45	</td><td>	1.37	</td><td>	0.84	</td></tr>
+</tr><td>	44	</td><td>	1.69	</td><td>	1.09	</td></tr>
+</tr><td>	43	</td><td>	1.93	</td><td>	1.29	</td></tr>
+</tr><td>	42	</td><td>	2.25	</td><td>	1.45	</td></tr>
+</tr><td>	41	</td><td>	2.74	</td><td>	1.69	</td></tr>
+</tr><td>	40	</td><td>	3.38	</td><td>	2.17	</td></tr>
+</tr><td>	39	</td><td>	3.86	</td><td>	2.57	</td></tr>
+</tr><td>	38	</td><td>	4.51	</td><td>	2.9		</td></tr>
+</tr><td>	37	</td><td>	5.47	</td><td>	3.38	</td></tr>
+</tr><td>	36	</td><td>	6.76	</td><td>	4.34	</td></tr>
+</tr><td>	35	</td><td>	7.72	</td><td>	5.15	</td></tr>
+</tr><td>	34	</td><td>	9.01	</td><td>	5.79	</td></tr>
+</tr><td>	33	</td><td>	10.94	</td><td>	6.76	</td></tr>
+</tr><td>	32	</td><td>	13.52	</td><td>	8.96	</td></tr>
+</tr><td>	31	</td><td>	15.45	</td><td>	10.3	</td></tr>
+</tr><td>	30	</td><td>	18.02	</td><td>	11.59	</td></tr>
+</tr><td>	29	</td><td>	21.88	</td><td>	13.52	</td></tr>
+</tr><td>	28	</td><td>	27.03	</td><td>	17.38	</td></tr>
+</tr><td>	27	</td><td>	30.9	</td><td>	20.6	</td></tr>
+</tr><td>	26	</td><td>	36.04	</td><td>	23.17	</td></tr>
+</tr><td>	25	</td><td>	43.77	</td><td>	27.03	</td></tr>
+</tr><td>	24	</td><td>	54.07	</td><td>	34.76	</td></tr>
+</tr><td>	23	</td><td>	61.79	</td><td>	41.19	</td></tr>
+</tr><td>	22	</td><td>	72.09	</td><td>	46.34	</td></tr>
+</tr><td>	21	</td><td>	87.54	</td><td>	54.07	</td></tr>
+</tr><td>	20	</td><td>	108.13	</td><td>	69.51	</td></tr>
+</tr><td>	19	</td><td>	123.58	</td><td>	82.39	</td></tr>
+</tr><td>	18	</td><td>	144.18	</td><td>	92.69	</td></tr>
+</tr><td>	17	</td><td>	175.07	</td><td>	108.13	</td></tr>
+</tr><td>	16	</td><td>	216.27	</td><td>	139.03	</td></tr>
+</tr><td>	15	</td><td>	247.16	</td><td>	164.78	</td></tr>
+</tr><td>	14	</td><td>	288.36	</td><td>	185.37	</td></tr>
+</tr><td>	13	</td><td>	350.15	</td><td>	216.27	</td></tr>
+</tr><td>	12	</td><td>	432.54	</td><td>	278.06	</td></tr>
+</tr><td>	11	</td><td>	494.33	</td><td>	329.55	</td></tr>
+</tr><td>	10	</td><td>	576.72	</td><td>	370.75	</td></tr>
+</tr><td>	9	</td><td>	700.3	</td><td>	432.54	</td></tr>
+</tr><td>	8	</td><td>	865.08	</td><td>	556.12	</td></tr>
+</tr><td>	7	</td><td>	988.66	</td><td>	659.11	</td></tr>
+</tr><td>	6	</td><td>	1153.43	</td><td>	741.49	</td></tr>
+</tr><td>	5	</td><td>	1400.6	</td><td>	865.08	</td></tr>
+</tr><td>	4	</td><td>	1730.15	</td><td>	1112.24	</td></tr>
+</tr><td>	3	</td><td>	∞		</td><td>	∞		</td></tr>
+</tr><td>	2	</td><td>	∞		</td><td>	∞		</td></tr>
+</tr><td>	1	</td><td>	∞		</td><td>	∞		</td></tr>
+</tr><td>	0	</td><td>	∞		</td><td>	∞		</td></tr>
+</table>
+
 <h4>DR</h4>
 <p>
 "Decay rate"です。0～15で指定して下さい。<br>
 アタック後の減衰時間です。<br>
 </p>
+
+<p>
+AR,DR,RRの各種レートは、先ず、以下の式で、キースケール後のレートを求めます。<br>
+Attack Rate = AR × 4 + Rks<br>
+Decay Rate = DR × 4 + Rks<br>
+Release Rate = RR × 4 + Rks<br>
+</p>
+
+<table>
+<caption>Decay / Release time [msec]</caption>
+</tr><th>	Rate</th><th>0dB - 40dB	</th><th>	10% - 90%	</th></tr>
+</tr><td>	63	</td><td>	1.27	</td><td>	0.52	</td></tr>
+</tr><td>	62	</td><td>	1.27	</td><td>	0.52	</td></tr>
+</tr><td>	61	</td><td>	1.27	</td><td>	0.52	</td></tr>
+</tr><td>	60	</td><td>	1.27	</td><td>	0.52	</td></tr>
+</tr><td>	59	</td><td>	1.47	</td><td>	0.6		</td></tr>
+</tr><td>	58	</td><td>	1.71	</td><td>	0.68	</td></tr>
+</tr><td>	57	</td><td>	2.05	</td><td>	0.82	</td></tr>
+</tr><td>	56	</td><td>	2.55	</td><td>	1.03	</td></tr>
+</tr><td>	55	</td><td>	2.94	</td><td>	1.21	</td></tr>
+</tr><td>	54	</td><td>	3.42	</td><td>	1.37	</td></tr>
+</tr><td>	53	</td><td>	4.1		</td><td>	1.65	</td></tr>
+</tr><td>	52	</td><td>	5.11	</td><td>	2.05	</td></tr>
+</tr><td>	51	</td><td>	5.87	</td><td>	2.41	</td></tr>
+</tr><td>	50	</td><td>	6.84	</td><td>	2.74	</td></tr>
+</tr><td>	49	</td><td>	8.21	</td><td>	3.3		</td></tr>
+</tr><td>	48	</td><td>	10.22	</td><td>	4.1		</td></tr>
+</tr><td>	47	</td><td>	11.75	</td><td>	4.83	</td></tr>
+</tr><td>	46	</td><td>	13.68	</td><td>	5.47	</td></tr>
+</tr><td>	45	</td><td>	16.41	</td><td>	6.6		</td></tr>
+</tr><td>	44	</td><td>	20.44	</td><td>	8.21	</td></tr>
+</tr><td>	43	</td><td>	23.49	</td><td>	9.65	</td></tr>
+</tr><td>	42	</td><td>	27.36	</td><td>	10.94	</td></tr>
+</tr><td>	41	</td><td>	32.83	</td><td>	13.19	</td></tr>
+</tr><td>	40	</td><td>	40.87	</td><td>	16.41	</td></tr>
+</tr><td>	39	</td><td>	46.99	</td><td>	19.31	</td></tr>
+</tr><td>	38	</td><td>	54.71	</td><td>	21.88	</td></tr>
+</tr><td>	37	</td><td>	65.65	</td><td>	26.39	</td></tr>
+</tr><td>	36	</td><td>	81.74	</td><td>	32.83	</td></tr>
+</tr><td>	35	</td><td>	93.97	</td><td>	38.62	</td></tr>
+</tr><td>	34	</td><td>	109.42	</td><td>	43.77	</td></tr>
+</tr><td>	33	</td><td>	131.31	</td><td>	52.78	</td></tr>
+</tr><td>	32	</td><td>	163.49	</td><td>	65.65	</td></tr>
+</tr><td>	31	</td><td>	187.95	</td><td>	77.24	</td></tr>
+</tr><td>	30	</td><td>	218.84	</td><td>	87.54	</td></tr>
+</tr><td>	29	</td><td>	262.61	</td><td>	105.56	</td></tr>
+</tr><td>	28	</td><td>	326.98	</td><td>	131.31	</td></tr>
+</tr><td>	27	</td><td>	375.9	</td><td>	154.48	</td></tr>
+</tr><td>	26	</td><td>	437.69	</td><td>	175.07	</td></tr>
+</tr><td>	25	</td><td>	525.22	</td><td>	211.12	</td></tr>
+</tr><td>	24	</td><td>	653.95	</td><td>	262.61	</td></tr>
+</tr><td>	23	</td><td>	751.79	</td><td>	308.96	</td></tr>
+</tr><td>	22	</td><td>	875.37	</td><td>	350.15	</td></tr>
+</tr><td>	21	</td><td>	1050.45	</td><td>	422.24	</td></tr>
+</tr><td>	20	</td><td>	1307.91	</td><td>	525.22	</td></tr>
+</tr><td>	19	</td><td>	1503.58	</td><td>	617.91	</td></tr>
+</tr><td>	18	</td><td>	1750.75	</td><td>	700.3	</td></tr>
+</tr><td>	17	</td><td>	2100.89	</td><td>	844.48	</td></tr>
+</tr><td>	16	</td><td>	2615.82	</td><td>	1050.45	</td></tr>
+</tr><td>	15	</td><td>	3007.16	</td><td>	1235.82	</td></tr>
+</tr><td>	14	</td><td>	3501.49	</td><td>	1400.6	</td></tr>
+</tr><td>	13	</td><td>	4201.79	</td><td>	1688.95	</td></tr>
+</tr><td>	12	</td><td>	5231.64	</td><td>	2100.89	</td></tr>
+</tr><td>	11	</td><td>	6014.32	</td><td>	2471.64	</td></tr>
+</tr><td>	10	</td><td>	7002.98	</td><td>	2801.19	</td></tr>
+</tr><td>	9	</td><td>	8403.58	</td><td>	3377.91	</td></tr>
+</tr><td>	8	</td><td>	10463.3	</td><td>	4201.79	</td></tr>
+</tr><td>	7	</td><td>	12028.66</td><td>	4943.28	</td></tr>
+</tr><td>	6	</td><td>	14006.8	</td><td>	5602.39	</td></tr>
+</tr><td>	5	</td><td>	16807.2	</td><td>	6755.82	</td></tr>
+</tr><td>	4	</td><td>	20926.6	</td><td>	8403.58	</td></tr>
+</tr><td>	3	</td><td>	∞		</td><td>	∞	</td></tr>
+</tr><td>	2	</td><td>	∞		</td><td>	∞	</td></tr>
+</tr><td>	1	</td><td>	∞		</td><td>	∞	</td></tr>
+</tr><td>	0	</td><td>	∞		</td><td>	∞	</td></tr>
+</table>
 
 <h4>SL</h4>
 <p>
@@ -70,6 +230,10 @@ VRC7ユーザー定義音色の番号を指定します。
 持続音の場合は、ディケイモードでの減衰がこのレベルに到達するとその後はそのレベルを保持するという変化点を指定します。<br>
 減衰音の場合は、ディケイモードからリリースモードヘの変化点を指定します。<br>
 </p>
+<table>
+<tr><th>SL		</th><th>D3</th><th>D2</th><th>D1</th><th>D0</th></tr>
+<tr><th>減衰量	</th><td>-24dB</td><td>-12dB</td><td>-6dB</td><td>-3dB</td></tr>
+</table>
 
 <h4>RR</h4>
 <p>
@@ -81,9 +245,12 @@ VRC7ユーザー定義音色の番号を指定します。
 <h4>KL</h4>
 <p>
 Levelに対するキースケールです。0～3の範囲で指定して下さい。<br>
-キースケールのモードは、音程が上がるほどレベルは減衰し、
-その減衰量は、減衰無し(0)、1.5dB/OCT(1)、3dB/OCT(2)、6dB/OCT(3)の4種類です。<br>
+キースケールのモードは、音程が上がるほどレベルは減衰します。<br>
 </p>
+<table>
+<tr><th>KL		</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+<tr><th>減衰量	</th><td>0dB/OCT</td><td>1.5dB/OCT</td><td>3dB/OCT</td><td>6dB/OCT</td></tr>
+</table>
 
 <h4>MT</h4>
 <p>
@@ -91,17 +258,27 @@ Levelに対するキースケールです。0～3の範囲で指定して下さい。<br>
 周波数を制御します。
 0～15で指定して下さい。
 </p>
+<table>
+<tr><th>MT	</th><th>0	</th><th>1	</th><th>2	</th><th>3	</th>
+				<th>4	</th><th>5	</th><th>6	</th><th>7	</th>
+				<th>8	</th><th>9	</th><th>10	</th><th>11	</th>
+				<th>12	</th><th>13	</th><th>14	</th><th>15	</th><tr>
+<tr><th>倍率</th><td>0.5</td><td>1	</td><td>2	</td><td>3	</td>
+				<td>4	</td><td>5	</td><td>6	</td><td>7	</td>
+				<td>8	</td><td>9	</td><td>10	</td><td>11	</td>
+				<td>12	</td><td>13	</td><td>14	</td><td>15	</td></tr>
+</table>
 
 <h4>AM</h4>
 <p>
 撮幅変調のON/OFFスイッチです。0～1の範囲で指定して下さい。<br>
-このビットが｢1｣にセットされたときには、そのスロットには振幅変調がかかります。<br>
+このビットが｢1｣にセットされたときには、そのスロットには音量ＬＦＯがかかります。<br>
 </p>
 
 <h4>VB</h4>
 <p>
 ビブラートのスイッチです。0～1の範囲で指定して下さい。<br>
-1にすると、そのスロットにビブラートがかかります。<br>
+1にすると、そのスロットに音程ＬＦＯがかかります。<br>
 </p>
 
 <h4>EG</h4>
@@ -117,6 +294,29 @@ Rateに対するキースケールです。0～1の範囲で指定して下さい。<br>
 0 : キースケール無し<br>
 1 : キースケール有り<br>
 </p>
+
+<table>
+<caption>key scale offset</caption>
+<tr><th rowspan="2">F-Block</th><th rowspan="2">F-Number<br>MSB</th><th colspan="2">Rks</th></tr>
+<tr>						<th>KR=0</th><th>KR=1</th></tr>
+<tr><td>0	</td><td>0	</td><td>0	</td><td>0	</td></tr>
+<tr><td>0	</td><td>1	</td><td>0	</td><td>1	</td></tr>
+<tr><td>1	</td><td>0	</td><td>0	</td><td>2	</td></tr>
+<tr><td>1	</td><td>1	</td><td>0	</td><td>3	</td></tr>
+<tr><td>2	</td><td>0	</td><td>1	</td><td>4	</td></tr>
+<tr><td>2	</td><td>1	</td><td>1	</td><td>5	</td></tr>
+<tr><td>3	</td><td>0	</td><td>1	</td><td>6	</td></tr>
+<tr><td>3	</td><td>1	</td><td>1	</td><td>7	</td></tr>
+<tr><td>4	</td><td>0	</td><td>2	</td><td>8	</td></tr>
+<tr><td>4	</td><td>1	</td><td>2	</td><td>9	</td></tr>
+<tr><td>5	</td><td>0	</td><td>2	</td><td>10	</td></tr>
+<tr><td>5	</td><td>1	</td><td>2	</td><td>11	</td></tr>
+<tr><td>6	</td><td>0	</td><td>3	</td><td>12	</td></tr>
+<tr><td>6	</td><td>1	</td><td>3	</td><td>13	</td></tr>
+<tr><td>7	</td><td>0	</td><td>3	</td><td>14	</td></tr>
+<tr><td>7	</td><td>1	</td><td>3	</td><td>15	</td></tr>
+</table>
+
 
 <h4>D</h4>
 <p>
@@ -149,10 +349,67 @@ VRC7のユーザー音色を定義します。<br>
 
 <!-- ──────────────── -->
 <div class='block'>
-<h3>注意（Notes）</h3>
+<h3>FM音源解説</h3>
 <p>
-
+VRC7、OPLLには、正弦波および、それを半端整流した波形を出力する発振器を有しています。<br>
+ここでは、説明を簡単にするため、発振器は正弦波を出力するものとし、フィードバックによる変調も割愛します。<br>
 </p>
+
+<p>
+周波数変調の式は、<br>
+ｙ ＝ Ａc sin （ ２πｆc × ｔ ＋ Ａm sin （ ２πｆm × ｔ ） ）<br>
+で表せます。
+</p>
+<dl>
+<dt>ｙ</dt><dd>出力</dd>
+<dt>ｔ</dt><dd>時間</dd>
+<dt>Ａc</dt><dd>キャリアの振幅</dd>
+<dt>ｆc</dt><dd>キャリアの周波数 （ 角速度ωc ＝ ２πｆc）</dd>
+<dt>Ａm</dt><dd>モジュレータの振幅</dd>
+<dt>ｆm</dt><dd>モジュレータの周波数 （ 角速度ωm ＝ ２πｆc）</dd>
+</dl>
+
+<p>
+振幅Ａc、Ａmは、エンベロープ（AR, DR, SL, RR, KL, KR, EG）と、音量LFO（AM）によって制御されます。<br>
+周波数ｆc、ｆmは、曲データ中で指定された音程により制御されるF-Number, F-Blockに加え、MT, VBにより制御されます。<br>
+</p>
+
+<p>
+各パラメータについての詳細は、YAMAHA YM2413(Operator Type-LL、OPLL)のデータシートをご参照ください。<br>
+</p>
+
+<h4>キャリア：モジュレーターの周波数比が1:1の場合</h4>
+<p>上のＦＭ変調の式をｆc＝ｆmとして展開すると、以下の式となります。</p>
+<p>
+ｙ ＝ Ａc｛<br>
+　（Ｊ0 － Ｊ2） sin （１ × ２πｆcｔ） ＋<br>
+　（Ｊ1 ＋ Ｊ3） sin （２ × ２πｆcｔ） ＋<br>
+　（Ｊ2 － Ｊ4） sin （３ × ２πｆcｔ） ＋<br>
+　（Ｊ3 ＋ Ｊ5） sin （４ × ２πｆcｔ） ＋<br>
+　・・・<br>
+｝<br>
+Ｊn＝Ｆn（Ａm）<br>
+と、整数倍の倍音成分を全て含んだ音色が作れます。<br>
+つまり、この周波数比ではノコギリ波の様な音色や、弦楽器の音色を作ることができます。<br>
+</p>
+
+
+<h4>キャリア：モジュレーターの周波数比が1:2の場合</h4>
+<p>上のＦＭ変調の式をｆc＝２ｆmとして展開すると、以下の式となります。</p>
+<p>
+ｙ ＝ Ａc｛<br>
+　（Ｊ0 － Ｊ1） sin （１ × ２πｆcｔ） ＋<br>
+　（Ｊ1 ＋ Ｊ2） sin （３ × ２πｆcｔ） ＋<br>
+　（Ｊ2 － Ｊ3） sin （５ × ２πｆcｔ） ＋<br>
+　（Ｊ3 ＋ Ｊ4） sin （７ × ２πｆcｔ） ＋<br>
+　・・・<br>
+｝<br>
+と、奇数倍の倍音成分を全て含んだ音色が作れます。<br>
+つまり、この周波数比では矩形波の様な音色や、管楽器の音色を作ることができます。<br>
+</p>
+
+
+
 
 </div>
 

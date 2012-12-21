@@ -3,7 +3,7 @@
 
 #Code		"../../bin/nsd_all.bin"
 
-#BGM		11
+#BGM		12
 #SE			2
 
 #OffsetPCM	$C000
@@ -41,12 +41,13 @@ VRC7(1){	//Piano
 
 
 //	frequency envelop "Volume table"
-Envelop(0){		8 10 12 13 14 15 D10 14 D3 13 D1 12 11 L 10 10 9 9 8 8 9 9 R 8 8 7 7 6 6 5 5 L 4 4 3 3 2 2 3 3 	}
+Envelop(0){		8 10 (12,15,3) 15 D10 14 D3 13 D1 12 11 L 10 10 9 9 8 8 9 9 R 8 8 7 7 6 6 5 5 L 4 4 3 3 2 2 3 3 	}
+Envelop(11){(8,15,3),(15,8,100) L 8 R (8,0,3) L 0}
 Envelop(2){		15	L	11	R	10	8	7	6	D0	5	D1	4	D2	3	D3	L	2	}
 Envelop(10){	15 12 8 6 5 4 3 3 2 D3 1 D7 0	}
 
 //	frequency envelop "LFO"
-Envelop(100){	L 0 1 2 3 3 2 1 0  -1 -2 -3 -3 -2 -1 	}
+Envelop(100){	L (0,3,3) (3,-3,6) (-3,0,3)	}
 
 //	Voice envelop
 Envelop(200){	L 2 1 R 2 	}
@@ -59,6 +60,12 @@ Envelop(300){	4 3 2 1 0}
 
 
 Sub(1000000){	l4 o5 cc+ dd+ e ff+ gg+ aa+ b > cc+ dd+ e1	}
+
+bgm(11){
+	TR1	Ev11	o4	l1	cdefgab`c
+
+}
+
 
 bgm(10){
 	TR5	o7	c4	d4	e4	f4
