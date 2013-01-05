@@ -57,7 +57,7 @@ public:
 				void	SetRepeat_B_End(MMLfile* MML);
 
 				void	SetSubroutine(MMLfile* MML);
-				void	SetEnvelop(unsigned char _opcode, MMLfile* MML);
+				void	SetEnvelop(unsigned char _opcode, MMLfile* MML, int _offset);
 				void	SetVRC7(MMLfile* MML);
 				void	SetN163(MMLfile* MML);
 

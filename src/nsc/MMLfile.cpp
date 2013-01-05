@@ -10,6 +10,10 @@
 //				–³‚µ
 //==============================================================
 MMLfile::MMLfile(const char*	strFileName):
+	offset_Ei(0),
+	offset_Ev(0),
+	offset_En(0),
+	offset_Em(0),
 	octave_reverse(false)
 {
 	//File open

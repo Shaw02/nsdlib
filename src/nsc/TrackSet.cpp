@@ -336,19 +336,19 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Envelop_Voice):
-				nowTrack->SetEnvelop(nsd_Envelop_Voice, MML);
+				nowTrack->SetEnvelop(nsd_Envelop_Voice, MML, MML->offset_Ei);
 				break;
 
 			case(mml_Envelop_Volume):
-				nowTrack->SetEnvelop(nsd_Envelop_Volume, MML);
+				nowTrack->SetEnvelop(nsd_Envelop_Volume, MML, MML->offset_Ev);
 				break;
 
 			case(mml_Envelop_Frequency):
-				nowTrack->SetEnvelop(nsd_Envelop_Frequency, MML);
+				nowTrack->SetEnvelop(nsd_Envelop_Frequency, MML, MML->offset_Em);
 				break;
 
 			case(mml_Envelop_Note):
-				nowTrack->SetEnvelop(nsd_Envelop_Note, MML);
+				nowTrack->SetEnvelop(nsd_Envelop_Note, MML, MML->offset_En);
 				break;
 
 			case(mml_Envelop_Off_Voice):

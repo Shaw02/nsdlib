@@ -21,6 +21,10 @@ private:
 				FileInput*			nowFile;			//現在のファイル
 	unsigned	int					iFiles;				//現在のファイルNo.
 public:
+				int					offset_Ei;			//
+				int					offset_Ev;			//
+				int					offset_En;			//
+				int					offset_Em;			//
 				bool				octave_reverse;		//Octave Reverse
 
 //メンバー関数

@@ -358,10 +358,10 @@ void	MusicTrack::SetSubroutine(MMLfile* MML)
 //	œ•Ô’l
 //				–³‚µ
 //==============================================================
-void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML)
+void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML, int _offset)
 {
 	mml_Address*		_event = new mml_Address(_opcode, L"Envelop");
-	unsigned	int		_no = MML->GetInt();
+	unsigned	int		_no = MML->GetInt() + _offset;
 
 	_event->set_id(_no);
 	SetEvent(_event);

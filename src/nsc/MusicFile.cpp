@@ -37,6 +37,10 @@ enum	Command_ID_MusicFile {
 	id_OctaveReverse,
 	id_bgm_num,
 	id_se_num,
+	id_offset_Ei,
+	id_offset_Ev,
+	id_offset_En,
+	id_offset_Em,
 
 	//Block
 	id_DPCM,
@@ -80,6 +84,14 @@ const	static	Command_Info	Command[] = {
 		{	"#bgm",				id_bgm_num		},
 		{	"#SE",				id_se_num		},
 		{	"#se",				id_se_num		},
+		{	"#OffsetE@",		id_offset_Ei	},
+		{	"#offsetE@",		id_offset_Ei	},
+		{	"#OffsetEv",		id_offset_Ev	},
+		{	"#offsetEv",		id_offset_Ev	},
+		{	"#OffsetEm",		id_offset_Em	},
+		{	"#offsetEm",		id_offset_Em	},
+		{	"#OffsetEn",		id_offset_En	},
+		{	"#offsetEn",		id_offset_En	},
 		//Block
 		{	"DPCM",				id_DPCM			},
 		{	"VRC7",				id_VRC7			},
@@ -160,14 +172,26 @@ const	static	Command_Info	Command[] = {
 			case(id_include):
 				MML->include();
 				break;
-			case(id_OctaveReverse):
-				MML->octave_reverse = true;		//これは、MMLファイルの属性。
-				break;
 			case(id_bgm_num):
 				Header.Set_Number_BGM(MML);
 				break;
 			case(id_se_num):
 				Header.Set_Number_SE(MML);
+				break;
+			case(id_OctaveReverse):
+				MML->octave_reverse = true;		//これは、MMLファイルの属性。
+				break;
+			case(id_offset_Ei):
+				MML->offset_Ei = MML->GetInt();
+				break;
+			case(id_offset_Ev):
+				MML->offset_Ev = MML->GetInt();
+				break;
+			case(id_offset_En):
+				MML->offset_En = MML->GetInt();
+				break;
+			case(id_offset_Em):
+				MML->offset_Em = MML->GetInt();
 				break;
 			//MML
 			case(id_DPCM):

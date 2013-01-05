@@ -292,6 +292,11 @@
 		<param name="ImageNumber" value="35">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Spcial Thanks">
+		<param name="Local" value="thanks.html">
+		<param name="ImageNumber" value="39">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="’˜ìŒ ">
 		<param name="Local" value="copyright.html">
 		<param name="ImageNumber" value="27">
