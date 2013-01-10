@@ -32,7 +32,9 @@ class MusicFile :
 {
 //ƒƒ“ƒo[•Ï”
 public:
-			MusicHeader			Header;		//Header			
+			MusicHeader			Header;		//Header
+	map<	int, FDSC*		>	ptcFDSC;	//FDS  wave table (career)
+	map<	int, FDSM*		>	ptcFDSM;	//FDS  wave table (modulator)
 	map<	int, VRC7*		>	ptcVRC7;	//VRC7 User Instrument
 	map<	int, N163*		>	ptcN163;	//N163 wave table
 	map<	int, Envelop*	>	ptcEnv;		//Envelop

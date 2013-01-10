@@ -65,8 +65,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 {
 	//----------------------
 	//Local変数
+	vector<	mml_Address*	>::iterator	itSE;
 	vector<	mml_Address*	>::iterator	itSub;
 	vector<	mml_Address*	>::iterator	itEnv;
+	vector<	mml_Address*	>::iterator	itFDSC;
+	vector<	mml_Address*	>::iterator	itFDSM;
 	vector<	mml_Address*	>::iterator	itVRC7;
 	vector<	mml_Address*	>::iterator	itN163;
 	unsigned	int	_no;
@@ -74,10 +77,27 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 	unsigned	int	_com_offset;
 
 	//----------------------
-	//
-	if(!ptcSubroutine.empty()){
-		itSub = ptcSubroutine.begin();
-		while(itSub != ptcSubroutine.end()){
+	//SE
+	if(!ptcSE.empty()){
+		itSE = ptcSE.begin();
+		while(itSE != ptcSE.end()){
+			_no			= (*itSE)->get_id();		//サブルーチンNo.の取得
+			_com_offset	= (*itSE)->getOffset();
+			if( MUS->ptcSE.count(_no) == 0){
+				wcout << L"SE" << _no << L"番が存在しません。" << endl;
+				exit(-1);
+			}
+			_sub_offset = MUS->ptcSE[_no]->getOffset();	//指定サブルーチンが存在するオフセット
+			(*itSE)->set_Address(_sub_offset - _com_offset - 1);
+			itSE++;
+		}
+	}
+
+	//----------------------
+	//Surbortine
+	if(!ptcSub.empty()){
+		itSub = ptcSub.begin();
+		while(itSub != ptcSub.end()){
 			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
 			_com_offset	= (*itSub)->getOffset();
 			if( MUS->ptcSub.count(_no) == 0){
@@ -90,10 +110,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 		}
 	}
 
-	//
-	if(!ptcEnvelop.empty()){
-		itEnv = ptcEnvelop.begin();
-		while(itEnv != ptcEnvelop.end()){
+	//----------------------
+	//Envelope
+	if(!ptcEnv.empty()){
+		itEnv = ptcEnv.begin();
+		while(itEnv != ptcEnv.end()){
 			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itEnv)->getOffset();
 			if( MUS->ptcEnv.count(_no) == 0){
@@ -106,7 +127,42 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 		}
 	}
 
-	//
+	//----------------------
+	//FDSC
+	if(!ptcFDSC.empty()){
+		itFDSC = ptcFDSC.begin();
+		while(itFDSC != ptcFDSC.end()){
+			_no			= (*itFDSC)->get_id();		//エンベロープNo.の取得
+			_com_offset	= (*itFDSC)->getOffset();
+			if( MUS->ptcFDSC.count(_no) == 0){
+				wcout << L"FDSC" << _no << L"番が存在しません。" << endl;
+				exit(-1);
+			}
+			_sub_offset = MUS->ptcFDSC[_no]->getOffset();	//指定エンベロープが存在するオフセット
+			(*itFDSC)->set_Address(_sub_offset - _com_offset - 1);
+			itFDSC++;
+		}
+	}
+
+	//----------------------
+	//FDSM
+	if(!ptcFDSM.empty()){
+		itFDSM = ptcFDSM.begin();
+		while(itFDSM != ptcFDSM.end()){
+			_no			= (*itFDSM)->get_id();		//エンベロープNo.の取得
+			_com_offset	= (*itFDSM)->getOffset();
+			if( MUS->ptcFDSM.count(_no) == 0){
+				wcout << L"FDSM" << _no << L"番が存在しません。" << endl;
+				exit(-1);
+			}
+			_sub_offset = MUS->ptcFDSM[_no]->getOffset();	//指定エンベロープが存在するオフセット
+			(*itFDSM)->set_Address(_sub_offset - _com_offset - 1);
+			itFDSM++;
+		}
+	}
+
+	//----------------------
+	//OPLL
 	if(!ptcOPLL.empty()){
 		itVRC7 = ptcOPLL.begin();
 		while(itVRC7 != ptcOPLL.end()){
@@ -122,7 +178,8 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 		}
 	}
 
-	//
+	//----------------------
+	//N163
 	if(!ptcWave.empty()){
 		itN163 = ptcWave.begin();
 		while(itN163 != ptcWave.end()){
@@ -333,6 +390,24 @@ void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 }
 
 //==============================================================
+//		SE	効果音呼び出し
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetSE(MMLfile* MML)
+{
+	mml_Address*		_event = new mml_Address(nsd_Call_SE, L"Call SE");
+	unsigned	int		_no = MML->GetInt();
+
+	_event->set_id(_no);
+	SetEvent(_event);
+	ptcSE.push_back(_event);
+}
+
+//==============================================================
 //		S	サブルーチン呼び出し
 //--------------------------------------------------------------
 //	●引数
@@ -347,7 +422,7 @@ void	MusicTrack::SetSubroutine(MMLfile* MML)
 
 	_event->set_id(_no);
 	SetEvent(_event);
-	ptcSubroutine.push_back(_event);
+	ptcSub.push_back(_event);
 }
 
 //==============================================================
@@ -365,7 +440,43 @@ void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML, int _offset)
 
 	_event->set_id(_no);
 	SetEvent(_event);
-	ptcEnvelop.push_back(_event);
+	ptcEnv.push_back(_event);
+}
+
+//==============================================================
+//		@FC	FDS	
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetFDSC(MMLfile* MML)
+{
+	mml_Address*		_event = new mml_Address(nsd_FDS_Career, L"FDS career wave table");
+	unsigned	int		_no = MML->GetInt();
+
+	_event->set_id(_no);
+	SetEvent(_event);
+	ptcFDSC.push_back(_event);
+}
+
+//==============================================================
+//		@FM	FDS	
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetFDSM(MMLfile* MML)
+{
+	mml_Address*		_event = new mml_Address(nsd_FDS_Modlator, L"FDS modulator wave table");
+	unsigned	int		_no = MML->GetInt();
+
+	_event->set_id(_no);
+	SetEvent(_event);
+	ptcFDSM.push_back(_event);
 }
 
 //==============================================================

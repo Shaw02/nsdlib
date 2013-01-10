@@ -78,6 +78,7 @@
 ;---------------------------------------
 ;FDS define
 
+FDS_Control		= $4023
 FDS_Wave_Table		= $4040		; to $407F
 FDS_Volume		= $4080
 FDS_FTUNE		= $4082
@@ -326,6 +327,10 @@ PSG_Envelope_Form	= $0D
 	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
 	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
 	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
+.ifdef	FDS
+	FDS_Frequency	.byte
+	FDS_SweepBias	.byte
+.endif
 .ifdef	OPLL
 	OPLL_Rhythm	.byte
 .endif
@@ -360,6 +365,7 @@ PSG_Envelope_Form	= $0D
 	Sustain	= $20		;for VRC7
 	KeyOn	= $10		;for VRC7
 	Envelop	= $10		;for PSG
+	FDSVOL	= $0C
 	KeyOff	= $03		;00	Key Off	: Vol = 0
 				;01	Key Off	: Release command
 				;10	Key Off	:  envelop
@@ -413,6 +419,10 @@ PSG_Envelope_Form	= $0D
 .define	__n163_num	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3
 .define	__psg_switch	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3 + 1
 
+.ifdef	FDS
+.define	__fds_frequency	nsd_work + NSD_work::FDS_Frequency
+.define	__fds_sweepbias	nsd_work + NSD_work::FDS_SweepBias
+.endif
 .ifdef	OPLL
 .define	__opll_ryhthm	nsd_work + NSD_work::OPLL_Rhythm
 .endif

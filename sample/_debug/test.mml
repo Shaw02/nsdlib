@@ -62,8 +62,9 @@ Envelop(300){	4 3 2 1 0}
 Sub(1000000){	l4 o5 cc+ dd+ e ff+ gg+ aa+ b > cc+ dd+ e1	}
 
 bgm(11){
-	TR1	Ev11	o4	l1	cdefgab`c
-
+	TR1	Ev11	v15	o4		l1	SE0	cdef	SE1	gab`c
+	TR2	Ev11	v8	o4	r8.	l1		cdef		gab`c
+	TR4	Ev10	v12	o6		l16		[32	cc"gc	]
 }
 
 

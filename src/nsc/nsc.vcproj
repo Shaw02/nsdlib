@@ -166,6 +166,12 @@
 					RelativePath=".\Envelop.cpp">
 				</File>
 				<File
+					RelativePath=".\FDSC.cpp">
+				</File>
+				<File
+					RelativePath=".\FDSM.cpp">
+				</File>
+				<File
 					RelativePath=".\MusicFile.cpp">
 				</File>
 				<File
@@ -252,6 +258,12 @@
 			</File>
 			<File
 				RelativePath=".\Envelop.h">
+			</File>
+			<File
+				RelativePath=".\FDSC.h">
+			</File>
+			<File
+				RelativePath=".\FDSM.h">
 			</File>
 			<File
 				RelativePath=".\FileInput.h">

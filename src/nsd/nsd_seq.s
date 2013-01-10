@@ -7,6 +7,7 @@
 	.import		_nsd_snd_keyoff
 	.import		_nsd_snd_sweep
 	.import		_nsd_snd_voice
+	.import		_nsd_play_se
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
@@ -192,7 +193,7 @@ exit:	rts
 ;	x	Channel * 2
 ;	nds_work.Sequence_ptr
 ;<<Output>>
-;	a	sequence datq
+;	a	sequence data
 ;=======================================================================
 .proc	nsd_load_sequence
 	lda	(__Sequence_ptr,x)	;[6]
@@ -200,6 +201,41 @@ exit:	rts
 	bne	exit			;[2]
 	inc	__Sequence_ptr + 1,x
 exit:	rts				;[6]
+.endproc
+
+;=======================================================================
+;		nsd_load_ptr;
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	read sequence data (pointer)
+;<<Input>>
+;	x	Channel * 2
+;	nds_work.Sequence_ptr
+;<<Output>>
+;	__ptr	now pointer
+;	__tmp	sequence data
+;	a	__tmp + 1
+;=======================================================================
+.proc	nsd_load_ptr
+
+	ldy	__Sequence_ptr,x	;
+	sty	__ptr			;
+	ldy	__Sequence_ptr + 1,x	;
+	sty	__ptr + 1		;__ptr = __Sequence_ptr
+
+	lda	(__Sequence_ptr,x)	;[6]
+	inc	__Sequence_ptr,x	;[6]
+	bne	@L1			;[2]
+	inc	__Sequence_ptr + 1,x
+@L1:	sta	__tmp
+
+	lda	(__Sequence_ptr,x)	;[6]
+	inc	__Sequence_ptr,x	;[6]
+	bne	@L2			;[2]
+	inc	__Sequence_ptr + 1,x
+@L2:	sta	__tmp + 1		;__tmp = value
+
+	rts
 .endproc
 
 ;=======================================================================
@@ -496,9 +532,19 @@ nsd_op00:
 	beq	@SE2
 	lda	__sweep_ch2
 	jsr	_nsd_snd_sweep
+	;周波数設定を必ず呼ぶように。
+	lda	#$FF
+	sta	__frequency + nsd::TR_BGM2
+	sta	__frequency + nsd::TR_BGM2 + 1
 	jmp	@Exit
 
 @SE2:	;SE2は無い。
+	and	#nsd_chflag::SE2
+	beq	@Exit
+	;周波数設定を必ず呼ぶように。
+	lda	#$FF
+	sta	__frequency + nsd::TR_BGM4
+	sta	__frequency + nsd::TR_BGM4 + 1
 
 @Exit:
 	rts
@@ -519,15 +565,7 @@ nsd_op02:
 ;-----------------------------------------------------------------------
 nsd_op01:
 Jump:
-	ldy	__Sequence_ptr,x
-	sty	__ptr			;
-	ldy	__Sequence_ptr + 1,x
-	sty	__ptr + 1		;__ptr = __Sequence_ptr
-
-	jsr	nsd_load_sequence
-	sta	__tmp
-	jsr	nsd_load_sequence
-	sta	__tmp + 1		;__tmp = value
+	jsr	nsd_load_ptr
 
 	lda	__ptr
 	add	__tmp
@@ -565,7 +603,25 @@ nsd_op05:
 	bne	Jump
 	jsr	nsd_load_sequence
 	jsr	nsd_load_sequence
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x06:	Call SE
+;-----------------------------------------------------------------------
 nsd_op06:
+	jsr	nsd_load_ptr
+
+	lda	__ptr
+	add	__tmp
+	tay
+	lda	__ptr + 1
+	adc	__tmp + 1
+	tax
+	tya
+	jsr	_nsd_play_se
+
+	ldx	__channel
+
 	jmp	Sequence
 
 ;=======================================================================
@@ -691,15 +747,7 @@ nsd_op0F:
 ;		opcode	0x10:	Voice envelop. 
 ;-----------------------------------------------------------------------
 nsd_op10:
-	ldy	__Sequence_ptr,x
-	sty	__ptr			;
-	ldy	__Sequence_ptr + 1,x
-	sty	__ptr + 1		;__ptr = __Sequence_ptr
-
-	jsr	nsd_load_sequence
-	sta	__tmp
-	jsr	nsd_load_sequence
-	sta	__tmp + 1		;__tmp = value
+	jsr	nsd_load_ptr
 
 	cpx	#nsd::TR_BGM3
 	beq	@Exit
@@ -722,15 +770,7 @@ nsd_op10:
 ;		opcode	0x11:	Volume envelop.
 ;-----------------------------------------------------------------------
 nsd_op11:
-	ldy	__Sequence_ptr,x
-	sty	__ptr			;
-	ldy	__Sequence_ptr + 1,x
-	sty	__ptr + 1		;__ptr = __Sequence_ptr
-
-	jsr	nsd_load_sequence
-	sta	__tmp
-	jsr	nsd_load_sequence
-	sta	__tmp + 1		;__tmp = value
+	jsr	nsd_load_ptr
 
 	cpx	#nsd::TR_BGM3
 	beq	@Exit
@@ -756,15 +796,7 @@ nsd_op11:
 ;		opcode	0x12:	Frequency envelop. 
 ;-----------------------------------------------------------------------
 nsd_op12:
-	ldy	__Sequence_ptr,x
-	sty	__ptr			;
-	ldy	__Sequence_ptr + 1,x
-	sty	__ptr + 1		;__ptr = __Sequence_ptr
-
-	jsr	nsd_load_sequence
-	sta	__tmp
-	jsr	nsd_load_sequence
-	sta	__tmp + 1		;__tmp = value
+	jsr	nsd_load_ptr
 
 	ora	__tmp
 	beq	@Zero
@@ -785,15 +817,7 @@ nsd_op12:
 ;		opcode	0x13:	Note envelop. 
 ;-----------------------------------------------------------------------
 nsd_op13:
-	ldy	__Sequence_ptr,x
-	sty	__ptr			;
-	ldy	__Sequence_ptr + 1,x
-	sty	__ptr + 1		;__ptr = __Sequence_ptr
-
-	jsr	nsd_load_sequence
-	sta	__tmp
-	jsr	nsd_load_sequence
-	sta	__tmp + 1		;__tmp = value
+	jsr	nsd_load_ptr
 
 	ora	__tmp
 	beq	@Zero
@@ -867,17 +891,7 @@ nsd_op1B:
 ;-----------------------------------------------------------------------
 nsd_op1C:
 
-.if	.defined(VRC7) || .defined(OPLL)
-	ldy	__Sequence_ptr,x
-	sty	__ptr			;
-	ldy	__Sequence_ptr + 1,x
-	sty	__ptr + 1		;__ptr = __Sequence_ptr
-.endif
-
-	jsr	nsd_load_sequence
-	sta	__tmp
-	jsr	nsd_load_sequence
-	sta	__tmp + 1		;__tmp = value
+	jsr	nsd_load_ptr
 
 .if	.defined(VRC7) || .defined(OPLL)
 	lda	__ptr
@@ -943,8 +957,6 @@ nsd_op1C:
 	jmp	Sequence
 .endif
 
-
-
 ;=======================================================================
 ;		opcode	0x1D:	VRC7 : Set resister
 ;-----------------------------------------------------------------------
@@ -984,17 +996,9 @@ nsd_op1E:
 	shl	a, 1
 	ora	#$80
 	sta	N163_Resister
-
-	ldy	__Sequence_ptr,x
-	sty	__ptr			;
-	ldy	__Sequence_ptr + 1,x
-	sty	__ptr + 1		;__ptr = __Sequence_ptr
 .endif
 
-	jsr	nsd_load_sequence
-	sta	__tmp
-	jsr	nsd_load_sequence
-	sta	__tmp + 1		;__tmp = value
+	jsr	nsd_load_ptr
 
 .ifdef	N163
 	lda	__ptr
@@ -1044,7 +1048,7 @@ nsd_op20:
 	dec	__volume,x
 @L:
 	jmp	Sequence
-	
+
 ;=======================================================================
 ;		opcode	0x21:	Volume up (+1) 
 ;-----------------------------------------------------------------------
@@ -1055,10 +1059,115 @@ nsd_op21:
 	beq	@L
 	inc	__volume,x
 @L:
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x22:	FDS : Set career wave table
+;-----------------------------------------------------------------------
 nsd_op22:
+
+	jsr	nsd_load_ptr
+
+.ifdef	FDS
+	lda	__ptr
+	add	__tmp
+	sta	__ptr
+
+	lda	__ptr + 1
+	adc	__tmp + 1
+	sta	__ptr + 1		;__ptr テーブルのポインタ
+
+	lda	#$80
+	sta	FDS_Write_Enable
+
+	ldy	#0
+@L:
+	lda	(__ptr),y
+	sta	FDS_Wave_Table,y
+	iny
+	cpy	#64
+	bne	@L
+
+	lda	__chflag,x
+	and	#nsd_chflag::FDSVOL
+	shr	a,2
+	sta	FDS_Write_Enable
+.endif
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x23:	FDS : Set modulator wave table
+;-----------------------------------------------------------------------
 nsd_op23:
+
+	jsr	nsd_load_ptr
+
+.ifdef	FDS
+	lda	__ptr
+	add	__tmp
+	sta	__ptr
+
+	lda	__ptr + 1
+	adc	__tmp + 1
+	sta	__ptr + 1		;__ptr テーブルのポインタ
+
+	lda	__fds_frequency
+	ora	#$80
+	sta	FDS_Mod_CTUNE
+
+	ldy	#0
+@L:
+	lda	(__ptr),y
+	sta	FDS_Mod_Append
+	iny
+	cpy	#32
+	bne	@L
+
+	lda	__fds_frequency
+	sta	FDS_Mod_CTUNE
+.endif
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x24:	FDS : Modulator frequency
+;-----------------------------------------------------------------------
 nsd_op24:
+
+	jsr	nsd_load_sequence
+.ifdef	FDS
+	sta	FDS_Mod_FTUNE		;下位
+.endif
+
+	jsr	nsd_load_sequence
+.ifdef	FDS
+	and	#$0F
+	sta	FDS_Mod_CTUNE		;上位
+	sta	__fds_frequency
+.endif
+
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x25:	FDS master volume
+;-----------------------------------------------------------------------
 nsd_op25:
+
+.ifdef	FDS
+	lda	__chflag,x
+	and	#~nsd_chflag::FDSVOL
+	sta	__tmp
+.endif
+
+	jsr	nsd_load_sequence
+
+.ifdef	FDS
+	and	#$03
+	sta	FDS_Write_Enable
+	shl	a,2
+	ora	__tmp
+	sta	__chflag,x
+.endif
+
 	jmp	Sequence
 
 ;=======================================================================

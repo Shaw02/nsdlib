@@ -12,6 +12,7 @@
 #define	nsd_Repeat_A_Start		0x03
 #define	nsd_Repeat_A_Branch		0x04
 #define	nsd_Repeat_A_End		0x05
+#define	nsd_Call_SE				0x06
 #define	nsd_Poke				0x07
 #define	nsd_Tempo				0x08
 #define	nsd_Length				0x09
@@ -39,6 +40,10 @@
 #define	nsc_N163_Channel		0x1F
 #define	nsd_Volume_Down			0x20
 #define	nsd_Volume_Up			0x21
+#define	nsd_FDS_Career			0x22
+#define	nsd_FDS_Modlator		0x23
+#define	nsd_FDS_Frequency		0x24
+#define	nsd_FDS_Volume			0x25
 #define	nsc_FME7_frequency		0x26
 #define	nsd_Octave_Down			0x28
 #define	nsd_Octave_Up			0x29

@@ -22,6 +22,7 @@ enum	Command_ID_mml {
 	mml_Track,
 	mml_KeySignature,
 	mml_Macro,
+	mml_CallSE,
 	mml_Subroutine,
 
 	mml_Loop,
@@ -69,6 +70,7 @@ enum	Command_ID_mml {
 	mml_FDSC,
 	mml_FDSM,
 	mml_FDSF,
+	mml_FDSV,
 	mml_VRC7,
 	mml_N163,
 	mml_Voice,
@@ -101,6 +103,7 @@ enum	Command_ID_mml {
 const	static	Command_Info	Command[] = {
 		{	"TR",	mml_Track				},
 		{	"K",	mml_KeySignature,		},
+		{	"SE",	mml_CallSE				},
 		{	"S",	mml_Subroutine			},
 		{	"$",	mml_Macro,				},
 
@@ -149,6 +152,7 @@ const	static	Command_Info	Command[] = {
 		{	"@FC",	mml_FDSC				},
 		{	"@FM",	mml_FDSM				},
 		{	"@FF",	mml_FDSF				},
+		{	"@FV",	mml_FDSV				},
 		{	"@V",	mml_VRC7				},
 		{	"@N",	mml_N163				},
 		{	"@",	mml_Voice				},
@@ -233,6 +237,10 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Macro):
 				//■ to do 
+				break;
+
+			case(mml_CallSE):
+				nowTrack->SetSE(MML);
 				break;
 
 			case(mml_Subroutine):
@@ -379,24 +387,28 @@ const	static	Command_Info	Command[] = {
 				SetReleaseVolume(MML);
 				break;
 
+			case(mml_Voice):
+				SetEvent(new mml_general(nsd_Voice, MML, L"Voice"));
+				break;
+
 			case(mml_FDSC):
-				//■■■ to do
+				nowTrack->SetFDSC(MML);
 				break;
 
 			case(mml_FDSM):
-				//■■■ to do
+				nowTrack->SetFDSM(MML);
 				break;
 
 			case(mml_FDSF):
-				//■■■ to do
+				Set_FDS_Frequency(MML);
+				break;
+
+			case(mml_FDSV):
+				Set_FDS_Volume(MML);
 				break;
 
 			case(mml_VRC7):
 				nowTrack->SetVRC7(MML);
-				break;
-
-			case(mml_Voice):
-				SetEvent(new mml_general(nsd_Voice, MML, L"Voice"));
 				break;
 
 			case(mml_N163):
@@ -969,6 +981,46 @@ void	TrackSet::SetPoke(MMLfile* MML)
 		MML->Err(L"パラメータの値が範囲を越えました。");
 	}
 	SetEvent(new mml_poke(addr, data & 0xFF));
+}
+
+//==============================================================
+//			FDS	キャリア周波数設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::Set_FDS_Frequency(MMLfile* MML)
+{
+	int	i = MML->GetInt();
+
+	if( (i <= 0x0FFF) && (i >=0) ){
+		unsigned	char	c0 = ( i       & 0xFF);
+		unsigned	char	c1 = ((i >> 8) & 0xFF);
+		SetEvent(new mml_general(nsd_FDS_Frequency,c0,c1,L"FDS career frequency"));
+	} else {
+		MML->Err(L"FDSのキャリア周波数は、0～4095の範囲で指定して下さい。");
+	}
+}
+
+//==============================================================
+//			FDS	Master volume
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::Set_FDS_Volume(MMLfile* MML)
+{
+	int		i = MML->GetInt();
+
+	if((i<=3 ) && (i>=0)){
+		SetEvent(new mml_general(nsd_FDS_Volume,i,L"FDS Master volume"));
+	} else {
+		MML->Err(L"FDSのマスター音量は、0～3の範囲で指定して下さい。");
+	}
 }
 
 //==============================================================

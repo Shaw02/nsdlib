@@ -29,7 +29,7 @@ BGM(<var>n</var>){
 </pre></code>
 
 <code><pre>
-Se(<var>n</var>){
+SE(<var>n</var>){
 	<var>sequence</var>
 }
 </pre></code>
@@ -65,7 +65,7 @@ Se(<var>n</var>){
 <tr><td><a href="mml_rest.html">r</a></td><td>休符</td></tr>
 <tr><td><a href="mml_tie.html">^</a></td><td>タイ</td></tr>
 <tr><td><a href="mml_sweep.html">s</a></td><td>	APU  : スイープ<br>
-												FDS  : Sweep (Modulator) bias<strong>（開発中）</strong><br>
+												FDS  : Sweep (Modulator) bias<br>
 												VRC7 : サスティン<br>
 												n163 : 波形長設定<br>
 												Sunsoft 5B : Envelop Switch & Type</td></tr>
@@ -89,11 +89,13 @@ Se(<var>n</var>){
 <tr><td><a href="mml_release.html">Rv</a></td><td>Key off時の音量</td></tr>
 <tr><td><a href="mml_release.html">Rm</a></td><td>Key off時のモード</td></tr>
 <tr><td><a href="mml_sub.html">S</a></td><td>サブルーチン呼び出し（サブルーチンの記述ブロック内では無効です）</td></tr>
+<tr><td><a href="mml_se.html">SE</a></td><td>効果音呼び出し</td></tr>
 <tr><td><a href="mml_TR.html">TR</a></td><td>トラック（サブルーチンの記述ブロック内では無効です）</td></tr>
 <tr><td><a href="mml_voice.html">@</a></td><td>音色（音色エンベロープ無効）</td></tr>
-<tr><td>@FC</a></td><td>FDS キャリア波形設定<strong>（開発中）</strong></td></tr>
-<tr><td>@FM</a></td><td>FDS モジュレータ波形設定<strong>（開発中）</strong></td></tr>
-<tr><td>@FF</a></td><td>FDS モジュレータ周波数設定<strong>（開発中）</strong></td></tr>
+<tr><td><a href="mml_FDS_career.html">@FC</a></td><td>FDS キャリア波形設定</td></tr>
+<tr><td><a href="mml_FDS_modulator.html">@FM</a></td><td>FDS モジュレータ波形設定</td></tr>
+<tr><td><a href="mml_FDS_frequency.html">@FF</a></td><td>FDS モジュレータ周波数設定</td></tr>
+<tr><td><a href="mml_FDS_volume.html">@FV</a></td><td>FDS マスター音量設定</td></tr>
 <tr><td><a href="mml_VRC7voice.html">@V</a></td><td>VRC7ユーザー音色設定</td></tr>
 <tr><td><a href="mml_N163voice.html">@N</a></td><td>n163 波形設定</td></tr>
 <tr><td><a href="mml_N163_channel.html">NC</a></td><td>n163 チャンネル数設定</td></tr>

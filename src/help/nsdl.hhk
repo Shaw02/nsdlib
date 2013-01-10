@@ -36,6 +36,26 @@
 		<param name="Local" value="mml_voice.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@FC">
+		<param name="Name" value="MML reference: FDS Setting career wave table">
+		<param name="Local" value="mml_FDS_career.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@FF">
+		<param name="Name" value="MML reference: FDS modulator frequency">
+		<param name="Local" value="mml_FDS_frequency.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@FM">
+		<param name="Name" value="MML reference: FDS Setting modulator wave table">
+		<param name="Local" value="mml_FDS_modulator.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@FV">
+		<param name="Name" value="MML reference: FDS master volume ">
+		<param name="Local" value="mml_FDS_volume.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="@N">
 		<param name="Name" value="MML reference: N163 Setting wave table">
 		<param name="Local" value="mml_N163voice.html">
@@ -171,14 +191,14 @@
 		<param name="Local" value="mml_envelop.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="f">
-		<param name="Name" value="MML reference: Note">
-		<param name="Local" value="mml_note.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="F">
 		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
 		<param name="Local" value="mml_s5b_envelope.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="f">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="FAQ">
@@ -186,19 +206,29 @@
 		<param name="Local" value="faq.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="FDSC">
+		<param name="Name" value="MML reference: FDS career wave table">
+		<param name="Local" value="mml_FDSC.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="FDSM">
+		<param name="Name" value="MML reference: FDS modulator wave table">
+		<param name="Local" value="mml_FDSM.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="g">
 		<param name="Name" value="MML reference: Note">
 		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="l">
-		<param name="Name" value="MML reference: Length">
-		<param name="Local" value="mml_length.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="L">
 		<param name="Name" value="MML reference: Loop">
 		<param name="Local" value="mml_loop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="l">
+		<param name="Name" value="MML reference: Length">
+		<param name="Local" value="mml_length.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="MMLコンパイラ&quot;nsc.exe&quot;の使い方">
@@ -319,6 +349,11 @@
 		<param name="Name" value="S">
 		<param name="Name" value="MML reference: Subroutine">
 		<param name="Local" value="mml_sub.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="SE">
+		<param name="Name" value="MML reference: Call SE">
+		<param name="Local" value="mml_se.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="t">

@@ -44,6 +44,8 @@ enum	Command_ID_MusicFile {
 
 	//Block
 	id_DPCM,
+	id_FDSC,
+	id_FDSM,
 	id_VRC7,
 	id_N163,
 	id_Envelop,
@@ -94,24 +96,45 @@ const	static	Command_Info	Command[] = {
 		{	"#offsetEn",		id_offset_En	},
 		//Block
 		{	"DPCM",				id_DPCM			},
+		{	"FDSC",				id_FDSC			},
+		{	"FDSM",				id_FDSM			},
 		{	"VRC7",				id_VRC7			},
 		{	"N163",				id_N163			},
 		{	"Envelope",			id_Envelop		},
 		{	"envelope",			id_Envelop		},
 		{	"Envelop",			id_Envelop		},
 		{	"envelop",			id_Envelop		},
-		{	"E",				id_Envelop		},
-		{	"$",				id_Macro		},
 		{	"Sub",				id_Sub			},
 		{	"sub",				id_Sub			},
 		{	"BGM",				id_BGM			},
 		{	"bgm",				id_BGM			},
 		{	"SE",				id_SE			},
 		{	"se",				id_SE			},
+
+		//for 1 command
+		{	"D",				id_DPCM			},
+		{	"FC",				id_FDSC			},
+		{	"FM",				id_FDSM			},
+		{	"O",				id_VRC7			},
+		{	"V",				id_VRC7			},
+		{	"N",				id_N163			},
+		{	"E",				id_Envelop		},
+		{	"S",				id_Sub			},
+		{	"$",				id_Macro		},
+
+		//for mck/ppmck
+		{	"@DPCM",			id_DPCM			},
+		{	"@FM",				id_FDSC			},
+		{	"@MW",				id_FDSM			},
+		{	"@OP",				id_VRC7			},
+		{	"@N",				id_N163			},
+		{	"@E",				id_Envelop		},
 	};
 
 	unsigned	int			i;
 	unsigned	char		cData;
+				FDSC*		_fdsc;
+				FDSM*		_fdsm;
 				VRC7*		_vrc7;
 				N163*		_n163;
 				Envelop*	_env;
@@ -201,6 +224,30 @@ const	static	Command_Info	Command[] = {
 				cDPCMinfo = new DPCMinfo(MML);
 				ptcItem.push_back(cDPCMinfo);
 				iSize += cDPCMinfo->getSize();	//BGMのサイズを更新
+				break;
+			case(id_FDSC):
+				i = MML->GetNum();
+
+				//重複チェック
+				if(ptcFDSC.count(i) != 0){
+					MML->Err(L"FDSC()ブロックで同じ番号が指定されました。");
+				}
+				_fdsc = new FDSC(MML, i);
+				ptcItem.push_back(_fdsc);
+				ptcFDSC[i] = _fdsc;
+				iSize += _fdsc->getSize();	//BGMのサイズを更新
+				break;
+			case(id_FDSM):
+				i = MML->GetNum();
+
+				//重複チェック
+				if(ptcFDSM.count(i) != 0){
+					MML->Err(L"FDSM()ブロックで同じ番号が指定されました。");
+				}
+				_fdsm = new FDSM(MML, i);
+				ptcItem.push_back(_fdsm);
+				ptcFDSM[i] = _fdsm;
+				iSize += _fdsm->getSize();	//BGMのサイズを更新
 				break;
 			case(id_VRC7):
 				i = MML->GetNum();

@@ -17,42 +17,42 @@ crt0.o:
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc6.lib(nsd_main.o):
-    CODE              Offs = 00013E   Size = 000085
+    CODE              Offs = 00013E   Size = 00009A
     RODATA            Offs = 000000   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc6.lib(nsd_seq.o):
-    CODE              Offs = 0001C3   Size = 0004F2
+    CODE              Offs = 0001D8   Size = 0004FC
     RODATA            Offs = 000000   Size = 000090
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc6.lib(nsd_env.o):
-    CODE              Offs = 0006B5   Size = 00023C
+    CODE              Offs = 0006D4   Size = 00023C
     RODATA            Offs = 000090   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc6.lib(nsd_snd.o):
-    CODE              Offs = 0008F1   Size = 0002D0
+    CODE              Offs = 000910   Size = 0002CD
     RODATA            Offs = 000090   Size = 0001F8
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc6.lib(nsd_math.o):
-    CODE              Offs = 000BC1   Size = 000069
+    CODE              Offs = 000BDD   Size = 000069
     RODATA            Offs = 000288   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_vrc6.lib(nsd_work.o):
-    CODE              Offs = 000C2A   Size = 000000
+    CODE              Offs = 000C46   Size = 000000
     RODATA            Offs = 000288   Size = 000000
     BSS               Offs = 000001   Size = 0001CC
     DATA              Offs = 000000   Size = 000000
@@ -70,36 +70,36 @@ ZEROPAGE              000002  000047  000046
 BSS                   000200  0003CC  0001CD
 DATA                  000200  000200  000000
 STARTUP               008000  008072  000073
-CODE                  008073  008C9C  000C2A
-RODATA                008C9D  008F24  000288
+CODE                  008073  008CB8  000C46
+RODATA                008CB9  008F40  000288
 
 
 Exports list:
 -------------
 __BSS_LOAD__              000200  LA    __BSS_RUN__               000200  LA    
 __BSS_SIZE__              0001CD  EA    __CODE_LOAD__             008073  LA    
-__CODE_RUN__              008073  LA    __CODE_SIZE__             000C2A  EA    
-__DATA_LOAD__             008F25  LA    __DATA_RUN__              000200  LA    
+__CODE_RUN__              008073  LA    __CODE_SIZE__             000C46  EA    
+__DATA_LOAD__             008F41  LA    __DATA_RUN__              000200  LA    
 __DATA_SIZE__             000000  EA    __RAM_LAST__              006000  LA    
 __RAM_SIZE__              002000  EA    __RAM_START__             006000  LA    
-__RODATA_LOAD__           008C9D  LA    __RODATA_RUN__            008C9D  LA    
-__RODATA_SIZE__           000288  EA    __ROM0_LAST__             008F25 RLA    
+__RODATA_LOAD__           008CB9  LA    __RODATA_RUN__            008CB9  LA    
+__RODATA_SIZE__           000288  EA    __ROM0_LAST__             008F41 RLA    
 __ROM0_SIZE__             007FF0  EA    __ROM0_START__            008000  LA    
 __SRAM_LAST__             0003CD  LA    __SRAM_SIZE__             000600  EA    
 __SRAM_START__            000200  LA    __STACKSIZE__             000300  EA    
 __STARTUP_LOAD__          008000  LA    __STARTUP_RUN__           008000  LA    
 __STARTUP_SIZE__          000073  EA    __STARTUP__               000001  EA    
 __ZP_LAST__               000048  LA    __ZP_SIZE__               0000FE  EA    
-__ZP_START__              000002  LA    _nsd_div192               008C34 RLA    
+__ZP_START__              000002  LA    _nsd_div192               008C50 RLA    
 _nsd_init                 008073 RLA    _nsd_main                 0081B1 RLA    
-_nsd_mul                  008C74 RLA    _nsd_play_bgm             008084 RLA    
+_nsd_mul                  008C90 RLA    _nsd_play_bgm             008084 RLA    
 _nsd_play_se              0080D2 RLA    _nsd_set_dpcm             00807D RLA    
-_nsd_snd_frequency        008AAF RLA    _nsd_snd_init             008964 RLA    
-_nsd_snd_keyoff           0089EF RLA    _nsd_snd_keyon            008993 RLA    
-_nsd_snd_sweep            008A8E RLA    _nsd_snd_voice            008A11 RLA    
-_nsd_snd_volume           008A43 RLA    _nsd_stop_bgm             0080C0  LA    
-_nsd_stop_se              008105  LA    nsd_envelop               008728 RLA    
-nsd_sequence              00832F RLA    nsd_work                  000201 RLA    
+_nsd_snd_frequency        008ACE RLA    _nsd_snd_init             008983 RLA    
+_nsd_snd_keyoff           008A0E RLA    _nsd_snd_keyon            0089B2 RLA    
+_nsd_snd_sweep            008AAD RLA    _nsd_snd_voice            008A30 RLA    
+_nsd_snd_volume           008A62 RLA    _nsd_stop_bgm             0080C0  LA    
+_nsd_stop_se              008105  LA    nsd_envelop               008747 RLA    
+nsd_sequence              008361 RLA    nsd_work                  000201 RLA    
 nsd_work_zp               000006 RLZ    
 
 
@@ -146,6 +146,7 @@ _nsd_mul (nsd_math.o):
 _nsd_play_bgm (nsd_func.o):
     crt0.o                    ..\..\include\nsd.inc(70)
 _nsd_play_se (nsd_func.o):
+    nsd_seq.o                 nsd_seq.s(10)
     crt0.o                    ..\..\include\nsd.inc(92)
 _nsd_set_dpcm (nsd_func.o):
     crt0.o                    ..\..\include\nsd.inc(59)
@@ -173,13 +174,13 @@ nsd_sequence (nsd_seq.o):
 nsd_work (nsd_work.o):
     nsd_snd.o                 nsd_snd.s(14)
     nsd_env.o                 nsd_env.s(10)
-    nsd_seq.o                 nsd_seq.s(10)
+    nsd_seq.o                 nsd_seq.s(11)
     nsd_func.o                nsd_func.s(13)
 nsd_work_zp (nsd_work.o):
     nsd_math.o                nsd_math.s(7)
     nsd_snd.o                 nsd_snd.s(15)
     nsd_env.o                 nsd_env.s(11)
-    nsd_seq.o                 nsd_seq.s(11)
+    nsd_seq.o                 nsd_seq.s(12)
     nsd_main.o                nsd_main.s(6)
     nsd_func.o                nsd_func.s(14)
 

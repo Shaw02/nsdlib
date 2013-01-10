@@ -30,6 +30,12 @@ mml.html
 mml_vrc7.html
 mml_dpcm.html
 mml_envelope.html
+mml_FDSC.html
+mml_FDSM.html
+mml_FDS_career.html
+mml_FDS_modulator.html
+mml_FDS_frequency.html
+mml_FDS_volume.html
 mml_sequence.html
 mml_tips.html
 mml_detune.html
@@ -49,6 +55,7 @@ mml_release.html
 mml_repeatA.html
 mml_repeatB.html
 mml_rest.html
+mml_se.html
 mml_sub.html
 mml_sweep.html
 mml_tempo.html

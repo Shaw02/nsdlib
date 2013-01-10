@@ -51,7 +51,7 @@
 												n1::n2 = Pointer of exit.			</td></tr>
 <tr><td>0x05		</td><td>n1 n2		</td><td>Repeat(A) End point.						<br>
 												n1::n2 = Pointer of start.			</td></tr>
-<tr><td>0x06		</td><td>n1 n2		</td><td>効果音呼び出し	<strong>（未実装）</strong>	<br>
+<tr><td>0x06		</td><td>n1 n2		</td><td>効果音呼び出し								<br>
 												n1::n2 = Pointer of SE.				</td></tr>
 <tr><td>0x07		</td><td>n1 n2 n3	</td><td>Write data to memory.				<br>
 												n1::n2 = Address. / n3 = Writing data	</td></tr>
@@ -74,7 +74,7 @@
 <tr><td>0x14		</td><td>n1			</td><td>Detune (16 = 100 cent)				</td></tr>
 <tr><td>0x15		</td><td>n1			</td><td>Detune (Resister base)				</td></tr>
 <tr><td>0x16		</td><td>n1			</td><td>	APU : Sweep (Resister base)		<br>
-													FDS : Sweep (Modulator) bias	<strong>の予定（未実装）</strong>	<br>
+													FDS : Sweep (Modulator) bias	<br>
 													VRC6: -							<br>
 													VRC7: Sustain Switch			<br>
 													MMC5: -							<br>
@@ -102,13 +102,14 @@
 												n1 = number of channel				</td></tr>
 <tr><td>0x20		</td><td>			</td><td>Volume down	(-1)				</td></tr>
 <tr><td>0x21		</td><td>			</td><td>Volume up		(+1)				</td></tr>
-<tr><td>0x22		</td><td>n1 n2		</td><td>FDS : Set career wave table	<strong>の予定（未実装）</strong>	<br>
+<tr><td>0x22		</td><td>n1 n2		</td><td>FDS : Set career wave table		<br>
 												n1::n2 = Pointer.					</td></tr>
-<tr><td>0x23		</td><td>n1 n2		</td><td>FDS : Set modulator wave table	<strong>の予定（未実装）</strong>	<br>
+<tr><td>0x23		</td><td>n1 n2		</td><td>FDS : Set modulator wave table		<br>
 												n1::n2 = Pointer.					</td></tr>
-<tr><td>0x24		</td><td>n1 n2		</td><td>FDS : Modulator frequency		<strong>の予定（未実装）</strong>	<br>
-												n1::n2 = Frequency	</td></tr>
-<tr><td>0x25		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
+<tr><td>0x24		</td><td>n1 n2		</td><td>FDS : Modulator frequency			<br>
+												n1::n2 = Frequency					</td></tr>
+<tr><td>0x25		</td><td>n1			</td><td>FDS : Master volume				<br>
+												n1 = master volume					</td></tr>
 <tr><td>0x26		</td><td>n1 n2		</td><td>Sunsoft 5B: Envelope frequency	<br>
 												n1::n2 = Frequency	</td></tr>
 <tr><td>0x27		</td><td>			</td><td><strong>reserve</strong>			</td></tr>

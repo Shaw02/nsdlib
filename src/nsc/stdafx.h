@@ -49,6 +49,8 @@ typedef struct {
 
 #include "MusicItem.h"
 
+#include "FDSC.h"
+#include "FDSM.h"
 #include "VRC7.h"
 #include "N163.h"
 

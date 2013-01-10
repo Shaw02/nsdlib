@@ -55,6 +55,8 @@ public:
 		void	SetSweep(MMLfile* MML);
 
 		void	SetPoke(MMLfile* MML);
+		void	Set_FDS_Frequency(MMLfile* MML);
+		void	Set_FDS_Volume(MMLfile* MML);
 		void	SetVRC7_Write(MMLfile* MML);
 		void	SetN163Channel(MMLfile* MML);
 		void	Set_FME7_Frequency(MMLfile* MML);

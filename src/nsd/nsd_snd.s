@@ -69,7 +69,13 @@
 ;	sta	APU_PAD2		; SOFTCLK (RW)
 
 .ifdef	FDS
-	
+	lda	#$02
+	sta	FDS_Control
+	lda	#$80
+	sta	FDS_Volume
+	sta	FDS_Sweep_Envelope
+	lda	#$00
+	sta	FDS_Sweep_Bias
 .endif
 
 .ifdef	VRC6
@@ -125,7 +131,7 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	_nsd_nes_keyon		;BGM ch4 Noize
 	.addr	_nsd_dpcm_keyon		;BGM ch5 DPCM
 .ifdef	FDS
-	.addr	Exit
+	.addr	_nsd_fds_keyon
 .endif
 .ifdef	VRC6
 	.addr	Exit
@@ -263,6 +269,13 @@ _nsd_dpcm_keyon:
 
 	rts
 
+;---------------------------------------
+.ifdef	FDS
+_nsd_fds_keyon:
+	lda	__fds_sweepbias
+	sta	FDS_Sweep_Bias
+	rts
+.endif
 ;---------------------------------------
 .if	.defined(OPLL)
 _nsd_opll_keyon_R:
@@ -552,7 +565,7 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	_nsd_noise_voice	;BGM ch4 Noize
 	.addr	Exit			;BGM ch5 DPCM
 .ifdef	FDS
-	.addr	Exit	;_nsd_fds_GainMod
+	.addr	_nsd_fds_GainMod
 .endif
 .ifdef	VRC6
 	.addr	_nes_vrc6_voice
@@ -649,6 +662,23 @@ _nsd_noise_voice:
 	;-------------------------------
 	; *** Exit
 	rts
+
+;---------------------------------------
+.ifdef	FDS
+_nsd_fds_GainMod:
+	;-------------------------------
+	; *** Calculate the voice
+	and	#$3F
+	ora	#$80
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	FDS_Sweep_Envelope
+
+	;-------------------------------
+	; *** Exit
+	rts
+.endif
 
 ;---------------------------------------
 .ifdef	VRC6
@@ -876,7 +906,7 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	.addr	_nsd_ch4_volume		;BGM ch4 Noize
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
 .ifdef	FDS
-	.addr	Exit	;_nsd_fds_volume
+	.addr	_nsd_fds_volume
 .endif
 .ifdef	VRC6
 	.addr	_nsd_vrc6_ch1_volume
@@ -1009,6 +1039,23 @@ _nsd_se2_volume:
 	;-------------------------------
 	; *** Exit
 	rts
+
+;---------------------------------------
+.ifdef	FDS
+_nsd_fds_volume:
+	;-------------------------------
+	; *** Calculate the voice
+	and	#$3F
+	ora	#$80
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	FDS_Volume
+
+	;-------------------------------
+	; *** Exit
+	rts
+.endif
 
 ;---------------------------------------
 .ifdef	VRC6
@@ -1328,7 +1375,7 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	.addr	Exit			;BGM ch4 Noize		-- no process --
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
 .ifdef	FDS
-	.addr	Exit	;_nsd_fds_sweep_bias
+	.addr	_nsd_fds_sweep_bias
 .endif
 .ifdef	VRC6
 	.addr	Exit
@@ -1415,6 +1462,15 @@ _nsd_se2_sweep:
 	rts
 
 .endproc
+
+;---------------------------------------
+.ifdef	FDS
+_nsd_fds_sweep_bias:
+	and	#$7F
+	sta	FDS_Sweep_Bias
+	sta	__fds_sweepbias
+	rts
+.endif
 
 ;---------------------------------------
 .if	.defined(VRC7) || .defined(OPLL)
@@ -2173,7 +2229,7 @@ JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
 	.addr	_nsd_nes_ch4_frequency	;BGM ch4 Noise
 	.addr	Exit			;BGM ch5 DPCM
 .ifdef	FDS
-	.addr	Exit	;_nsd_fds_frequency
+	.addr	_nsd_fds_frequency
 .endif
 .ifdef	VRC6
 	.addr	_nsd_vrc6_ch1_frequency
@@ -2363,6 +2419,69 @@ Exit:
 .endproc
 
 ;---------------------------------------
+.ifdef	FDS
+.proc	_nsd_fds_frequency
+
+	jsr	_nsd_div192		; 
+	and	#$FE			; x =  ax  /  192
+	tay				; y = (ax mod 192) & 0xFE
+
+	;-------------------------------
+	; *** Get frequency from table
+	; nsd_work_zp._tmp <- frequency
+	lda	Freq_FDS + 1,y
+	sta	__tmp + 1
+	lda	Freq_FDS,y
+
+	;-------------------------------
+	; *** Octave caluclate  and  overflow check
+Octave_Proc:
+	;if (octave == 0) {
+	cpx	#7
+	beq	@L
+	bcc	Octave_Loop
+	bcs	@Over
+@L:
+	sta	__tmp
+	lda	__tmp + 1
+	cmp	#$10				;if (frequency >= 0x1000) {
+	bcc	@E
+@Over:
+	lda	#$0F
+	sta	__tmp + 1
+	lda	#$FF				;	frequency = 0x0FFF
+	jmp	Octave_Exit			; } else {
+@E:	lda	__tmp
+	jmp	Octave_Exit
+	; } } else { while (octave > 0) {
+Octave_Loop:
+	lsr	__tmp + 1	; frequency >>= 1
+	ror	a
+	inx			; octave--;
+	cpx	#7
+	bne	Octave_Loop
+	; } }
+Octave_Exit:
+
+Detune:	
+	ldx	__channel
+	sta	__tmp
+	ldy	#$00
+	lda	__detune_fine,x
+	bpl	@L
+	dey				; ay = __detune_fine (sign expand)
+@L:	add	__tmp
+	sta	FDS_FTUNE
+	tya
+	adc	__tmp + 1
+	and	#$0F
+	sta	FDS_CTUNE		;__tmp += (signed int)__detune_cent
+
+	rts
+.endproc
+.endif
+
+;---------------------------------------
 .ifdef	VRC6
 .proc	_nsd_vrc6_ch1_frequency
 	jsr	Normal12_frequency
@@ -2421,7 +2540,7 @@ Detune:
 	ldy	#$00
 	lda	__detune_fine,x
 	bpl	@L
-	ldy	#$FF			; ay = __detune_fine (sign expand)
+	dey				; ay = __detune_fine (sign expand)
 @L:	add	__tmp
 	sta	__tmp
 	tya
@@ -3073,7 +3192,7 @@ Detune:
 	ldy	#$00
 	lda	__detune_fine,x
 	bpl	@L
-	ldy	#$FF			; ay = __detune_fine (sign expand)
+	dey				; ay = __detune_fine (sign expand)
 @L:	add	__tmp
 	sta	__tmp
 	tya
@@ -3133,7 +3252,7 @@ Detune:
 	ldy	#$00
 	lda	__detune_fine,x
 	bpl	@L
-	ldy	#$FF			; ay = __detune_fine (sign expand)
+	dey				; ay = __detune_fine (sign expand)
 @L:	add	__tmp
 	sta	__tmp
 	tya
@@ -3218,7 +3337,7 @@ Detune:
 	ldx	__channel
 	lda	__detune_fine,x
 	bpl	@L
-	ldy	#$FF			; ay = __detune_fine (sign expand)
+	dey			; ay = __detune_fine (sign expand)
 @L:	sty	__ptr + 1
 	add	__tmp
 	sta	__tmp

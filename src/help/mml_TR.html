@@ -47,7 +47,7 @@
 <br>
 
 <table>
-<caption>nsd_fds.lib / nsd_fds.bin <strong>（開発中）</strong></caption>
+<caption>nsd_fds.lib / nsd_fds.bin</caption>
 <tr><th>トラック</th><th>音源</th></tr>
 <tr><td>TR6		</td><td>FDS（ディスクシステム音源）</td></tr>
 </table>
@@ -132,11 +132,44 @@
 <tr><td>TR27	</td><td>Sunsoft 5B ch3				</td></tr>
 <tr><td>TR28	</td><td>制御用トラックです（音符は発音しません）。<br>曲全体のコマンド（テンポや、VRC7, n163の音色設定等）を記述できます。</td></tr>
 </table>
+
+<table>
+<caption>nsd_all2.bin </caption>
+<tr><th>トラック</th><th>音源						</th></tr>
+<tr><td>TR6		</td><td>VRC6 パルス波 ch1			</td></tr>
+<tr><td>TR7		</td><td>VRC6 パルス波 ch1			</td></tr>
+<tr><td>TR8		</td><td>VRC6 パルス波 ch2			</td></tr>
+<tr><td>TR9		</td><td>VRC6 鋸波					</td></tr>
+<tr><td>TR10		</td><td>VRC7（FM音源） ch1			</td></tr>
+<tr><td>TR11	</td><td>VRC7（FM音源） ch2			</td></tr>
+<tr><td>TR12	</td><td>VRC7（FM音源） ch3			</td></tr>
+<tr><td>TR13	</td><td>VRC7（FM音源） ch4			</td></tr>
+<tr><td>TR14	</td><td>VRC7（FM音源） ch5			</td></tr>
+<tr><td>TR15	</td><td>VRC7（FM音源） ch6			</td></tr>
+<tr><td>TR16	</td><td>MMC5 パルス波 ch1			</td></tr>
+<tr><td>TR17	</td><td>MMC5 パルス波 ch2			</td></tr>
+<tr><td>TR18	</td><td>N163（波形メモリ音源） ch8	</td></tr>
+<tr><td>TR19	</td><td>N163（波形メモリ音源） ch7	</td></tr>
+<tr><td>TR20	</td><td>N163（波形メモリ音源） ch6	</td></tr>
+<tr><td>TR21	</td><td>N163（波形メモリ音源） ch5	</td></tr>
+<tr><td>TR22	</td><td>N163（波形メモリ音源） ch4	</td></tr>
+<tr><td>TR23	</td><td>N163（波形メモリ音源） ch3	</td></tr>
+<tr><td>TR24	</td><td>N163（波形メモリ音源） ch2	</td></tr>
+<tr><td>TR25	</td><td>N163（波形メモリ音源） ch1	</td></tr>
+<tr><td>TR26	</td><td>Sunsoft 5B ch1				</td></tr>
+<tr><td>TR27	</td><td>Sunsoft 5B ch2				</td></tr>
+<tr><td>TR28	</td><td>Sunsoft 5B ch3				</td></tr>
+<tr><td>TR29	</td><td>制御用トラックです（音符は発音しません）。<br>曲全体のコマンド（テンポや、VRC7, n163の音色設定等）を記述できます。</td></tr>
+</table>
 <p>
- ※ "nsd_all.bin"は、FDS以外の全ての拡張音源に対応したコードですが、
+ ※ "nsd_all.bin"及び、"nsd_all2.bin"は、FDS以外の全ての拡張音源に対応したコードですが、
 リソースの多くを音源ドライバーが使ってしまうため、
 アプリケーション組み込みはできません。<br>
-また、FDS音源はハードウェアの制約上、組み合わせて使うことが不可能です。<br>
+</p>
+<p>
+また、"nsd_all2.bin"は、VRC6, VRC7, SUNSOFT 5bも同時に仕様する場合に、
+0x8000～0xDFFFがROMとなるプレイヤーで、ご使用ください。<br>
+この領域がRAMになっていると、暴走します。<br>
 </p>
 <br>
 

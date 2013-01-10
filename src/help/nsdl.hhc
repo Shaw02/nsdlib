@@ -64,6 +64,14 @@
 				<param name="Local" value="mml_dpcm.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="FDSキャリア波形定義">
+				<param name="Local" value="mml_FDSC.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="FDSモジュレータ波形定義">
+				<param name="Local" value="mml_FDSM.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="VRC7ユーザー音色定義ブロック">
 				<param name="Local" value="mml_vrc7.html">
 				</OBJECT>
@@ -165,6 +173,10 @@
 					<param name="Local" value="mml_sub.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="SE：効果音コール">
+					<param name="Local" value="mml_se.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="TR：トラック">
 					<param name="Local" value="mml_TR.html">
 					</OBJECT>
@@ -175,6 +187,22 @@
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="@V：VRC7ユーザ定義音色">
 					<param name="Local" value="mml_VRC7voice.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@FC：FDSキャリア波形設定">
+					<param name="Local" value="mml_FDS_career.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@FM：FDSモジュレータ波形定義">
+					<param name="Local" value="mml_FDS_modulator.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@FF：FDSモジュレータ周波数設定">
+					<param name="Local" value="mml_FDS_frequency.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@FV：FDSマスター音量">
+					<param name="Local" value="mml_FDS_volume.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="@N：n163音色波形設定">

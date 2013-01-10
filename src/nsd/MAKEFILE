@@ -15,6 +15,7 @@ AMMC5 = -D MMC5
 AN163 = -D N163
 APSG  = -D PSG
 AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D NULL
+AALL2 = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D NULL
 AOALL  = -D VRC6 -D OPLL -D MMC5 -D N163 -D PSG -D NULL
 
 CC = cc65
@@ -32,6 +33,7 @@ PROJ_MMC5 = NSD_MMC5
 PROJ_N163 = NSD_N163
 PROJ_PSG  = NSD_s5b
 PROJ_ALL  = NSD_ALL
+PROJ_ALL2 = NSD_ALL2
 PROJ_OALL  = NSD_OALL
 
 INC_FILES = nsd.inc
@@ -39,11 +41,11 @@ INC_FILES = nsd.inc
 FILES = nsd_func.s nsd_main.s nsd_seq.s nsd_env.s nsd_snd.s nsd_math.s nsd_work.s 
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_OALL).lib
+clean: $(PROJ).lib $(PROJ_FDS).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_ALL2).lib $(PROJ_OALL).lib
 	@del *.bak
 	@del *.o
 
-all:   $(PROJ).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_OALL).lib
+all:   $(PROJ).lib $(PROJ_FDS).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_ALL2).lib $(PROJ_OALL).lib
 
 $(PROJ).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) nsd_func.s
@@ -63,6 +65,16 @@ $(PROJ_VRC6).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_math.s
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_work.s
+	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
+
+$(PROJ_FDS).lib : $(FILES) $(INC_FILES)
+	@$(ASM) $(AFLAG) $(AFDS) nsd_func.s
+	@$(ASM) $(AFLAG) $(AFDS) nsd_main.s
+	@$(ASM) $(AFLAG) $(AFDS) nsd_seq.s
+	@$(ASM) $(AFLAG) $(AFDS) nsd_env.s
+	@$(ASM) $(AFLAG) $(AFDS) nsd_snd.s
+	@$(ASM) $(AFLAG) $(AFDS) nsd_math.s
+	@$(ASM) $(AFLAG) $(AFDS) nsd_work.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_VRC7).lib : $(FILES) $(INC_FILES)
@@ -123,6 +135,16 @@ $(PROJ_ALL).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AALL) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AALL) nsd_math.s
 	@$(ASM) $(AFLAG) $(AALL) nsd_work.s
+	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
+
+$(PROJ_ALL2).lib : $(FILES) $(INC_FILES)
+	@$(ASM) $(AFLAG) $(AALL2) nsd_func.s
+	@$(ASM) $(AFLAG) $(AALL2) nsd_main.s
+	@$(ASM) $(AFLAG) $(AALL2) nsd_seq.s
+	@$(ASM) $(AFLAG) $(AALL2) nsd_env.s
+	@$(ASM) $(AFLAG) $(AALL2) nsd_snd.s
+	@$(ASM) $(AFLAG) $(AALL2) nsd_math.s
+	@$(ASM) $(AFLAG) $(AALL2) nsd_work.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_OALL).lib : $(FILES) $(INC_FILES)

@@ -33,10 +33,13 @@ private:
 	mml_note*			_old_note;
 	mml_Address*		_old_repeatA_Branch;
 
-	vector<	mml_Address*	>	ptcOPLL;		//VRC7
-	vector<	mml_Address*	>	ptcWave;		//VRC7
-	vector<	mml_Address*	>	ptcSubroutine;	//サブルーチンコマンド一覧
-	vector<	mml_Address*	>	ptcEnvelop;		//エンベロープコマンド一覧
+	vector<	mml_Address*	>	ptcFDSC;		//FDS Carrer
+	vector<	mml_Address*	>	ptcFDSM;		//FDS Modlator
+	vector<	mml_Address*	>	ptcOPLL;		//VRC7, OPLL
+	vector<	mml_Address*	>	ptcWave;		//N163
+	vector<	mml_Address*	>	ptcSE;			//効果音コマンド一覧
+	vector<	mml_Address*	>	ptcSub;			//サブルーチンコマンド一覧
+	vector<	mml_Address*	>	ptcEnv;			//エンベロープコマンド一覧
 
 //メンバー関数
 public:
@@ -56,8 +59,11 @@ public:
 				void	SetRepeat_B_Branch(MMLfile* MML);
 				void	SetRepeat_B_End(MMLfile* MML);
 
+				void	SetSE(MMLfile* MML);
 				void	SetSubroutine(MMLfile* MML);
 				void	SetEnvelop(unsigned char _opcode, MMLfile* MML, int _offset);
+				void	SetFDSC(MMLfile* MML);
+				void	SetFDSM(MMLfile* MML);
 				void	SetVRC7(MMLfile* MML);
 				void	SetN163(MMLfile* MML);
 

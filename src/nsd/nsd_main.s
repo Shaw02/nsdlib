@@ -73,12 +73,26 @@ BGM_Exit:
 	bit	__flag
 	bne	SE_Exit			;SE disable ?
 
-	.repeat	nsd::SE_Track, I
-		ldx	#I * 2 + nsd::TR_SE1
-		jsr	nsd_sequence
-		jsr	nsd_envelop
-	.endrepeat
+	ldx	#nsd::TR_SE1
+	lda	__Sequence_ptr + 1,x
+	beq	@SE0
+	jsr	nsd_sequence
+	jsr	nsd_envelop
+@SE0:
+	ldx	#nsd::TR_SE2
+	lda	__Sequence_ptr + 1,x
+	beq	@SE1
+	jsr	nsd_sequence
+	jsr	nsd_envelop
+	jmp	SE_Exit
+@SE1:
+	ora	__Sequence_ptr + nsd::TR_SE1 + 1
+	bne	SE_Exit
 
+	;SE Disable
+	lda	#nsd_flag::SE
+	ora	__flag
+	sta	__flag
 SE_Exit:
 
 	;-------------------------------
