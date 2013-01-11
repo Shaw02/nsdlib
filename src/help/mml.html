@@ -29,18 +29,19 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 <caption>共通のコマンド</caption>
 <tr><th>Command</th><th>Contens</th></tr>
 <tr><td>#include	"<var>filename</var>"	</td><td>外部ファイルを呼び込みます。</td></tr>
+<tr><td>#bgm <var>n</var>					</td><td>BGMの曲数を設定します。（Default: <var>n</var> = 1）</td></tr>
+<tr><td>#se  <var>n</var>					</td><td>SE の曲数を設定します。（Default: <var>n</var> = 0）</td></tr>
 <tr><td>#octaveReverse						</td><td>本コマンドを記述することで、相対オクターブの`&lt;'と`&gt;'を入れ替えます。</td></tr>
+<tr><td>#timebase <var>n</var>				</td><td>以降のBGM, SE, Subブロックの四分音符の分割数を設定します。（Default: <var>n</var> = 24）</td></tr>
 <tr><td>#offsetE@ <var>n</var>				</td><td>E@コマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
 <tr><td>#offsetEv <var>n</var>				</td><td>Evコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
 <tr><td>#offsetEm <var>n</var>				</td><td>Emコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
 <tr><td>#offsetEn <var>n</var>				</td><td>Enコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
-<tr><td>#bgm <var>n</var>					</td><td>BGMの曲数を設定します。（Default: <var>n</var> = 1）</td></tr>
-<tr><td>#se  <var>n</var>					</td><td>SE の曲数を設定します。（Default: <var>n</var> = 0）</td></tr>
 <tr><td>#offsetPCM	<var>address</var>		</td><td>⊿PCMを配置するアドレスを指定します。（Default: $10000(⊿PCM無し)）<br>
 														シーケンスデータはこのコマンドで指定したアドレス-1の領域まで使えます。<br>
 														NSF music formatでは、このアドレスからΔPCMを配置します。<br>
-														アセンブリ言語ソースを出力する場合は、"#segmentPCM"コマンドで指定したセグメントについて
-														リンカー"ld65.exe"のコンフィグファイルにて設定した実アドレス指定して下さい。</td></tr>
+														アセンブリ言語ソースを出力する場合は、リンカー"ld65.exe"のコンフィグファイルにて、
+														"#segmentPCM"コマンドで指定したセグメントの配置アドレスと、同じアドレスに設定して下さい。</td></tr>
 <tr><td>DPCM{<br> <var>Delta PCM define</var><br>}	</td>
 	<td>⊿PCM定義の記述ブロックです。<br>
 		⊿PCM定義の記述は、<a href="mml_dpcm.html">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>

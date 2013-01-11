@@ -34,6 +34,8 @@ public:
 
 		void	SetEvent(MusicItem* _item);		//ƒCƒxƒ“ƒg‚Ì’Ç‰Á
 
+		void	SetTempo(MMLfile* MML);
+
 		void	SetOctave(MMLfile* MML);
 		void	SetOctaveInc();
 		void	SetOctaveDec();

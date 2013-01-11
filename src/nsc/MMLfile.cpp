@@ -14,6 +14,7 @@ MMLfile::MMLfile(const char*	strFileName):
 	offset_Ev(0),
 	offset_En(0),
 	offset_Em(0),
+	timebase(24),
 	octave_reverse(false)
 {
 	//File open
@@ -442,8 +443,8 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 		Back();							//StreamPointerAdd(-1);
 		if((cData >= '0') && (cData <= '9')){
 			i = GetInt();
-			iLength = (MML_timebase * 4) / i;
-			iMod	= (MML_timebase * 4) % i;
+			iLength = (timebase * 4) / i;
+			iMod	= (timebase * 4) % i;
 			if(iMod != 0){
 				Warning(L"音長の計算で割り切れませんでした。小数点は切捨てします。");
 			}

@@ -205,8 +205,8 @@ _nsd_ch3_keyon:
 _nsd_nes_keyon:
 	;For hardware Key on
 	lda	#$00
-	sta	__frequency_set,x
-	sta	__frequency_set + 1,x
+	sta	__apu_frequency,x
+	sta	__apu_frequency + 1,x
 Exit:
 	rts
 
@@ -505,10 +505,11 @@ _nsd_vrc7_keyoff:
 	txa
 	sub	#nsd::TR_VRC7
 	shr	a, 1
+	tay
 	add	#VRC7_Octave
 	sta	VRC7_Resister		;レジスターをセット
 
-	lda	__frequency_set + 1,x	;[5]
+	lda	__vrc7_frequency,y	;[5]
 	and	#$EF			;[2]
 	sta	VRC7_Data		;
 
@@ -535,10 +536,11 @@ _nsd_OPLL_keyoff:
 	txa
 	sub	#nsd::TR_OPLL
 	shr	a, 1
+	tay
 	add	#OPLL_Octave
 	sta	OPLL_Resister		;レジスターをセット
 
-	lda	__frequency_set + 1,x	;[5]
+	lda	__opll_frequency,y	;[5]
 	and	#$EF			;[2]
 	sta	OPLL_Data		;
 
@@ -979,7 +981,8 @@ _nsd_ch1_volume:
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
 	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-	ora	__voice_set,x
+;	ora	__voice_set,x
+	ora	__voice_set + nsd::TR_BGM1
 
 	;-------------------------------
 	; *** Output to NES sound device
@@ -1576,7 +1579,14 @@ Exit:
 .proc	_nsd_n163_sample_length
 	shl	a, 2
 ;	ora	#$E0
-	sta	__frequency_set + 1,x
+	tay
+	txa
+	sub	#nsd::TR_N163
+	shr	a, 1
+	tax
+	tya
+	sta	__n163_frequency,x
+	ldx	__channel
 	rts
 .endproc
 .endif
@@ -2322,14 +2332,14 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__frequency_set,x
+	sta	__apu_frequency + nsd::TR_BGM1
 	sta	APU_PULSE1FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__frequency_set + 1,x
+	cmp	__apu_frequency + nsd::TR_BGM1 + 1
 	beq	Exit
 	sta	APU_PULSE1CTUNE
-	sta	__frequency_set + 1,x
+	sta	__apu_frequency + nsd::TR_BGM1 + 1
 
 Exit:
 	rts
@@ -2340,7 +2350,20 @@ Exit:
 	;-------------------------------
 	;SE check
 	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
-	beq	_nsd_nes_se1_frequency
+	bne	Exit
+
+	jsr	Normal_frequency
+
+	lda	__tmp
+	sta	__apu_frequency + nsd::TR_BGM2
+	sta	APU_PULSE2FTUNE
+	lda	__tmp + 1
+	ora	#$08
+	cmp	__apu_frequency + nsd::TR_BGM2 + 1
+	beq	Exit
+	sta	APU_PULSE2STUNE		;nes.inc 間違えてる。
+	sta	__apu_frequency + nsd::TR_BGM2 + 1
+Exit:
 	rts
 .endproc
 
@@ -2349,14 +2372,14 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__frequency_set,x
+	sta	__apu_frequency + nsd::TR_SE1
 	sta	APU_PULSE2FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__frequency_set + 1,x
+	cmp	__apu_frequency + nsd::TR_SE1 + 1
 	beq	Exit
 	sta	APU_PULSE2STUNE		;nes.inc 間違えてる。
-	sta	__frequency_set + 1,x
+	sta	__apu_frequency + nsd::TR_SE1 + 1
 
 Exit:
 	rts
@@ -2368,14 +2391,14 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__frequency_set,x
+	sta	__apu_frequency + nsd::TR_BGM3
 	sta	APU_TRIFREQ1
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__frequency_set + 1,x
+	cmp	__apu_frequency + nsd::TR_BGM3 + 1
 	beq	Exit
 	sta	APU_TRIFREQ2
-	sta	__frequency_set + 1,x
+	sta	__apu_frequency + nsd::TR_BGM3 + 1
 
 Exit:
 	rts
@@ -2438,21 +2461,16 @@ Exit:
 Octave_Proc:
 	;if (octave == 0) {
 	cpx	#7
-	beq	@L
 	bcc	Octave_Loop
-	bcs	@Over
-@L:
+	bne	@Over
 	sta	__tmp
 	lda	__tmp + 1
 	cmp	#$10				;if (frequency >= 0x1000) {
-	bcc	@E
-@Over:
-	lda	#$0F
+	bcc	Detune
+@Over:	lda	#$0F
 	sta	__tmp + 1
 	lda	#$FF				;	frequency = 0x0FFF
 	jmp	Octave_Exit			; } else {
-@E:	lda	__tmp
-	jmp	Octave_Exit
 	; } } else { while (octave > 0) {
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
@@ -2462,10 +2480,10 @@ Octave_Loop:
 	bne	Octave_Loop
 	; } }
 Octave_Exit:
+	sta	__tmp
 
 Detune:	
 	ldx	__channel
-	sta	__tmp
 	ldy	#$00
 	lda	__detune_fine,x
 	bpl	@L
@@ -2520,6 +2538,11 @@ Detune:
 	lda	Freq_SAW + 1,y
 	sta	__tmp + 1
 	lda	Freq_SAW,y
+
+	;-------------------------------
+	; *** Octave caluclate  and  overflow check
+Octave_Proc:
+	;if (octave == 0) {
 	cpx	#0
 	beq	DEC_Freq
 Octave_Loop:
@@ -2533,10 +2556,10 @@ DEC_Freq:
 	bcs	Octave_Exit
 	dec	__tmp + 1	; frequency -= 1
 Octave_Exit:
+	sta	__tmp
 
 Detune:	
 	ldx	__channel
-	sta	__tmp
 	ldy	#$00
 	lda	__detune_fine,x
 	bpl	@L
@@ -2589,25 +2612,25 @@ Detune:
 	ldy	#$FF			;	ay = __detune_fine (sign expand)
 @L:	add	__tmp			;[5]13	clock > 6 clock
 	sta	VRC7_Data		;●Data Write
-	sta	__frequency_set + 0,x	;[5]
-	tya				;[2]7
-	adc	__tmp + 1		;[3]10
-	and	#$0F			;[2]12
-	sta	__tmp + 1		;[3]15	__tmp += (signed int)__detune_cent
-	lda	__chflag,x		;[4]19
-	and	#$30			;[2]21	 00XX 0000 <2>
-	ora	__tmp + 1		;[3]24	flag と octave をマージ
-	sta	__tmp + 1		;[3]27
+	tya				;[2]
+	adc	__tmp + 1		;[3]5
+	and	#$0F			;[2]7
+	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
+	lda	__chflag,x		;[4]14
+	and	#$30			;[2]16	 00XX 0000 <2>
+	ora	__tmp + 1		;[3]19	flag と octave をマージ
+	sta	__tmp + 1		;[3]22
 
-	pha				;[3]30
-	pla				;[4]34	
+	lda	(__ptr,x)		;[6]28
+	lda	__ptr,x			;[4]32
 
-	pla				;[4]38	a ← VRC7でのチャンネル番号
+	pla				;[4]36	a ← VRC7でのチャンネル番号
+	tay				;[2]40
 	add	#VRC7_Octave		;[4]42 clock !! (VRC7のwait)
 
 	sta	VRC7_Resister		;●Resister Write
 	lda	__tmp + 1		;[3]3
-	sta	__frequency_set + 1,x	;[5]8 clock > 6 clock
+	sta	__vrc7_frequency,y	;[5]8 clock > 6 clock
 	sta	VRC7_Data		;●Data Write
 
 	rts
@@ -2646,25 +2669,25 @@ Detune:
 	ldy	#$FF			;	ay = __detune_fine (sign expand)
 @L:	add	__tmp			;[5]13	clock > 6 clock
 	sta	OPLL_Data		;●Data Write
-	sta	__frequency_set + 0,x	;[5]
-	tya				;[2]7
-	adc	__tmp + 1		;[3]10
-	and	#$0F			;[2]12
-	sta	__tmp + 1		;[3]15	__tmp += (signed int)__detune_cent
-	lda	__chflag,x		;[4]19
-	and	#$30			;[2]21	 00XX 0000 <2>
-	ora	__tmp + 1		;[3]24	flag と octave をマージ
-	sta	__tmp + 1		;[3]27
+	tya				;[2]
+	adc	__tmp + 1		;[3]5
+	and	#$0F			;[2]7
+	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
+	lda	__chflag,x		;[4]14
+	and	#$30			;[2]16	 00XX 0000 <2>
+	ora	__tmp + 1		;[3]19	flag と octave をマージ
+	sta	__tmp + 1		;[3]22
 
-	pha				;[3]30
-	pla				;[4]34	
+	lda	(__ptr,x)		;[6]28
+	lda	__ptr,x			;[4]32
 
-	pla				;[4]38	a ← OPLLでのチャンネル番号
+	pla				;[4]36	a ← VRC7でのチャンネル番号
+	tay				;[2]40
 	add	#OPLL_Octave		;[4]42 clock !! (OPLLのwait)
 
 	sta	OPLL_Resister		;●Resister Write
 	lda	__tmp + 1		;[3]3
-	sta	__frequency_set + 1,x	;[5]8 clock > 6 clock
+	sta	__opll_frequency,y	;[5]8 clock > 6 clock
 	sta	OPLL_Data		;●Data Write
 
 	rts
@@ -2705,25 +2728,24 @@ Detune:
 	dey				;	ay = __detune_fine (sign expand)
 @L:	add	__tmp			;[5]13	clock > 6 clock
 	sta	OPLL_Data		;●Data Write
-	sta	__frequency_set + 0,x	;[5]
-	tya				;[2]7
-	adc	__tmp + 1		;[3]10
-	and	#$0F			;[2]12
-	sta	__tmp + 1		;[3]15	__tmp += (signed int)__detune_cent
-	lda	__chflag,x		;[4]19
-	and	#$30			;[2]21	 00XX 0000 <2>
-	ora	__tmp + 1		;[3]24	flag と octave をマージ
-	sta	__tmp + 1		;[3]27
+	tya				;[2]
+	adc	__tmp + 1		;[3]5
+	and	#$0F			;[2]7
+	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
+	lda	__chflag,x		;[4]14
+	and	#$30			;[2]16	 00XX 0000 <2>
+	ora	__tmp + 1		;[3]19	flag と octave をマージ
+	sta	__tmp + 1		;[3]22
 
-	pha				;[3]30
-	pla				;[4]34
-	pha				;[3]37
-	pla				;[4]41
-	lda	#OPLL_Octave_BD		;[2]43
+	lda	(__ptr,x)		;[6]28
+	lda	(__ptr,x)		;[6]34
+	lda	(__ptr,x)		;[6]40
+
+	lda	#OPLL_Octave_BD		;[2]42
 
 	sta	OPLL_Resister		;●Resister Write
 	lda	__tmp + 1		;[3]3
-	sta	__frequency_set + 1,x	;[5]8 clock > 6 clock
+	lda	__tmp + 1		;[3]3
 	sta	OPLL_Data		;●Data Write
 
 	rts
@@ -2759,25 +2781,24 @@ Detune:
 	dey				;	ay = __detune_fine (sign expand)
 @L:	add	__tmp			;[5]13	clock > 6 clock
 	sta	OPLL_Data		;●Data Write
-	sta	__frequency_set + 0,x	;[5]
-	tya				;[2]7
-	adc	__tmp + 1		;[3]10
-	and	#$0F			;[2]12
-	sta	__tmp + 1		;[3]15	__tmp += (signed int)__detune_cent
-	lda	__chflag,x		;[4]19
-	and	#$30			;[2]21	 00XX 0000 <2>
-	ora	__tmp + 1		;[3]24	flag と octave をマージ
-	sta	__tmp + 1		;[3]27
+	tya				;[2]
+	adc	__tmp + 1		;[3]5
+	and	#$0F			;[2]7
+	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
+	lda	__chflag,x		;[4]14
+	and	#$30			;[2]16	 00XX 0000 <2>
+	ora	__tmp + 1		;[3]19	flag と octave をマージ
+	sta	__tmp + 1		;[3]22
 
-	pha				;[3]30
-	pla				;[4]34
-	pha				;[3]37
-	pla				;[4]41
-	lda	#OPLL_Octave_HH_SD	;[2]43
+	lda	(__ptr,x)		;[6]28
+	lda	(__ptr,x)		;[6]34
+	lda	(__ptr,x)		;[6]40
+
+	lda	#OPLL_Octave_HH_SD	;[2]42
 
 	sta	OPLL_Resister		;●Resister Write
 	lda	__tmp + 1		;[3]3
-	sta	__frequency_set + 1,x	;[5]8 clock > 6 clock
+	lda	__tmp + 1		;[3]3
 	sta	OPLL_Data		;●Data Write
 Exit:
 	rts
@@ -2813,25 +2834,24 @@ Detune:
 	dey				;	ay = __detune_fine (sign expand)
 @L:	add	__tmp			;[5]13	clock > 6 clock
 	sta	OPLL_Data		;●Data Write
-	sta	__frequency_set + 0,x	;[5]
-	tya				;[2]7
-	adc	__tmp + 1		;[3]10
-	and	#$0F			;[2]12
-	sta	__tmp + 1		;[3]15	__tmp += (signed int)__detune_cent
-	lda	__chflag,x		;[4]19
-	and	#$30			;[2]21	 00XX 0000 <2>
-	ora	__tmp + 1		;[3]24	flag と octave をマージ
-	sta	__tmp + 1		;[3]27
+	tya				;[2]
+	adc	__tmp + 1		;[3]5
+	and	#$0F			;[2]7
+	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
+	lda	__chflag,x		;[4]14
+	and	#$30			;[2]16	 00XX 0000 <2>
+	ora	__tmp + 1		;[3]19	flag と octave をマージ
+	sta	__tmp + 1		;[3]22
 
-	pha				;[3]30
-	pla				;[4]34
-	pha				;[3]37
-	pla				;[4]41
-	lda	#OPLL_Octave_TOM_CYM	;[2]43
+	lda	(__ptr,x)		;[6]28
+	lda	(__ptr,x)		;[6]34
+	lda	(__ptr,x)		;[6]40
+
+	lda	#OPLL_Octave_TOM_CYM	;[2]42
 
 	sta	OPLL_Resister		;●Resister Write
 	lda	__tmp + 1		;[3]3
-	sta	__frequency_set + 1,x	;[5]8 clock > 6 clock
+	lda	__tmp + 1		;[3]3
 	sta	OPLL_Data		;●Data Write
 Exit:
 	rts
@@ -2846,14 +2866,14 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__frequency_set,x
+	sta	__mmc5_frequency + 0
 	sta	MMC5_Pulse1_FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__frequency_set + 1,x
+	cmp	__mmc5_frequency + 1
 	beq	Exit
 	sta	MMC5_Pulse1_CTUNE
-	sta	__frequency_set + 1,x
+	sta	__mmc5_frequency + 1
 
 Exit:
 	rts
@@ -2864,14 +2884,14 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__frequency_set,x
+	sta	__mmc5_frequency + 2
 	sta	MMC5_Pulse2_FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__frequency_set + 1,x
+	cmp	__mmc5_frequency + 3
 	beq	Exit
 	sta	MMC5_Pulse2_CTUNE
-	sta	__frequency_set + 1,x
+	sta	__mmc5_frequency + 3
 
 Exit:
 	rts
@@ -2897,7 +2917,7 @@ Exit:
 	lda	#N163_Frequency_High - (8 * 0)
 	sta	N163_Resister
 	lda	__ptr
-	ora	__frequency_set + 1,x
+	ora	__n163_frequency + 0
 	sta	N163_Data
 Exit:
 	rts
@@ -2923,7 +2943,7 @@ Exit:
 	lda	#N163_Frequency_High - (8 * 1)
 	sta	N163_Resister
 	lda	__ptr
-	ora	__frequency_set + 1,x
+	ora	__n163_frequency + 1
 	sta	N163_Data
 Exit:
 	rts
@@ -2949,7 +2969,7 @@ Exit:
 	lda	#N163_Frequency_High - (8 * 2)
 	sta	N163_Resister
 	lda	__ptr
-	ora	__frequency_set + 1,x
+	ora	__n163_frequency + 2
 	sta	N163_Data
 Exit:
 	rts
@@ -2975,7 +2995,7 @@ Exit:
 	lda	#N163_Frequency_High - (8 * 3)
 	sta	N163_Resister
 	lda	__ptr
-	ora	__frequency_set + 1,x
+	ora	__n163_frequency + 3
 	sta	N163_Data
 Exit:
 	rts
@@ -3001,7 +3021,7 @@ Exit:
 	lda	#N163_Frequency_High - (8 * 4)
 	sta	N163_Resister
 	lda	__ptr
-	ora	__frequency_set + 1,x
+	ora	__n163_frequency + 4
 	sta	N163_Data
 Exit:
 	rts
@@ -3027,7 +3047,7 @@ Exit:
 	lda	#N163_Frequency_High - (8 * 5)
 	sta	N163_Resister
 	lda	__ptr
-	ora	__frequency_set + 1,x
+	ora	__n163_frequency + 5
 	sta	N163_Data
 Exit:
 	rts
@@ -3053,7 +3073,7 @@ Exit:
 	lda	#N163_Frequency_High - (8 * 6)
 	sta	N163_Resister
 	lda	__ptr
-	ora	__frequency_set + 1,x
+	ora	__n163_frequency + 6
 	sta	N163_Data
 Exit:
 	rts
@@ -3079,7 +3099,7 @@ Exit:
 	lda	#N163_Frequency_High - (8 * 7)
 	sta	N163_Resister
 	lda	__ptr
-	ora	__frequency_set + 1,x
+	ora	__n163_frequency + 7
 	sta	N163_Data
 Exit:
 	rts
@@ -3166,13 +3186,11 @@ Octave_Proc:
 	sta	__tmp
 	lda	__tmp + 1
 	cmp	#$08				;if (frequency >= 0x0800) {
-	bcc	@E
-	lda	#$07
+	bcc	Detune
+@Over:	lda	#$07
 	sta	__tmp + 1
 	lda	#$FF				;	frequency = 0x07FF
 	jmp	Octave_Exit			; } else {
-@E:	lda	__tmp
-	jmp	DEC_Freq
 	; } } else { while (octave > 0) {
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
@@ -3185,10 +3203,10 @@ DEC_Freq:
 	bcs	Octave_Exit
 	dec	__tmp + 1	; frequency -= 1
 Octave_Exit:
+	sta	__tmp
 
 Detune:	
 	ldx	__channel
-	sta	__tmp
 	ldy	#$00
 	lda	__detune_fine,x
 	bpl	@L
@@ -3232,6 +3250,8 @@ Exit:
 
 	;-------------------------------
 	; *** Octave caluclate  and  overflow check
+Octave_Proc:
+	;if (octave == 0) {
 	cpx	#0
 	beq	DEC_Freq
 Octave_Loop:
@@ -3245,10 +3265,10 @@ DEC_Freq:
 	bcs	Octave_Exit
 	dec	__tmp + 1	; frequency -= 1
 Octave_Exit:
+	sta	__tmp
 
 Detune:	
 	ldx	__channel
-	sta	__tmp
 	ldy	#$00
 	lda	__detune_fine,x
 	bpl	@L
@@ -3309,6 +3329,8 @@ Exit:
 
 	;-------------------------------
 	; *** Octave caluclate  and  overflow check
+Octave_Proc:
+	;if (octave == 0) {
 	cpx	#$08
 	bcc	Octave_Loop
 	bne	@Over
@@ -3319,9 +3341,8 @@ Exit:
 @Over:	lda	#$3
 	sta	__ptr
 	lda	#$FF
-	sta	__tmp		;
 	sta	__tmp + 1	;	frequency = 0x03FFFF;1
-	bne	Detune		;
+	bne	Octave_Exit	;
 Octave_Loop:
 	lsr	__ptr		;高速化のため、
 	ror	__tmp + 1	;ゼロページとaレジスターで

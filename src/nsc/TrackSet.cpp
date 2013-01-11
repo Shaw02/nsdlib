@@ -280,7 +280,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Tempo):
-				SetEvent(new mml_general(nsd_Tempo, MML, L"Tempo"));
+				SetTempo(MML);
 				break;
 
 			case(mml_Tempo_Relative):
@@ -666,6 +666,26 @@ MusicTrack*	TrackSet::getTrack(int _track)
 void	TrackSet::SetEvent(MusicItem* _item)
 {
 	nowTrack->SetEvent(_item);
+}
+
+//==============================================================
+//		オクターブ
+//--------------------------------------------------------------
+//	●引数
+//		MusicItem* _item
+//	●返値
+//		無し
+//==============================================================
+void	TrackSet::SetTempo(MMLfile* MML)
+{
+	int	iTempo	= MML->GetInt();
+
+	iTempo = (iTempo * MML->timebase) / 24;
+	if((iTempo<0) || (iTempo>255)){
+		MML->Err(L"テンポが範囲を超えました。");
+	}
+
+	SetEvent(new mml_general(nsd_Tempo, iTempo, L"Tempo"));
 }
 
 //==============================================================

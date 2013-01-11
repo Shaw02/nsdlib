@@ -22,7 +22,7 @@ FDSM(0){
 }
 
 //	Volume envelop table
-Envelop(0){		8 10 12 13 14 15 D10 14 D3 13 D1 12 11 L 10 10 9 9 8 8 9 9 R 8 8 7 7 6 6 5 5 L 4 4 3 3 2 2 3 3 	}
+Envelop(0){	(0,63,10) (63,0,50)	L	0		}
 
 //	FDS modulator gain table
 Envelop(1000){	0	D23	1	D7	L	2	}

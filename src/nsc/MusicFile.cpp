@@ -34,6 +34,7 @@ enum	Command_ID_MusicFile {
 
 	//General
 	id_include,
+	id_timebase,
 	id_OctaveReverse,
 	id_bgm_num,
 	id_se_num,
@@ -80,6 +81,8 @@ const	static	Command_Info	Command[] = {
 		//General
 		{	"#Include",			id_include		},
 		{	"#include",			id_include		},
+		{	"#Timebase",		id_timebase		},
+		{	"#timebase",		id_timebase		},
 		{	"#OctaveReverse",	id_OctaveReverse},
 		{	"#octaveReverse",	id_OctaveReverse},
 		{	"#BGM",				id_bgm_num		},
@@ -200,6 +203,9 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(id_se_num):
 				Header.Set_Number_SE(MML);
+				break;
+			case(id_timebase):
+				MML->timebase = MML->GetInt();	//これは、MMLファイルの属性。
 				break;
 			case(id_OctaveReverse):
 				MML->octave_reverse = true;		//これは、MMLファイルの属性。

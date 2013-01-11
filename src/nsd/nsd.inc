@@ -324,15 +324,31 @@ PSG_Envelope_Form	= $0D
 	Envelop_Freq	.word			nsd::Track	;Pointer of envelop
 	Envelop_Note	.word			nsd::Track	;Pointer of envelop
 	Frequency	.word			nsd::Track	;Setting frequency
-	Frequency_Set	.word			nsd::Track	;Setting frequency for Device
 	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
 	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
+	APU_Frequency	.word			3		;(SQ1 SQ2 TR)
+	SE_Frequency	.word			1		;(SQ2)
+
+.ifdef	MMC5
+	MMC5_Frequency	.word			nsd::MMC5_Track
+.endif
+
 .ifdef	FDS
 	FDS_Frequency	.byte
 	FDS_SweepBias	.byte
 .endif
+
+.ifdef	VRC7
+	VRC7_Frequency	.byte			nsd::VRC7_Track
+.endif
+
 .ifdef	OPLL
+	OPLL_Frequency	.byte			9
 	OPLL_Rhythm	.byte
+.endif
+
+.ifdef	N163
+	N163_Frequency	.byte			nsd::N163_Track
 .endif
 .Endstruct
 
@@ -396,7 +412,6 @@ PSG_Envelope_Form	= $0D
 .define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
 .define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set
 .define	__frequency	nsd_work + NSD_work::Frequency
-.define	__frequency_set	nsd_work + NSD_work::Frequency_Set	;APU, MMC5, VRC6, N163
 .define	__subroutine	nsd_work + NSD_work::SubRoutine
 .define	__repeat2	nsd_work + NSD_work::Repeat2
 .define	__env_volume	nsd_work + NSD_work::Envelop_Volume
@@ -419,12 +434,29 @@ PSG_Envelope_Form	= $0D
 .define	__n163_num	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3
 .define	__psg_switch	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3 + 1
 
-.ifdef	FDS
-.define	__fds_frequency	nsd_work + NSD_work::FDS_Frequency
-.define	__fds_sweepbias	nsd_work + NSD_work::FDS_SweepBias
+.define	__apu_frequency		nsd_work + NSD_work::APU_Frequency
+.define	__se_frequency		nsd_work + NSD_work::SE_Frequency
+
+.ifdef	MMC5
+.define	__mmc5_frequency	nsd_work + NSD_work::MMC5_Frequency
 .endif
+
+.ifdef	FDS
+.define	__fds_frequency		nsd_work + NSD_work::FDS_Frequency
+.define	__fds_sweepbias		nsd_work + NSD_work::FDS_SweepBias
+.endif
+
+.ifdef	VRC7
+.define	__vrc7_frequency	nsd_work + NSD_work::VRC7_Frequency
+.endif
+
 .ifdef	OPLL
-.define	__opll_ryhthm	nsd_work + NSD_work::OPLL_Rhythm
+.define	__opll_frequency	nsd_work + NSD_work::OPLL_Frequency
+.define	__opll_ryhthm		nsd_work + NSD_work::OPLL_Rhythm
+.endif
+
+.ifdef	N163
+.define	__n163_frequency	nsd_work + NSD_work::N163_Frequency
 .endif
 
 ;=======================================================================

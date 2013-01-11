@@ -5,7 +5,7 @@
 /*			’è”’è‹`											*/
 /*																*/
 /****************************************************************/
-#define	MML_timebase	24
+
 
 /****************************************************************/
 /*																*/
@@ -25,6 +25,7 @@ public:
 				int					offset_Ev;			//
 				int					offset_En;			//
 				int					offset_Em;			//
+				int					timebase;			//
 				bool				octave_reverse;		//Octave Reverse
 
 //ƒƒ“ƒo[ŠÖ”
