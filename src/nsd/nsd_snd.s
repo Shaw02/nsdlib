@@ -35,6 +35,7 @@
 .proc	_nsd_snd_init
 
 	lda	#$00
+
 	sta	APU_PULSE1CTRL		; Pulse #1 Control Register (W)
 ;	sta	APU_PULSE1FTUNE		; Pulse #1 Fine Tune (FT) Register (W)
 ;	sta	APU_PULSE1CTUNE		; Pulse #1 Coarse Tune (CT) Register (W)
@@ -55,8 +56,31 @@
 ;	sta	APU_MODADDR		; Delta Modulation Address Register (W)
 ;	sta	APU_MODLEN		; Delta Modulation Data Length Register (W)
 
-	lda	#$10
-	sta	APU_MODCTRL		; Delta Modulation Control Register (W)
+.ifdef	FDS
+	sta	FDS_Sweep_Bias
+.endif
+
+.ifdef	MMC5
+	sta	MMC5_Pulse1_CTRL
+	sta	MMC5_Pulse2_CTRL
+.endif
+
+.ifdef	VRC6
+	sta	VRC6_Frequency
+	sta	VRC6_Pulse1_CTRL
+	sta	VRC6_Pulse2_CTRL
+	sta	VRC6_SAW_CTRL
+.endif
+
+.ifdef	FDS
+	lda	#$02
+	sta	FDS_Control
+.endif
+
+.ifdef	MMC5
+	lda	#$03
+	sta	MMC5_CHANCTRL
+.endif
 
 	lda	#$08
 	sta	APU_PULSE1RAMP		; Pulse #1 Ramp Control Register (W)
@@ -65,49 +89,21 @@
 	lda	#$0F			; 
 	sta	APU_CHANCTRL		; Sound/Vertical Clock Signal Register (R)
 
+	lda	#$10
+	sta	APU_MODCTRL		; Delta Modulation Control Register (W)
+
 ;	lda	#$80
 ;	sta	APU_PAD2		; SOFTCLK (RW)
 
+.ifdef	N163
+;	lda	#$20
+;	sta				; namco t163 sound enable
+.endif
+
 .ifdef	FDS
-	lda	#$02
-	sta	FDS_Control
 	lda	#$80
 	sta	FDS_Volume
 	sta	FDS_Sweep_Envelope
-	lda	#$00
-	sta	FDS_Sweep_Bias
-.endif
-
-.ifdef	VRC6
-	lda	#$00
-	sta	VRC6_Frequency
-	sta	VRC6_Pulse1_CTRL
-	sta	VRC6_Pulse2_CTRL
-	sta	VRC6_SAW_CTRL
-.endif
-
-.ifdef	VRC7
-	;初期化は特に無し？
-.endif
-
-.ifdef	OPLL
-
-.endif
-
-.ifdef	MMC5
-	lda	#$00
-	sta	MMC5_Pulse1_CTRL
-	sta	MMC5_Pulse2_CTRL
-	lda	#$03
-	sta	MMC5_CHANCTRL
-.endif
-
-.ifdef	N163
-	
-.endif
-
-.ifdef	PSG
-	
 .endif
 
 	rts
@@ -125,10 +121,10 @@
 ;=======================================================================
 .proc	_nsd_snd_keyon
 .rodata
-JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
-	.addr	_nsd_nes_keyon		;BGM ch2 Pulse
+JMPTBL:	.addr	_nsd_ch1_keyon		;BGM ch1 Pulse
+	.addr	_nsd_ch2_keyon		;BGM ch2 Pulse
 	.addr	_nsd_ch3_keyon		;BGM ch3 Triangle
-	.addr	_nsd_nes_keyon		;BGM ch4 Noize
+	.addr	Exit			;BGM ch4 Noize
 	.addr	_nsd_dpcm_keyon		;BGM ch5 DPCM
 .ifdef	FDS
 	.addr	_nsd_fds_keyon
@@ -163,8 +159,8 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	.addr	_nsd_opll_Tom_keyon
 .endif
 .ifdef	MMC5
-	.addr	_nsd_nes_keyon		;仕組みは同じ。
-	.addr	_nsd_nes_keyon		;
+	.addr	_nsd_mmc5_ch1_keyon		;仕組みは同じ。
+	.addr	_nsd_mmc5_ch2_keyon		;
 .endif
 .ifdef	N163
 	.addr	Exit
@@ -184,8 +180,8 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 .ifdef	NULL
 	.addr	Exit
 .endif
-	.addr	_nsd_nes_keyon		;SE  ch1 Pulse
-	.addr	_nsd_nes_keyon		;SE  ch2 Noize
+	.addr	_nsd_se_keyon		;SE  ch1 Pulse
+	.addr	Exit			;SE  ch2 Noize
 
 ;---------------------------------------
 .code
@@ -197,17 +193,30 @@ JMPTBL:	.addr	_nsd_nes_keyon		;BGM ch1 Pulse
 	jmp	(__ptr)
 
 ;---------------------------------------
+_nsd_ch1_keyon:
+	lda	#$00
+	sta	__apu_frequency1
+Exit:
+	rts
+
+_nsd_ch2_keyon:
+	lda	#$00
+	sta	__apu_frequency2
+	rts
+
 _nsd_ch3_keyon:
 	;Hardware key off for ch3
 	lda	#$FF
 	sta	APU_TRICTRL1
 
-_nsd_nes_keyon:
+	lda	#$00
+	sta	__apu_frequency3
+	rts
+
+_nsd_se_keyon:
 	;For hardware Key on
 	lda	#$00
-	sta	__apu_frequency,x
-	sta	__apu_frequency + 1,x
-Exit:
+	sta	__se_frequency
 	rts
 
 ;---------------------------------------
@@ -275,6 +284,20 @@ _nsd_fds_keyon:
 	lda	__fds_sweepbias
 	sta	FDS_Sweep_Bias
 	rts
+.endif
+;---------------------------------------
+.ifdef	MMC5
+
+_nsd_mmc5_ch1_keyon:
+	lda	#$00
+	sta	__mmc5_frequency1
+	rts
+
+_nsd_mmc5_ch2_keyon:
+	lda	#$00
+	sta	__mmc5_frequency2
+	rts
+
 .endif
 ;---------------------------------------
 .if	.defined(OPLL)
@@ -1579,14 +1602,13 @@ Exit:
 .proc	_nsd_n163_sample_length
 	shl	a, 2
 ;	ora	#$E0
-	tay
+	sta	__tmp
 	txa
 	sub	#nsd::TR_N163
 	shr	a, 1
-	tax
-	tya
-	sta	__n163_frequency,x
-	ldx	__channel
+	tay
+	lda	__tmp
+	sta	__n163_frequency,y
 	rts
 .endproc
 .endif
@@ -2332,14 +2354,13 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__apu_frequency + nsd::TR_BGM1
 	sta	APU_PULSE1FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__apu_frequency + nsd::TR_BGM1 + 1
+	cmp	__apu_frequency1
 	beq	Exit
 	sta	APU_PULSE1CTUNE
-	sta	__apu_frequency + nsd::TR_BGM1 + 1
+	sta	__apu_frequency1
 
 Exit:
 	rts
@@ -2355,14 +2376,13 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__apu_frequency + nsd::TR_BGM2
 	sta	APU_PULSE2FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__apu_frequency + nsd::TR_BGM2 + 1
+	cmp	__apu_frequency2
 	beq	Exit
 	sta	APU_PULSE2STUNE		;nes.inc 間違えてる。
-	sta	__apu_frequency + nsd::TR_BGM2 + 1
+	sta	__apu_frequency2
 Exit:
 	rts
 .endproc
@@ -2372,14 +2392,13 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__apu_frequency + nsd::TR_SE1
 	sta	APU_PULSE2FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__apu_frequency + nsd::TR_SE1 + 1
+	cmp	__se_frequency
 	beq	Exit
 	sta	APU_PULSE2STUNE		;nes.inc 間違えてる。
-	sta	__apu_frequency + nsd::TR_SE1 + 1
+	sta	__se_frequency
 
 Exit:
 	rts
@@ -2391,14 +2410,13 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__apu_frequency + nsd::TR_BGM3
 	sta	APU_TRIFREQ1
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__apu_frequency + nsd::TR_BGM3 + 1
+	cmp	__apu_frequency3
 	beq	Exit
 	sta	APU_TRIFREQ2
-	sta	__apu_frequency + nsd::TR_BGM3 + 1
+	sta	__apu_frequency3
 
 Exit:
 	rts
@@ -2866,14 +2884,13 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__mmc5_frequency + 0
 	sta	MMC5_Pulse1_FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__mmc5_frequency + 1
+	cmp	__mmc5_frequency1
 	beq	Exit
 	sta	MMC5_Pulse1_CTUNE
-	sta	__mmc5_frequency + 1
+	sta	__mmc5_frequency1
 
 Exit:
 	rts
@@ -2884,14 +2901,13 @@ Exit:
 	jsr	Normal_frequency
 
 	lda	__tmp
-	sta	__mmc5_frequency + 2
 	sta	MMC5_Pulse2_FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__mmc5_frequency + 3
+	cmp	__mmc5_frequency2
 	beq	Exit
 	sta	MMC5_Pulse2_CTUNE
-	sta	__mmc5_frequency + 3
+	sta	__mmc5_frequency2
 
 Exit:
 	rts

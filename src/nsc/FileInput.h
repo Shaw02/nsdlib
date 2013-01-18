@@ -18,7 +18,9 @@ public:
 			void	StreamPointerMove(long iSize);
 			void	Back(void);
 			string*	GetFilename(void){return(&strFilename);};
-unsigned	int		GetLine(void){return(iLine);};
 unsigned	char	cRead();
 unsigned	int		GetSize();
+unsigned	int		GetLine(void){return(iLine);};
+			void	SetLine(unsigned int i){iLine = i;};
+
 };

@@ -20,6 +20,7 @@ MusicTrack::MusicTrack(const wchar_t _strName[]):
 	DefaultLength(24),
 	octave(4),
 	octave1(0),
+	compile_flag(false),
 	echo_flag(false),
 	loop_flag(false)
 {

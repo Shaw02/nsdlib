@@ -192,7 +192,7 @@ const	static	Command_Info	Command[] = {
 
 	//まずは、１つだけトラック（0番）のオブジェクトを作る。
 	nowTrack	= makeTrack(iTrack);
-
+	nowTrack->SetCompileFlag(true);
 
 
 	//------------------------------
@@ -206,16 +206,23 @@ const	static	Command_Info	Command[] = {
 	}
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(L"ブロックの終端を示す`}'がありません。");
+	while(1){
+
+		cData = MML->GetChar();
+		if(cData == '}'){
+			TrackChk(MML);
+			if(nowTrack == NULL){
+				break;
+			}
+		} else {
+			// } が来る前に、[EOF]が来たらエラー
+			if( MML->eof() ){
+				MML->Err(L"ブロックの終端を示す`}'がありません。");
+			}
+
+			//１つ戻る
+			MML->Back();
 		}
-
-		//１つ戻る
-		MML->Back();
-
 
 		//各コマンド毎の処理
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
@@ -223,12 +230,9 @@ const	static	Command_Info	Command[] = {
 			case(mml_Track):
 				if(fSub == true){
 					MML->Warning(L"Subブロックないではトラック指定はできません。無視します。");
+				} else {
+					TrackProc(MML);
 				}
-				iTrack = MML->GetInt() - 1;
-				if( (iTrack < 0) ){
-					MML->Err(L"トラック番号で指定できる範囲を超えています。");
-				}
-				nowTrack = getTrack(iTrack);
 				break;
 
 			case(mml_KeySignature):
@@ -598,6 +602,104 @@ void	TrackSet::Fix_Address(MusicFile* MUS)
 	}
 
 }
+
+//==============================================================
+//		トラック
+//--------------------------------------------------------------
+//	●引数
+//		
+//	●返値
+//		
+//==============================================================
+void	TrackSet::TrackChk(MMLfile* MML)
+{
+	unsigned		int		i;
+
+	//------------------
+	//続きのトラックのチェック
+	i		= iTrack + 1;
+	iTrack	= 0;
+	while(i <= maxTrack){
+		if(ptcTrack[i]->GetCompileFlag() == true){
+			iTrack = i;
+			break;
+		}
+		i++;
+	}
+
+	if(iTrack != 0){
+		//------------------
+		//続きのトラックがある場合
+
+		//ポインタと行番号を復帰
+		MML->StreamPointerMove(TrackPt);
+		MML->SetLine(TrackLine);
+		nowTrack = getTrack(iTrack);
+	} else {
+		nowTrack = NULL;
+	}
+}
+
+//==============================================================
+//		トラックの処理
+//--------------------------------------------------------------
+//	●引数
+//		unsigned int _track		トラック番号
+//	●返値
+//		MusicTrack*				作ったトラック・オブジェクトのポインタ
+//==============================================================
+void	TrackSet::TrackProc(MMLfile* MML)
+{
+	unsigned		char	cData;
+	unsigned		int		i;
+
+	//------------------
+	//続きのトラックのチェック
+
+	TrackChk(MML);
+
+	if(nowTrack == NULL){
+		//------------------
+		//続きのトラックがない場合
+
+		//フラグを全てリセット
+		i = 0;
+		while(i <= maxTrack){
+			ptcTrack[i]->SetCompileFlag(false);
+			i++;
+		}
+		
+		//コンパイルするトラックを列挙
+		do{
+			iTrack = MML->GetInt() - 1;
+			if( (iTrack < 0) ){
+				MML->Err(L"トラック番号で指定できる範囲を超えています。");
+			}
+			nowTrack = getTrack(iTrack);
+			nowTrack->SetCompileFlag(true);
+			cData = MML->GetChar();
+		} while(cData == ',');
+		MML->Back();
+
+		//ポインタと行番号を退避
+		TrackPt		= MML->tellg();
+		TrackLine	= MML->GetLine();
+
+		//最初の
+		i = 0;
+		while(i <= maxTrack){
+			if(ptcTrack[i]->GetCompileFlag() == true){
+				iTrack = i;
+				nowTrack = getTrack(iTrack);
+				break;
+			}
+			i++;
+		}
+
+	}
+
+}
+
 //==============================================================
 //		トラックの作成
 //--------------------------------------------------------------

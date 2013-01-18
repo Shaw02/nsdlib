@@ -188,8 +188,11 @@ bgm(2){
 
 //Register base ‚Ì Detune
 bgm(3){
-	TR1		t83			S100
-	TR2	r-16. ((((((D%1	S100
+	TR1		t83
+	TR2	r-16. ((((((D%1
+
+	TR1,2	S100
+			c4 <bagfed c1
 }
 
 //ˆÚ’²ƒeƒXƒg

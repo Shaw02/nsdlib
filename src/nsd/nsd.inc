@@ -220,7 +220,7 @@ PSG_Envelope_Form	= $0D
 	_ptr		.word					;00 General pointer value
 	_tmp		.word					;02 General value
 	flag		.byte					;04 flag
-	channel		.byte					;05 channel (y resister)
+	channel		.byte					;05 channel (x resister)
 	Sequence_ptr	.word			nsd::Track	;06 Address of playing sequence
 	Length		.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
 	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
@@ -257,12 +257,12 @@ PSG_Envelope_Form	= $0D
 	fine		.byte		;`D%' command value
 .Endstruct
 
-.Struct		NSD_Por_Lv
+.Struct		NSD_Por_Lv		;(ch5 : BGM1 & BGM2 Frequency)
 	target		.byte		;`P' target
 	depth		.byte		;`P' add value
 .Endstruct
 
-.Struct		NSD_Por_Co
+.Struct		NSD_Por_Co		;(ch5 : BGM3 & SE  Frequency)
 	count		.byte		;rate control
 	rate		.byte		;now depth
 .Endstruct
@@ -287,7 +287,6 @@ PSG_Envelope_Form	= $0D
 	voice_set	.byte		;deveice setting value
 .Endstruct
 
-					;(ch3 : n163 channnel number)
 .Struct		NSD_Env_V_Ptr		;(ch5 : pointer of ‡™PCM information)
 	Volume		.byte		;Volume
 	Voice		.byte		;Voice
@@ -309,15 +308,15 @@ PSG_Envelope_Form	= $0D
 	Gatetime	.tag	NSD_gatetime	nsd::Track	;gate time [tick]
 	Note		.tag	NSD_note	nsd::Track	;octave and note command
 	Detune		.tag	NSD_Detune	nsd::Track	;detune
-	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento
-	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento
+	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento / TR5: BGM1 & BGM2 Frequency
+	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento / TR5: BGM3 & SE1  Frequency
 	Por_now		.word			nsd::Track	;Portamento
-	Trans		.tag	NSD_Trans	nsd::Track	;Repeat and Transpose
-	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat and Transpose
-	Volume		.tag	NSD_volume	nsd::Track	;volume
+	Trans		.tag	NSD_Trans	nsd::Track	;Transpose
+	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat
+	Volume		.tag	NSD_volume	nsd::Track	;volume	/ TR3: BGM1 sweep / TR5: BGM2 sweep
 	Voice		.tag	NSD_voice	nsd::Track	;voice
 	Env_F_Now	.tag	NSD_Env_F_Now	nsd::Track	;Now value of envelop
-	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;Address of envelop
+	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;Address of envelop / TR5:DPCM info
 	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;Address of envelop
 	Envelop_Volume	.word			nsd::Track	;Pointer of envelop
 	Envelop_Voice	.word			nsd::Track	;Pointer of envelop
@@ -326,11 +325,9 @@ PSG_Envelope_Form	= $0D
 	Frequency	.word			nsd::Track	;Setting frequency
 	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
 	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
-	APU_Frequency	.word			3		;(SQ1 SQ2 TR)
-	SE_Frequency	.word			1		;(SQ2)
 
 .ifdef	MMC5
-	MMC5_Frequency	.word			nsd::MMC5_Track
+	MMC5_Frequency	.byte			nsd::MMC5_Track
 .endif
 
 .ifdef	FDS
@@ -348,8 +345,16 @@ PSG_Envelope_Form	= $0D
 .endif
 
 .ifdef	N163
+	N163_num	.byte						;ch number
 	N163_Frequency	.byte			nsd::N163_Track
 .endif
+
+.ifdef	PSG
+	PSG_switch	.byte
+.endif
+
+
+
 .Endstruct
 
 ;=======================================================================
@@ -430,15 +435,16 @@ PSG_Envelope_Form	= $0D
 .define	__sweep_ch1	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM3
 .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 
-.define	__dpcm_info	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5
-.define	__n163_num	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3
-.define	__psg_switch	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM3 + 1
 
-.define	__apu_frequency		nsd_work + NSD_work::APU_Frequency
-.define	__se_frequency		nsd_work + NSD_work::SE_Frequency
+.define	__apu_frequency1	nsd_work + NSD_work::Por_Lv + nsd::TR_BGM5		;.word
+.define	__apu_frequency2	nsd_work + NSD_work::Por_Lv + nsd::TR_BGM5 + 1		;.word
+.define	__apu_frequency3	nsd_work + NSD_work::Por_Co + nsd::TR_BGM5		;.word
+.define	__se_frequency		nsd_work + NSD_work::Por_Co + nsd::TR_BGM5 + 1		;.word
+.define	__dpcm_info		nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5		;.word
 
 .ifdef	MMC5
-.define	__mmc5_frequency	nsd_work + NSD_work::MMC5_Frequency
+.define	__mmc5_frequency1	nsd_work + NSD_work::MMC5_Frequency + 0
+.define	__mmc5_frequency2	nsd_work + NSD_work::MMC5_Frequency + 1
 .endif
 
 .ifdef	FDS
@@ -456,7 +462,12 @@ PSG_Envelope_Form	= $0D
 .endif
 
 .ifdef	N163
+.define	__n163_num		nsd_work + NSD_work::N163_num
 .define	__n163_frequency	nsd_work + NSD_work::N163_Frequency
+.endif
+
+.ifdef	PSG
+.define	__psg_switch		nsd_work + NSD_work::PSG_switch
 .endif
 
 ;=======================================================================

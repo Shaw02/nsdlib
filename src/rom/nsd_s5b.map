@@ -24,37 +24,37 @@ crt0.o:
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_s5b.lib(nsd_seq.o):
-    CODE              Offs = 0001D8   Size = 00050B
+    CODE              Offs = 0001D8   Size = 000518
     RODATA            Offs = 000000   Size = 000090
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_s5b.lib(nsd_env.o):
-    CODE              Offs = 0006E3   Size = 00022B
+    CODE              Offs = 0006F0   Size = 00022B
     RODATA            Offs = 000090   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_s5b.lib(nsd_snd.o):
-    CODE              Offs = 00090E   Size = 000357
+    CODE              Offs = 00091B   Size = 00035A
     RODATA            Offs = 000090   Size = 000138
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_s5b.lib(nsd_math.o):
-    CODE              Offs = 000C65   Size = 000069
+    CODE              Offs = 000C75   Size = 000069
     RODATA            Offs = 0001C8   Size = 000000
     BSS               Offs = 000001   Size = 000000
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000000
     NULL              Offs = 000000   Size = 000000
 ../nsd/nsd_s5b.lib(nsd_work.o):
-    CODE              Offs = 000CCE   Size = 000000
+    CODE              Offs = 000CDE   Size = 000000
     RODATA            Offs = 0001C8   Size = 000000
-    BSS               Offs = 000001   Size = 0001C0
+    BSS               Offs = 000001   Size = 0001B9
     DATA              Offs = 000000   Size = 000000
     ZEROPAGE          Offs = 000004   Size = 000042
     NULL              Offs = 000000   Size = 000000
@@ -67,38 +67,38 @@ Name                  Start   End     Size
 HEADER                000000  00007F  000080
 NULL                  000000  000000  000000
 ZEROPAGE              000002  000047  000046
-BSS                   000200  0003C0  0001C1
+BSS                   000200  0003B9  0001BA
 DATA                  000200  000200  000000
 STARTUP               008000  008072  000073
-CODE                  008073  008D40  000CCE
-RODATA                008D41  008F08  0001C8
+CODE                  008073  008D50  000CDE
+RODATA                008D51  008F18  0001C8
 
 
 Exports list:
 -------------
 __BSS_LOAD__              000200  LA    __BSS_RUN__               000200  LA    
-__BSS_SIZE__              0001C1  EA    __CODE_LOAD__             008073  LA    
-__CODE_RUN__              008073  LA    __CODE_SIZE__             000CCE  EA    
-__DATA_LOAD__             008F09  LA    __DATA_RUN__              000200  LA    
+__BSS_SIZE__              0001BA  EA    __CODE_LOAD__             008073  LA    
+__CODE_RUN__              008073  LA    __CODE_SIZE__             000CDE  EA    
+__DATA_LOAD__             008F19  LA    __DATA_RUN__              000200  LA    
 __DATA_SIZE__             000000  EA    __RAM_LAST__              006000  LA    
 __RAM_SIZE__              002000  EA    __RAM_START__             006000  LA    
-__RODATA_LOAD__           008D41  LA    __RODATA_RUN__            008D41  LA    
-__RODATA_SIZE__           0001C8  EA    __ROM0_LAST__             008F09 RLA    
+__RODATA_LOAD__           008D51  LA    __RODATA_RUN__            008D51  LA    
+__RODATA_SIZE__           0001C8  EA    __ROM0_LAST__             008F19 RLA    
 __ROM0_SIZE__             007FF0  EA    __ROM0_START__            008000  LA    
-__SRAM_LAST__             0003C1  LA    __SRAM_SIZE__             000600  EA    
+__SRAM_LAST__             0003BA  LA    __SRAM_SIZE__             000600  EA    
 __SRAM_START__            000200  LA    __STACKSIZE__             000300  EA    
 __STARTUP_LOAD__          008000  LA    __STARTUP_RUN__           008000  LA    
 __STARTUP_SIZE__          000073  EA    __STARTUP__               000001  EA    
 __ZP_LAST__               000048  LA    __ZP_SIZE__               0000FE  EA    
-__ZP_START__              000002  LA    _nsd_div192               008CD8 RLA    
+__ZP_START__              000002  LA    _nsd_div192               008CE8 RLA    
 _nsd_init                 008073 RLA    _nsd_main                 0081B1 RLA    
-_nsd_mul                  008D18 RLA    _nsd_play_bgm             008084 RLA    
+_nsd_mul                  008D28 RLA    _nsd_play_bgm             008084 RLA    
 _nsd_play_se              0080D2 RLA    _nsd_set_dpcm             00807D RLA    
-_nsd_snd_frequency        008B5E RLA    _nsd_snd_init             008981 RLA    
-_nsd_snd_keyoff           0089FE RLA    _nsd_snd_keyon            0089A2 RLA    
-_nsd_snd_sweep            008B22 RLA    _nsd_snd_voice            008A20 RLA    
-_nsd_snd_volume           008AC9 RLA    _nsd_stop_bgm             0080C0  LA    
-_nsd_stop_se              008105  LA    nsd_envelop               008756 RLA    
+_nsd_snd_frequency        008B7A RLA    _nsd_snd_init             00898E RLA    
+_nsd_snd_keyoff           008A1A RLA    _nsd_snd_keyon            0089AF RLA    
+_nsd_snd_sweep            008B3E RLA    _nsd_snd_voice            008A3C RLA    
+_nsd_snd_volume           008AE5 RLA    _nsd_stop_bgm             0080C0  LA    
+_nsd_stop_se              008105  LA    nsd_envelop               008763 RLA    
 nsd_sequence              008361 RLA    nsd_work                  000201 RLA    
 nsd_work_zp               000006 RLZ    
 

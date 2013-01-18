@@ -34,6 +34,22 @@
 	;Hardware key on
 	jsr	_nsd_snd_keyon
 
+	;Software key on
+	lda	__chflag,x
+	and	#~nsd_chflag::KeyOff
+	ora	#nsd_chflag::KeyOff
+	sta	__chflag,x
+
+	;-----------------------
+	;以降は、⊿PCMでは不要
+	cpx	#nsd::TR_BGM5
+	beq	exit
+
+	;周波数設定を必ず呼ぶように。
+	lda	#$FF
+	sta	__frequency,x
+	sta	__frequency + 1,x
+
 	;Portamento
 	lda	__por_depth,x
 	bne	@L		;ポルタメントが終了していたら、無効化する。
@@ -41,26 +57,16 @@
 	sta	__por_target,x
 @L:
 
-	;周波数設定を必ず呼ぶように。
-	lda	#$FF
-	sta	__frequency,x
-	sta	__frequency + 1,x
-
-	;Software envelop Key on
-	lda	__chflag,x
-	and	#~nsd_chflag::KeyOff
-	ora	#nsd_chflag::KeyOff
-	sta	__chflag,x
-
+	;Envelop Key on
 	lda	#$00
 	sta	__Envelop_F,x
 	lda	#$01
 	sta	__env_freq_ptr,x
 	sta	__env_note_ptr,x
 
+	;-----------------------
+	;以降は、三角波では不要
 	cpx	#nsd::TR_BGM3
-	beq	exit
-	cpx	#nsd::TR_BGM5
 	beq	exit
 
 	lda	#$00
@@ -101,21 +107,21 @@ exit:	rts
 	cmp	#nsd_chflag::KeyOff
 	bne	@E			;Key On(=3)の時のみ、処理。
 
+	;Hardware key off
+	jsr	_nsd_snd_keyoff
+
 	;Software key Off
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
 	ora	__gatemode,x
 	sta	__chflag,x
 
-	and	#$01			;●●●　最適化　●●●
-	beq	@VoiceE			;gatemode = 1 だったら、
-	lda	__voice,x		;ここでKeyOff時の音色にする。
-	shr	a, 4			; a = release voice
-	jsr	_nsd_snd_voice		;
-@VoiceE:
-	;Hardware key off
-	jsr	_nsd_snd_keyoff
+	;-----------------------
+	;以降は、⊿PCMでは不要
+	cpx	#nsd::TR_BGM5
+	beq	exit
 
+	;Portamento
 	lda	#$00
 	tay
 	sta	__por_depth,x		;ポルタメントを終了させる。
@@ -148,9 +154,9 @@ Freq_End:
 	sta	__Envelop_F,x
 Note_End:
 
+	;-----------------------
+	;以降は、三角波では不要
 	cpx	#nsd::TR_BGM3
-	beq	exit
-	cpx	#nsd::TR_BGM5
 	beq	exit
 
 	;Voice Envelop keyoff
@@ -180,6 +186,14 @@ Voice_End:
 	and	#$F0
 	sta	__Envelop_V,x
 Volume_End:
+
+	;音色エンベロープ
+	and	#$01			;●●●　最適化　●●●
+	beq	@VoiceE			;gatemode = 1 だったら、
+	lda	__voice,x		;ここでKeyOff時の音色にする。
+	shr	a, 4			; a = release voice
+	jsr	_nsd_snd_voice		;
+@VoiceE:
 
 exit:	rts
 .endproc
@@ -862,6 +876,9 @@ nsd_op16:
 ;		opcode	0x17:	Portamento (Frequency += n2, every n3 [VBlank]) 
 ;-----------------------------------------------------------------------
 nsd_op17:
+	cpx	#nsd::TR_BGM5
+	beq	@L
+
 	jsr	nsd_load_sequence	;decay
 	sta	__por_ctr,x
 	jsr	nsd_load_sequence	;rate
@@ -875,6 +892,11 @@ nsd_op17:
 	sta	__por_now + 0,x
 	sta	__por_now + 1,x		;現在の変位
 
+	jmp	Sequence
+
+@L:
+	jsr	nsd_load_ptr
+	jsr	nsd_load_ptr
 	jmp	Sequence
 
 ;=======================================================================

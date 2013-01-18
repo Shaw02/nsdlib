@@ -16,11 +16,12 @@ protected:
 private:
 //static	const	Command_Info	Command[];	//コマンドの情報
 	map<int,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
-				MusicTrack*		nowTrack;	//コンパイル中のトラック番号
+				MusicTrack*		nowTrack;	//コンパイル中のトラック
 	unsigned	int				iTrack;		//コンパイル中のトラック番号
 	unsigned	int				maxTrack;	//トラック番号の最大値
 				bool			fSub;		//サブルーチン記述ブロックかどうかのフラグ
-
+	unsigned	int				TrackPt;	//
+	unsigned	int				TrackLine;	//
 //メンバー関数
 public:
 				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const wchar_t _strName[] = L"==== [ Track Set ]====");
@@ -29,6 +30,8 @@ public:
 		void	getAsm(MusicFile* MUS);
 		void	Fix_Address(MusicFile* MUS);
 
+		void	TrackChk(MMLfile* MML);
+		void	TrackProc(MMLfile* MML);
 	MusicTrack*	makeTrack(int _track);
 	MusicTrack*	getTrack(int _track);
 

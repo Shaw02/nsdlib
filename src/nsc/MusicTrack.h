@@ -10,25 +10,28 @@ class MusicTrack :
 {
 //メンバー変数
 private:
+				bool	compile_flag;		//現在コンパイル中？
 	unsigned	int		offset_now;			//現在のオフセット
+
+				bool	loop_flag;
 	unsigned	int		offset_loop;		// L コマンドのオフセット
 	unsigned	int		offset_repeat_a_s;	//前回の [  コマンドのオフセット
 	unsigned	int		offset_repeat_a_b;	//前回の :  コマンドのオフセット
 	unsigned	int		offset_repeat_b_s;	//前回の |: コマンドのオフセット
 	unsigned	int		offset_repeat_b_b;	//前回の \  コマンドのオフセット
 	unsigned	int		DefaultLength;
-				bool	loop_flag;
 
 				char	KeySignature[8];	//調号(c,d,e,f,g,a,b,r)
-				char	oldNote[256];
-	unsigned	char	pt_oldNote;
-				char	volume;
-				char	octave;
-				char	octave1;
-				char	octave1_old;
-				bool	echo_flag;
-	unsigned	char	echo_volume;
-	unsigned	char	echo_value;
+	unsigned	char	pt_oldNote;			//前回の音程
+				char	volume;				//音量
+				char	octave;				//オクターブ
+				char	octave1;			//
+				char	octave1_old;		//
+
+				bool	echo_flag;			//疑似エコー フラグ
+	unsigned	char	echo_volume;		//疑似エコー 音量
+	unsigned	char	echo_value;			//疑似エコー 何前？
+				char	oldNote[256];		//疑似エコー用バッファ
 
 	mml_note*			_old_note;
 	mml_Address*		_old_repeatA_Branch;
@@ -48,6 +51,9 @@ public:
 
 				void	Fix_Address(MusicFile* MUS);
 				void	SetEvent(MusicItem* _item);		//イベントの追加
+
+				bool	GetCompileFlag(void){return(compile_flag);};
+				void	SetCompileFlag(bool _flag){compile_flag = _flag;};
 
 				size_t	SetEnd(void);
 				void	SetLoop();
