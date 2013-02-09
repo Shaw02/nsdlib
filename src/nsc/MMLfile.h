@@ -5,7 +5,10 @@
 /*			定数定義											*/
 /*																*/
 /****************************************************************/
-
+struct	Macro_Stack {
+				string		name;
+	unsigned	int			line;
+};
 
 /****************************************************************/
 /*																*/
@@ -20,6 +23,15 @@ private:
 	vector	<	FileInput*	>		ptcFiles;			//MMLファイル
 				FileInput*			nowFile;			//現在のファイル
 	unsigned	int					iFiles;				//現在のファイルNo.
+
+	map		< string, string>		ptcMac;				//Macro文字列の保存
+
+	vector	<	Macro_Stack	>		s_macro;			//ネスト中のマクロ名スタック
+				Macro_Stack			nowMacro;
+				int					p_macro;			//何ネスト目？
+
+				bool				f_macro2;			//マクロ展開中？
+
 public:
 				int					offset_Ei;			//
 				int					offset_Ev;			//
@@ -33,13 +45,15 @@ public:
 	MMLfile(const char*	strFileName);
 	~MMLfile(void);
 
-				void	include();				//現ポインタにあるファイルを#includeする
-	
 				bool	eof(void);				//現在のファイルのEOFチェック
 				bool	eom(void);				//ＭＭＬの終了チェック
 
+				void	include();				//現ポインタにあるファイルを#includeする
+	
+				void	SetMacro(void);
+				void	CallMacro(void);
+
 				int		tellg(void);					//現在のファイルのポインタ取得
-				void	StreamPointerAdd(long iSize);	//現在のファイルのポインタ移動
 				void	StreamPointerMove(long iSize);	//現在のファイルのポインタ移動
 				void	Back(void);
 
@@ -55,6 +69,7 @@ public:
 
 	unsigned	int		GetLine(void){return(nowFile->GetLine());};
 				void	SetLine(unsigned int i){nowFile->SetLine(i);};
+
 
 	void		Err(const wchar_t msg[]);
 	void		Warning(const wchar_t msg[]);

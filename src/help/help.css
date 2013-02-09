@@ -22,14 +22,9 @@ body {
 /*	Éçå©èoÇµ	*/
 /*--------------*/
 #header h1 {
-	margin: 1px;
-	margin-bottom: 10px;
-	padding: 10px;
-	padding-left: 20px;
-	background-color:transparent;
-	color: #303010;
-	font-size: x-large;
-	font-family:sans-serif;
+	padding: 3px;
+	padding-left: 16px;
+	color: #C03010;
 }
 
 #header table {

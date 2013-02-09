@@ -9,8 +9,17 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: FDS career wave table</h2>
 
 
@@ -19,6 +28,12 @@
 <h3>定義（Define）</h3>
 <code><pre>
 FDSC(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+
+<code><pre>
+@FM(<var>n</var>){
 	<var>define</var>
 }
 </pre></code>
@@ -62,7 +77,7 @@ FDS音源のキャリアの波形（音色）を定義します。<br>
 <h3>例（Sample）</h3>
 
 <code><pre>
-FDSC(0){	<span style="color:green;">//SQUARE</span>
+FDSC(0){	<span style="color:green;">//Square wave</span>
 	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 
 	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 
 	63,63,63,63, 63,63,63,63, 63,63,63,63, 63,63,63,63,

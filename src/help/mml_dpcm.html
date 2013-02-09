@@ -9,8 +9,17 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: Delta PCM define block</h2>
 
 <!-- ──────────────── -->
@@ -18,6 +27,11 @@
 <h3>定義（Define）</h3>
 <code><pre>
 DPCM{
+	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)</span>
+}
+</pre></code>
+<code><pre>
+@DPCM{
 	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)</span>
 }
 </pre></code>

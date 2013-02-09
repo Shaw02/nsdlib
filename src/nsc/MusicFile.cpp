@@ -5,7 +5,9 @@
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		MMLfile* MML	ＭＭＬファイルのオブジェクト
+//		MMLfile*			MML			ＭＭＬファイルのオブジェクト
+//		string				_code		リンクするコード（*.bin）のファイル名
+//		const		wchar_t	_strName[]	オブジェクト名
 //	●返値
 //				無し
 //==============================================================
@@ -70,12 +72,12 @@ const	static	Command_Info	Command[] = {
 		{	"#Code",			id_Code			},
 		{	"#code",			id_Code			},
 		//for ASM output
-		{	"#Segment",			id_SegmentSEQ	},	//Segment name for Sequence
-		{	"#segment",			id_SegmentSEQ	},
-		{	"#SegmentSEQ",		id_SegmentSEQ	},	//Segment name for Sequence
-		{	"#segmentSEQ",		id_SegmentSEQ	},
 		{	"#SegmentPCM",		id_SegmentPCM	},	//Segment name for ⊿PCM
 		{	"#segmentPCM",		id_SegmentPCM	},
+		{	"#SegmentSEQ",		id_SegmentSEQ	},	//Segment name for Sequence
+		{	"#segmentSEQ",		id_SegmentSEQ	},
+		{	"#Segment",			id_SegmentSEQ	},	//Segment name for Sequence
+		{	"#segment",			id_SegmentSEQ	},
 		{	"#Label",			id_Label		},
 		{	"#label",			id_Label		},
 		//General
@@ -164,7 +166,7 @@ const	static	Command_Info	Command[] = {
 		}
 
 		//１つ戻る
-		MML->StreamPointerAdd(-1);
+		MML->Back();
 
 		//コマンド文字列のチェック
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
@@ -291,7 +293,7 @@ const	static	Command_Info	Command[] = {
 				iSize += _env->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Macro):
-				//■■■　to do
+				MML->SetMacro();
 				break;
 			case(id_Sub):
 				i = MML->GetNum();
@@ -450,7 +452,7 @@ void	MusicFile::make_binary(void)
 //		ＮＳＦの作成
 //--------------------------------------------------------------
 //	●引数
-//		const char*	strFileName	コード
+//		size_t	rom_size	*.binのサイズ
 //	●返値
 //				無し
 //==============================================================
@@ -506,7 +508,8 @@ void	MusicFile::make_bin(size_t rom_size)
 //		ＮＳＦ形式への保存
 //--------------------------------------------------------------
 //	●引数
-//		const char*	strFileName		ファイル名
+//		const	char*	strFileName		ファイル名
+//		bool			opt				最適化フラグ
 //	●返値
 //				無し
 //==============================================================
@@ -544,6 +547,9 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		}
 	} else {
 		mus_bank = (Header.offsetPCM - 0x8000) >> 12; 
+		if((Header.offsetPCM & 0x0FFF) != 0){
+			mus_bank++;
+		}
 	}
 
 
@@ -557,7 +563,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 	//⊿PCM
 	pcm_size = dpcm_code.size();
-	pcm_bank = (unsigned char)(pcm_size >> 12);
+	pcm_bank = (unsigned char)((pcm_size + (Header.offsetPCM & 0x0FFF)) >> 12);
 	if((pcm_size & 0x0FFF) != 0){
 		pcm_bank++;
 	}
@@ -588,6 +594,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 	//		mus_size++;
 	//	}
 	} else {
+
 		//ヘッダーにバンク情報を書く。
 		if(opt == true){
 			i = 0;
@@ -610,20 +617,37 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 				j++;
 			}
 		}
+
 		//コード＆シーケンス
 		write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
 		write(code.c_str(), code.size());	//シーケンスの書き込み
-		while(mus_size < ((unsigned int)mus_bank<<12)){
-			put(0);		//0 padding
-			mus_size++;
-		}
-		//ΔPCM
-		write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
+
 		if(opt == true){
+			//GAP
+			while(mus_size < ((unsigned int)mus_bank<<12)){
+				put(0);		//0 padding
+				mus_size++;
+			}
+			//GAP2
+			mus_size = Header.offsetPCM & 0x0FFF;
+			while(mus_size > 0 ){
+				put(0);		//0 padding
+				mus_size--;
+			}
+			//ΔPCM
+			write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
 			while(pcm_size < ((unsigned int)pcm_bank<<12)){
 				put(0);		//0 padding
 				pcm_size++;
 			}
+		} else {
+			//GAP
+			while(mus_size < (Header.offsetPCM - 0x8000)){
+				put(0);		//0 padding
+				mus_size++;
+			}
+			//ΔPCM
+			write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
 		}
 	}
 
@@ -638,7 +662,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 //		アセンブリ言語ソースへの保存
 //--------------------------------------------------------------
 //	●引数
-//		const char*	strFileName		ファイル名
+//		const	char*	strFileName		ファイル名
 //	●返値
 //				無し
 //==============================================================
@@ -686,7 +710,7 @@ void	MusicFile::saveASM(const char*	strFileName)
 //		エラー処理
 //--------------------------------------------------------------
 //	●引数
-//				無し
+//		const	wchar_t	msg[]	エラーメッセージ
 //	●返値
 //				無し
 //==============================================================
@@ -702,7 +726,7 @@ void	MusicFile::Err(const wchar_t msg[])
 //		ワーニング処理
 //--------------------------------------------------------------
 //	●引数
-//				無し
+//		const	wchar_t	msg[]	ワーニングメッセージ
 //	●返値
 //				無し
 //==============================================================

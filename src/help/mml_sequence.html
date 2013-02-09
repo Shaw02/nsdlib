@@ -9,8 +9,17 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: Music Sequence block</h2>
 
 <!-- ──────────────── -->
@@ -18,19 +27,26 @@
 <h3>定義（Define）</h3>
 <code><pre>
 Sub(<var>n</var>){
-	<var>sequence</var>
+	<var>subroutine sequence</var>
 }
 </pre></code>
 
 <code><pre>
+S(<var>n</var>){
+	<var>subroutine sequence</var>
+}
+</pre></code>
+
+
+<code><pre>
 BGM(<var>n</var>){
-	<var>sequence</var>
+	<var>bgm sequence</var>
 }
 </pre></code>
 
 <code><pre>
 SE(<var>n</var>){
-	<var>sequence</var>
+	<var>se sequence</var>
 }
 </pre></code>
 </div>
@@ -110,7 +126,7 @@ SE(<var>n</var>){
 <tr><td><a href="mml_relative_volume.html">)</a></td><td>音量＋１</td></tr>
 <tr><td><a href="mml_transpose.html">_</a></td><td>移調（絶対値）。</td></tr>
 <tr><td><a href="mml_transpose.html">__</a></td><td>移調（相対値）。</td></tr>
-<tr><td>$<var>name</var></td><td>マクロ呼び出し<strong>（未実装）</strong></td></tr>
+<tr><td><a href="mml_macro.html">$</a></td><td>マクロ呼び出し。</td></tr>
 <tr><td>|</td><td>小節線（コンパイルには反映されません）</td></tr>
 </table>
 

@@ -11,6 +11,11 @@
 		<param name="Local" value="mml_relative_octave.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="$">
+		<param name="Name" value="MML reference: Macro">
+		<param name="Local" value="mml_macro.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="(">
 		<param name="Name" value="MML reference: Relative Volume">
 		<param name="Local" value="mml_relative_volume.html">
@@ -126,14 +131,14 @@
 		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="d">
-		<param name="Name" value="MML reference: Note">
-		<param name="Local" value="mml_note.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="D">
 		<param name="Name" value="MML reference: Detune">
 		<param name="Local" value="mml_detune.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="d">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="D%">
@@ -191,14 +196,14 @@
 		<param name="Local" value="mml_envelop.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="F">
-		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
-		<param name="Local" value="mml_s5b_envelope.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="f">
 		<param name="Name" value="MML reference: Note">
 		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="F">
+		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
+		<param name="Local" value="mml_s5b_envelope.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="FAQ">
@@ -251,14 +256,14 @@
 		<param name="Local" value="mml.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="n163">
-		<param name="Name" value="n106 / n163 の使い方">
-		<param name="Local" value="n163.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="N163">
 		<param name="Name" value="MML reference: N163 sample wave block">
 		<param name="Local" value="mml_N163.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="n163">
+		<param name="Name" value="n106 / n163 の使い方">
+		<param name="Local" value="n163.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="NC">
@@ -286,6 +291,11 @@
 		<param name="Local" value="func_nsd_main.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_pause_bgm()">
+		<param name="Name" value="nsd_pause_bgm()">
+		<param name="Local" value="func_nsd_pause_bgm.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="nsd_play_bgm()">
 		<param name="Name" value="Function reference: nsd_play_bgm()">
 		<param name="Local" value="func_nsd_play_bgm.html">
@@ -294,6 +304,11 @@
 		<param name="Name" value="nsd_play_se()">
 		<param name="Name" value="Function reference: nsd_play_se()">
 		<param name="Local" value="func_nsd_play_se.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_resume_bgm()">
+		<param name="Name" value="nsd_resume_bgm()">
+		<param name="Local" value="func_nsd_resume_bgm.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="nsd_set_dpcm()">
@@ -465,6 +480,11 @@
 		<param name="Local" value="mml_poke.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ライセンス">
+		<param name="Name" value="ライセンス（Licence）">
+		<param name="Local" value="licence.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="リピート">
 		<param name="Name" value="MML reference: Repeat(A)">
 		<param name="Local" value="mml_repeatA.html">
@@ -534,11 +554,6 @@
 		<param name="Local" value="mml_tips.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="再配布">
-		<param name="Name" value="再配布">
-		<param name="Local" value="redistribution.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="相対オクターブ">
 		<param name="Name" value="MML reference: Relative Octave">
 		<param name="Local" value="mml_relative_octave.html">
@@ -560,8 +575,8 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="著作権">
-		<param name="Name" value="著作権">
-		<param name="Local" value="copyright.html">
+		<param name="Name" value="ライセンス（Licence）・著作権（Copyright）">
+		<param name="Local" value="licence.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="調号">

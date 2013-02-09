@@ -9,8 +9,18 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: Voice</h2>
 
 <!-- ──────────────── -->
@@ -27,7 +37,7 @@
 
 <h4>voice</h4>
 <p>
-音色を指定します。<br>
+音色を指定します。（Default: <var>volume</var> = 2　（APUノイズは0））<br>
 </p>
 
 </div>
@@ -40,16 +50,16 @@
 </p>
 
 <dl>
-<dt>APU	パルス波	</dt><dd> 0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
-<dt>APU	三角波		</dt><dd><strong>音色はありません。</strong></dd>
-<dt>APU	ノイズ		</dt><dd> 0～1　（0=長周期 / 1=短周期）</dd>
-<dt>APU	⊿PCM		</dt><dd><strong>音色はありません。</strong></dd>
-<dt>FDS				</dt><dd> 0～63<strong>（モジュレータのゲインに割り当てる予定）</strong></dd>
-<dt>VRC6 パルス波	</dt><dd> 0～7　（0=6.25% ～ 7=50%）</dd>
-<dt>VRC6 SAW		</dt><dd><strong>音色はありません。</strong></dd>
-<dt>VRC7			</dt><dd> 0～15</dd>
-<dt>MMC5			</dt><dd> 0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
-<dt>N168			</dt><dd> 0～63　（指定数値の2倍のアドレスを音色波形にします。）</dd>
+<dt>APU	パルス波	</dt><dd>0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
+<dt>APU	三角波		</dt><dd>音色エンベロープはありません。</dd>
+<dt>APU	ノイズ		</dt><dd>0～1　（0=長周期 / 1=短周期）</dd>
+<dt>APU	⊿PCM		</dt><dd>音色エンベロープはありません。</dd>
+<dt>FDS				</dt><dd>0～63　モジュレータのゲイン（音量）</dd>
+<dt>VRC6 パルス波	</dt><dd>0～7　（0=6.25% ～ 7=50%）</dd>
+<dt>VRC6 SAW		</dt><dd>音色エンベロープはありません。</dd>
+<dt>VRC7			</dt><dd>0～15</dd>
+<dt>MMC5			</dt><dd>0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
+<dt>N168			</dt><dd>0～63　（指定数値の2倍のアドレスを音色波形にします。）</dd>
 <dt>Sunsoft 5B		</dt><dd> 0～31 … ノイズ（値はノイズの周期です）<br>
 							32～63 … トーン＆ノイズ（値はノイズの周期です）<br>
 							64 … トーン<br>

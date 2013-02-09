@@ -9,8 +9,16 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>ＭＭＬ文法</h2>
 
 
@@ -21,25 +29,30 @@ MMLの全体的な構文は、`#'で始まる定義＆疑似命令及び、
 データ（エンベロープパターン、シーケンスデータ）を記述する記述ブロックで構成されます。<br>
 MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。<br>
 </p>
+
+<div class='block'>
+<h4><a name="common">共通のコマンド</a></h4>
 <p>
-定義命令の多くは、NSFへビルドする際にNSFヘッダーに設定されます。<br>
+曲や効果音の設定・記述をするためのコマンド群です。<br>
 </p>
 
 <table>
-<caption>共通のコマンド</caption>
+<caption>コマンド一覧</caption>
 <tr><th>Command</th><th>Contens</th></tr>
 <tr><td>#include	"<var>filename</var>"	</td><td>外部ファイルを呼び込みます。</td></tr>
 <tr><td>#bgm <var>n</var>					</td><td>BGMの曲数を設定します。（Default: <var>n</var> = 1）</td></tr>
 <tr><td>#se  <var>n</var>					</td><td>SE の曲数を設定します。（Default: <var>n</var> = 0）</td></tr>
+<tr><td>#timebase <var>n</var>				</td><td>以降のBGM, SE, Subブロックの四分音符の分割数を設定します。（Default: <var>n</var> = 24）<br>
+													何度でも指定可能であり、各BGM, SE, サブルーチン毎に設定することもできます。<br>
+													MMLコンパイラの疑似命令です。</td></tr>
 <tr><td>#octaveReverse						</td><td>本コマンドを記述することで、相対オクターブの`&lt;'と`&gt;'を入れ替えます。</td></tr>
-<tr><td>#timebase <var>n</var>				</td><td>以降のBGM, SE, Subブロックの四分音符の分割数を設定します。（Default: <var>n</var> = 24）</td></tr>
-<tr><td>#offsetE@ <var>n</var>				</td><td>E@コマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
-<tr><td>#offsetEv <var>n</var>				</td><td>Evコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
-<tr><td>#offsetEm <var>n</var>				</td><td>Emコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
-<tr><td>#offsetEn <var>n</var>				</td><td>Enコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
-<tr><td>#offsetPCM	<var>address</var>		</td><td>⊿PCMを配置するアドレスを指定します。（Default: $10000(⊿PCM無し)）<br>
+<tr><td>#offsetE@ <var>n</var>				</td><td>シーケンス記述ブロック内にて、E@コマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
+<tr><td>#offsetEv <var>n</var>				</td><td>シーケンス記述ブロック内にて、Evコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
+<tr><td>#offsetEm <var>n</var>				</td><td>シーケンス記述ブロック内にて、Emコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
+<tr><td>#offsetEn <var>n</var>				</td><td>シーケンス記述ブロック内にて、Enコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
+<tr><td>#offsetPCM	<var>address</var>		</td><td>⊿PCMを配置するアドレスを指定します。（Default: <var>address</var> = $10000(⊿PCM無し)）<br>
 														シーケンスデータはこのコマンドで指定したアドレス-1の領域まで使えます。<br>
-														NSF music formatでは、このアドレスからΔPCMを配置します。<br>
+														NSF music formatを出力する場合は、このアドレスよりΔPCMの実体が配置されます。<br>
 														アセンブリ言語ソースを出力する場合は、リンカー"ld65.exe"のコンフィグファイルにて、
 														"#segmentPCM"コマンドで指定したセグメントの配置アドレスと、同じアドレスに設定して下さい。</td></tr>
 <tr><td>DPCM{<br> <var>Delta PCM define</var><br>}	</td>
@@ -72,36 +85,103 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
 		番号は0からカウントします。</td></tr>
 <tr><td>$<var>name</var>{<br> <var>Sequence data</var><br>}
-	</td><td>シーケンス用のマクロ定義です。<strong>（未実装）</strong></td></tr>
+	</td><td>シーケンス用のマクロ定義です。<br><var>name</var>は、`$'から、キャラクターコード0x00～0x20の文字か`{'が来るまでをマクロ名として認識します。</td></tr>
 <tr><td>;<span style="color:green;">comments</span>		</td><td>１行コメントです。改行までの記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
 <tr><td>//<span style="color:green;">comments</span>	</td><td>１行コメントです。改行までの記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
 <tr><td>/*<span style="color:green;">comments</span>*/	</td><td>範囲コメントです。 /* と */ の間の記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
 </table>
 <br>
+</div>
+
+<div class='block'>
+<h4><a name="nsf">NSF music formatを出力する際に有効なコマンド</a></h4>
+
+<p>
+NSF music format用の設定コマンドです。<br>
+多くのコマンドは、NSFへビルドする際に、NSFヘッダーに設定されます。<br>
+</p>
 
 <table>
-<caption>NSF music formatを出力する際に有効なコマンド</caption>
+<caption>コマンド一覧</caption>
 <tr><th>Command</th><th>Contens</th></tr>
-<tr><td>#code		"<var>name</var>"		</td><td>リンクするＮＳＦ用のＲＯＭコードを指定します。（Default: name = `nsd.bin'）<br>
+<tr><td>#code		"<var>name</var>"		</td><td>リンクするＮＳＦ用のＲＯＭコードを指定します。（Default: <var>name</var> = `nsd.bin'）<br>
 													コンパイルオプション`-l'でROMコードの指定がある場合は、コンパイルオプションを優先します。</td></tr>
 <tr><td>#title		"<var>strings</var>"	</td><td>タイトル名を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
 <tr><td>#composer	"<var>strings</var>"	</td><td>作曲者を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
 <tr><td>#copyright	"<var>strings</var>"	</td><td>著作権者を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
 </table>
 <br>
+</div>
+
+<div class='block'>
+<h4><a name="asm">アセンブリ言語ソースを出力する際に有効なコマンド</a></h4>
+<p>
+アセンブリ言語ソースにて出力する際の設定コマンドです。<br>
+主に、6502開発環境"cc65"に付属の、アセンブラ"ca65.exe"用の疑似命令の出力を制御します。<br>
+ユーザー・アプリケーションに組み込む場合に、設定して下さい。<br>
+</p>
 
 <table>
-<caption>アセンブリ言語ソースを出力する際に有効なコマンド</caption>
+<caption>コマンド一覧</caption>
 <tr><th>Command</th><th>Contens</th></tr>
 <tr><td>#segment	"<var>name</var>"<br>
-		#segmentSEQ	"<var>name</var>"		</td><td>⊿PCM以外のセグメントを指定します。（Default: name = `RODATA'）</td></tr>
-<tr><td>#segmentPCM	"<var>name</var>"		</td><td>⊿PCMのセグメントを指定します。（Default: name = `PCMDATA'）</td></tr>
-<tr><td>#label		"<var>name</var>"		</td><td>ラベル名（シンボル名）の先頭に付与する文字列を指定します。（Default: name = `_nsd_'）<br>
-								Ｃコンパイラは、Ｃ言語で記述されたラベル（シンボル）名の先頭に`_'を付加します。<br>
-								従い、Ｃ言語から曲データを参照する場合、MML側で設定するラベル名は先頭に`_'を追加してください。</td></tr>
+		#segmentSEQ	"<var>name</var>"</td>
+	<td>曲、効果音、エンベロープ、音色データ等（⊿PCM以外）を配置するセグメント名を指定します。（Default: <var>name</var> = `RODATA'）<br>
+		これらのデータは、アセンブリ言語ソースにて、『.segment "<var>name</var>"』とセグメント名が指定されます。<br>
+		複数のMMLファイルから生成したアセンブリ言語ソースを、同一のファイルにリンクする場合、
+		異なるセグメント名（"ld65.exe"のコンフィグファイルにて異なるバンクマッピングされた）に設定することで、
+		バンク（32kByteを超える容量）に対応したNESファイルはもちろん、NSFを生成する事も可能です。</td></tr>
+<tr><td>#segmentPCM	"<var>name</var>"	</td>
+	<td>⊿PCMの実体を配置するセグメント名を指定します。（Default: <var>name</var> = `PCMDATA'）<br>
+		⊿PCMの実体を出力する際は、アセンブリ言語ソースにて、『.segment "<var>name</var>"』とセグメント名が指定されます。<br>
+		このセグメントは、リンカー"ld65.exe"のコンフィグファイルにて、
+		#offsetPCMコマンドで設定したアドレスと、同じアドレスに設定して下さい。<br>
+		名前を""（何も無し）に設定した場合は、⊿PCMの実体をアセンブリ言語ソースへ出力しません。<br>
+		これは、同一の⊿PCMを使用する複数のMMLファイルから生成したアセンブリ言語ソースを、
+		同一のファイルにリンクする場合において、どれか１つのMMLのみ、⊿PCMの実体を出力すればよいためです。</td></tr>
+<tr><td>#label		"<var>name</var>"	</td>
+	<td>ラベル名（シンボル名）の先頭に付与する文字列を指定します。（Default: <var>name</var> = `_nsd_'）<br>
+		Ｃコンパイラは、Ｃ言語で記述されたラベル（シンボル）名の先頭に`_'を付加します。<br>
+		従い、Ｃ言語から曲データを参照する場合、MML側で設定するラベル名は先頭に`_'を追加してください。<br>
+		複数のMMLファイルから生成したアセンブリ言語ソースを、同一のファイルにリンクする場合は、
+		必ず、各MMLファイル中で異なるラベル名を設定して下さい。</td></tr>
 </table>
 
+<p>
+複数のMMLから変換したアセンブリ言語ソースを、同一のプロジェクト・ファイルにリンクしてビルドする場合でも、
+エンベロープ定義、音色定義、⊿ＰＣＭの定義は、各MMLファイル毎に設定して下さい（異なる設定も可能です）。<br>
+</p>
+<p>
+曲・効果音は、以下の手順で再生して下さい。
+</p>
+<ol type='1'>
+<li>6502のメモリ空間に、これから再生するデータがあるバンクをマッピング。もしくはロード。<br>
+	（※既に6502のメモリ空間に存在している場合は不要）</li>
+<li><a href="func_nsd_set_dpcm.html">nsd_set_dpcm()</a>関数にて⊿PCM制御構造体を設定<br>
+	（※⊿ＰＣＭを使用しない場合、及び、現在再生中のデータと同じＭＭＬファイルに記述された曲・効果音を再生する際は不要）</li>
+<li><a href="func_nsd_play_bgm.html">nsd_play_bgm()</a>関数、<a href="func_nsd_play_se.html">nsd_play_se()</a>関数にて再生開始<br>
+	（※尚、関数呼び出し後は、バンクを切り替えても問題ありません。）</li>
+</ol>
+<p>
+データの再生中は、シーケンスデータが常時6502のメモリ空間に存在している必要はありません。<br>
+<a href="func_nsd_main.html">nsd_main()</a>関数を呼び出す際に、
+6502のメモリ空間に再生するデータがあるバンクをマッピングし、
+呼び出した後はバンクを切り替えても問題ありません。<br>
+但し、⊿PCMを使用する場合は、⊿PCMの実体が存在するバンクは常時6502のメモリ空間にマッピングして下さい。<br>
+</p>
+
 </div>
+
+<div class='block'>
+<h4><a name="num">数値の記法</a></h4>
+<p>
+0～9で始まる数値は、10進数とみなします。<br>
+$で始まる数値は、16進数とみなします。<br>
+%で始まる数値は、2進数とみなします。<br>
+</p>
+</div>
+
+</div>	<!-- h3 -->
 
 </div>
 

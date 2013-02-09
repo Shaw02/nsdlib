@@ -221,6 +221,9 @@
 						RelativePath=".\mml_poke.cpp">
 					</File>
 					<File
+						RelativePath=".\mml_repeat.cpp">
+					</File>
+					<File
 						RelativePath=".\MusicEvent.cpp">
 					</File>
 				</Filter>
@@ -282,6 +285,9 @@
 			</File>
 			<File
 				RelativePath=".\mml_poke.h">
+			</File>
+			<File
+				RelativePath=".\mml_repeat.h">
 			</File>
 			<File
 				RelativePath=".\MMLfile.h">

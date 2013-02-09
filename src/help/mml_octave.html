@@ -9,8 +9,18 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: Octave</h2>
 
 <!-- ──────────────── -->
@@ -27,7 +37,7 @@
 
 <h4>octave</h4>
 <p>
-オクターブです。2～9の範囲（o4＝中央）で指定してください。<br>
+オクターブです。2～9の範囲（o4＝中央）で指定してください。（Default: <var>octave</var> = 4）<br>
 </p>
 
 
@@ -45,6 +55,7 @@
 <tr><td>APU　三角波		</td><td>１オクターブ低くなります。</td></tr>
 <tr><td>APU　ノイズ		</td><td>─</td></tr>
 <tr><td>APU　⊿PCM		</td><td>─</td></tr>
+<tr><td>FDS				</td><td>２オクターブ低くなります。</td></tr>
 <tr><td>VRC6　パルス波	</td><td>指定通り</td></tr>
 <tr><td>VRC6　鋸波		</td><td>指定通り</td></tr>
 <tr><td>VRC7			</td><td>１オクターブ低くなります。</td></tr>
@@ -52,6 +63,27 @@
 <tr><td>n163			</td><td>別途、<a href="n163.html">n106 / n163 の使い方</a>をご参照ください。</td></tr>
 <tr><td>Sunsoft 5B		</td><td>１オクターブ低くなります。</td></tr>
 </table>
+
+<p>
+また、音源により、発音可能範囲が異なります。<br>
+なお、2を下回るオクターブは、相対オクターブコマンドをご使用ください。<br>
+</p>
+
+<table>
+<tr><th>音源			</th><th>発音可能範囲（実音）</th></tr>
+<tr><td>APU　パルス波	</td><td>o1a～</td></tr>
+<tr><td>APU　三角波		</td><td>o1a～（o0a～）</td></tr>
+<tr><td>APU　ノイズ		</td><td>─</td></tr>
+<tr><td>APU　⊿PCM		</td><td>─</td></tr>
+<tr><td>FDS				</td><td>o1c～（o-1c～）</td></tr>
+<tr><td>VRC6　パルス波	</td><td>o1c～</td></tr>
+<tr><td>VRC6　鋸波		</td><td>o1c～</td></tr>
+<tr><td>VRC7			</td><td>o1c～（音色により異なる）</td></tr>
+<tr><td>MMC5			</td><td>o1a～</td></tr>
+<tr><td>n163			</td><td>～o8a（設定により異なる）</td></tr>
+<tr><td>Sunsoft 5B		</td><td>o1c～（o0c～）</td></tr>
+</table>
+
 </div>
 
 <!-- ──────────────── -->

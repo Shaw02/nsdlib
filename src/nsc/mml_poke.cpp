@@ -5,10 +5,8 @@
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		code
-//		unsigned	int		length
-//		unsigned	int		gatetime
-//					bool	slur
+//		unsigned	int		_addr		アドレス
+//		unsigned	char	_data		データ
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し

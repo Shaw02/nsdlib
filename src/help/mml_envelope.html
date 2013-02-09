@@ -9,8 +9,17 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: Envelope block</h2>
 
 
@@ -22,6 +31,13 @@ Envelop(<var>n</var>){
 	<var>define</var>
 }
 </pre></code>
+
+<code><pre>
+E(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+
 </div>
 
 <!-- ──────────────── -->
@@ -43,7 +59,7 @@ Envelop(<var>n</var>){
 <table>
 <tr><th>Command</th><th>Contens</th></tr>
 <tr><td><var>n</var></td><td>エンベロープ値</td></tr>
-<tr><td>D<var>n</var></td><td>前回のエンベロープ値を<var>n</var>フレーム間維持します。</td></tr>
+<tr><td>D<var>n</var></td><td>前回のエンベロープ値を<var>n</var>+1フレーム間維持します。</td></tr>
 <tr><td>L</td><td>エンベロープパターンがRコマンド、又はパターン最後まで行った時の戻り先を指定します。<br>
 				Rコマンドの後に書かれた場合は、キーオフ後のパターンにおける戻り先となります。<br>
 				Rコマンド前でLコマンドを省略した場合、Rコマンドの直前のコマンドを繰り返します。<br>
@@ -70,7 +86,7 @@ Envelop(<var>n</var>){
 <dt>APU	三角波		</dt><dd>音色エンベロープはありません。</dd>
 <dt>APU	ノイズ		</dt><dd>0～1　（0=長周期 / 1=短周期）</dd>
 <dt>APU	⊿PCM		</dt><dd>音色エンベロープはありません。</dd>
-<dt>FDS				</dt><dd>0～63<strong>（モジュレータのゲインに割り当てる予定）</strong></dd>
+<dt>FDS				</dt><dd>0～63　モジュレータのゲイン（音量）</dd>
 <dt>VRC6 パルス波	</dt><dd>0～7　（0=6.25% ～ 7=50%）</dd>
 <dt>VRC6 SAW		</dt><dd>音色エンベロープはありません。</dd>
 <dt>VRC7			</dt><dd>0～15</dd>
@@ -88,7 +104,7 @@ Envelop(<var>n</var>){
 <dt>APU	三角波		</dt><dd>音量エンベロープはありません。</dd>
 <dt>APU	ノイズ		</dt><dd>0～15</dd>
 <dt>APU	⊿PCM		</dt><dd>音量エンベロープはありません。</dd>
-<dt>FDS				</dt><dd>0～63<strong>（キャリアのゲインに割り当てる予定）</strong></dd>
+<dt>FDS				</dt><dd>0～63　キャリアのゲイン（ＬＦＯの振幅）</dd>
 <dt>VRC6 パルス波	</dt><dd>0～15</dd>
 <dt>VRC6 SAW		</dt><dd>0～63</dd>
 <dt>VRC7			</dt><dd>0～15</dd>
@@ -97,13 +113,31 @@ Envelop(<var>n</var>){
 <dt>Sunsoft 5B		</dt><dd>0～15</dd>
 </dl>
 
-<h4>周波数</h4>
+<h4>周波数（ピッチ）</h4>
 <p>
 -64～63の範囲で指定してください。<br>
 数値は、現在発音している音階を基準とした値で、16が100cent（半音）に相当します。<br>
 </p>
 
-<h4>音程</h4>
+<p>
+APU及びMMC5で音程を変化させる場合、レジスターのMSBが更新されると位相がリセットされプチノイズが発生します。<br>
+レジスターのMSBの更新が近い音程としては以下です。<br>
+エンベロープの数値とディチューンの数値の総和を以下表の許容幅の範囲内に留めると、音程レジスタMSB更新によるプチノイズを回避できます。<br>
+（ただし、数値の絶対値が16を越える場合は、音程レジスタMSBが更新される場合があります。）
+</p>
+
+<table>
+<tr><th>音程</th><th>許容幅</th></tr>
+<tr><td>o1b</td><td>1 ～ </td></tr>
+<tr><td>o2d</td><td> ～ -2</td></tr>
+<tr><td>o2f</td><td> ～  0</td></tr>
+<tr><td>o2a</td><td> ～ -2</td></tr>
+<tr><td>o3d</td><td> ～ -2</td></tr>
+<tr><td>o3a</td><td> ～ -2</td></tr>
+<tr><td>o4a</td><td> ～ -4</td></tr>
+</table>
+
+<h4>音程（ノート）</h4>
 <p>
 -64～63の範囲で指定してください。<br>
 数値は、現在発音している音階を基準とした値で、1が100cent（半音）に相当します。<br>

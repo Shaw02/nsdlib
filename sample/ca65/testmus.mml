@@ -1,0 +1,39 @@
+
+#title	"Test"
+
+#Label	"_Test_"	//Ｃ言語から extern 宣言するので、シンボル先頭には'_'を付ける。
+
+#Segment	"MUSDATA"
+
+#bgm	1
+
+#offsetPCM	$C000	//⊿PCMの配置アドレス。ld65.exeのコンフィグで設定したアドレスと合わせる。
+
+DPCM{
+	b1,	"../dmc/bd.dmc",14,0,64
+	c2,	"../dmc/bd.dmc",15,0,64
+	d2,	"../dmc/sd.dmc",15,0,64
+	e2,	"../dmc/sd.dmc",14,0,64
+
+	f2,	"../dmc/tom.dmc",10,0,64
+	g2,	"../dmc/tom.dmc",11,0,64
+	a2,	"../dmc/tom.dmc",12,0,64
+	b2,	"../dmc/tom.dmc",13,0,64
+	c3,	"../dmc/tom.dmc",14,0,64
+	d3,	"../dmc/tom.dmc",15,0,64
+}
+
+
+Envelop( 0){15	L	12	R	10	8	7	6	D0	5	D1	4	D2	3	D3	L	2	}
+
+Envelop(100){	0	D36	L	1	2	3	2	1	0	-1	-2	-3	-2	-1	}
+
+Envelop(300){	3	2	L	0	}
+
+Sub(0){	l4o4u8.	E@300	Em100	Ev0	cdefgab > c1,2.	}
+
+BGM(0){
+	TR1	v12			S0
+	TR2	v8	r-8.	S0
+	TR5	o2l16	[2	c8f+f+	d8f+f+	c8f+f+	d8f+f+	]	`c+1
+}

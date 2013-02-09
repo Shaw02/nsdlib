@@ -9,8 +9,17 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: VRC7 User Instrument block</h2>
 
 
@@ -29,6 +38,20 @@ VRC7(<var>n</var>){
 	@R<var>reg1</var> <var>reg2</var> <var>reg3</var> <var>reg4</var> <var>reg5</var> <var>reg6</var> <var>reg7</var> <var>reg8</var>
 }
 </pre></code>
+
+<code><pre>
+@OP(<var>n</var>){
+	@<var>TL</var> <var>FB</var>
+	<var>AR(M)</var> <var>DR(M)</var> <var>SL(M)</var> <var>RR(M)</var> <var>KL(M)</var> <var>MT(M)</var> <var>AM(M)</var> <var>VB(M)</var> <var>EG(M)</var> <var>KR(M)</var> <var>D(M)</var>
+	<var>AR(C)</var> <var>DR(C)</var> <var>SL(C)</var> <var>RR(C)</var> <var>KL(C)</var> <var>MT(C)</var> <var>AM(C)</var> <var>VB(C)</var> <var>EG(C)</var> <var>KR(C)</var> <var>D(C)</var>
+}
+</pre></code>
+<code><pre>
+@OP(<var>n</var>){
+	@R<var>reg1</var> <var>reg2</var> <var>reg3</var> <var>reg4</var> <var>reg5</var> <var>reg6</var> <var>reg7</var> <var>reg8</var>
+}
+</pre></code>
+
 </div>
 
 <!-- ──────────────── -->

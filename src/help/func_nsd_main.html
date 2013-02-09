@@ -9,9 +9,18 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
-<h2>Function reference: nsd_main()</h2>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsd.html">音源ドライバー</a>＼
+関数リファレンス＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>nsd_main()</h2>
 
 <!-- ──────────────── -->
 <div class='block'>
@@ -74,10 +83,24 @@ NMI_Start:
         tya
         pha
 
+        <span style="color:green;">; PPU Control code.</span>
+        <span style="color:green;">; </span>
+        <span style="color:green;">; to do 垂直同期期間中にVRAMへアクセスするコードを配置してください。</span>
+        <span style="color:green;">;       通常、画面処理は、サウンド処理より先に行います。</span>
+        <span style="color:green;">; </span>
+
+        <span style="color:green;">; Bank change for sound. （曲データをメモリ空間にマッピングします。）</span>
+        <span style="color:green;">; 曲・効果音データがメモリ空間にマッピングされてない場合に必須です。</span>
         lda     #music_bank
         jsr     _bank_change            <span style="color:green;">;   bank_change(music_bank);</span>
 
+        <span style="color:green;">; Play BGM & SE. （曲・効果音の再生。）</span>
         jsr     _nsd_main               <span style="color:green;">;   nsd_main();</span>
+
+        <span style="color:green;">; Return the bank number. （バンクを元に戻します。）</span>
+        <span style="color:green;">; 曲・効果音データ用にバンクを切り替えた場合に必須です。</span>
+        lda     #prog_bank
+        jsr     _bank_change            <span style="color:green;">;   bank_change(prog_bank);</span>
 
         pla
         tay

@@ -5,21 +5,28 @@
 <meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>サウンドドライバー（nsd.lib）</Title>
+<Title>音源ドライバー（nsd.lib）</Title>
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
-<h2>サウンドドライバー（nsd.lib）</h2>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+</div>
+
+<!-- contents start --><div id='contents'>
+<div id='contents'>
+<h2>音源ドライバー（nsd.lib）</h2>
 
 <div class='block'>
 <p>
-本サウンドドライバーは、cc65（6502用クロス開発環境）のオブジェクトライブラリ`*.lib'として開発しています。<br>
-ユーザーアプリケーションからは、ライブラリ中の関数を呼ぶことにより、本サウンドドライバーを制御することが可能です。<br>
+本音源ドライバーは、cc65（6502用クロス開発環境）のオブジェクトライブラリ`*.lib'として開発しています。<br>
+ユーザーアプリケーションからは、ライブラリ中の関数を呼ぶことにより、本音源ドライバーを制御することが可能です。<br>
 </p>
 <p>
-本サウンドドライバーは、cc65の付属のNES用ライブラリ`nes.lib'内の関数を一切呼び出していません。<br>
+本音源ドライバーは、cc65の付属のNES用ライブラリ`nes.lib'内の関数を一切呼び出していません。<br>
 （つまり、Ｃ言語の機能（標準関数など）を一切、使っていません。）<br>
 従って、アセンブリ言語のみで開発されたアプリケーションからでも使用する事が可能です。<br>
 cc65以外の開発環境で記述されたコードから呼び出しても動作するとは思いますが、
@@ -69,7 +76,7 @@ nsd.libを制御するライブラリ関数の外部宣言等が記述されていますので、
 
 <h4>NES用ライブラリ"nes.lib"を使用する場合の注意</h4>
 <p>
-"nes.lib"内のコードは、configファイルのセグメント設定と関係無しに、
+cc65に付属のNES用ライブラリ"nes.lib"内のコードは、configファイルのセグメント設定と関係無しに、
 Zeropageを絶対アドレス（つまり、番地を直接指定）で読み書きしている領域があります。<br>
 そのため、configファイルのセグメントの設定次第では、nes.libがアクセスする領域とバッティングします。<br>
 リンカー用の config ファイルの作成に際しては、
@@ -90,9 +97,11 @@ cc65に付属のドキュメント及び、"nes.inc"及び、"nes.lib"のソースファイルを良く参照
 <tr><td>void	</td><td><a href="func_nsd_init.html">nsd_init(void)</a>		</td><td>Initraize the driver.	</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_set_dpcm.html">nsd_set_dpcm(void* dpcm)</a>	</td><td>Set the dpcm information.	</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_play_bgm.html">nsd_play_bgm(void *bgm)</a>	</td><td>Start the BGM.		</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_stop_bgm.html">nsd_stop_bgm(void)</a>	</td><td>Stop  the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_stop_bgm.html">nsd_stop_bgm(void)</a>	</td><td>Stop the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_pause_bgm.html">nsd_pause_bgm(void *bgm)</a>	</td><td>Pause the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_resume_bgm.html">nsd_resume_bgm(void)</a>	</td><td>Resume the BGM.		</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_play_se.html">nsd_play_se(void *se)</a>	</td><td>Start the SE.	</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_stop_se.html">nsd_stop_se(void)</a>		</td><td>Stop  the SE.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_stop_se.html">nsd_stop_se(void)</a>		</td><td>Stop the SE.	</td></tr>
 </table>
 
 <h3>関数呼出規約 __fastcall__ について（About the calling conversion __fastcall__ ）</h3>
@@ -107,7 +116,7 @@ cc65に付属のドキュメント及び、"nes.inc"及び、"nes.lib"のソースファイルを良く参照
 </dl>
 <p>
 cc65では、一番右の引数以外は、ソフトウェアスタック（zeropage内の変数spによりＣ言語で制御される）に格納されますが、
-本サウンドドライバーではライブラリ関数の引数は必ず１つ以内とし、ソフトウェアスタックの使用を避けております。<br>
+本音源ドライバーではライブラリ関数の引数は必ず１つ以内とし、ソフトウェアスタックの使用を避けております。<br>
 これにより、cc65に付属のランタイムライブラリ`nes.lib'をリンクしないでも、動作する設計となっています。<br>
 </p>
 

@@ -9,19 +9,37 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MMLコンパイラ（nsc.exe）</h2>
 
 <p>
 テキストで記述されたMMLファイルを、本音源ドライバーNSD.Lib用の曲データに変換するコンパイラーです。<br>
+アセンブリ言語への出力のほか、NSF music formatへの出力に対応しています。<br>
 本MMLコンパイラでは、１つのＭＭＬファイルに複数の曲を記述することが可能です。<br>
 これは、異なる曲で同じエンベロープ、サブルーチンを使用する際に、曲データのバイナリサイズを軽減する事ができます。<br>
 </p>
 <p>
-Microsoft(R) Windows用の実行ファイル（32bit Application）です。<br>
-しかしながら、C++の標準関数のみを使用して開発しているため、
-他の環境でもMMLコンパイラをビルドできるかもしれません。
+アーカイブ中の"nsc.exe"は、Microsoft(R) Windows用の実行ファイル（32bit Application）です。<br>
+MMLコンパイラは、C++の標準関数のみを使用して開発しており、様々な環境にてビルドする事が可能です。<br>
+現状、Microsoft Visual C++.net 2003, 2008, gccにてビルドできることを確認しています。<br>
+</p>
+
+<p>
+This MML compiler can convert from the text file that witten MML to music data for NSD.lib.<br>
+MML file can have some music sequence data.<br>
+This can make small file bacause some music sequence data can use the same envelope data and voice data.<br>
+</p>
+<p>
+"nsd.exe" in archive is execute file for Microsoft(R) Windows (32bit application).<br>
+But, it develope by C++ language with only standard function.<br>
 </p>
 
 <div class='block'>
@@ -33,46 +51,44 @@ Microsoft(R) Windows用の実行ファイル（32bit Application）です。<br>
 <div class='block'>
 <h3><a href="mml.html">ＭＭＬ文法（Syntax of MML）</a></h3>
 
-<h4><a href="mml.html#construction">ＭＭＬ全体の構文（MML Construction）</a></h4>
+<div class='block'>
+<h4><a href="mml.html#construction">ＭＭＬの構文（MML Construction）</a></h4>
 <p>
 MMLの構文は、`#'で始まる定義命令・疑似命令及び、<br>
 データ（エンベロープパターン、シーケンスデータ）を記述する記述ブロックで構成されます。
 </p>
 
-<h4><a href="mml_envelope.html">エンベロープパターン（Envelope pattern define）</a></h4>
+<h5><a href="mml.html#common">●共通のコマンド</a></h5>
 <p>
-音色、音量、周波数、音程の推移パターンを定義します。<br>
+曲や効果音の設定・記述をするためのコマンド群です。<br>
 </p>
 
-<h4><a href="mml_dpcm.html">⊿PCM定義（Delta PCM define）</a></h4>
+<h5><a href="mml.html#nsf">●NSF music formatを出力する際に有効なコマンド</a></h5>
 <p>
-音階毎に⊿PCMの波形を定義します。<br>
+NSF music format用の設定コマンドです。<br>
+多くのコマンドは、NSFへビルドする際に、NSFヘッダーに設定されます。<br>
 </p>
 
-<h4><a href="mml_FDSC.html">FDSキャリア波形定義（FDS career wave table）</a></h4>
+<h5><a href="mml.html#asm">●アセンブリ言語ソースを出力する際に有効なコマンド</a></h5>
 <p>
-FDSキャリア波形（音色）を定義します。<br>
+アセンブリ言語ソースにて出力する際の設定コマンドです。<br>
+主に、6502開発環境"cc65"に付属の、アセンブラ"ca65.exe"用の疑似命令の出力を制御します。<br>
+ユーザー・アプリケーションに組み込む場合に、設定して下さい。<br>
 </p>
 
-<h4><a href="mml_FDSM.html">FDSモジュレータ波形定義（FDS modulator wave table）</a></h4>
+<h5><a href="mml.html#num">●数値の記法</a></h5>
 <p>
-FDSモジュレータ波形（ＬＦＯ）を定義します。<br>
+各コマンドの引数で、数値を記述する時の記法です。<br>
 </p>
+</div>
 
-<h4><a href="mml_vrc7.html">VRC7ユーザ音色定義（VRC7 User Instruments define）</a></h4>
-<p>
-VRC7のユーザー音色を定義します。<br>
-</p>
-
-<h4><a href="mml_n163.html">n163音色波形定義（n163 N163 sample wave block）</a></h4>
-<p>
-n163の音色波形を定義します。<br>
-</p>
-
-<h4><a href="mml_sequence.html">シーケンスデータ（Sequence data）</a></h4>
-<p>
-BGM,SE,サブルーチンの演奏パターンを定義します。<br>
-</p>
+<div class='block'>
+<h4><a name="tips">Tips</h4>
+<ul>
+<li><a href="mml_tips.html">最適化のためのヒント</a></li>
+<li><a href="n163.html">n106 / n163 の使い方</a></li>
+</ul>
+</div>
 
 </div>
 

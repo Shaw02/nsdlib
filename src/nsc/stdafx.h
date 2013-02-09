@@ -61,6 +61,7 @@ typedef struct {
 
 #include "MusicEvent.h"			//各イベント
 #include "mml_general.h"		//汎用
+#include "mml_repeat.h"		//汎用
 #include "mml_poke.h"			//メモリ書き込み
 #include "mml_note.h"			//音符・休符
 #include "mml_Address.h"

@@ -12,7 +12,7 @@ Title=NES Sound Driver Libraly
 
 
 [FILES]
-copyright.html
+diagram.html
 faq.html
 format_music.html
 func_nsd_init.html
@@ -20,6 +20,8 @@ func_nsd_main.html
 func_nsd_set_dpcm.html
 func_nsd_play_bgm.html
 func_nsd_play_se.html
+func_nsd_pause_bgm.html
+func_nsd_resume_bgm.html
 func_nsd_stop_bgm.html
 func_nsd_stop_se.html
 index.html
@@ -70,6 +72,7 @@ mml_N163.html
 mml_N163voice.html
 mml_N163_channel.html
 mml_s5b_envelope.html
+mml_macro.html
 licence.html
 revision.html
 start.html
@@ -77,6 +80,7 @@ thanks.html
 usage.html
 usage_nsc.html
 usage_nsd.html
+variable.html
 
 [INFOTYPES]
 

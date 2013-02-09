@@ -5,10 +5,7 @@
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		code
-//		unsigned	int		length
-//		unsigned	int		gatetime
-//					bool	slur
+//		unsigned	char 	_code		コード
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
@@ -23,6 +20,16 @@ mml_Address::mml_Address(unsigned char _code, const wchar_t _strName[]):
 	code[2] = 0;
 }
 
+//==============================================================
+//		コンストラクタ
+//--------------------------------------------------------------
+//	●引数
+//		unsigned	char 	_code		コード
+//		unsigned	char 	_data		引数1
+//		const		char	_strName[]	クラスの名前
+//	●返値
+//				無し
+//==============================================================
 mml_Address::mml_Address(unsigned char _code, unsigned char _data, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
@@ -50,7 +57,7 @@ mml_Address::~mml_Address(void)
 //		アドレスの設定
 //--------------------------------------------------------------
 //	●引数
-//				無し
+//		unsigned	int		_addr	アドレス
 //	●返値
 //				無し
 //==============================================================
@@ -93,7 +100,7 @@ unsigned	int	mml_Address::get_Address(void)
 //		idの設定
 //--------------------------------------------------------------
 //	●引数
-//				無し
+//		unsigned	int		_id		番号
 //	●返値
 //				無し
 //==============================================================
@@ -108,7 +115,7 @@ void	mml_Address::set_id(unsigned int _id)
 //	●引数
 //				無し
 //	●返値
-//				無し
+//		unsigned	int		番号
 //==============================================================
 unsigned int	mml_Address::get_id(void)
 {

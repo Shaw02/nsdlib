@@ -10,6 +10,10 @@
 </OBJECT>
 <UL>
 	<OBJECT type="text/sitemap">
+		<param name="Merge" value="block.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
 		<param name="Merge" value="help.css">
 
 		</OBJECT>
@@ -137,16 +141,12 @@
 					<param name="Local" value="mml_poke.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="D,D%：ディチューン">
-					<param name="Local" value="mml_detune.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="yV：VRC7レジスタ書き込み">
 					<param name="Local" value="mml_VRC7write.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="L：無限ループ">
-					<param name="Local" value="mml_loop.html">
+					<param name="Name" value="D,D%：ディチューン">
+					<param name="Local" value="mml_detune.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="E@,Ev,Em,En：エンベロープ">
@@ -157,8 +157,20 @@
 					<param name="Local" value="mml_echo.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="F：Sunsoft 5Bエンベロープ周波数">
+					<param name="Local" value="mml_s5b_envelope.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="K{}：調号">
 					<param name="Local" value="mml_KeySignature.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="L：無限ループ">
+					<param name="Local" value="mml_loop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="NC:n163チャンネル数設定">
+					<param name="Local" value="mml_N163_channel.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="P：ポルタメント">
@@ -179,6 +191,10 @@
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="TR：トラック">
 					<param name="Local" value="mml_TR.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="$：マクロ">
+					<param name="Local" value="mml_macro.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="@：音色">
@@ -207,14 +223,6 @@
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="@N：n163音色波形設定">
 					<param name="Local" value="mml_N163voice.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="NC:n163チャンネル数設定">
-					<param name="Local" value="mml_N163_channel.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="F：Sunsoft 5Bエンベロープ周波数">
-					<param name="Local" value="mml_s5b_envelope.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="(,)：相対ボリューム">
@@ -295,6 +303,14 @@
 				<param name="Local" value="func_nsd_stop_bgm.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_pause_bgm()">
+				<param name="Local" value="func_nsd_pause_bgm.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_resume_bgm()">
+				<param name="Local" value="func_nsd_resume_bgm.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="nsd_play_se()">
 				<param name="Local" value="func_nsd_play_se.html">
 				</OBJECT>
@@ -309,6 +325,14 @@
 		<param name="ImageNumber" value="1">
 		</OBJECT>
 	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="ブロック図">
+			<param name="Local" value="diagram.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="制御用変数">
+			<param name="Local" value="variable.html">
+			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="BGM,SEデータフォーマット">
 			<param name="Local" value="format_music.html">
@@ -325,12 +349,7 @@
 		<param name="ImageNumber" value="39">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="著作権">
-		<param name="Local" value="copyright.html">
-		<param name="ImageNumber" value="27">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="ライセンス">
+		<param name="Name" value="ライセンス・著作権">
 		<param name="Local" value="licence.html">
 		<param name="ImageNumber" value="23">
 		</OBJECT>

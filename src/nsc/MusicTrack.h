@@ -19,6 +19,7 @@ private:
 	unsigned	int		offset_repeat_a_b;	//前回の :  コマンドのオフセット
 	unsigned	int		offset_repeat_b_s;	//前回の |: コマンドのオフセット
 	unsigned	int		offset_repeat_b_b;	//前回の \  コマンドのオフセット
+				int		count_repeat_a;
 	unsigned	int		DefaultLength;
 
 				char	KeySignature[8];	//調号(c,d,e,f,g,a,b,r)
@@ -29,12 +30,14 @@ private:
 				char	octave1_old;		//
 
 				bool	echo_flag;			//疑似エコー フラグ
+				bool	echo_slur;			//疑似エコー スラーでつなげる？
 	unsigned	char	echo_volume;		//疑似エコー 音量
 	unsigned	char	echo_value;			//疑似エコー 何前？
 				char	oldNote[256];		//疑似エコー用バッファ
 
 	mml_note*			_old_note;
 	mml_Address*		_old_repeatA_Branch;
+	mml_repeat*			_old_repeat;
 
 	vector<	mml_Address*	>	ptcFDSC;		//FDS Carrer
 	vector<	mml_Address*	>	ptcFDSM;		//FDS Modlator

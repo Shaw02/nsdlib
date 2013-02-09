@@ -13,18 +13,6 @@
 #define _NSD_H_
 
 /****************************************************************/
-/*			Struct of ‡™PCM										*/
-/****************************************************************/
-typedef struct{
-	char		Control;			/*	I/O 0x4010	*/
-	char		DA;					/*	I/O 0x4011	*/
-	char		Address;			/*	I/O 0x4012	*/
-	char		Size;				/*	I/O 0x4013	*/
-} nsd_dpcm;
-
-
-
-/****************************************************************/
 /*			Function of Library									*/
 /****************************************************************/
 /*----------------------------------------------
@@ -70,6 +58,22 @@ void	__fastcall__	nsd_stop_bgm(void);
 
 
 /*----------------------------------------------
+	Summary :	Pause the BGM
+	Arguments :	None
+	Return :	None
+----------------------------------------------*/
+void	__fastcall__	nsd_pause_bgm(void);
+
+
+/*----------------------------------------------
+	Summary :	Resume the BGM
+	Arguments :	None
+	Return :	None
+----------------------------------------------*/
+void	__fastcall__	nsd_resume_bgm(void);
+
+
+/*----------------------------------------------
 	Summary :	Play the SE
 	Arguments :	Pointer of the SE data.
 	Return :	None
@@ -83,6 +87,23 @@ void	__fastcall__	nsd_play_se(void* ptr);
 	Return :	None
 ----------------------------------------------*/
 void	__fastcall__	nsd_stop_se(void);
+
+
+
+
+
+/****************************************************************/
+/*			Struct of ‡™PCM										*/
+/****************************************************************/
+typedef struct{
+	char		Control;			/*	I/O 0x4010	*/
+	char		DA;					/*	I/O 0x4011	*/
+	char		Address;			/*	I/O 0x4012	*/
+	char		Size;				/*	I/O 0x4013	*/
+} nsd_dpcm;
+
+
+
 
 
 /****************************************************************/

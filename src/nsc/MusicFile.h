@@ -41,7 +41,6 @@ public:
 	map<	int, BGM*		>	ptcBGM;		//BGM
 	map<	int, SE*		>	ptcSE;		//SE 
 	map<	int, Sub*		>	ptcSub;		//Subroutine Sequence
-	map< string, MusicTrack*>	ptcMac;		//Macro
 				DPCMinfo*		cDPCMinfo;
 
 private:

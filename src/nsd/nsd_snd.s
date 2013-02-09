@@ -1,3 +1,8 @@
+;=======================================================================
+;
+;	NES Sound Driver Libraly		Sound Device Driver
+;
+;=======================================================================
 
 	.setcpu		"6502"
 
@@ -16,10 +21,6 @@
 
 	.include	"nes.inc"
 	.include	"nsd.inc"
-
-;=======================================================================
-;	Table of Frequency 
-;=======================================================================
 
 ;=======================================================================
 ;	void	__fastcall__	nsd_snd_init(void);
@@ -185,12 +186,11 @@ JMPTBL:	.addr	_nsd_ch1_keyon		;BGM ch1 Pulse
 
 ;---------------------------------------
 .code
-	ldx	__channel
-	ldy	JMPTBL,x
-	sty	__ptr
-	ldy	JMPTBL + 1,x
-	sty	__ptr + 1
-	jmp	(__ptr)
+	ldy	JMPTBL,x		;
+	sty	__ptr			;
+	ldy	JMPTBL + 1,x		;
+	sty	__ptr + 1		;
+	jmp	(__ptr)			;[5]
 
 ;---------------------------------------
 _nsd_ch1_keyon:
@@ -488,12 +488,11 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 
 ;---------------------------------------
 .code
-	ldx	__channel
-	ldy	JMPTBL,x
-	sty	__ptr
-	ldy	JMPTBL + 1,x
-	sty	__ptr + 1
-	jmp	(__ptr)
+	ldy	JMPTBL,x		;[]
+	sty	__ptr			;[]
+	ldy	JMPTBL + 1,x		;[]
+	sty	__ptr + 1		;[]
+	jmp	(__ptr)			;[5]
 
 ;---------------------------------------
 _nsd_ch3_keyoff:
@@ -520,23 +519,23 @@ _nsd_dpcm_keyoff:
 _nsd_vrc7_keyoff:
 
 	;取りあえず、必ずKeyOffする。
-	lda	__chflag,x
-	and	#~nsd_chflag::KeyOn
-	sta	__chflag,x
+	lda	__chflag,x		;[4]4
+	and	#~nsd_chflag::KeyOn	;[2]6
+	sta	__chflag,x		;[4]10
 
 	;書かれない可能性があるので、ここでレジスタに書く。
-	txa
-	sub	#nsd::TR_VRC7
-	shr	a, 1
-	tay
-	add	#VRC7_Octave
+	txa				;[2]12
+	sub	#nsd::TR_VRC7		;[]
+	shr	a, 1			;[2]
+	tay				;[2]
+	add	#VRC7_Octave		;[2]
 	sta	VRC7_Resister		;レジスターをセット
 
 	lda	__vrc7_frequency,y	;[5]
 	and	#$EF			;[2]
 	sta	VRC7_Data		;
 
-	rts
+	rts				;[6]
 .endif
 
 ;---------------------------------------
@@ -648,7 +647,6 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 
 ;---------------------------------------
 .code
-	ldx	__channel
 	ldy	JMPTBL,x
 	sty	__ptr
 	ldy	JMPTBL + 1,x
@@ -989,12 +987,11 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 
 ;---------------------------------------
 .code
-	ldx	__channel
-	ldy	JMPTBL,x
-	sty	__ptr
-	ldy	JMPTBL + 1,x
-	sty	__ptr + 1
-	jmp	(__ptr)
+	ldy	JMPTBL,x		;
+	sty	__ptr			;
+	ldy	JMPTBL + 1,x		;
+	sty	__ptr + 1		;
+	jmp	(__ptr)			;[5]
 
 ;---------------------------------------
 _nsd_ch1_volume:
@@ -1131,22 +1128,22 @@ _nsd_vrc6_ch3_volume:
 .ifdef	VRC7
 _nsd_vrc7_volume:
 
-	eor	#$FF
-	tay
+	eor	#$FF			;[2]2
+	tay				;[2]4
 
-	txa
-	sub	#nsd::TR_VRC7
-	shr	a, 1
-	add	#VRC7_Volume
+	txa				;[2]6
+	sub	#nsd::TR_VRC7		;[]
+	shr	a, 1			;[2]
+	add	#VRC7_Volume		;[2]
 	sta	VRC7_Resister		;
 
 	tya				;[2]
-	and	#$0F			;[2]
-	ora	__voice_set,x		;[4]
+	and	#$0F			;[2]4
+	ora	__voice_set,x		;[4]8
 
 	sta	VRC7_Data
 
-	rts
+	rts				;[6]
 
 .endif
 
@@ -1459,7 +1456,6 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 
 ;---------------------------------------
 .code
-	ldx	__channel
 	ldy	JMPTBL,x
 	sty	__ptr
 	ldy	JMPTBL + 1,x
@@ -2627,7 +2623,7 @@ Detune:
 	ldy	#$00			;[2]
 	lda	__detune_fine,x		;[4]6
 	bpl	@L			;[2]8
-	ldy	#$FF			;	ay = __detune_fine (sign expand)
+	dey				;	ay = __detune_fine (sign expand)
 @L:	add	__tmp			;[5]13	clock > 6 clock
 	sta	VRC7_Data		;●Data Write
 	tya				;[2]
@@ -2684,7 +2680,7 @@ Detune:
 	ldy	#$00			;[2]
 	lda	__detune_fine,x		;[4]6
 	bpl	@L			;[2]8
-	ldy	#$FF			;	ay = __detune_fine (sign expand)
+	dey			;	ay = __detune_fine (sign expand)
 @L:	add	__tmp			;[5]13	clock > 6 clock
 	sta	OPLL_Data		;●Data Write
 	tya				;[2]

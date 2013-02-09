@@ -11,13 +11,13 @@ ASM = ca65
 AFLAG = -t none
 
 CC = cl65
-CFLAG = -t none -Oi -Os -Or -c -o
+CFLAG = -t none -c -o
 
 MC = ..\..\bin\nsc
 MFLAG = -a
 
 LINKER = ld65
-LFLAG = -C config.cfg -v -o
+LFLAG = -C nesc.cfg -v -o
 
 LIBER = ar65
 LIBFLAG = a

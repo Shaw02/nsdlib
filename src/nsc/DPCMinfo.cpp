@@ -5,8 +5,8 @@
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//		bool		_sub	このオブジェクトは、サブルーチン？
+//		MMLfile*			MML			MMLファイルのオブジェクト
+//		const		wchar_t	_strName[]	このオブジェクトの名前
 //	●返値
 //					無し
 //==============================================================
@@ -193,6 +193,7 @@ DPCMinfo::~DPCMinfo(void)
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
+//			int	key		キー番号（0:C / 1:Cis / ...）
 //	●返値
 //				無し
 //==============================================================
@@ -201,6 +202,15 @@ void	DPCMinfo::setKey(MMLfile* MML, int key)
 	setNote(MML, ((MML->GetInt()-1) * 12) + key);
 }
 
+//==============================================================
+//		設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*		MML		MMLファイルのオブジェクト
+//				int		note	ノート番号
+//	●返値
+//				無し
+//==============================================================
 void	DPCMinfo::setNote(MMLfile* MML, int note)
 {
 	unsigned	char	cData;
@@ -274,14 +284,14 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		infoDPCM[note].DA = 0;
 	}
 }
+
 //==============================================================
-//		コードの取得
+//		ΔPCMinfo構造体の生成（配置アドレスの解決）
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int _offset		オフセットアドレス計算用
-//		string*			_str		コードを入れるオブジェクト
+//		unsigned	int		_offset		ΔPCM配置アドレス
 //	●返値
-//				無し
+//		unsigned	int					ΔPCM配置終了アドレス
 //	●処理
 //		コードを取得しながら、各ΔPCMのバイナリを得る。
 //		（得たコードは、NSF出力の時しか使わないが。。。）
@@ -294,6 +304,7 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset)
 
 	unsigned	int	i=0;
 
+	//⊿PCMの配置アドレスを解決。しながらNSF出力用の⊿PCM実体を作成。
 	if(m_id > 0){
 		//DPCM
 		if(!ptcDPCM.empty()){
@@ -328,6 +339,17 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset)
 	return(_offset);
 }
 
+//==============================================================
+//		コードの取得
+//--------------------------------------------------------------
+//	●引数
+//		string*		_str		コードを入れるstringのポインタ
+//	●返値
+//		無し
+//	●処理
+//		コードを取得しながら、各ΔPCMのバイナリを得る。
+//		（得たコードは、NSF出力の時しか使わないが。。。）
+//==============================================================
 void	DPCMinfo::getDPCMCode(string* _str)
 {
 	map<string, DPCM*>::iterator	itDPCM;
@@ -354,7 +376,7 @@ void	DPCMinfo::getDPCMCode(string* _str)
 //		コードの取得
 //--------------------------------------------------------------
 //	●引数
-//				無し
+//		MusicFile*	MUS		コードを出力する曲データファイル・オブジェクト
 //	●返値
 //				無し
 //==============================================================
@@ -368,7 +390,7 @@ void	DPCMinfo::getAsm(MusicFile* MUS)
 		MusicItem::getAsm(MUS);
 
 		//DPCM
-		if(!ptcDPCM.empty()){
+		if((!ptcDPCM.empty()) && (MUS->Header.segmentPCM != "")) {
 			*MUS <<	"\n\n.segment	"	<<	'"'	<<	MUS->Header.segmentPCM	<<	'"' << endl;
 			itDPCM = ptcDPCM.begin();
 			while(itDPCM != ptcDPCM.end()){

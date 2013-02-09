@@ -1,3 +1,8 @@
+;=======================================================================
+;
+;	NES Sound Driver Libraly		Math Calculator
+;
+;=======================================================================
 
 	.setcpu		"6502"
 
@@ -83,12 +88,12 @@ exit:
 ;	void	__fastcall__	_nsd_mul(unsigned char a, unsigned char x);
 ;-----------------------------------------------------------------------
 ;<<Contents>>
-;	multiplication	8bit = 4bit * 4bit
+;	multiplication	8bit = 4bit * 6bit
 ;<<Input>>
-;	a	value 1 (lower 4bit)	volume side
-;	x	value 2 (lower 4bit)	envelop
+;	a	value 1 (lower 4bit)	volume side	(0 - 15)
+;	x	value 2 (lower 6bit)	envelope	(0 - 63)
 ;<<Output>>
-;	a =	a Å~ (x Å{ 1)
+;	a =	a Å~ (x Å{ 1) ÅÄ 16
 ;=======================================================================
 .proc	_nsd_mul
 .code

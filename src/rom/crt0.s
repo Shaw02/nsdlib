@@ -1,32 +1,12 @@
 ;=======================================================================
 ;
-;	NSF ROM code for NSD.Lib
+;	.nsf ROM CODE for nsd.lib and nsc.exe
 ;
 ;				Programmed by A.Watanabe
 ;
 ;=======================================================================
 
-;-------------------------------
-;Memory Map of this NSF program code
-;-------------------------------
-;Address	Type	Contents
-;0x8000		BYTE	BGM数
-;0x8001		BYTE	SE数
-;0x8002		WORD	⊿PCM構造体のポインタ
-;0x8004-	WORD	BGM､SEデータのポインタ
-;～～			BGM,SE,エンベロープ、音色データ ＆ ⊿PCM構造体
-;0xC000-		⊿PCM実体
-;0xE000-		プログラムコード
-
-; ------------------------------------------------------------------------
-; Define for C Langage
-; ------------------------------------------------------------------------
-
-;	.export		_exit
 	.export		__STARTUP__ : absolute = 1      ; Mark as startup
-;	.import		initlib, donelib, callmain
-;	.import		push0, _main, zerobss, copydata
-;	.import		ppubuf_flush
 
 	; Linker generated symbols
 	.import		__RAM_START__, __RAM_SIZE__
@@ -36,28 +16,18 @@
 	.import		__CODE_LOAD__,__CODE_RUN__, __CODE_SIZE__
 	.import		__RODATA_LOAD__,__RODATA_RUN__, __RODATA_SIZE__
 
-;	.include	"zeropage.inc"
-;	.include	"nes.inc"
-
 	.include	"..\..\include\nsd.inc"
 
-
 ; ------------------------------------------------------------------------
-; 変数
+; 	変数
 ; ------------------------------------------------------------------------
-.zeropage
-
-_ptr:	.word	0
-_tmp:	.word	0
-
-
 
 .bss
 
 _eff:	.byte	0		;SE start number
 
 ; ------------------------------------------------------------------------
-; 16 bytes INES header
+; 	16 bytes NSF header
 ; ------------------------------------------------------------------------
 
 	.ifdef	FDS
@@ -117,14 +87,11 @@ _eff:	.byte	0		;SE start number
 	.byte	0,0,0,0			;78
 
 ; ------------------------------------------------------------------------
-; 	実機ROM用	Reset
-; ------------------------------------------------------------------------
-.segment	"STARTUP"
-
-.ifdef	DPCMBank
-; ------------------------------------------------------------------------
 ; 	実機ROM用	IRQ	(DPCM)
 ; ------------------------------------------------------------------------
+.ifdef	DPCMBank
+
+.segment	"STARTUP"
 .proc	_irq_main
 
 	pha			;register push
@@ -147,6 +114,7 @@ _eff:	.byte	0		;SE start number
 ; ------------------------------------------------------------------------
 ; 	実機ROM用	NMI	(Vblank)
 ; ------------------------------------------------------------------------
+.segment	"STARTUP"
 .proc	_nmi_main
 
 	pha			;register push
@@ -171,6 +139,7 @@ _eff:	.byte	0		;SE start number
 ; ------------------------------------------------------------------------
 ; 	NSF用
 ; ------------------------------------------------------------------------
+.segment	"STARTUP"
 .proc	_nsf_main
 
 	jmp	_nsd_main
@@ -178,8 +147,9 @@ _eff:	.byte	0		;SE start number
 .endproc
 
 ; ------------------------------------------------------------------------
-; 
+; 	Init
 ; ------------------------------------------------------------------------
+.segment	"STARTUP"
 .proc	_nsf_init
 	pha
 
@@ -194,8 +164,9 @@ _eff:	.byte	0		;SE start number
 .endproc
 
 ; ------------------------------------------------------------------------
-; 
+; 	Zero memory
 ; ------------------------------------------------------------------------
+.segment	"STARTUP"
 .proc	_zero_mem
 	lda	#0
 	ldx	#0
@@ -289,44 +260,46 @@ _eff:	.byte	0		;SE start number
 .endproc
 
 ; ------------------------------------------------------------------------
-; 
+; 	Init
 ; ------------------------------------------------------------------------
+.segment	"STARTUP"
 .proc	_init
 
 	jsr	_nsd_init
 
 	lda	#<(__ROM0_LAST__)
-	sta	_ptr
+	sta	__ptr
 	lda	#>(__ROM0_LAST__)
-	sta	_ptr+1		;_ptr = __ROM0_START__
+	sta	__ptr+1		;__ptr = __ROM0_START__
 
 	ldy	#0
-	lda	(_ptr),y
+	lda	(__ptr),y
 	iny			;ax = BGM and SE's qty
 	iny
 	sta	_eff
 
-	lda	(_ptr),y
+	lda	(__ptr),y
 	iny
-	sta	_tmp
-	lda	(_ptr),y
+	sta	__tmp
+	lda	(__ptr),y
 	tax			;ax = Pointer of ⊿PCM infomation Struct
-	lda	_tmp
+	lda	__tmp
 	jsr	_nsd_set_dpcm
 
 	rts
 .endproc
 
 ; ------------------------------------------------------------------------
-; 
+; 	Play music
 ; ------------------------------------------------------------------------
+.segment	"STARTUP"
 .proc	_play_music
 
 	pha
 	lda	#<(__ROM0_LAST__)
-	sta	_ptr
+	sta	__ptr
 	lda	#>(__ROM0_LAST__)
-	sta	_ptr+1		;_ptr = __ROM0_START__
+	sta	__ptr+1		;__ptr = __ROM0_START__
 	pla
 
 	cmp	_eff
@@ -335,12 +308,12 @@ _eff:	.byte	0		;SE start number
 	adc	#2
 	asl	a
 	tay			; y = _mus * 2
-	lda	(_ptr),y
-	sta	_tmp
+	lda	(__ptr),y
+	sta	__tmp
 	iny
-	lda	(_ptr),y	; ax = Pointer of BGM/SE
+	lda	(__ptr),y	; ax = Pointer of BGM/SE
 	tax
-	lda	_tmp
+	lda	__tmp
 	plp
 
 	bcs	@L
@@ -350,7 +323,7 @@ _eff:	.byte	0		;SE start number
 
 
 ; ------------------------------------------------------------------------
-; hardware vectors
+; 	Hardware vectors
 ; ------------------------------------------------------------------------
 
 .ifdef	DPCMBank

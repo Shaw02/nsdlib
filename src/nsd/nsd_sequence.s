@@ -1,3 +1,8 @@
+;=======================================================================
+;
+;	NES Sound Driver Libraly		Track Sequencer
+;
+;=======================================================================
 
 	.setcpu		"6502"
 
@@ -20,7 +25,7 @@
 ;<<Contents>>
 ;	Key On
 ;<<Input>>
-;	nothing
+;	x	Channel * 2
 ;<<Output>>
 ;	nothing
 ;=======================================================================
@@ -91,7 +96,7 @@ exit:	rts
 ;<<Contents>>
 ;	Key Off
 ;<<Input>>
-;	nothing
+;	x	Channel * 2
 ;<<Output>>
 ;	nothing
 ;=======================================================================
@@ -188,6 +193,7 @@ Voice_End:
 Volume_End:
 
 	;音色エンベロープ
+	lda	__chflag,x
 	and	#$01			;●●●　最適化　●●●
 	beq	@VoiceE			;gatemode = 1 だったら、
 	lda	__voice,x		;ここでKeyOff時の音色にする。

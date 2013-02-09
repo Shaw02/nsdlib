@@ -9,8 +9,18 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: Envelope</h2>
 
 <!-- ──────────────── -->
@@ -32,24 +42,28 @@
 <p>
 音色エンベロープのパターン番号を指定して下さい。<br>
 音色エンベロープを無効にする場合は、<a href="mml_voice.html">`@'コマンド</a>を使ってください。<br>
+（Default: Disable）<br>
 </p>
 
 <h4>volume_envelope</h4>
 <p>
 音量エンベロープのパターン番号を指定して下さい。<br>
 数値の替わりに <code>*</code>を記述する事で、エンベロープを無効にできます。
+（Default: Disable）<br>
 </p>
 
 <h4>frequency_envelope</h4>
 <p>
 ピッチ・エンベロープのパターン番号を指定して下さい。<br>
 数値の替わりに <code>*</code>を記述する事で、エンベロープを無効にできます。
+（Default: Disable）<br>
 </p>
 
 <h4>note_envelope</h4>
 <p>
 ノート・エンベロープのパターン番号を指定して下さい。<br>
 数値の替わりに <code>*</code>を記述する事で、エンベロープを無効にできます。
+（Default: Disable）<br>
 </p>
 
 </div>
@@ -71,23 +85,6 @@
 <a href="mml_release.html">Rmコマンド</a>でゲートタイム時の処理を指定し、
 それと同時に、<a href="mml_rest.html">r(休符)</a>コマンドでは臨時記号`-'か`+'を付けてください。
 </p>
-<p>
-ファミコンの内蔵音源で音程を変化させる場合、レジスターのMSBが更新されると位相がリセットされプチノイズが発生します。<br>
-レジスターのMSBの更新が近い音程としては以下です。<br>
-エンベロープの数値とディチューンの数値の総和を以下表の許容幅の範囲内に留めると、音程レジスタMSB更新によるプチノイズを回避できます。<br>
-（ただし、数値の絶対値が16を越える場合は、音程レジスタMSBが更新される場合があります。）
-</p>
-
-<table>
-<tr><th>音程</th><th>許容幅</th></tr>
-<tr><td>o1b</td><td>1 ～ </td></tr>
-<tr><td>o2d</td><td> ～ -2</td></tr>
-<tr><td>o2f</td><td> ～  0</td></tr>
-<tr><td>o2a</td><td> ～ -2</td></tr>
-<tr><td>o3d</td><td> ～ -2</td></tr>
-<tr><td>o3a</td><td> ～ -2</td></tr>
-<tr><td>o4a</td><td> ～ -4</td></tr>
-</table>
 
 </div>
 

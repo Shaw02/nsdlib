@@ -9,8 +9,14 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 
 <h2>はじめに</h2>
 
@@ -85,10 +91,21 @@ NSF music formatを再生する場合には、別途、ＮＳＦプレイヤーが必要となります。<br>
 
 <div class='block'>
 <h4>開発環境</h4>
+
+
 <p>
-本サウンドドライバーを用いたファミコン用アプリケーション（ゲームなど）を開発するには、
-別途、65(C)02用の開発環境が必要となります。<br>
-本ソフトウェアは、65(C)02クロス開発環境<a href="http://www.cc65.org/" target="_blank">cc65</a>用のライブラリとして開発しています。
+音源ドライバー nsd.lib は、6502クロス開発環境<a href="http://www.cc65.org/" target="_blank">cc65</a>
+にて開発しており、オブジェクト・ライブラリとして配布しています。<br>
+本音源ドライバーを用いたファミコン用アプリケーション（ゲームなど）を開発するには、別途、
+6502クロス開発環境<a href="http://www.cc65.org/" target="_blank">cc65</a>が必要となります。<br>
+</p>
+
+<p>
+尚、MMLコンパイラの開発には、
+<a href="http://www.microsoft.com/japan/msdn/vstudio/previous/2003/overview/eaoverview.aspx" target="_blank">
+Microsoft Visual C++.net 2003</a>を使用しております。<br>
+また、音源ドライバーのビルドには、同ソフト内の nmake.exe を利用しております。<br>
+nmake.exe につきましては、無料版の Visual C++.net Express Edition にも含まれております。<br>
 </p>
 </div>
 

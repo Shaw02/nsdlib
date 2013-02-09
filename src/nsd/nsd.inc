@@ -1,79 +1,22 @@
+;=======================================================================
+;
+;	NES Sound Driver Libraly		Define file
+;
+;-----------------------------------------------------------------------
+;
+;	《メモ》	！！注意！！
+;
+;	変えた場合は、 include フォルダの nes.inc にも適用する事！！
+;
+;=======================================================================
 
-;---------------------------------------
-;General Define
-.scope	nsd
-	APU_Track	= 5		;
 
-	TR_FDS		= APU_Track * 2
-	.ifdef	FDS
-		FDS_Track	= 1		;
-	.else
-		FDS_Track	= 0		;
-	.endif
 
-	TR_VRC6		= TR_FDS + FDS_Track * 2
-	.ifdef	VRC6
-		VRC6_Track	= 3		;
-	.else
-		VRC6_Track	= 0		;
-	.endif
 
-	TR_VRC7		= TR_VRC6 + VRC6_Track * 2
-	.ifdef	VRC7
-		VRC7_Track	= 6		;
-	.else
-		VRC7_Track	= 0		;
-	.endif
 
-	TR_OPLL		= TR_VRC7 + VRC7_Track * 2
-	.ifdef	OPLL
-		OPLL_Track	= 9+5		;
-	.else
-		OPLL_Track	= 0		;
-	.endif
-
-	TR_MMC5		= TR_OPLL + OPLL_Track * 2
-	.ifdef	MMC5
-		MMC5_Track	= 2		; (without DPCM)
-	.else
-		MMC5_Track	= 0		;
-	.endif
-
-	TR_N163		= TR_MMC5 + MMC5_Track * 2
-	.ifdef	N163
-		N163_Track	= 8		;
-	.else
-		N163_Track	= 0		;
-	.endif
-
-	TR_PSG		= TR_N163 + N163_Track * 2
-	.ifdef	PSG
-		PSG_Track	= 3		;
-	.else
-		PSG_Track	= 0		;
-	.endif
-
-	TR_NULL		= TR_PSG + PSG_Track * 2
-	.ifdef	NULL
-		NULL_Track	= 1		;
-	.else
-		NULL_Track	= 0		;
-	.endif
-
-	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + OPLL_Track + MMC5_Track + N163_Track + PSG_Track + NULL_Track
-	SE_Track	= 2		;
-
-	Track		= BGM_Track + SE_Track
-
-	TR_BGM1		= 0
-	TR_BGM2		= 2
-	TR_BGM3		= 4
-	TR_BGM4		= 6
-	TR_BGM5		= 8
-	TR_SE1		= BGM_Track * 2 + 0
-	TR_SE2		= BGM_Track * 2 + 2
-
-.endscope
+;=======================================================================
+;	Sound I/O Device address defines
+;-----------------------------------------------------------------------
 
 ;---------------------------------------
 ;FDS define
@@ -203,9 +146,159 @@ PSG_Envelope_Low	= $0B
 PSG_Envelope_High	= $0C
 PSG_Envelope_Form	= $0D
 
+
+
+
+
+;=======================================================================
+;	Macros
+;-----------------------------------------------------------------------
+
+.MACPACK generic
+.MACPACK longbranch 
+
+.macro  ldax    arg
+	.if (.match (.left (1, {arg}), #))
+		; immediate mode
+		lda     #<(.right (.tcount ({arg})-1, {arg}))
+		ldx     #>(.right (.tcount ({arg})-1, {arg}))
+	.else
+		; assume absolute or zero page
+		lda     arg
+		ldx     1+(arg)
+	.endif
+.endmacro
+
+.macro  addw    Arg
+	clc
+	.if (.match (.left (1, {arg}), #))
+		; immediate mode
+		adc     #<(.right (.tcount ({arg})-1, {arg}))
+		adc     #>(.right (.tcount ({arg})-1, {arg}))
+	.else
+		; assume absolute or zero page
+		adc     arg
+		adc     1+(arg)
+	.endif
+.endmacro
+
+.macro  subw    Arg
+	sec
+	.if (.match (.left (1, {arg}), #))
+		; immediate mode
+		sbc     #<(.right (.tcount ({arg})-1, {arg}))
+		sbc     #>(.right (.tcount ({arg})-1, {arg}))
+	.else
+		; assume absolute or zero page
+		sbc     arg
+		sbc     1+(arg)
+	.endif
+.endmacro
+
+.macro	shl	arg, c
+	.repeat	c
+		asl	arg
+	.endrepeat
+.endmacro
+
+.macro	shr	arg, c
+	.repeat	c
+		lsr	arg
+	.endrepeat
+.endmacro
+
+
+
+
+
+;=======================================================================
+;	General Define
+;-----------------------------------------------------------------------
+
+.scope	nsd
+	APU_Track	= 5			;
+
+	TR_FDS		= APU_Track * 2
+	.ifdef	FDS
+		FDS_Track	= 1		;
+	.else
+		FDS_Track	= 0		;
+	.endif
+
+	TR_VRC6		= TR_FDS + FDS_Track * 2
+	.ifdef	VRC6
+		VRC6_Track	= 3		;
+	.else
+		VRC6_Track	= 0		;
+	.endif
+
+	TR_VRC7		= TR_VRC6 + VRC6_Track * 2
+	.ifdef	VRC7
+		VRC7_Track	= 6		;
+	.else
+		VRC7_Track	= 0		;
+	.endif
+
+	TR_OPLL		= TR_VRC7 + VRC7_Track * 2
+	.ifdef	OPLL
+		OPLL_Track_FM		= 9
+		OPLL_Track_Rhythm	= 5
+		OPLL_Track	= OPLL_Track_FM + OPLL_Track_Rhythm
+	.else
+		OPLL_Track	= 0		;
+	.endif
+
+	TR_MMC5		= TR_OPLL + OPLL_Track * 2
+	.ifdef	MMC5
+		MMC5_Track	= 2		; (without DPCM)
+	.else
+		MMC5_Track	= 0		;
+	.endif
+
+	TR_N163		= TR_MMC5 + MMC5_Track * 2
+	.ifdef	N163
+		N163_Track	= 8		;
+	.else
+		N163_Track	= 0		;
+	.endif
+
+	TR_PSG		= TR_N163 + N163_Track * 2
+	.ifdef	PSG
+		PSG_Track	= 3		;
+	.else
+		PSG_Track	= 0		;
+	.endif
+
+	TR_NULL		= TR_PSG + PSG_Track * 2
+	.ifdef	NULL
+		NULL_Track	= 1		;
+	.else
+		NULL_Track	= 0		;
+	.endif
+
+	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + OPLL_Track + MMC5_Track + N163_Track + PSG_Track + NULL_Track
+	SE_Track	= 2		;
+
+	Track		= BGM_Track + SE_Track
+
+	TR_BGM1		= 0
+	TR_BGM2		= 2
+	TR_BGM3		= 4
+	TR_BGM4		= 6
+	TR_BGM5		= 8
+	TR_SE1		= BGM_Track * 2 + 0
+	TR_SE2		= BGM_Track * 2 + 2
+
+.endscope
+
+
+
+
+
 ;=======================================================================
 ;	Working Struct define in Zero-page area
 ;-----------------------------------------------------------------------
+
 .Struct		NSD_Envelop
 	V		.byte		;Volume & Voice (ch3:Tempo / ch5:Tempo_ctr)
 	F		.byte		;Frequency & Note
@@ -219,14 +312,40 @@ PSG_Envelope_Form	= $0D
 .Struct		NSD_work_zp
 	_ptr		.word					;00 General pointer value
 	_tmp		.word					;02 General value
-	flag		.byte					;04 flag
-	channel		.byte					;05 channel (x resister)
+	channel		.byte					;04 channel (x resister)
+	flag		.byte					;05 flag
 	Sequence_ptr	.word			nsd::Track	;06 Address of playing sequence
 	Length		.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
 	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
 .Endstruct
 
 ; 6 + ( 6 [Byte] * 28 [ch] ) = 174
+
+;---------------------------------------
+;	Defines for work structures
+
+.scope	nsd_flag
+	BGM	= $01
+	SE	= $02
+.endscope
+
+;Zero Page Works
+.define	__ptr		nsd_work_zp + NSD_work_zp::_ptr
+.define	__tmp		nsd_work_zp + NSD_work_zp::_tmp
+.define	__flag		nsd_work_zp + NSD_work_zp::flag
+.define	__channel	nsd_work_zp + NSD_work_zp::channel
+.define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
+.define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
+.define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
+.define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
+.define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
+
+.define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+.define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+
+
+
+
 
 ;=======================================================================
 ;	Working  Struct define in RAM area
@@ -308,8 +427,8 @@ PSG_Envelope_Form	= $0D
 	Gatetime	.tag	NSD_gatetime	nsd::Track	;gate time [tick]
 	Note		.tag	NSD_note	nsd::Track	;octave and note command
 	Detune		.tag	NSD_Detune	nsd::Track	;detune
-	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento / TR5: BGM1 & BGM2 Frequency
-	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento / TR5: BGM3 & SE1  Frequency
+	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento / TR5: BGM1 & BGM2 frequency
+	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento / TR5: BGM3 & SE1  frequency
 	Por_now		.word			nsd::Track	;Portamento
 	Trans		.tag	NSD_Trans	nsd::Track	;Transpose
 	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat
@@ -327,58 +446,38 @@ PSG_Envelope_Form	= $0D
 	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
 
 .ifdef	MMC5
-	MMC5_Frequency	.byte			nsd::MMC5_Track
+	MMC5_Frequency	.byte			nsd::MMC5_Track	;MMC5 frequency
 .endif
 
 .ifdef	FDS
-	FDS_Frequency	.byte
-	FDS_SweepBias	.byte
+	FDS_Frequency	.byte					;FDS frequency
+	FDS_SweepBias	.byte					;FDS Sweep bias
 .endif
 
 .ifdef	VRC7
-	VRC7_Frequency	.byte			nsd::VRC7_Track
+	VRC7_Frequency	.byte			nsd::VRC7_Track	;VRC7 frequecny
 .endif
 
 .ifdef	OPLL
-	OPLL_Frequency	.byte			9
-	OPLL_Rhythm	.byte
+	OPLL_Frequency	.byte			nsd::OPLL_Track_FM	;OPLL frequency (FM)
+	OPLL_Rhythm	.byte						;OPLL Rhythm
 .endif
 
 .ifdef	N163
-	N163_num	.byte						;ch number
-	N163_Frequency	.byte			nsd::N163_Track
+	N163_num	.byte					;N163 ch number
+	N163_Frequency	.byte			nsd::N163_Track	;N163 frequency
 .endif
 
 .ifdef	PSG
-	PSG_switch	.byte
+	PSG_switch	.byte					;PSG switch
 .endif
-
-
 
 .Endstruct
 
-;=======================================================================
+
+
+;---------------------------------------
 ;	Defines for work structures
-;-----------------------------------------------------------------------
-
-.scope	nsd_flag
-	BGM	= $01
-	SE	= $02
-.endscope
-
-;Zero Page Works
-.define	__ptr		nsd_work_zp + NSD_work_zp::_ptr
-.define	__tmp		nsd_work_zp + NSD_work_zp::_tmp
-.define	__flag		nsd_work_zp + NSD_work_zp::flag
-.define	__channel	nsd_work_zp + NSD_work_zp::channel
-.define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
-.define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
-.define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
-.define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
-.define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
-
-.define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
-.define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 
 .scope	nsd_chflag
 	SE2	= $80
@@ -436,10 +535,10 @@ PSG_Envelope_Form	= $0D
 .define	__sweep_ch2	nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 
 
-.define	__apu_frequency1	nsd_work + NSD_work::Por_Lv + nsd::TR_BGM5		;.word
-.define	__apu_frequency2	nsd_work + NSD_work::Por_Lv + nsd::TR_BGM5 + 1		;.word
-.define	__apu_frequency3	nsd_work + NSD_work::Por_Co + nsd::TR_BGM5		;.word
-.define	__se_frequency		nsd_work + NSD_work::Por_Co + nsd::TR_BGM5 + 1		;.word
+.define	__apu_frequency1	nsd_work + NSD_work::Por_Lv + nsd::TR_BGM5		;.byte
+.define	__apu_frequency2	nsd_work + NSD_work::Por_Lv + nsd::TR_BGM5 + 1		;.byte
+.define	__apu_frequency3	nsd_work + NSD_work::Por_Co + nsd::TR_BGM5		;.byte
+.define	__se_frequency		nsd_work + NSD_work::Por_Co + nsd::TR_BGM5 + 1		;.byte
 .define	__dpcm_info		nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5		;.word
 
 .ifdef	MMC5
@@ -470,6 +569,10 @@ PSG_Envelope_Form	= $0D
 .define	__psg_switch		nsd_work + NSD_work::PSG_switch
 .endif
 
+
+
+
+
 ;=======================================================================
 ;		Struct of DPCM					*
 ;-----------------------------------------------------------------------
@@ -484,62 +587,4 @@ PSG_Envelope_Form	= $0D
 .endif
 .Endstruct
 
-
-
-;=======================================================================
-;	Macros
-;-----------------------------------------------------------------------
-
-.MACPACK generic
-.MACPACK longbranch 
-
-.macro  ldax    arg
-	.if (.match (.left (1, {arg}), #))
-		; immediate mode
-		lda     #<(.right (.tcount ({arg})-1, {arg}))
-		ldx     #>(.right (.tcount ({arg})-1, {arg}))
-	.else
-		; assume absolute or zero page
-		lda     arg
-		ldx     1+(arg)
-	.endif
-.endmacro
-
-.macro  addw    Arg
-	clc
-	.if (.match (.left (1, {arg}), #))
-		; immediate mode
-		adc     #<(.right (.tcount ({arg})-1, {arg}))
-		adc     #>(.right (.tcount ({arg})-1, {arg}))
-	.else
-		; assume absolute or zero page
-		adc     arg
-		adc     1+(arg)
-	.endif
-.endmacro
-
-.macro  subw    Arg
-	sec
-	.if (.match (.left (1, {arg}), #))
-		; immediate mode
-		sbc     #<(.right (.tcount ({arg})-1, {arg}))
-		sbc     #>(.right (.tcount ({arg})-1, {arg}))
-	.else
-		; assume absolute or zero page
-		sbc     arg
-		sbc     1+(arg)
-	.endif
-.endmacro
-
-.macro	shl	arg, c
-	.repeat	c
-		asl	arg
-	.endrepeat
-.endmacro
-
-.macro	shr	arg, c
-	.repeat	c
-		lsr	arg
-	.endrepeat
-.endmacro
 

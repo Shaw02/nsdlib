@@ -5,8 +5,8 @@
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		MusicFile*	SND
-//		int			iOffset
+//		const		wchar_t	_strName[]	オブジェクト名
+//		string				_code
 //	●返値
 //				無し
 //==============================================================
@@ -79,10 +79,10 @@ void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 	if((offsetPCM < 0xC000) || (offsetPCM > 0x10000)){
 		MML->Err(L"$C000 ～ $10000（⊿PCM未使用）の範囲で指定して下さい。");
 	}
-	if((offsetPCM & 0x0FFF) != 0){
-		MML->Warning(L"⊿PCMの配置アドレスは4096（$1000）Byteでアライメントします。");
-		offsetPCM &= 0xF000;
-		offsetPCM += 0x1000;
+	if((offsetPCM & 0x003F) != 0){
+		MML->Warning(L"⊿PCMの配置アドレスは64（$40）Byteでアライメントします。");
+		offsetPCM &= 0xFFC0;
+		offsetPCM += 0x0040;
 	}
 }
 

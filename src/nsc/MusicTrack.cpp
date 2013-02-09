@@ -5,7 +5,7 @@
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		MMLfile*	MML
+//		const		wchar_t	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
@@ -58,7 +58,7 @@ MusicTrack::~MusicTrack(void)
 //		アドレス情報を決定する。
 //--------------------------------------------------------------
 //	●引数
-//				無し
+//		MusicFile*	MUS		曲データファイル・オブジェクト
 //	●返値
 //				無し
 //==============================================================
@@ -221,7 +221,7 @@ void	MusicTrack::SetEvent(MusicItem* _item)
 //	●引数
 //		無し
 //	●返値
-//		無し
+//		size_t
 //==============================================================
 size_t	MusicTrack::SetEnd(void)
 {
@@ -263,16 +263,24 @@ void	MusicTrack::SetLoop()
 //==============================================================
 void	MusicTrack::SetRepeat_A_Start(MMLfile* MML)
 {
-	int	times = MML->GetInt();
+	unsigned	char	cData	= MML->GetChar();
+//				int		times	= MML->GetInt();
 
-	if( (times <= 255) && (times >=1) ){
-		SetEvent(new mml_general(nsd_Repeat_A_Start, times, L"Repeat(A) Start"));
-		offset_repeat_a_s = offset_now;	// ] コマンドでは、次のコマンドに戻る。
-		offset_repeat_a_b = 0;
+	MML->Back();
+
+	if((cData < '0') || (cData > '9')){
+		count_repeat_a = -1;
 	} else {
-		MML->Err(L"リピート回数は1～255の範囲で指定して下さい。");
+		count_repeat_a = MML->GetInt();
+		if( (count_repeat_a > 255) || (count_repeat_a < 1) ){
+			MML->Err(L"リピート回数は1～255の範囲で指定して下さい。");
+		}
 	}
+	_old_repeat = new mml_repeat();
 
+	SetEvent(_old_repeat);
+	offset_repeat_a_s = offset_now;	// ] コマンドでは、次のコマンドに戻る。
+	offset_repeat_a_b = 0;
 }
 
 //==============================================================
@@ -308,7 +316,30 @@ void	MusicTrack::SetRepeat_A_Branch(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 {
-	mml_Address*	_event;
+
+	mml_Address*		_event;
+	unsigned	char	cData	= MML->GetChar();
+//				int		times	= MML->GetInt();
+
+	MML->Back();
+
+	if((cData < '0') || (cData > '9')){
+		//引数が無い場合
+		if(count_repeat_a == -1){
+			MML->Err(L"リピート回数の記述がありません。");
+		}
+	} else {
+		//引数がある場合
+		if(count_repeat_a != -1){
+			MML->Err(L"リピート回数が両方に記述されています。");
+		}
+		count_repeat_a = MML->GetInt();
+		if( (count_repeat_a > 255) || (count_repeat_a < 1) ){
+			MML->Err(L"リピート回数は1～255の範囲で指定して下さい。");
+		}
+	}
+
+	_old_repeat->set_count(count_repeat_a);
 
 	if(offset_repeat_a_s != 0){
 		_event = new mml_Address(nsd_Repeat_A_End, L"Repeat(A) End");
@@ -545,8 +576,8 @@ void	MusicTrack::SetEcho(void)
 void	MusicTrack::SetEcho(MMLfile* MML)
 {
 	unsigned	char	cData;
-	unsigned	char	_value;
-	unsigned	char	_volume;
+				int		_value;
+				int		_volume;
 
 	_value = MML->GetInt();
 	if((_value<0) || (_value>255)){
@@ -559,14 +590,18 @@ void	MusicTrack::SetEcho(MMLfile* MML)
 	}
 
 	_volume = MML->GetInt();
-	if((_volume<0) || (_volume>15)){
-		MML->Err(L"ECコマンドの第２パラメータは0～15の範囲で指定してください。");
+	if((_volume<-1) || (_volume>15)){
+		MML->Err(L"ECコマンドの第２パラメータは-1～15の範囲で指定してください。");
 	}
 
 	echo_flag = true;
 	echo_value	= _value;
-	echo_volume	= _volume;
-
+	if(_volume == -1){
+		echo_slur = true;
+	} else {
+		echo_slur = false;
+		echo_volume	= _volume;
+	}
 }
 
 //==============================================================
@@ -657,7 +692,7 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		}
 
 		//１つ戻る
-		MML->StreamPointerAdd(-1);
+		MML->Back();
 
 		switch(MML->GetCommandID(KS_Command, sizeof(KS_Command)/sizeof(Command_Info))){
 			case(ks_c):
@@ -879,8 +914,12 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 		char	old_octave = (old_note / 12);
 //		int		i = 0;
 
-		//Echo volume
-		SetEvent(new mml_general(nsd_Volume + echo_volume, L"Echo Volume"));
+		if(echo_slur == false){
+			//Echo volume
+			SetEvent(new mml_general(nsd_Volume + echo_volume, L"Echo Volume"));
+		} else {
+			_old_note->SetTai();
+		}
 
 		//Echo note
 		if(old_octave < now_octave){
@@ -897,9 +936,10 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 		_old_note = new mml_note(old_note % 12, Length, GateTime, Slur, L"Echo Note");
 		SetEvent(_old_note);
 
-
-		//volume return
-		SetEvent(new mml_general(nsd_Volume + volume, L"Volume"));
+		if(echo_slur == false){
+			//volume return
+			SetEvent(new mml_general(nsd_Volume + volume, L"Volume"));
+		}
 	}
 }
 
@@ -918,7 +958,7 @@ void	MusicTrack::SetTai(MMLfile* MML)
 }
 
 //==============================================================
-//		省略時の音調
+//		省略時の音長
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト

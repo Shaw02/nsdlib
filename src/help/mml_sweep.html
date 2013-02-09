@@ -9,8 +9,18 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: APU:Sweep / VRC7:Sustain / N163:Sample length</h2>
 
 <!-- ──────────────── -->
@@ -56,7 +66,7 @@
 </p>
 <table>
 <tr><th>value	</th><th>refresh rate	</th></tr>
-<tr><td>0～7	</td><td>Off		</td></tr>
+<tr><td>0～7	</td><td>Off		（Default）</td></tr>
 <tr><td>8		</td><td>120 Hz		</td></tr>
 <tr><td>9		</td><td> 60 Hz		</td></tr>
 <tr><td>10		</td><td> 40 Hz		</td></tr>
@@ -74,7 +84,7 @@
 </p>
 <table>
 <tr><th>value	</th><th>Depth	(Shift value)	</th></tr>
-<tr><td>0		</td><td>0	(0)	</td></tr>
+<tr><td>0		</td><td>0	(0)		（Default）</td></tr>
 <tr><td>1		</td><td>-7	(1)	</td></tr>
 <tr><td>2		</td><td>-6	(2)	</td></tr>
 <tr><td>3		</td><td>-5	(3)	</td></tr>
@@ -94,19 +104,19 @@
 
 <h4>bias (FDS)</h4>
 <p>
-モジュレーターのsweep biasを0～127の範囲で指定します。<br>
+モジュレーターのsweep biasを0～127の範囲で指定します。（Default: <var>bias</var> = 0）<br>
 ただし、64～127は、-64～-1に相当します。<br>
 </p>
 
 <h4>sustain (VRC7)</h4>
 <p>
-0 … サスティンを無効にします。<br>
+0 … サスティンを無効にします。（Default）<br>
 1 … サスティンを有効にします。<br>
 </p>
 
 <h4>length (n106/n163)</h4>
 <p>
-n163の波形長を (64-<var>length</var>)×4 サンプルに設定します。<br>
+n163の波形長を (64-<var>length</var>)×4 サンプルに設定します。（Default: <var>length</var> = 0 (256 sample)）<br>
 トラック毎に指定して下さい。<br>
 エミュレータによっては、以下表の56～63の範囲にしか対応していませんので、注意して下さい。<br>
 また、サンプル長と、使用するチャンネル数によって音程が変動しますので、注意して下さい。<br>
@@ -126,13 +136,13 @@ n163の波形長を (64-<var>length</var>)×4 サンプルに設定します。<br>
 
 <h4>switch (Sunsoft 5B)</h4>
 <p>
-0 … Sunsoft 5Bのハードウェアエンベロープを無効にします。<br>
+0 … Sunsoft 5Bのハードウェアエンベロープを無効にします。（Default）<br>
 1 … Sunsoft 5Bのハードウェアエンベロープを有効にします。<br>
 </p>
 
 <h4>form (Sunsoft 5B)</h4>
 <p>
-Sunsoft 5Bのハードウェアエンベロープの形状を指定します。<br>
+Sunsoft 5Bのハードウェアエンベロープの形状を指定します。（Default: <var>form</var> = 0）<br>
 </p>
 
 </div>

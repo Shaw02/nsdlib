@@ -9,9 +9,17 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
 
+<!-- contents start -->
+<div id='contents'>
 <h2>n106 / n163 の使い方</h2>
 
 <div class='block'>
@@ -53,9 +61,9 @@ n106 / n163の音色関連のコマンドは、以下の３つのコマンドがあります。<br>
 何れのコマンドにおいても、上述のアドレス表が大きく関係します。<br>
 </p>
 <dl>
-<dt><a href="mml_N163voice.html">@N</a></dt><dd>… 指定値×２のアドレスを先頭に、<a href="mml_n163.html">N163(){}ブロック</a>で定義した音色波形をロードします。</dd>
-<dt><a href="mml_voice.html">@</a></dt><dd>… トラックに適用する音色波形データのある先頭アドレスを、指定値×２に設定します。</dd>
-<dt><a href="mml_sweep.html">s</a></dt><dd>… トラックに適用する音色のサンプル長を、（64－指定値）×４サンプルに設定します。</dd>
+<dt><a href="mml_N163voice.html">@N</a><var>n</var>	</dt><dd>… <var>n</var>×２のアドレスを先頭に、<a href="mml_n163.html">N163(){}ブロック</a>で定義した音色波形をロードします。</dd>
+<dt><a href="mml_voice.html">@</a><var>n</var>		</dt><dd>… トラックに適用する音色波形データのある先頭アドレスを、<var>n</var>×２に設定します。</dd>
+<dt><a href="mml_sweep.html">s</a><var>n</var>		</dt><dd>… トラックに適用する音色のサンプル長を、（64－<var>n</var>）×４サンプルに設定します。</dd>
 </dl>
 </div>
 

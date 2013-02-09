@@ -5,7 +5,7 @@
 //		コンストラクタ（引数0Byte）
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		code
+//		unsigned	char	_code		コード
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
@@ -22,8 +22,8 @@ mml_general::mml_general(unsigned char _code, const wchar_t _strName[]):
 //		コンストラクタ（引数1Byte）
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		code
-//		MMLfile*			MML
+//		unsigned	char	_code		コード
+//		MMLfile*			MML			MMLファイルのオブジェクト
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
@@ -47,8 +47,8 @@ mml_general::mml_general(unsigned char _code, MMLfile* MML, const wchar_t _strNa
 //			コンストラクタ（引数1Byte）
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		code
-//		const		char	_data
+//		unsigned	char	_code		コード
+//		const		char	_data		引数
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
@@ -66,8 +66,9 @@ mml_general::mml_general(unsigned char _code, const char _data, const wchar_t _s
 //			コンストラクタ（引数2Byte）
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		code
-//		const		char	_data
+//		unsigned	char	_code		コード
+//		const		char	_n1			引数1
+//		const		char	_n2			引数2
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
@@ -86,8 +87,11 @@ mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, co
 //			コンストラクタ（引数4Byte）
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		code
-//		const		char	_data
+//		unsigned	char	_code		コード
+//		const		char	_n1			引数1
+//		const		char	_n2			引数2
+//		const		char	_n3			引数3
+//		const		char	_n4			引数4
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し

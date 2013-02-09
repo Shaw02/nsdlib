@@ -9,12 +9,45 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>改訂履歴（Revision）</h2>
+
 <div class='block'>
+<h3>改訂履歴</h3>
 <p>
-<strong>α版・β版の段階では、仕様変更の可能性がございます。ご了承ください。</strong>
+</p>
+<table>
+<tr><th>ヴァージョン</th><th>内容</th><th>改定日</th></tr>
+<tr><td>1.00</td>
+	<td>●音源ドライバー本体<br>
+		・一時停止関数（nsd_pause_bgm()）及び、再生再開関数（nsd_resume_bgm()）を実装した。<br>
+		・nsd_stop_bgm()関数で再生停止したときに発音中の音があった場合、鳴りっぱなしになっていたバグを修正。<br>
+		●ＭＭＬコンパイラ<br>
+		・マクロに対応した。<br>
+		・疑似エコーに、スラーで繋げるモードを追加した。<br>
+		・リピート(A)コマンドにて、リピート回数をどちらにも記述できるようにした。<br>
+		・アセンブリ言語ソースを出力する際に、数値が3桁毎にカンマが出てしまっていたバグを修正。<br>
+		・#SegmentPCMコマンドが機能していなかったバグを修正。<br>
+		・#SegmentPCMコマンドにて""を指定した際、アセンブリ言語で⊿PCMの実体を出力しないようにした。<br>
+		●取扱説明書<br>
+		・これまでに質問があった内容を、ＦＡＱに記載しました。<br>
+		・その他、色々と見直しました。<br>
+		●その他<br>
+		・アセンブリ言語から nsd.lib を制御するサンプルソースを作った。<br></td>
+	<td>2013年 2月 9日</td></tr>
+</table>
+</div>
+
+<div class='block'>
+<h3>改訂履歴（α・β版）</h3>
+<p>
 </p>
 <table>
 <tr><th>ヴァージョン</th><th>内容</th><th>改定日</th></tr>

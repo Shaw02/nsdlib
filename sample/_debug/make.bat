@@ -1,3 +1,5 @@
+cd C:\NSDL\sample\_debug
+
 @echo off
 ..\..\bin\nsc -n %~n1
 if %errorlevel% neq 0	pause&goto end

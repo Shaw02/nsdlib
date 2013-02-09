@@ -9,8 +9,14 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 
 <h2>FAQ</h2>
 
@@ -81,10 +87,61 @@ NSD.libの周波数エンベロープは、現在の音階（ドレミ）を基準とした値で指定します。<
 <div class='block'>
 <h3>NSD.libを用いたアプリケーション開発</h3>
 
-<h4></h4>
+<div class='block'>
+<h4>演奏状態の保存と復元をしたい。</h4>
 <p>
-今後、何か質問があったら、掲載いたします。
+演奏状態の保存は、まず<a href="func_nsd_pause_bgm.html">nsd_pause_bgm()</a>関数にて再生を一時停止します。<br>
+その状態で、音源ドライバーの<a href="variable.html">制御用変数</a>の効果音以外のメンバー変数を全て、
+別のメモリ空間（ユーザー・アプリケーション側で確保して下さい）に保存して下さい。<br>
 </p>
+<p>
+演奏状態の復元は、まず、現在鳴っているＢＧＭを停止します。<br>
+その状態で、別のメモリ空間に保存した制御用変数の内容を、音源ドライバーの制御用変数に復元します。<br>
+その後、<a href="func_nsd_resume_bgm.html">nsd_resume_bgm()</a>関数にて、再生の再開が可能です。<br>
+</p>
+</div>
+
+
+<div class='block'>
+<h4>外部から現在のテンポ等の演奏状態の取得、および設定（変更）をしたい。</h4>
+<p>
+音源ドライバーの<a href="variable.html">制御用変数</a>をアクセスする事で可能です。<br>
+尚、シーケンス中で再設定された場合は、その値に書き換わりますので注意して下さい。<br>
+（シーケンス上は、相対系のコマンドを使うなどで対処して下さい。）<br>
+</p>
+<p>
+以下、テンポの取得・設定の例（`ca65.exe'のアセンブリ言語ソース）を示します。<br>
+</p>
+<code><pre>
+
+        .include        "nsd.inc"
+
+.proc   _get_tempo
+
+        lda     __Tempo
+        rts
+
+.endproc
+
+.proc   _set_tempo
+
+        sta     __Tempo
+        rts
+
+.endproc
+
+</pre></code>
+</div>
+
+
+<div class='block'>
+<h4>自作ゲーム用に音源ドライバーを改造したい</h4>
+<p>
+可ですが、<a href="licence.html">ライセンス条文</a>を遵守した上でお願い致します。<br>
+</p>
+</div>
+
+
 
 </div>	<!-- h3 -->
 

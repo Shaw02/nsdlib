@@ -9,8 +9,18 @@
 </HEAD>
 <BODY>
 
-<div id='contents'>
+<!-- header start -->
+<div id='header'>
 <h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
 <h2>MML reference: FDS modulator frequency</h2>
 
 <!-- ──────────────── -->
@@ -27,7 +37,7 @@
 
 <h4>frequency</h4>
 <p>
-モジュレーターの周波数を0（停止）及び、1（低周波）～4095（高周波）の範囲で設定してください。<br>
+モジュレーターの周波数を0（停止）及び、1（低周波）～4095（高周波）の範囲で設定してください。（Default: 不定）<br>
 発振周波数は、 ( 1789772.5 ÷ ( 65536 × 64 ) ) × <var>frequency</var> [Hz] となります。<br>
 </p>
 
