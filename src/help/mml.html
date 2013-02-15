@@ -59,10 +59,10 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 	<td>⊿PCM定義の記述ブロックです。<br>
 		⊿PCM定義の記述は、<a href="mml_dpcm.html">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
 <tr><td>FDSC(<var>n</var>){<br> <var>wave table</var><br>}	</td>
-	<td>FDSのキャリア側の波形データ定義の記述ブロックです。<br>
+	<td>FDSのキャリア側（音色）の波形データ定義の記述ブロックです。<br>
 		FDSのキャリア側の波形定義の記述は、<a href="mml_FDSC.html">FDSキャリア波形定義（FDS career wave table）</a>の項を参照ください。</td></tr>
 <tr><td>FDSM(<var>n</var>){<br> <var>wave table</var><br>}	</td>
-	<td>FDSのモジュレータ側の波形データ定義の記述ブロックです。<br>
+	<td>FDSのモジュレータ側（ＬＦＯ）の波形データ定義の記述ブロックです。<br>
 		FDSのモジュレータ側の波形定義の記述は、<a href="mml_FDSM.html">FDSモジュレータ波形定義（FDS modulator wave table）</a>の項を参照ください。</td></tr>
 <tr><td>VRC7(<var>n</var>){<br> <var>VRC7 define</var><br>}	</td>
 	<td>VRC7ユーザー音色定義の記述ブロックです。<br>
@@ -104,11 +104,13 @@ NSF music format用の設定コマンドです。<br>
 <table>
 <caption>コマンド一覧</caption>
 <tr><th>Command</th><th>Contens</th></tr>
-<tr><td>#code		"<var>name</var>"		</td><td>リンクするＮＳＦ用のＲＯＭコードを指定します。（Default: <var>name</var> = `nsd.bin'）<br>
-													コンパイルオプション`-l'でROMコードの指定がある場合は、コンパイルオプションを優先します。</td></tr>
 <tr><td>#title		"<var>strings</var>"	</td><td>タイトル名を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
 <tr><td>#composer	"<var>strings</var>"	</td><td>作曲者を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
 <tr><td>#copyright	"<var>strings</var>"	</td><td>著作権者を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
+<tr><td>#code		"<var>name</var>"		</td><td>リンクするＮＳＦ用のＲＯＭコードを指定します。（Default: <var>name</var> = `nsd.bin'）<br>
+													<a href="nsc_option.html">コンパイルオプション</a>`-l'でROMコードの指定がある場合は、コンパイルオプションを優先します。<br>
+													各ROMコードの詳細は、<a href="spec.html">各.lib/.binの仕様</a>を参照ねがいます。</td></tr>
+<tr><td>#Bank								</td><td>⊿PCMのバンク切り替えに対応した.bin（nsd_all.bin, nsd_all2.bin）をリンクする場合に、各コマンドを記述する前に必ず指定してください。<br></td></tr>
 </table>
 <br>
 </div>

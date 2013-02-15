@@ -14,8 +14,8 @@ AOPLL = -D OPLL
 AMMC5 = -D MMC5
 AN163 = -D N163
 APSG  = -D PSG
-AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D NULL
-AALL2 = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D NULL
+AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank
+AALL2 = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank
 AOALL  = -D VRC6 -D OPLL -D MMC5 -D N163 -D PSG -D NULL
 
 CC = cc65
@@ -38,7 +38,7 @@ PROJ_OALL  = NSD_OALL
 
 INC_FILES = nsd.inc
 
-FILES = nsd_init.s nsd_set_dpcm.s nsd_main.s nsd_play_bgm.s nsd_stop_bgm.s nsd_pause_bgm.s nsd_resume_bgm.s nsd_play_se.s nsd_stop_se.s nsd_sequence.s nsd_envelope.s nsd_snd.s nsd_math.s nsd_work.s 
+FILES = nsd_init.s nsd_set_dpcm.s nsd_main.s nsd_play_bgm.s nsd_stop_bgm.s nsd_pause_bgm.s nsd_resume_bgm.s nsd_play_se.s nsd_stop_se.s nsd_sequence.s nsd_envelope.s nsd_snd.s nsd_math.s nsd_work.s nsd_irq.s
 OFILES = $(FILES:.s=.o)
 
 clean: $(PROJ).lib $(PROJ_FDS).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_ALL2).lib $(PROJ_OALL).lib
@@ -62,6 +62,7 @@ $(PROJ).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) nsd_snd.s
 	@$(ASM) $(AFLAG) nsd_math.s
 	@$(ASM) $(AFLAG) nsd_work.s
+	@$(ASM) $(AFLAG) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_FDS).lib : $(FILES) $(INC_FILES)
@@ -79,6 +80,7 @@ $(PROJ_FDS).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AFDS) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AFDS) nsd_math.s
 	@$(ASM) $(AFLAG) $(AFDS) nsd_work.s
+	@$(ASM) $(AFLAG) $(AFDS) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_VRC6).lib : $(FILES) $(INC_FILES)
@@ -96,6 +98,7 @@ $(PROJ_VRC6).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_math.s
 	@$(ASM) $(AFLAG) $(AVRC6) nsd_work.s
+	@$(ASM) $(AFLAG) $(AVRC6) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_VRC7).lib : $(FILES) $(INC_FILES)
@@ -113,6 +116,7 @@ $(PROJ_VRC7).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AVRC7) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AVRC7) nsd_math.s
 	@$(ASM) $(AFLAG) $(AVRC7) nsd_work.s
+	@$(ASM) $(AFLAG) $(AVRC7) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_OPLL).lib : $(FILES) $(INC_FILES)
@@ -130,6 +134,7 @@ $(PROJ_OPLL).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AOPLL) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AOPLL) nsd_math.s
 	@$(ASM) $(AFLAG) $(AOPLL) nsd_work.s
+	@$(ASM) $(AFLAG) $(AOPLL) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_MMC5).lib : $(FILES) $(INC_FILES)
@@ -147,6 +152,7 @@ $(PROJ_MMC5).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AMMC5) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AMMC5) nsd_math.s
 	@$(ASM) $(AFLAG) $(AMMC5) nsd_work.s
+	@$(ASM) $(AFLAG) $(AMMC5) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_N163).lib : $(FILES) $(INC_FILES)
@@ -164,6 +170,7 @@ $(PROJ_N163).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AN163) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AN163) nsd_math.s
 	@$(ASM) $(AFLAG) $(AN163) nsd_work.s
+	@$(ASM) $(AFLAG) $(AN163) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_PSG).lib : $(FILES) $(INC_FILES)
@@ -181,6 +188,7 @@ $(PROJ_PSG).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(APSG) nsd_snd.s
 	@$(ASM) $(AFLAG) $(APSG) nsd_math.s
 	@$(ASM) $(AFLAG) $(APSG) nsd_work.s
+	@$(ASM) $(AFLAG) $(APSG) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_ALL).lib : $(FILES) $(INC_FILES)
@@ -198,6 +206,7 @@ $(PROJ_ALL).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AALL) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AALL) nsd_math.s
 	@$(ASM) $(AFLAG) $(AALL) nsd_work.s
+	@$(ASM) $(AFLAG) $(AALL) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_ALL2).lib : $(FILES) $(INC_FILES)
@@ -215,6 +224,7 @@ $(PROJ_ALL2).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AALL2) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AALL2) nsd_math.s
 	@$(ASM) $(AFLAG) $(AALL2) nsd_work.s
+	@$(ASM) $(AFLAG) $(AALL2) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 
 $(PROJ_OALL).lib : $(FILES) $(INC_FILES)
@@ -232,5 +242,6 @@ $(PROJ_OALL).lib : $(FILES) $(INC_FILES)
 	@$(ASM) $(AFLAG) $(AOALL) nsd_snd.s
 	@$(ASM) $(AFLAG) $(AOALL) nsd_math.s
 	@$(ASM) $(AFLAG) $(AOALL) nsd_work.s
+	@$(ASM) $(AFLAG) $(AOALL) nsd_irq.s
 	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
 

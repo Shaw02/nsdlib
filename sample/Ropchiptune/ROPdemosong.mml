@@ -2,11 +2,12 @@
 #Copyright	"Ropchiptune Labo."
 #Composer	"Ropchiptune Labo."
 
+#Bank
+
 #Code		"../../bin/nsd_all.bin"
 
-#bgm		2
+#bgm	2
 #se		0
-#OffsetPCM	$E000
 
 
 // ----------------------------------------------------------------------------------------

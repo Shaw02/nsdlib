@@ -14,8 +14,8 @@ AOPLL = -D OPLL
 AMMC5 = -D MMC5
 AN163 = -D N163
 APSG  = -D PSG
-AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
-AALL2 = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG
+AALL  = -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank
+AALL2 = -D FDS -D VRC6 -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank
 AOALL  = -D VRC6 -D OPLL -D MMC5 -D N163 -D PSG
 
 CC = cl65
@@ -25,7 +25,7 @@ CFLAG = -t none -Oi -Os -Or -c -l -o
 LINKER = ld65
 LFLAG = -C default.cfg -o
 LFLAGALL = -C all.cfg  -o
-LFLAGOALL = -C opllall.cfg  -o
+LFLAGOALL = -C opllall.cfg -o
 
 LIBER = ar65
 LIBFLAG = a
@@ -100,11 +100,11 @@ $(PROJ_PSG).bin : $(FILES) $(INC_FILES) $(LIB_PSG)
 
 $(PROJ_ALL).bin : $(FILES) $(INC_FILES) $(LIB_ALL)
 	@$(ASM) $(AALL) $(FILES)
-	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_ALL)
+	@$(LINKER) $(LFLAGALL) $*.bin $(OFILES) $(LIB_ALL)
 
 $(PROJ_ALL2).bin : $(FILES) $(INC_FILES) $(LIB_ALL2)
 	@$(ASM) $(AALL2) $(FILES)
-	@$(LINKER) $(LFLAG) $*.bin $(OFILES) $(LIB_ALL2)
+	@$(LINKER) $(LFLAGALL) $*.bin $(OFILES) $(LIB_ALL2)
 
 $(PROJ_OALL).bin : $(FILES) $(INC_FILES) $(LIB_OALL)
 	@$(ASM) $(AOALL) $(FILES)

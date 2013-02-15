@@ -12,6 +12,7 @@ public:
 	unsigned	char	iBGM;
 	unsigned	char	iSE;
 	unsigned	int		offsetPCM;
+				bool	bank;
 				bool	op_code;		//option Ç≈ code éwíËÇ≥ÇÍÇΩÅH
 				string	Label;
 				string	title;
@@ -34,4 +35,5 @@ public:
 		void	Set_RomCode(MMLfile* MML);
 		void	Set_Number_BGM(MMLfile* MML);
 		void	Set_Number_SE(MMLfile* MML);
+		void	Set_Bank(void);
 };

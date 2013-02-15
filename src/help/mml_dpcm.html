@@ -27,13 +27,14 @@
 <h3>定義（Define）</h3>
 <code><pre>
 DPCM{
-	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)</span>
+	n<var>number</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
+	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
 }
 </pre></code>
 <code><pre>
 @DPCM{
-	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)</span>
-}
+	n<var>number</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
+	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
 </pre></code>
 </div>
 
@@ -41,8 +42,31 @@ DPCM{
 <div class='block'>
 <h3>引数（Inputs）</h3>
 
+<h4>number</h4>
+<p>
+定義する⊿PCMの番号を0～254で指定してください。<br>
+⊿PCMの発音の際は、ノートナンバーの値を参照し、その番号の⊿PCMを発音します。<br>
+</p>
+<table>
+<tr><th>note</th><th>note number</th></tr>
+<tr><td>o1c	</td><td>0		</td></tr>
+<tr><td>o1c+</td><td>1			</td></tr>
+<tr><td>o1d	</td><td>2		</td></tr>
+<tr><td>o1d+</td><td>3			</td></tr>
+<tr><td>o1e	</td><td>4		</td></tr>
+<tr><td>o1f	</td><td>5		</td></tr>
+<tr><td>o1f+</td><td>6			</td></tr>
+<tr><td>o1g	</td><td>7		</td></tr>
+<tr><td>o1g+</td><td>8			</td></tr>
+<tr><td>o1a	</td><td>9		</td></tr>
+<tr><td>o1a+</td><td>10			</td></tr>
+<tr><td>o1b	</td><td>11		</td></tr>
+<tr><td>o2c	</td><td>12		</td></tr>
+<tr><td>・・・	</td><td>・・・		</td></tr>
+</table>
+
 <h4>note</h4>
-<p>⊿PCMの波形を割り当てる音階です</p>
+<p>⊿PCMの波形を割り当てる音階を、音階で指定します。</p>
 <dl>
 <dt>a … </dt><dd>A, La, ラ</dd>
 <dt>b … </dt><dd>H, Si, シ</dd>
@@ -72,6 +96,7 @@ DPCM{
 <dl>
 <dt>0 … </dt><dd>1 shot</dd>
 <dt>1 … </dt><dd>loop</dd>
+<dt>2 … </dt><dd>IRQ （発音終了時に<var>next</var>で指定したノート番号の⊿PCMを発音します。）</dd>
 </dl>
 
 <h4>volume</h4>
@@ -80,6 +105,12 @@ DPCM{
 0～127の範囲で指定した場合は、波形再生開始時に$4011番地に書く初期ボリュームとなります。<br>
 -1を指定した場合は、波形再生開始時に$4011番地に何も書きません。<br>
 省略した場合は、0となります。<br>
+</p>
+
+<h4>next</h4>
+<p>
+発音終了時に次にならすノート番号です。<br>
+バンクに対応したbin（nsd_all.bin, nsd_all2.bin）でのみ対応しています。<br>
 </p>
 
 </div>
@@ -99,8 +130,34 @@ DPCM{
 <h3>注意（Notes）</h3>
 <p>
 ⊿PCMを割り当てる場合は、
-#OffsetPCMコマンドにて⊿PCMの波形データの配置アドレスを設定して下さい。<br>
+#OffsetPCMコマンドにて⊿PCMの波形データの配置アドレスを設定してください。<br>
 ⊿PCMは、設定したアドレスから、0xFFFFのメモリ空間に配置されます。<br>
+若しくは、#Bankコマンドを記述しバンクに対応したbin（nsd_all.bin, nsd_all2.bin）を使用して下さい。<br>
+</p>
+
+<p>
+また、多くのNSFプレイヤーは、IRQに対応しておりません。<br>
+以下、2013年 2月14時点での対応状況です。<br>
+</p>
+<h4>IRQ対応プレイヤ</h4>
+<ul>
+<li>VirtuaNSF</li>
+<li>VirtuaNES</li>
+<li>Nintendulator</li>
+</ul>
+<h4>IRQ非対応プレイヤ</h4>
+<ul>
+<li>TNS-HFC3　…（割り込みベクタを全て書き換えてしまうため）</li>
+<li>TNS-HFC4　…（割り込みベクタを全て書き換えてしまうため）　</li>
+<li>NSFPlay　…（IRQそのものが実装されていません。）</li>
+<li>NEZPlug　…（IRQが無効になっています。）</li>
+<li>hoot　…（IRQが無効になっています。）</li>
+</ul>
+<p>
+※実機での再生環境TNS-HFC3でもIRQに対応しておりません。<br>
+これは、6502の割り込みベクタをIRQ含め全て書き換えてしまうためです。<br>
+IRQの割り込みベクトル先は、RTI命令のみになっているとのことです。<br>
+また、TNS-HFC4でも非対応とのことですが、検討課題として頂きました。<br>
 </p>
 
 </div>

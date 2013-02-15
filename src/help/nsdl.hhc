@@ -326,6 +326,10 @@
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="各.lib/.binの仕様">
+			<param name="Local" value="spec.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="ブロック図">
 			<param name="Local" value="diagram.html">
 			</OBJECT>

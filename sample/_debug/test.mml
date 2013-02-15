@@ -6,7 +6,7 @@
 #BGM		12
 #SE			2
 
-#OffsetPCM	$C000
+#Bank
 
 DPCM{
 	b1,	"../dmc/bd.dmc",14,0,64

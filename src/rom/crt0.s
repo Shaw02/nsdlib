@@ -18,6 +18,13 @@
 
 	.include	"..\..\include\nsd.inc"
 
+.ifdef	DPCMBank
+	.import		_nsd_irq
+.endif
+
+.MACPACK generic
+.MACPACK longbranch 
+
 ; ------------------------------------------------------------------------
 ; 	変数
 ; ------------------------------------------------------------------------
@@ -80,7 +87,11 @@ _eff:	.byte	0		;SE start number
 	.res	32,	$0
 	.res	32,	$0
 	.word	$411A			;6E	60Hz
+.ifdef	DPCMBank
+	.byte	2,3,4,5,6,7,0,1		;70	bank	(nsc.exe で検出して、bank対応か調べる。)
+.else
 	.byte	0,0,0,0,0,0,0,0		;70	bank
+.endif
 	.word	$4E20			;78
 	.byte	0			;7A
 	.byte	FDS_Flag + VRC6_Flag + VRC7_Flag + MMC5_Flag + N163_Flag + PSG_Flag
@@ -100,7 +111,7 @@ _eff:	.byte	0		;SE start number
 	txa
 	pha
 
-;	jsr	_nsd_irq_main
+	jsr	_nsd_irq
 
 	pla			;register pop
 	tax
@@ -137,20 +148,13 @@ _eff:	.byte	0		;SE start number
 
 .endif
 ; ------------------------------------------------------------------------
-; 	NSF用
-; ------------------------------------------------------------------------
-.segment	"STARTUP"
-.proc	_nsf_main
-
-	jmp	_nsd_main
-
-.endproc
-
-; ------------------------------------------------------------------------
 ; 	Init
 ; ------------------------------------------------------------------------
 .segment	"STARTUP"
 .proc	_nsf_init
+
+	cli
+
 	pha
 
 	jsr	_zero_mem
@@ -184,8 +188,16 @@ _eff:	.byte	0		;SE start number
 
 	;コピー
 .ifdef	DPCMBank
+
+	;Bank change
+	lda	#2
+	sta	$5FF8
+	lda	#3
+	sta	$5FF9
+
+	;Copy bank
 	ldx	#0
-@L2:
+Loop:
 	lda	$8000,x
 	sta	$6000,x
 	lda	$8100,x
@@ -253,7 +265,18 @@ _eff:	.byte	0		;SE start number
 	sta	$7F00,x
 
 	inx
-	bne	@L
+	jne	Loop
+
+	;Bank change
+	lda	#4
+	sta	$5FF8
+	lda	#5
+	sta	$5FF9
+	lda	#6
+	sta	$5FFA
+	lda	#7
+	sta	$5FFB
+
 .endif
 
 	rts
@@ -267,11 +290,17 @@ _eff:	.byte	0		;SE start number
 
 	jsr	_nsd_init
 
+.ifdef	DPCMBank
+	lda	#$00
+	sta	__ptr
+	lda	#$60
+	sta	__ptr+1		;__ptr = __ROM0_START__
+.else
 	lda	#<(__ROM0_LAST__)
 	sta	__ptr
 	lda	#>(__ROM0_LAST__)
 	sta	__ptr+1		;__ptr = __ROM0_START__
-
+.endif
 	ldy	#0
 	lda	(__ptr),y
 	iny			;ax = BGM and SE's qty
@@ -296,10 +325,17 @@ _eff:	.byte	0		;SE start number
 .proc	_play_music
 
 	pha
+.ifdef	DPCMBank
+	lda	#$00
+	sta	__ptr
+	lda	#$60
+	sta	__ptr+1		;__ptr = __ROM0_START__
+.else
 	lda	#<(__ROM0_LAST__)
 	sta	__ptr
 	lda	#>(__ROM0_LAST__)
 	sta	__ptr+1		;__ptr = __ROM0_START__
+.endif
 	pla
 
 	cmp	_eff
@@ -319,6 +355,17 @@ _eff:	.byte	0		;SE start number
 	bcs	@L
 	jmp	_nsd_play_bgm
 @L:	jmp	_nsd_play_se
+.endproc
+
+
+; ------------------------------------------------------------------------
+; 	NSF用
+; ------------------------------------------------------------------------
+.segment	"STARTUP"
+.proc	_nsf_main
+
+	jmp	_nsd_main
+
 .endproc
 
 

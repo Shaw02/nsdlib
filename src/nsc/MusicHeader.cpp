@@ -13,6 +13,7 @@
 MusicHeader::MusicHeader(MMLfile* MML, string _code):
 	iBGM(1),
 	iSE(0),
+	bank(false),
 	op_code(false),
 	offsetPCM(0x10000),
 	Label("_nsd_"),
@@ -76,13 +77,17 @@ void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 {
 	offsetPCM = MML->GetInt();
 
-	if((offsetPCM < 0xC000) || (offsetPCM > 0x10000)){
-		MML->Err(L"$C000 ～ $10000（⊿PCM未使用）の範囲で指定して下さい。");
-	}
-	if((offsetPCM & 0x003F) != 0){
-		MML->Warning(L"⊿PCMの配置アドレスは64（$40）Byteでアライメントします。");
-		offsetPCM &= 0xFFC0;
-		offsetPCM += 0x0040;
+	if(bank==true){
+		MML->Warning(L"#Bank指定時は、#offsetPCMは無効です。");
+	} else {
+		if((offsetPCM < 0xC000) || (offsetPCM > 0x10000)){
+			MML->Err(L"$C000 ～ $10000（⊿PCM未使用）の範囲で指定して下さい。");
+		}
+		if((offsetPCM & 0x003F) != 0){
+			MML->Warning(L"⊿PCMの配置アドレスは64（$40）Byteでアライメントします。");
+			offsetPCM &= 0xFFC0;
+			offsetPCM += 0x0040;
+		}
 	}
 }
 
@@ -114,4 +119,9 @@ void	MusicHeader::Set_Number_SE(MMLfile* MML)
 		MML->Err(L"#SEは0～255以下の値で指定してください。");
 	}
 	iSE = _n;
+}
+void	MusicHeader::Set_Bank(void)
+{
+	bank		= true;
+	offsetPCM	= 0xC000;
 }

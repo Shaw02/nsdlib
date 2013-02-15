@@ -14,6 +14,8 @@
 	.export		_nsd_snd_keyon
 	.export		_nsd_snd_keyoff
 
+	.export		_nsd_dpcm_calc
+
 	.import		_nsd_div192
 
 	.import		nsd_work
@@ -21,6 +23,11 @@
 
 	.include	"nes.inc"
 	.include	"nsd.inc"
+
+
+.ifdef	DPCMBank
+	.import		_nsd_bank_change
+.endif
 
 ;=======================================================================
 ;	void	__fastcall__	nsd_snd_init(void);
@@ -106,6 +113,55 @@
 	sta	FDS_Volume
 	sta	FDS_Sweep_Envelope
 .endif
+
+	rts
+.endproc
+
+;=======================================================================
+;	void	__fastcall__	_nsd_dpcm_calc(void);
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	dpcm info
+;<<Input>>
+;	nothing
+;<<Output>>
+;	__ptr	dpcm info address
+;	y
+;=======================================================================
+.proc	_nsd_dpcm_calc
+
+	lda	#0
+	sta	__tmp + 1
+	lda	__note,x
+
+	asl	a
+	rol	__tmp + 1
+
+.ifdef	DPCMBank
+	;__ptr = a * 2
+	sta	__ptr
+	lda	__tmp + 1
+	sta	__ptr + 1
+	lda	__ptr
+.endif
+
+	asl	a
+	rol	__tmp + 1	; __tmp + 1  <=  a ‚Ì ãˆÊ2bit
+
+.ifdef	DPCMBank
+	add	__ptr
+	tay			;y <- address
+	lda	__tmp + 1
+	adc	__ptr + 1
+	sta	__tmp + 1
+	tya
+.endif
+
+	add	__dpcm_info + 0
+	sta	__ptr + 0
+	lda	__dpcm_info + 1
+	adc	__tmp + 1
+	sta	__ptr + 1
 
 	rts
 .endproc
@@ -225,56 +281,39 @@ _nsd_dpcm_keyon:
 	lda	#$0F
 	sta	APU_CHANCTRL
 
-	lda	#0
-	sta	__tmp + 1
-	lda	__note,x
-	asl	a
-	rol	__tmp + 1
-.ifdef	DPCMBank
-	sta	__tmp
-.endif
-	asl	a
-	rol	__tmp + 1
-.ifdef	DPCMBank
-	add	__tmp
-.endif
-	tay			;y <- address
-.ifdef	DPCMBank
-	lda	#0
-	adc	__tmp + 1
-	sta	__tmp + 1
-.endif
+	jsr	_nsd_dpcm_calc
 
-	lda	__dpcm_info + 0
-	sta	__ptr + 0
-	lda	__dpcm_info + 1
-	add	__tmp + 1
-	sta	__ptr + 1
+.ifdef	DPCMBank
+	;bank number
+	ldy	#4
+	lda	(__ptr),y
+	jsr	_nsd_bank_change
+.endif
 
 	;Set the DPCM resister
+	;CTRL (note etc..)
+	ldy	#0
 	lda	(__ptr),y
 	sta	APU_MODCTRL
 
+	;volume
 	iny
 	lda	(__ptr),y
 	bmi	@L			;if 0x80 >= a then skip
 	sta	APU_MODDA
 @L:
-
+	;address
 	iny
 	lda	(__ptr),y
 	sta	APU_MODADDR
 
+	;length
 	iny
 	lda	(__ptr),y
 	sta	APU_MODLEN
 
 	lda	#$1F
 	sta	APU_CHANCTRL
-
-.ifdef	DPCMBank
-
-.endif
 
 	rts
 

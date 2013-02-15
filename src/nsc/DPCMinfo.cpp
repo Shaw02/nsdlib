@@ -10,12 +10,13 @@
 //	●返値
 //					無し
 //==============================================================
-DPCMinfo::DPCMinfo(MMLfile* MML, const wchar_t _strName[]):
+DPCMinfo::DPCMinfo(MMLfile* MML, bool _bank, const wchar_t _strName[]):
 	MusicItem(_strName)
 {
 	//----------------------
 	//Local変数
 
+	bank = _bank;
 
 //	定数定義
 enum	Command_ID_mml {
@@ -157,7 +158,11 @@ const	static	Command_Info	Command[] = {
 	}
 
 	//ここで確保しておく。
-	iSize = (max_number+1)*4;
+	if(bank == true){
+		iSize = (max_number+1)*6;
+	} else {
+		iSize = (max_number+1)*4;
+	}
 	code.resize(iSize);
 }
 
@@ -217,10 +222,11 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 				int		play_frequency;
 				int		mode			= 0;
 				int		start_volume	= 0x40;
+				int		next;
 	DPCM*		_DPCM;
 	FileInput	_DPCM_file;
 
-	if((note<0) || (note>127)){
+	if((note<0) || (note>255)){
 		MML->Err(L"音階の範囲を超えています。");
 	}
 
@@ -266,8 +272,11 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	}
 
 	mode = MML->GetInt();
-	if((mode<0) || (mode>1)){
-		MML->Err(L"⊿PCMの周波数は0～1の範囲で指定して下さい。");
+	if((mode<0) || (mode>2)){
+		MML->Err(L"⊿PCMのモードは0～2の範囲で指定して下さい。");
+	}
+	if((mode==2) && (bank==false)){
+		MML->Err(L"⊿PCMのモード2(IRQ)は、#Bankコマンドの指定が必要です。");
 	}
 	infoDPCM[note].ctrl = (mode<<6) + play_frequency;
 
@@ -276,13 +285,33 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	if(cData == ','){
 		start_volume = MML->GetInt();	
 		if((start_volume<-1) || (start_volume>127)){
-			MML->Err(L"⊿PCMの周波数は-1～127の範囲で指定して下さい。");
+			MML->Err(L"⊿PCMの初期値は-1～127の範囲で指定して下さい。");
 		}
 		infoDPCM[note].DA = start_volume;
 	} else {
 		MML->Back();
 		infoDPCM[note].DA = 0;
 	}
+
+	//次のノート
+	cData = MML->GetChar();
+	if(cData == ','){
+		if(mode != 2){
+			MML->Err(L"モード2(IRQ)以外のモードでは不要です。");
+		}
+		next = MML->GetInt();	
+		if((next<-1) || (next>255)){
+			MML->Err(L"次のノート番号は0～255の範囲で指定して下さい。");
+		}
+		infoDPCM[note].next = next;
+	} else {
+		if(mode == 2){
+			MML->Err(L"モード2(IRQ)の時は必ず次に発音するノート番号を指定してください。");
+		}
+		MML->Back();
+		infoDPCM[note].next = 0;
+	}
+
 }
 
 //==============================================================
@@ -320,21 +349,44 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset)
 	}
 
 	//ΔPCMinfo構造体の生成
-	while(i <= max_number){
-		if(infoDPCM[i].file.empty()){
-			code[i*4 + 0] = 0;
-			code[i*4 + 1] = 0;
-			code[i*4 + 2] = 0;
-			code[i*4 + 3] = 0;
-		} else {
-			_DPCM = ptcDPCM[infoDPCM[i].file];
-			code[i*4 + 0] = infoDPCM[i].ctrl;
-			code[i*4 + 1] = infoDPCM[i].DA;
-			code[i*4 + 2] = (_DPCM->getOffset() - 0xC000) >> 6;
-			code[i*4 + 3] = _DPCM->getDPCMsize();
+	if(bank == false){
+		while(i <= max_number){
+			if(infoDPCM[i].file.empty()){
+				code[i*4 + 0] = 0;
+				code[i*4 + 1] = 0;
+				code[i*4 + 2] = 0;
+				code[i*4 + 3] = 0;
+			} else {
+				_DPCM = ptcDPCM[infoDPCM[i].file];
+				code[i*4 + 0] = infoDPCM[i].ctrl;
+				code[i*4 + 1] = infoDPCM[i].DA;
+				code[i*4 + 2] = (_DPCM->getOffset() - 0xC000) >> 6;
+				code[i*4 + 3] = _DPCM->getDPCMsize();
+			}
+			i++;
 		}
-		i++;
+	} else {
+		while(i <= max_number){
+			if(infoDPCM[i].file.empty()){
+				code[i*6 + 0] = 0;
+				code[i*6 + 1] = 0;
+				code[i*6 + 2] = 0;
+				code[i*6 + 3] = 0;
+				code[i*6 + 4] = 0;
+				code[i*6 + 5] = 0;
+			} else {
+				_DPCM = ptcDPCM[infoDPCM[i].file];
+				code[i*6 + 0] = infoDPCM[i].ctrl;
+				code[i*6 + 1] = infoDPCM[i].DA;
+				code[i*6 + 2] = (_DPCM->getOffset() & 0x0FFF) >> 6;
+				code[i*6 + 3] = _DPCM->getDPCMsize();
+				code[i*6 + 4] = ((_DPCM->getOffset() - 0xC000) / 0x1000) + 8;
+				code[i*6 + 5] = infoDPCM[i].next;
+			}
+			i++;
+		}
 	}
+
 
 	return(_offset);
 }

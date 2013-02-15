@@ -28,6 +28,7 @@ enum	Command_ID_MusicFile {
 	id_Copyright,
 	id_OffsetPCM,
 	id_Code,
+	id_Bank,
 
 	//for ASM output
 	id_SegmentSEQ,
@@ -71,6 +72,8 @@ const	static	Command_Info	Command[] = {
 		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#Code",			id_Code			},
 		{	"#code",			id_Code			},
+		{	"#Bank",			id_Bank			},
+		{	"#bank",			id_Bank			},
 		//for ASM output
 		{	"#SegmentPCM",		id_SegmentPCM	},	//Segment name for ⊿PCM
 		{	"#segmentPCM",		id_SegmentPCM	},
@@ -186,6 +189,9 @@ const	static	Command_Info	Command[] = {
 			case(id_OffsetPCM):
 				Header.Set_OffsetPCM(MML);
 				break;
+			case(id_Bank):
+				Header.Set_Bank();
+				break;
 			//for ASM output
 			case(id_SegmentSEQ):
 				Header.Set_SegmentSEQ(MML);
@@ -229,7 +235,7 @@ const	static	Command_Info	Command[] = {
 				if(cDPCMinfo != NULL){
 					MML->Err(L"DPCMブロックは１つまでです。");
 				}
-				cDPCMinfo = new DPCMinfo(MML);
+				cDPCMinfo = new DPCMinfo(MML, Header.bank);
 				ptcItem.push_back(cDPCMinfo);
 				iSize += cDPCMinfo->getSize();	//BGMのサイズを更新
 				break;
@@ -476,21 +482,44 @@ void	MusicFile::make_bin(size_t rom_size)
 	_str[0] = Header.iBGM;
 	_str[1] = Header.iSE;
 
-	if(cDPCMinfo != NULL){
-		pt[1]	= 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + cDPCMinfo->getOffset();	//ΔPCM info のアドレス
-	} else {
-		pt[1]	= 0;
-	}
+	if(Header.bank == false){
 
-	while(iBGM < Header.iBGM){
-		pt[i] = 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + ptcBGM[iBGM]->getOffset();
-		i++;
-		iBGM++;
-	}
-	while(iSE < Header.iSE){
-		pt[i] = 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + ptcSE[iSE]->getOffset();
-		i++;
-		iSE++;
+		if(cDPCMinfo != NULL){
+			pt[1]	= 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + cDPCMinfo->getOffset();	//ΔPCM info のアドレス
+		} else {
+			pt[1]	= 0;
+		}
+
+		while(iBGM < Header.iBGM){
+			pt[i] = 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + ptcBGM[iBGM]->getOffset();
+			i++;
+			iBGM++;
+		}
+		while(iSE < Header.iSE){
+			pt[i] = 0x8000 + (unsigned short)rom_size - 0x80 + (unsigned short)_size + ptcSE[iSE]->getOffset();
+			i++;
+			iSE++;
+		}
+
+	} else {
+
+		if(cDPCMinfo != NULL){
+			pt[1]	= 0x6000 + (unsigned short)_size + cDPCMinfo->getOffset();	//ΔPCM info のアドレス
+		} else {
+			pt[1]	= 0;
+		}
+
+		while(iBGM < Header.iBGM){
+			pt[i] = 0x6000 + (unsigned short)_size + ptcBGM[iBGM]->getOffset();
+			i++;
+			iBGM++;
+		}
+		while(iSE < Header.iSE){
+			pt[i] = 0x6000 + (unsigned short)_size + ptcSE[iSE]->getOffset();
+			i++;
+			iSE++;
+		}
+
 	}
 
 	getCode(&_str);
@@ -525,9 +554,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 				char*	romimg		= new char[0x8000+0x80];
 	NSF_Header*			nsf			= (NSF_Header*)romimg;
 	FileInput*			_romcode	= new FileInput();
-
-
-
+				bool	dpcm_bank	= false;
 
 	//NSF用コードの転送
 	_romcode->fileopen(Header.romcode.c_str());
@@ -536,30 +563,72 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 	_romcode->close();
 	delete		_romcode;
 
+	//NSFヘッダーの更新
+	nsf->MusicNumber		= Header.iBGM + Header.iSE;
+	memcpy(&nsf->Title, Header.title.c_str(), 32);
+	memcpy(&nsf->Composer, Header.composer.c_str(), 32);
+	memcpy(&nsf->Copyright, Header.copyright.c_str(), 32);
+
 	//シーケンスのバイナリを生成
 	make_bin(bin_size);
 
-	mus_size = bin_size - 0x80 + code.size();
-	if(opt == true){
+
+	if((nsf->Bank[0] == 0) && (nsf->Bank[1] == 0) && (nsf->Bank[2] == 0) && (nsf->Bank[3] == 0)){
+
+		//------------------------------
+		//Bank 非対応bin
+		if(Header.bank == true){
+			wcout << L"指定の.binファイルは、⊿PCMのバンクに対応しています。" << endl;
+			wcout << L"#Bankコマンドを指定してください。" << endl;
+			exit(-1);
+		}
+
+		mus_size = bin_size - 0x80 + code.size();
+		if(opt == true){
+			mus_bank = (unsigned char)(mus_size >> 12);
+			if((mus_size & 0x0FFF) != 0){
+				mus_bank++;
+			}
+		} else {
+			mus_bank = (Header.offsetPCM - 0x8000) >> 12; 
+			if((Header.offsetPCM & 0x0FFF) != 0){
+				mus_bank++;
+			}
+		}
+		//サイズチェック
+		if((0x8000 + mus_size) > Header.offsetPCM){
+			wcout << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
+			wcout << L"　許容値：" << Header.offsetPCM - 0x8000 << L"[Byte]" << endl;
+			wcout << L"　サイズ：" << (unsigned int)mus_size << L"[Byte]" << endl;
+			exit(-1);
+		}
+	} else {
+
+		//------------------------------
+		//Bank対応bin？
+		if(Header.bank == false){
+			wcout << L"指定の.binファイルは、⊿PCMのバンクに対応していません。" << endl;
+			wcout << L"⊿PCMのバンクに対応した.binファイルを指定してください。" << endl;
+			exit(-1);
+		}
+
+		dpcm_bank = true;
+		mus_size = code.size();
 		mus_bank = (unsigned char)(mus_size >> 12);
 		if((mus_size & 0x0FFF) != 0){
 			mus_bank++;
 		}
-	} else {
-		mus_bank = (Header.offsetPCM - 0x8000) >> 12; 
-		if((Header.offsetPCM & 0x0FFF) != 0){
-			mus_bank++;
+		//サイズチェック
+		if(mus_size > 0x6000){
+			wcout << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
+			wcout << L"　許容値：" << 0x6000 << L"[Byte]" << endl;
+			wcout << L"　サイズ：" << (unsigned int)mus_size << L"[Byte]" << endl;
+			exit(-1);
 		}
-	}
 
 
-	//サイズチェック
-	if((0x8000 + mus_size) > Header.offsetPCM){
-		wcout << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
-		wcout << L"　許容値：" << Header.offsetPCM - 0x8000 << L"[Byte]" << endl;
-		wcout << L"　サイズ：" << (unsigned int)mus_size << L"[Byte]" << endl;
-		exit(-1);
 	}
+
 
 	//⊿PCM
 	pcm_size = dpcm_code.size();
@@ -567,89 +636,112 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 	if((pcm_size & 0x0FFF) != 0){
 		pcm_bank++;
 	}
-	//⊿PCMサイズチェック
-	if(	(Header.offsetPCM + pcm_size) > 0x10000	){
-		wcout << L"⊿PCMのサイズが許容値を越えました。" << endl;
-		wcout << L"　許容値：" << 0x10000 - Header.offsetPCM << L"[Byte]" << endl;
-		wcout << L"　サイズ：" << (unsigned int)pcm_size << L"[Byte]" << endl;
-		exit(-1);
-	}
 
-	//NSFヘッダーの更新
-	nsf->MusicNumber		= Header.iBGM + Header.iSE;
-	memcpy(&nsf->Title, Header.title.c_str(), 32);
-	memcpy(&nsf->Composer, Header.composer.c_str(), 32);
-	memcpy(&nsf->Copyright, Header.copyright.c_str(), 32);
+	if(dpcm_bank == false){
+		//⊿PCMサイズチェック
+		if(	(Header.offsetPCM + pcm_size) > 0x10000	){
+			wcout << L"⊿PCMのサイズが許容値を越えました。" << endl;
+			wcout << L"　許容値：" << 0x10000 - Header.offsetPCM << L"[Byte]" << endl;
+			wcout << L"　サイズ：" << (unsigned int)pcm_size << L"[Byte]" << endl;
+			exit(-1);
+		}
+
+	} else {
+		i = mus_bank + pcm_bank +2;
+		if(i > 255){
+			wcout << L"バンク数が255を越えました。" << endl;
+			wcout << L"　バンク量：" << i << L"[Bank]" << endl;
+			exit(-1);
+		}
+	}
 
 	//----------------------
 	//ＮＳＦ書き込み
 	fileopen(strFileName);
 
-	if(cDPCMinfo == NULL){
-		write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
-		write(code.c_str(), code.size());	//シーケンスの書き込み
-	//	//0 padding
-	//	while(mus_size < ((unsigned int)mus_bank<<12)){
-	//		put(0);		//0 padding
-	//		mus_size++;
-	//	}
-	} else {
-
-		//ヘッダーにバンク情報を書く。
-		if(opt == true){
-			i = 0;
-			while(i < mus_bank){
-				nsf->Bank[i] = i;
-				i++;
-			}
-			while(i < ((Header.offsetPCM - 0x8000)>>12)){
-				nsf->Bank[i] = 0;
-				i++;
-			}
-			j = 0;
-			while(i < 8){
-				if(j < pcm_bank){
-					nsf->Bank[i] = mus_bank + j;
-				} else {
-					nsf->Bank[i] = 0;
-				}
-				i++;
-				j++;
-			}
-		}
-
-		//コード＆シーケンス
-		write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
-		write(code.c_str(), code.size());	//シーケンスの書き込み
-
-		if(opt == true){
-			//GAP
-			while(mus_size < ((unsigned int)mus_bank<<12)){
-				put(0);		//0 padding
-				mus_size++;
-			}
-			//GAP2
-			mus_size = Header.offsetPCM & 0x0FFF;
-			while(mus_size > 0 ){
-				put(0);		//0 padding
-				mus_size--;
-			}
-			//ΔPCM
-			write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
-			while(pcm_size < ((unsigned int)pcm_bank<<12)){
-				put(0);		//0 padding
-				pcm_size++;
-			}
+	if(dpcm_bank == false){
+		if(cDPCMinfo == NULL){
+			write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
+			write(code.c_str(), code.size());	//シーケンスの書き込み
+		//	//0 padding
+		//	while(mus_size < ((unsigned int)mus_bank<<12)){
+		//		put(0);		//0 padding
+		//		mus_size++;
+		//	}
 		} else {
-			//GAP
-			while(mus_size < (Header.offsetPCM - 0x8000)){
-				put(0);		//0 padding
-				mus_size++;
+
+			//ヘッダーにバンク情報を書く。
+			if(opt == true){
+				i = 0;
+				while(i < mus_bank){
+					nsf->Bank[i] = i;
+					i++;
+				}
+				while(i < ((Header.offsetPCM - 0x8000)>>12)){
+					nsf->Bank[i] = 0;
+					i++;
+				}
+				j = 0;
+				while(i < 8){
+					if(j < pcm_bank){
+						nsf->Bank[i] = mus_bank + j;
+					} else {
+						nsf->Bank[i] = 0;
+					}
+					i++;
+					j++;
+				}
 			}
-			//ΔPCM
-			write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
+
+			//コード＆シーケンス
+			write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
+			write(code.c_str(), code.size());	//シーケンスの書き込み
+
+			if(opt == true){
+				//GAP
+				while(mus_size < ((unsigned int)mus_bank<<12)){
+					put(0);		//0 padding
+					mus_size++;
+				}
+				//GAP2
+				mus_size = Header.offsetPCM & 0x0FFF;
+				while(mus_size > 0 ){
+					put(0);		//0 padding
+					mus_size--;
+				}
+				//ΔPCM
+				write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
+				while(pcm_size < ((unsigned int)pcm_bank<<12)){
+					put(0);		//0 padding
+					pcm_size++;
+				}
+			} else {
+				//GAP
+				while(mus_size < (Header.offsetPCM - 0x8000)){
+					put(0);		//0 padding
+					mus_size++;
+				}
+				//ΔPCM
+				write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
+			}
 		}
+	} else {
+		//Bank 対応bin
+		write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
+		write(code.c_str(), code.size());	//シーケンスの書き込み
+		while(mus_size < 0x6000){
+			put(0);		//0 padding
+			mus_size++;
+		}
+		write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
+		while(pcm_size < ((unsigned int)pcm_bank<<12)){
+			put(0);		//0 padding
+			pcm_size++;
+		}
+
 	}
+
+
 
 	close();
 
