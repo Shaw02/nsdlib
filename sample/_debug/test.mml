@@ -8,6 +8,8 @@
 
 #Bank
 
+#External	%00000010
+
 DPCM{
 	b1,	"../dmc/bd.dmc",14,0,64
 	c2,	"../dmc/bd.dmc",15,0,64

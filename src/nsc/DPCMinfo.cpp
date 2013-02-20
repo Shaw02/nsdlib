@@ -319,13 +319,14 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 //--------------------------------------------------------------
 //	●引数
 //		unsigned	int		_offset		ΔPCM配置アドレス
+//		unsigned	char	_MusBank	シーケンスのバンク数
 //	●返値
 //		unsigned	int					ΔPCM配置終了アドレス
 //	●処理
 //		コードを取得しながら、各ΔPCMのバイナリを得る。
 //		（得たコードは、NSF出力の時しか使わないが。。。）
 //==============================================================
-unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset)
+unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset, unsigned char _MusBank)
 {
 	map<string, DPCM*>::iterator	itDPCM;
 	DPCM*	_DPCM;
@@ -380,7 +381,7 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset)
 				code[i*6 + 1] = infoDPCM[i].DA;
 				code[i*6 + 2] = (_DPCM->getOffset() & 0x0FFF) >> 6;
 				code[i*6 + 3] = _DPCM->getDPCMsize();
-				code[i*6 + 4] = ((_DPCM->getOffset() - 0xC000) / 0x1000) + 8;
+				code[i*6 + 4] = ((_DPCM->getOffset() - 0xC000) / 0x1000) + _MusBank;
 				code[i*6 + 5] = infoDPCM[i].next;
 			}
 			i++;

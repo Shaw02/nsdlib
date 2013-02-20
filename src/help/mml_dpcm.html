@@ -27,13 +27,13 @@
 <h3>定義（Define）</h3>
 <code><pre>
 DPCM{
-	n<var>number</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
+	n<var>number</var>,"<var>filename</var>",<var>rate</var>,<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
 	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
 }
 </pre></code>
 <code><pre>
 @DPCM{
-	n<var>number</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
+	n<var>number</var>,"<var>filename</var>",<var>rate</var>,<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
 	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
 </pre></code>
 </div>
@@ -91,6 +91,29 @@ DPCM{
 
 <h4>filename</h4>
 <p>割り当てる⊿PCMの波形ファイル（*.dmc）を指定してください。</p>
+
+<h4>rate</h4>
+<p>発音するサンプリングレートです。</p>
+<table>
+<tr><th>rate</th><th>clock</th><th>sample rate</th><th>scale(*)</th></tr>
+<tr><td>0	</td><td>0x0D60	</td><td> 4.182 kHz</td><td>o7c	</td></tr>
+<tr><td>1	</td><td>0x0BE0	</td><td> 4.711 kHz</td><td>o7d	</td></tr>
+<tr><td>2	</td><td>0x0AA0	</td><td> 5.264 kHz</td><td>o7e	</td></tr>
+<tr><td>3	</td><td>0x0A00	</td><td> 5.594 kHz</td><td>o7f	</td></tr>
+<tr><td>4	</td><td>0x08F0	</td><td> 6.259 kHz</td><td>o7g	</td></tr>
+<tr><td>5	</td><td>0x07F0	</td><td> 7.047 kHz</td><td>o7a	</td></tr>
+<tr><td>6	</td><td>0x0710	</td><td> 7.920 kHz</td><td>o7b	</td></tr>
+<tr><td>7	</td><td>0x06B0	</td><td> 8.364 kHz</td><td>o8c	</td></tr>
+<tr><td>8	</td><td>0x05F0	</td><td> 9.421 kHz</td><td>o8d	</td></tr>
+<tr><td>9	</td><td>0x0500	</td><td>11.188 kHz</td><td>o8f	</td></tr>
+<tr><td>10	</td><td>0x0470	</td><td>12.606 kHz</td><td>o8g	</td></tr>
+<tr><td>11	</td><td>0x0400	</td><td>13.984 kHz</td><td>o8a	</td></tr>
+<tr><td>12	</td><td>0x0350	</td><td>16.877 kHz</td><td>o9c</td></tr>
+<tr><td>13	</td><td>0x02A8	</td><td>21.059 kHz</td><td>o9e</td></tr>
+<tr><td>14	</td><td>0x0240	</td><td>24.861 kHz</td><td>o9g</td></tr>
+<tr><td>15	</td><td>0x01B0	</td><td>33.148 kHz</td><td>o10c</td></tr>
+</table>
+<p>(*) サンプルレート÷２の音程換算。振幅が小さい時に発生するノイズはこの音程になります。）</p>
 
 <h4>mode</h4>
 <dl>

@@ -69,22 +69,109 @@ This is developed as object library, and user application can control it.<br>
 <h3>目次（index）</h3>
 
 <h4><a href="start.html">1. はじめに（Start）</a></h4>
+
 <h4><a href="usage.html">2. 使い方（Usage）</a></h4>
-<ol type="a">
-<li><a href="usage_nsc.html">MMLコンパイラ （nsc.exe）</a></li>
-<li><a href="usage_nsd.html">音源ドライバー （nsd.lib）</a></li>
+
+<ol type='a'>
+<li><a href="usage_nsc.html">MMLコンパイラ （nsc.exe）について</a></li>
+	<ul>
+	<li><a href="nsc_option.html">コマンドラインオプション</a></li>
+	<li><a href="nsc_asm.html">出力アセンブリ言語ソースの仕様</a></li>
+	<li><a href="mml.html">MML(Music Macro Language)文法</a>
+		<ul>
+		<li><a href="mml_envelope.html">エンベロープ記述ブロック</a></li>
+		<li><a href="mml_dpcm.html">⊿PCM記述ブロック</a></li>
+		<li><a href="mml_FDSC.html">FDSキャリア波形定義</a></li>
+		<li><a href="mml_FDSM.html">FDSモジュレータ波形定義</a></li>
+		<li><a href="mml_vrc7.html">VRC7音色波形記述ブロック</a></li>
+		<li><a href="mml_N163.html">n163音色波形記述ブロック</a></li>
+		<li><a href="mml_sequence.html">シーケンス記述ブロック</a>
+			<ul>
+			<li><a href="mml_note.html">a,b,c,d,e,f,g：音符</a></li>
+			<li><a href="mml_length.html">l：省略時の音長</a></li>
+			<li><a href="mml_octave.html">o：オクターブ</a></li>
+			<li><a href="mml_gate.html">q,u：省略時のゲートタイム</a></li>
+			<li><a href="mml_rest.html">r：休符</a></li>
+			<li><a href="mml_sweep.html">s：スイープ(APU)</a></li>
+			<li><a href="mml_sweep.html">s：サスティン(VRC7)</a></li>
+			<li><a href="mml_sweep.html">s：サンプル長設定(n163)</a></li>
+			<li><a href="mml_sweep.html">s：ハードウェアエンベロープ（Sunsoft 5B）</a></li>
+			<li><a href="mml_tempo.html">t：テンポ</a></li>
+			<li><a href="mml_volume.html">v：音量</a></li>
+			<li><a href="mml_poke.html">y：メモリ書き込み</a></li>
+			<li><a href="mml_VRC7write.html">yV：VRC7レジスタ書き込み</a></li>
+			<li><a href="mml_detune.html">D,D%：ディチューン</a></li>
+			<li><a href="mml_envelop.html">E@,Ev,Em,En：エンベロープ</a></li>
+			<li><a href="mml_echo.html">EC：疑似エコー</a></li>
+			<li><a href="mml_s5b_envelope.html">F：Sunsoft 5Bエンベロープ周波数</a></li>
+			<li><a href="mml_KeySignature.html">K{}：調号</a></li>
+			<li><a href="mml_loop.html">L：無限ループ</a></li>
+			<li><a href="mml_N163_channel.html">NC:n163チャンネル数設定</a></li>
+			<li><a href="mml_portamento.html">P：ポルタメント</a></li>
+			<li><a href="mml_release.html">Rm,R@,Rv：リリース処理</a></li>
+			<li><a href="mml_sub.html">S：サブルーチン・コール</a></li>
+			<li><a href="mml_se.html">SE：効果音コール</a></li>
+			<li><a href="mml_TR.html">TR：トラック</a></li>
+			<li><a href="mml_macro.html">$：マクロ</a></li>
+			<li><a href="mml_voice.html">@：音色</a></li>
+			<li><a href="mml_VRC7voice.html">@V：VRC7ユーザ定義音色</a></li>
+			<li><a href="mml_FDS_career.html">@FC：FDSキャリア波形設定</a></li>
+			<li><a href="mml_FDS_modulator.html">@FM：FDSモジュレータ波形定義</a></li>
+			<li><a href="mml_FDS_frequency.html">@FF：FDSモジュレータ周波数設定</a></li>
+			<li><a href="mml_FDS_volume.html">@FV：FDSマスター音量</a></li>
+			<li><a href="mml_N163voice.html">@N：n163音色波形設定</a></li>
+			<li><a href="mml_relative_volume.html">(,)：相対ボリューム</a></li>
+			<li><a href="mml_relative_octave.html">&lt;,&gt;,&quot;,'：相対オクターブ</a></li>
+			<li><a href="mml_repeatA.html">[ : ]：リピート(A)</a></li>
+			<li><a href="mml_repeatB.html">|: \ :|：リピート(B)</a></li>
+			<li><a href="mml_tie.html">^：タイ</a></li>
+			<li><a href="mml_transpose.html">_.__：移調</a></li>
+			</ul>
+		</li>
+		<li>Tips<br>
+			<ul>
+			<li><a href="mml_tips.html">最適化のためのヒント</a></li>
+			<li><a href="n163.html">n163の使い方</a></li>
+			</ul>
+		</ul>
+	</li>
+	</ul>
+
+<li><a href="usage_nsd.html">音源ドライバー （nsd.lib）について</a></li>
+	<ul>
+	<li>関数リファレンス<br>
+		<ul>
+		<li><a href="func_nsd_init.html">nsd_init()</a></li>
+		<li><a href="func_nsd_set_dpcm.html">nsd_set_dpcm()</a></li>
+		<li><a href="func_nsd_main.html">nsd_main()</a></li>
+		<li><a href="func_nsd_play_bgm.html">nsd_play_bgm()</a></li>
+		<li><a href="func_nsd_stop_bgm.html">nsd_stop_bgm()</a></li>
+		<li><a href="func_nsd_pause_bgm.html">nsd_pause_bgm()</a></li>
+		<li><a href="func_nsd_resume_bgm.html">nsd_resume_bgm()</a></li>
+		<li><a href="func_nsd_play_se.html">nsd_play_se()</a></li>
+		<li><a href="func_nsd_stop_se.html">nsd_stop_se()</a></li>
+		</ul>
+	</li>
+	</ul>
 </ol>
+
 <h4>3. 仕様（Specifications）</h4>
-<ol type="a">
+
+<ul>
 <li><a href="spec.html">各.bin/.libの仕様</a></li>
 <li><a href="diagram.html">ブロック図</a></li>
 <li><a href="variable.html">制御用変数</a></li>
 <li><a href="format_music.html">BGM,SEデータフォーマット</a></li>
-</ol>
+</ul>
+
 <h4><a href="faq.html">4. FAQ</a></h4>
+
 <h4><a href="thanks.html">5. Special Thanks</a></h4>
+
 <h4><a href="licence.html">6. ライセンス・著作権（Licence）</a></h4>
+
 <h4><a href="revision.html">7. 改訂履歴（Revision）</a></h4>
+
 
 </div>
 

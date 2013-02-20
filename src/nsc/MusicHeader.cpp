@@ -13,6 +13,7 @@
 MusicHeader::MusicHeader(MMLfile* MML, string _code):
 	iBGM(1),
 	iSE(0),
+	iExternal(-1),
 	bank(false),
 	op_code(false),
 	offsetPCM(0x10000),
@@ -120,6 +121,17 @@ void	MusicHeader::Set_Number_SE(MMLfile* MML)
 	}
 	iSE = _n;
 }
+
+void	MusicHeader::Set_External(MMLfile* MML)
+{
+	int	_n = MML->GetInt();
+
+	if((_n > 255) || (_n < 0)){
+		MML->Err(L"#External‚Í0`255ˆÈ‰º‚Ì’l‚Åw’è‚µ‚Ä‚­‚¾‚³‚¢B");
+	}
+	iExternal = _n;
+}
+
 void	MusicHeader::Set_Bank(void)
 {
 	bank		= true;

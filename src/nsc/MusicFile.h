@@ -53,7 +53,7 @@ public:
 	MusicFile(MMLfile* MML, string _code, const wchar_t _strName[]=L"==== [ Music ] ====");
 	~MusicFile(void);
 
-	unsigned	int		SetDPCMOffset(void);
+	unsigned	int		SetDPCMOffset(unsigned int iMusSize);
 
 	void	Fix_Address(void);
 

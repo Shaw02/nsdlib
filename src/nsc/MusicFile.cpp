@@ -28,6 +28,7 @@ enum	Command_ID_MusicFile {
 	id_Copyright,
 	id_OffsetPCM,
 	id_Code,
+	id_External,
 	id_Bank,
 
 	//for ASM output
@@ -72,6 +73,8 @@ const	static	Command_Info	Command[] = {
 		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#Code",			id_Code			},
 		{	"#code",			id_Code			},
+		{	"#External",		id_External		},
+		{	"#external",		id_External		},
 		{	"#Bank",			id_Bank			},
 		{	"#bank",			id_Bank			},
 		//for ASM output
@@ -188,6 +191,9 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(id_OffsetPCM):
 				Header.Set_OffsetPCM(MML);
+				break;
+			case(id_External):
+				Header.Set_External(MML);
 				break;
 			case(id_Bank):
 				Header.Set_Bank();
@@ -389,18 +395,24 @@ MusicFile::~MusicFile(void)
 //		ΔPCMのオフセットアドレスを計算
 //--------------------------------------------------------------
 //	●引数
-//				無し
+//		unsigned	int	iMusSize	シーケンスのサイズ
 //	●返値
 //		unsigned	int	ΔPCMの合計サイズ
 //==============================================================
-unsigned	int		MusicFile::SetDPCMOffset(void)
+unsigned	int		MusicFile::SetDPCMOffset(unsigned int iMusSize)
 {
-	unsigned	int	i;
+	unsigned	int		i;
+	unsigned	char	mus_bank = (unsigned char)(iMusSize >> 12);
+
+	if((iMusSize & 0x0FFF) != 0){
+		mus_bank++;
+	}
+
 
 	dpcm_code.clear();
 	if(cDPCMinfo != NULL){
 		cDPCMinfo->getDPCMCode(&dpcm_code);
-		i = cDPCMinfo->setDPCMoffset(Header.offsetPCM);
+		i = cDPCMinfo->setDPCMoffset(Header.offsetPCM, mus_bank+2);
 	} else {
 		i = Header.offsetPCM;
 	}
@@ -564,14 +576,16 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 	delete		_romcode;
 
 	//NSFヘッダーの更新
-	nsf->MusicNumber		= Header.iBGM + Header.iSE;
 	memcpy(&nsf->Title, Header.title.c_str(), 32);
 	memcpy(&nsf->Composer, Header.composer.c_str(), 32);
 	memcpy(&nsf->Copyright, Header.copyright.c_str(), 32);
+	nsf->MusicNumber	= Header.iBGM + Header.iSE;
+	if(Header.iExternal != -1){
+		nsf->External	= Header.iExternal & 0xFF;
+	}
 
 	//シーケンスのバイナリを生成
 	make_bin(bin_size);
-
 
 	if((nsf->Bank[0] == 0) && (nsf->Bank[1] == 0) && (nsf->Bank[2] == 0) && (nsf->Bank[3] == 0)){
 
@@ -661,17 +675,14 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 	if(dpcm_bank == false){
 		if(cDPCMinfo == NULL){
+			//⊿PCMを使わない場合
 			write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
 			write(code.c_str(), code.size());	//シーケンスの書き込み
-		//	//0 padding
-		//	while(mus_size < ((unsigned int)mus_bank<<12)){
-		//		put(0);		//0 padding
-		//		mus_size++;
-		//	}
-		} else {
 
-			//ヘッダーにバンク情報を書く。
+		} else {
+			//⊿PCMを使う場合
 			if(opt == true){
+				//最適化が有効であれば、ヘッダーにバンク情報を書く。
 				i = 0;
 				while(i < mus_bank){
 					nsf->Bank[i] = i;
@@ -729,14 +740,31 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		//Bank 対応bin
 		write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
 		write(code.c_str(), code.size());	//シーケンスの書き込み
-		while(mus_size < 0x6000){
+		//GAP
+		while(mus_size < ((unsigned int)mus_bank<<12)){
 			put(0);		//0 padding
 			mus_size++;
 		}
+
+	//	while(mus_size < 0x6000){
+	//		put(0);		//0 padding
+	//		mus_size++;
+	//	}
+
 		write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
+		//GAP
 		while(pcm_size < ((unsigned int)pcm_bank<<12)){
 			put(0);		//0 padding
 			pcm_size++;
+		}
+
+		if(opt != true){
+			//GAP（必ず、32kByte以上にする。）
+			i = (mus_bank + pcm_bank + 2) << 12;
+			while(i < 0x8000){
+				put(0);		//0 padding
+				i++;
+			}
 		}
 
 	}

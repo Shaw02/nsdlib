@@ -43,7 +43,7 @@ int	main(int argc, char* argv[])
 	}
 	i = cSND->SetOffset(0);
 	wcout << L"Music Size = " << i << endl;
-	i = cSND->SetDPCMOffset();
+	i = cSND->SetDPCMOffset(i);
 	wcout << L"DPCM Size = " << i << endl;
 
 	cSND->Fix_Address();

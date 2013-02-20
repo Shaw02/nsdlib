@@ -9,11 +9,12 @@ class MusicHeader
 {
 //メンバー変数
 public:
-	unsigned	char	iBGM;
-	unsigned	char	iSE;
-	unsigned	int		offsetPCM;
 				bool	bank;
 				bool	op_code;		//option で code 指定された？
+	unsigned	char	iBGM;			//BGM数
+	unsigned	char	iSE;			//SE数
+	unsigned	int		offsetPCM;
+				int		iExternal;		//拡張音源フラグ
 				string	Label;
 				string	title;
 				string	copyright;
@@ -35,5 +36,6 @@ public:
 		void	Set_RomCode(MMLfile* MML);
 		void	Set_Number_BGM(MMLfile* MML);
 		void	Set_Number_SE(MMLfile* MML);
+		void	Set_External(MMLfile* MML);
 		void	Set_Bank(void);
 };

@@ -39,7 +39,7 @@ public:
 						~DPCMinfo(void);
 				void	setKey(MMLfile* MML, int key);
 				void	setNote(MMLfile* MML, int note);
-	unsigned	int		setDPCMoffset(unsigned	int _offset);
+	unsigned	int		setDPCMoffset(unsigned	int _offset, unsigned char _MusBank);
 				void	getDPCMCode(string* _str);
 				void	getAsm(MusicFile* MUS);
 };
