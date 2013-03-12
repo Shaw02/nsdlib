@@ -63,7 +63,52 @@ const	static	Command_Info	Command[] = {
 		{	"a",	DPCM_A		},
 		{	"b",	DPCM_B		},
 
+		{	"ど#",		DPCM_Cis	},
+		{	"れ#",		DPCM_Dis	},
+		{	"ふぁ#",	DPCM_Fis	},
+		{	"ふ#",		DPCM_Fis	},
+		{	"そ#",		DPCM_Gis	},
+		{	"ら#",		DPCM_Ais	},
+
+		{	"れ-",	DPCM_Cis	},
+		{	"み-",	DPCM_Dis	},
+		{	"そ-",	DPCM_Fis	},
+		{	"ら-",	DPCM_Gis	},
+		{	"し-",	DPCM_Ais	},
+
+		{	"ど",	DPCM_C		},
+		{	"れ",	DPCM_D		},
+		{	"み",	DPCM_E		},
+		{	"ふぁ",	DPCM_F		},
+		{	"ふ",	DPCM_F		},
+		{	"そ",	DPCM_G		},
+		{	"ら",	DPCM_A		},
+		{	"し",	DPCM_B		},
+
+		{	"ド#",		DPCM_Cis	},
+		{	"レ#",		DPCM_Dis	},
+		{	"ファ#",	DPCM_Fis	},
+		{	"フ#",		DPCM_Fis	},
+		{	"ソ#",		DPCM_Gis	},
+		{	"ラ#",		DPCM_Ais	},
+
+		{	"レ-",	DPCM_Cis	},
+		{	"ミ-",	DPCM_Dis	},
+		{	"ソ-",	DPCM_Fis	},
+		{	"ラ-",	DPCM_Gis	},
+		{	"シ-",	DPCM_Ais	},
+
+		{	"ド",	DPCM_C		},
+		{	"レ",	DPCM_D		},
+		{	"ミ",	DPCM_E		},
+		{	"ファ",	DPCM_F		},
+		{	"フ",	DPCM_F		},
+		{	"ソ",	DPCM_G		},
+		{	"ラ",	DPCM_A		},
+		{	"シ",	DPCM_B		},
+
 		{	"n",	DPCM_Note	}
+
 };
 
 	unsigned	char	cData;

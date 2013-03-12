@@ -18,7 +18,8 @@ MMLfile::MMLfile(const char*	strFileName):
 	octave_reverse(false),
 //	f_macro(false),
 	p_macro(0),
-	f_macro2(false)
+	f_macro2(false),
+	f_2to1(false)
 	{
 	//File open
 	nowFile	= new FileInput();
@@ -276,9 +277,8 @@ void	MMLfile::StreamPointerMove(long iSize)
 //	●返値
 //			無し
 //==============================================================
-void	MMLfile::Back(void)
+void	MMLfile::Back_one(void)
 {
-
 	if(f_macro2 == true){
 		f_macro2 = false;
 		if(p_macro > 0){
@@ -296,6 +296,15 @@ void	MMLfile::Back(void)
 			nowFile->Back();
 		}
 	}
+}
+void	MMLfile::Back(void)
+{
+	if(f_2to1==true){
+		Back_one();
+		Back_one();
+	} else {
+		Back_one();
+	}
 
 }
 
@@ -307,7 +316,7 @@ void	MMLfile::Back(void)
 //	●返値
 //			char	読み込み値
 //==============================================================
-char	MMLfile::cRead(void)
+char	MMLfile::read_char(void)
 {
 	char	cData;
 
@@ -330,6 +339,105 @@ char	MMLfile::cRead(void)
 		}
 	} else {
 		cData		= nowFile->cRead();
+	}
+
+	return(cData);
+
+}
+
+//==============================================================
+//			１Byte読み込み
+//--------------------------------------------------------------
+//	●引数
+//			無し
+//	●返値
+//			char	読み込み値
+//==============================================================
+char	MMLfile::cRead(void)
+{
+	unsigned	char	cData = read_char();
+	unsigned	char	cDataMSB;
+
+	switch(cData){
+		case(0x81):
+			cDataMSB = read_char();
+			f_2to1 = true;
+			switch(cDataMSB){
+				case(0x69):
+					cData = '(';
+					break;
+				case(0x6A):
+					cData = ')';
+					break;
+				case(0x6F):
+					cData = '{';
+					break;
+				case(0x70):
+					cData = '}';
+					break;
+				case(0x7B):
+					cData = '+';
+					break;
+				case(0x7C):
+					cData = '-';
+					break;
+				case(0x94):	//＃
+					cData = '#';
+					break;
+				case(0xF3):	//♭
+					cData = '-';
+					break;
+				default:
+					f_2to1 = false;
+					Back();
+					break;
+			}
+			break;
+
+		case(0x82):
+			cDataMSB = read_char();
+			f_2to1 = true;
+			switch(cDataMSB){
+				case(0x4F):
+					cData = '0';
+					break;
+				case(0x50):
+					cData = '1';
+					break;
+				case(0x51):
+					cData = '2';
+					break;
+				case(0x52):
+					cData = '3';
+					break;
+				case(0x53):
+					cData = '4';
+					break;
+				case(0x54):
+					cData = '5';
+					break;
+				case(0x55):
+					cData = '6';
+					break;
+				case(0x56):
+					cData = '7';
+					break;
+				case(0x57):
+					cData = '8';
+					break;
+				case(0x58):
+					cData = '9';
+					break;
+				default:
+					f_2to1 = false;
+					Back();
+					break;
+			}
+			break;
+
+		default:
+			f_2to1 = false;
+			break;
 	}
 
 	return(cData);

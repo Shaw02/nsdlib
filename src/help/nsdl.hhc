@@ -50,6 +50,111 @@
 			<param name="Local" value="nsc_asm.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="ストトン表記">
+			<param name="ImageNumber" value="1">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="ストトン表記">
+				<param name="Local" value="jmml.html">
+				<param name="ImageNumber" value="12">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="ストトンリファレンス">
+				<param name="ImageNumber" value="1">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="ドレミファソラシ">
+					<param name="Local" value="jmml_note.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="ー：タイ">
+					<param name="Local" value="jmml_tie.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="ン, ッ：休符">
+					<param name="Local" value="jmml_rest.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="音符：省略時の音長">
+					<param name="Local" value="jmml_length.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="音色">
+					<param name="Local" value="jmml_voice.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="音階：オクターブ">
+					<param name="Local" value="jmml_octave.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="↑, ↓,` ,” ：相対オクターブ">
+					<param name="Local" value="jmml_relative_octave.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="音量">
+					<param name="Local" value="jmml_volume.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="小さく, 大きく：相対音量">
+					<param name="Local" value="jmml_relative_volume.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="調｛｝：調号">
+					<param name="Local" value="jmml_KeySignature.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="エコー">
+					<param name="Local" value="jmml_echo.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="エンベロープ">
+					<param name="Local" value="jmml_envelop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="ゲート：クオンタイズ">
+					<param name="Local" value="jmml_gate.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="ディチューン">
+					<param name="Local" value="jmml_detune.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="テンポ">
+					<param name="Local" value="jmml_tempo.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="←, →：相対的なテンポ">
+					<param name="Local" value="jmml_tempo.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="トラック">
+					<param name="Local" value="jmml_TR.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="ビブラート">
+					<param name="Local" value="jmml_vibrato.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="ポルタメント">
+					<param name="Local" value="jmml_portamento.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="∞：無限ループ">
+					<param name="Local" value="jmml_loop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="【：】：リピートA">
+					<param name="Local" value="jmml_repeatA.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="｜：￥：｜　：リピートB">
+					<param name="Local" value="jmml_repeatB.html">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="MML(Music Macro Language)">
 			<param name="ImageNumber" value="1">
 			</OBJECT>

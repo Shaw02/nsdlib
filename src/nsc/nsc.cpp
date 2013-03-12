@@ -58,7 +58,6 @@ int	main(int argc, char* argv[])
 		cSND->saveASM(cOptionSW->strASMname.c_str());
 	}
 
-
 	//==================================
 	//ƒNƒ‰ƒX‚Ìíœ
 	delete	cSND;

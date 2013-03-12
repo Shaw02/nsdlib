@@ -647,10 +647,17 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 	//調号コマンド内の定義
 	static	const	Command_Info	KS_Command[] = {
 		{	"+",		ks_Sharp	},
+		{	"＋",		ks_Sharp	},
 		{	"#",		ks_Sharp	},
+		{	"＃",		ks_Sharp	},
 		{	"-",		ks_Flat		},
+		{	"－",		ks_Flat		},
+		{	"♭",		ks_Flat		},
 		{	"=",		ks_Natural	},
+		{	"＝",		ks_Natural	},
 		{	"*",		ks_Natural	},
+		{	"＊",		ks_Natural	},
+
 		{	"c",		ks_c		},
 		{	"d",		ks_d		},
 		{	"e",		ks_e		},
@@ -659,6 +666,37 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		{	"a",		ks_a		},
 		{	"b",		ks_b		},
 		{	"r",		ks_r		},
+
+		{	"ド",		ks_c		},
+		{	"レ",		ks_d		},
+		{	"ミ",		ks_e		},
+		{	"ファ",		ks_f		},
+		{	"フ",		ks_f		},
+		{	"ソ",		ks_g		},
+		{	"ラ",		ks_a		},
+		{	"シ",		ks_b		},
+		{	"ン",		ks_r		},
+		{	"ッ",		ks_r		},
+
+		{	"ど",		ks_c		},
+		{	"れ",		ks_d		},
+		{	"み",		ks_e		},
+		{	"ふぁ",		ks_f		},
+		{	"ふ",		ks_f		},
+		{	"そ",		ks_g		},
+		{	"ら",		ks_a		},
+		{	"し",		ks_b		},
+		{	"ん",		ks_r		},
+		{	"っ",		ks_r		},
+
+		{	"ハ",		ks_c		},
+		{	"ニ",		ks_d		},
+		{	"ホ",		ks_e		},
+		{	"ヘ",		ks_f		},
+		{	"ト",		ks_g		},
+		{	"イ",		ks_a		},
+		{	"ロ",		ks_b		},
+
 		{	"C_Dur",	ks_0		},	//
 		{	"Cis_Dur",	ks_f5		},	//bbbbb
 		{	"D_Dur",	ks_s2		},	//##

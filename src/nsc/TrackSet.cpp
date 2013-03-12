@@ -37,6 +37,8 @@ enum	Command_ID_mml {
 
 	mml_Tempo,
 	mml_Tempo_Relative,
+	mml_Tempo_Up,
+	mml_Tempo_Down,
 
 	mml_La,
 	mml_Si,
@@ -103,22 +105,35 @@ enum	Command_ID_mml {
 
 //	これらは、MML構文で使えるコマンド。
 const	static	Command_Info	Command[] = {
-		{	"TR",	mml_Track				},
-		{	"K",	mml_KeySignature,		},
-		{	"SE",	mml_CallSE				},
-		{	"S",	mml_Subroutine			},
-		{	"$",	mml_Macro,				},
+		{	"TR",		mml_Track				},
+		{	"トラック",	mml_Track				},
+		{	"K",		mml_KeySignature,		},
+		{	"調",		mml_KeySignature,		},
+		{	"SE",		mml_CallSE				},
+		{	"S",		mml_Subroutine			},
+		{	"$",		mml_Macro,				},
 
-		{	"L",	mml_Loop				},
-		{	"|:",	mml_Repeat_B_Start		},
-		{	"\\",	mml_Repeat_B_Branch		},
-		{	":|",	mml_Repeat_B_End		},
-		{	"[",	mml_Repeat_A_Start		},
-		{	":",	mml_Repeat_A_Branch		},
-		{	"]",	mml_Repeat_A_End		},
+		{	"L",		mml_Loop				},
+		{	"|:",		mml_Repeat_B_Start		},
+		{	"\\",		mml_Repeat_B_Branch		},
+		{	":|",		mml_Repeat_B_End		},
+		{	"[",		mml_Repeat_A_Start		},
+		{	":",		mml_Repeat_A_Branch		},
+		{	"]",		mml_Repeat_A_End		},
 
-		{	"t_",	mml_Tempo_Relative,		},
-		{	"t",	mml_Tempo,				},
+		{	"∞",		mml_Loop				},
+		{	"｜：",		mml_Repeat_B_Start		},
+		{	"￥",		mml_Repeat_B_Branch		},
+		{	"：｜",		mml_Repeat_B_End		},
+		{	"【",		mml_Repeat_A_Start		},
+		{	"：",		mml_Repeat_A_Branch		},
+		{	"】",		mml_Repeat_A_End		},
+
+		{	"t_",		mml_Tempo_Relative,		},
+		{	"t",		mml_Tempo,				},
+		{	"テンポ",	mml_Tempo,				},
+		{	"→",		mml_Tempo_Up,			},
+		{	"←",		mml_Tempo_Down,			},
 
 		{	"a",	mml_La					},
 		{	"b",	mml_Si					},
@@ -130,12 +145,48 @@ const	static	Command_Info	Command[] = {
 		{	"r",	mml_Rest				},
 		{	"^",	mml_Tai					},
 
-		{	"l",	mml_Length				},
-		{	"q",	mml_Gate_q				},
-		{	"u",	mml_Gate_u				},
+		{	"ら",	mml_La					},
+		{	"し",	mml_Si					},
+		{	"ど",	mml_Do					},
+		{	"れ",	mml_Re					},
+		{	"み",	mml_Mi					},
+		{	"ふぁ",	mml_Fa					},
+		{	"ふ",	mml_Fa					},
+		{	"そ",	mml_Sol					},
+		{	"ん",	mml_Rest				},
+		{	"っ",	mml_Rest				},
+		{	"ー",	mml_Tai					},
 
-		{	"EC*",	mml_Echo_Off			},
-		{	"EC",	mml_Echo				},
+		{	"ラ",	mml_La					},
+		{	"シ",	mml_Si					},
+		{	"ド",	mml_Do					},
+		{	"レ",	mml_Re					},
+		{	"ミ",	mml_Mi					},
+		{	"ファ",	mml_Fa					},
+		{	"フ",	mml_Fa					},
+		{	"ソ",	mml_Sol					},
+		{	"ン",	mml_Rest				},
+		{	"ッ",	mml_Rest				},
+		{	"－",	mml_Tai					},
+
+		{	"イ",	mml_La					},
+		{	"ロ",	mml_Si					},
+		{	"ハ",	mml_Do					},
+		{	"ニ",	mml_Re					},
+		{	"ホ",	mml_Mi					},
+		{	"ヘ",	mml_Fa					},
+		{	"ト",	mml_Sol					},
+
+		{	"l",		mml_Length				},
+		{	"音符",		mml_Length				},
+		{	"q",		mml_Gate_q				},
+		{	"ゲート",	mml_Gate_q				},
+		{	"u",		mml_Gate_u				},
+
+		{	"EC*",			mml_Echo_Off			},
+		{	"EC",			mml_Echo				},
+		{	"エコーオフ",	mml_Echo_Off			},
+		{	"エコー",		mml_Echo				},
 
 		{	"E@*",	mml_Envelop_Off_Voice		},
 		{	"Ev*",	mml_Envelop_Off_Volume		},
@@ -146,6 +197,11 @@ const	static	Command_Info	Command[] = {
 		{	"Ev",	mml_Envelop_Volume		},
 		{	"Em",	mml_Envelop_Frequency	},
 		{	"En",	mml_Envelop_Note		},
+
+		{	"エンベロープオフ",	mml_Envelop_Off_Volume		},
+		{	"エンベロープ",		mml_Envelop_Volume			},
+		{	"ビブラートオフ",	mml_Envelop_Off_Frequency	},
+		{	"ビブラート",		mml_Envelop_Frequency		},
 
 		{	"Rm",	mml_Release_mdoe		},
 		{	"R@",	mml_Release_Voice		},
@@ -158,29 +214,48 @@ const	static	Command_Info	Command[] = {
 		{	"@V",	mml_VRC7				},
 		{	"@N",	mml_N163				},
 		{	"@",	mml_Voice				},
+		{	"音色",	mml_Voice				},
 		{	"NC",	mml_N163_Channel		},
 		{	"F",	mml_FME7_frequency		},
 
 		{	"o",	mml_Octave				},
+		{	"音階",	mml_Octave				},
 		{	">",	mml_Octave_Up			},
+		{	"上",	mml_Octave_Up			},
+		{	"↑",	mml_Octave_Up			},
 		{	"<",	mml_Octave_Down			},
+		{	"下",	mml_Octave_Down			},
+		{	"↓",	mml_Octave_Down			},
 		{	"`",	mml_Octave_Up1			},
+		{	"‘",	mml_Octave_Up1			},
 		{	"\"",	mml_Octave_Down1		},
-		{	"D%",	mml_Detune_Register		},
-		{	"D",	mml_Detune_Cent			},
-		{	"__",	mml_Transpose_Relative	},
-		{	"_",	mml_Transpose			},
-		{	"P",	mml_Protament			},
-		{	"s",	mml_Sweep				},
+		{	"”",	mml_Octave_Down1		},
 
-		{	"v",	mml_Volume				},
-		{	")",	mml_Volume_Up			},
-		{	"(",	mml_Volume_Down			},
+		{	"D%",			mml_Detune_Register		},
+		{	"D",			mml_Detune_Cent			},
+		{	"ディチューン",	mml_Detune_Cent			},
+		{	"__",			mml_Transpose_Relative	},
+		{	"_",			mml_Transpose			},
+		{	"TrackKey",		mml_Transpose			},
+		{	"P",			mml_Protament			},
+		{	"ポルタメント",	mml_Protament			},
+		{	"s",			mml_Sweep				},
+
+		{	"v",		mml_Volume				},
+		{	"音量",		mml_Volume				},
+		{	")",		mml_Volume_Up			},
+		{	"大きく",	mml_Volume_Up			},
+		{	"大",		mml_Volume_Up			},
+		{	"(",		mml_Volume_Down			},
+		{	"小さく",	mml_Volume_Down			},
+		{	"小",		mml_Volume_Down			},
 
 		{	"yV",	mml_VRC7_Write			},
 		{	"y",	mml_Memory_Write		},
 
-		{	"|",	mml_Bar					}
+		{	"　",	mml_Bar					},
+		{	"|",	mml_Bar					},
+		{	"｜",	mml_Bar					}
 };
 
 	unsigned	char	cData;
@@ -291,6 +366,14 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Tempo_Relative):
 				SetEvent(new mml_general(nsd_Relative_Tempo, MML, L"Relative Tempo"));
+				break;
+
+			case(mml_Tempo_Up):
+				SetEvent(new mml_general(nsd_Relative_Tempo, 4, L"Relative Tempo"));
+				break;
+
+			case(mml_Tempo_Down):
+				SetEvent(new mml_general(nsd_Relative_Tempo, -4, L"Relative Tempo"));
 				break;
 
 			case(mml_La):

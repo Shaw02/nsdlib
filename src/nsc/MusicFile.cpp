@@ -54,10 +54,13 @@ enum	Command_ID_MusicFile {
 	id_VRC7,
 	id_N163,
 	id_Envelop,
+	id_Vibrato,
 	id_Macro,
 	id_Sub,
 	id_BGM,
-	id_SE
+	id_SE,
+
+	id_Null
 };
 
 //	これらは、MML構文で使えるコマンド。
@@ -65,18 +68,26 @@ const	static	Command_Info	Command[] = {
 		//for NSF output
 		{	"#Title",			id_Title		},
 		{	"#title",			id_Title		},
+		{	"曲名",				id_Title		},
 		{	"#Composer",		id_Composer		},
 		{	"#composer",		id_Composer		},
+		{	"作曲者",			id_Composer		},
+		{	"作曲",				id_Composer		},
 		{	"#Copyright",		id_Copyright	},
 		{	"#copyright",		id_Copyright	},
+		{	"作者",				id_Copyright	},
+		{	"著作権者",			id_Copyright	},
 		{	"#OffsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
+		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#Code",			id_Code			},
 		{	"#code",			id_Code			},
+		{	"コード",			id_Code			},
 		{	"#External",		id_External		},
 		{	"#external",		id_External		},
 		{	"#Bank",			id_Bank			},
 		{	"#bank",			id_Bank			},
+		{	"バンク",			id_Bank			},
 		//for ASM output
 		{	"#SegmentPCM",		id_SegmentPCM	},	//Segment name for ⊿PCM
 		{	"#segmentPCM",		id_SegmentPCM	},
@@ -89,14 +100,17 @@ const	static	Command_Info	Command[] = {
 		//General
 		{	"#Include",			id_include		},
 		{	"#include",			id_include		},
+		{	"読む",				id_include		},
 		{	"#Timebase",		id_timebase		},
 		{	"#timebase",		id_timebase		},
 		{	"#OctaveReverse",	id_OctaveReverse},
 		{	"#octaveReverse",	id_OctaveReverse},
 		{	"#BGM",				id_bgm_num		},
 		{	"#bgm",				id_bgm_num		},
+		{	"音楽数",			id_bgm_num		},
 		{	"#SE",				id_se_num		},
 		{	"#se",				id_se_num		},
+		{	"効果音数",			id_se_num		},
 		{	"#OffsetE@",		id_offset_Ei	},
 		{	"#offsetE@",		id_offset_Ei	},
 		{	"#OffsetEv",		id_offset_Ev	},
@@ -115,12 +129,16 @@ const	static	Command_Info	Command[] = {
 		{	"envelope",			id_Envelop		},
 		{	"Envelop",			id_Envelop		},
 		{	"envelop",			id_Envelop		},
+		{	"エンベロープ",		id_Envelop		},
+		{	"ビブラート",		id_Vibrato		},
 		{	"Sub",				id_Sub			},
 		{	"sub",				id_Sub			},
 		{	"BGM",				id_BGM			},
 		{	"bgm",				id_BGM			},
+		{	"音楽",				id_BGM			},
 		{	"SE",				id_SE			},
 		{	"se",				id_SE			},
+		{	"効果音",			id_SE			},
 
 		//for 1 command
 		{	"D",				id_DPCM			},
@@ -140,6 +158,8 @@ const	static	Command_Info	Command[] = {
 		{	"@OP",				id_VRC7			},
 		{	"@N",				id_N163			},
 		{	"@E",				id_Envelop		},
+
+		{	"　",				id_Null			},
 	};
 
 	unsigned	int			i;
@@ -304,6 +324,18 @@ const	static	Command_Info	Command[] = {
 				ptcEnv[i] = _env;
 				iSize += _env->getSize();	//BGMのサイズを更新
 				break;
+			case(id_Vibrato):
+				MML->offset_Em = 1000000;
+				i = MML->GetNum() + MML->offset_Em;
+				//重複チェック
+				if(ptcEnv.count(i) != 0){
+					MML->Err(L"ビブラート()ブロックで同じ番号が指定されました。");
+				}
+				_env = new Envelop(MML, i);
+				ptcItem.push_back(_env);
+				ptcEnv[i] = _env;
+				iSize += _env->getSize();	//BGMのサイズを更新
+				break;
 			case(id_Macro):
 				MML->SetMacro();
 				break;
@@ -348,6 +380,8 @@ const	static	Command_Info	Command[] = {
 				ptcItem.push_back(_se);
 				ptcSE[i] = _se;
 				iSize += _se->getSize();	//BGMのサイズを更新
+				break;
+			case(id_Null):
 				break;
 			default:
 				MML->Err(L"unknown command");

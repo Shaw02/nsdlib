@@ -31,7 +31,7 @@ private:
 				int					p_macro;			//何ネスト目？
 
 				bool				f_macro2;			//マクロ展開中？
-
+				bool				f_2to1;				//変換した？
 public:
 				int					offset_Ei;			//
 				int					offset_Ev;			//
@@ -55,9 +55,11 @@ public:
 
 				int		tellg(void);					//現在のファイルのポインタ取得
 				void	StreamPointerMove(long iSize);	//現在のファイルのポインタ移動
-				void	Back(void);
+				void	Back_one(void);					//1文字戻し
+				void	Back(void);						//1文字戻し（全角・半角変換対応）
 
-				char	cRead(void);		//1Byte読み込み
+				char	read_char(void);	//1Byte読み込み
+				char	cRead(void);		//1Byte読み込み（全角・半角変換対応）
 				char	GetChar(void);		//1Byte読み込み（with EOF & Commend check）
 				string	GetString(void);	//""付 文字列 読み込み
 				int		GetNum(void);		//()付  数値  読み込み

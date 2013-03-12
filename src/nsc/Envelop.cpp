@@ -48,11 +48,21 @@ const	static	Command_Info	Command[] = {
 		{	"(",	Env_Sweep	},
 		{	"d",	Env_Hold	},
 		{	"D",	Env_Hold	},
+		{	"ÇÑ",	Env_Hold	},
+		{	"Çc",	Env_Hold	},
 		{	"|",	Env_Loop	},
+		{	"Åb",	Env_Loop	},
 		{	"l",	Env_Loop	},
 		{	"L",	Env_Loop	},
+		{	"Çå",	Env_Loop	},
+		{	"Çk",	Env_Loop	},
 		{	"r",	Env_Release	},
 		{	"R",	Env_Release	},
+		{	"Çí",	Env_Release	},
+		{	"Çq",	Env_Release	},
+		{	"Å@",	Env_Commma	},
+		{	"ÅC",	Env_Commma	},
+		{	"ÅA",	Env_Commma	},
 		{	",",	Env_Commma	}
 };
 
