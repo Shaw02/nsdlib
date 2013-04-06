@@ -10,6 +10,30 @@
 </OBJECT>
 <UL>
 	<OBJECT type="text/sitemap">
+		<param name="Merge" value="tutorial_start_bin.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="tutorial_start_1.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="tutorial_start_0.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="kaeru.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="tutorial_vibrato.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="tutorial_envelope.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
 		<param name="Merge" value="block.png">
 
 		</OBJECT>
@@ -46,9 +70,32 @@
 			<param name="Local" value="nsc_option.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="出力アセンブリ言語ソースの仕様">
-			<param name="Local" value="nsc_asm.html">
+			<param name="Name" value="チュートリアル">
+			<param name="ImageNumber" value="1">
 			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="チュートリアル">
+				<param name="Local" value="tutorial.html">
+				<param name="ImageNumber" value="12">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="1.準備">
+				<param name="Local" value="tutorial_start.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="2.曲を書いてみる">
+				<param name="Local" value="tutorial_music.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="3.音を増やしてみる">
+				<param name="Local" value="tutorial_track.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="4.音に表情をつけてみる">
+				<param name="Local" value="tutorial_envelope.html">
+				</OBJECT>
+		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="ストトン表記">
 			<param name="ImageNumber" value="1">
@@ -371,6 +418,10 @@
 					</OBJECT>
 			</UL>
 		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="出力アセンブリ言語ソースの仕様">
+			<param name="Local" value="nsc_asm.html">
+			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="音源ドライバー（nsd.lib）">

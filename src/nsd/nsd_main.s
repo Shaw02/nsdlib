@@ -31,6 +31,18 @@
 ;=======================================================================
 .proc	_nsd_main: near
 
+.ifdef	DPCMBank
+	;register push
+	lda	__tmp
+	pha
+	lda	__tmp + 1
+	pha
+	lda	__ptr
+	pha
+	lda	__ptr + 1
+	pha
+.endif
+
 	lda	#nsd_flag::BGM
 	bit	__flag
 	jne	BGM_Exit		;BGM disable ?
@@ -99,6 +111,18 @@ BGM_Exit:
 	ora	__flag
 	sta	__flag
 SE_Exit:
+
+.ifdef	DPCMBank
+	;register pop back
+	pla
+	sta	__ptr + 1
+	pla
+	sta	__ptr
+	pla
+	sta	__tmp + 1
+	pla
+	sta	__tmp
+.endif
 
 	;-------------------------------
 	;Exit

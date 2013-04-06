@@ -50,7 +50,7 @@ int	main(int argc, char* argv[])
 
 	//==================================
 	//•Û‘¶
-	if(cOptionSW->saveNSF == true){
+	if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveASM == false))){
 		cSND->saveNSF(cOptionSW->strNSFname.c_str(), cOptionSW->opt);
 	}
 

@@ -446,7 +446,7 @@ unsigned	int		MusicFile::SetDPCMOffset(unsigned int iMusSize)
 	dpcm_code.clear();
 	if(cDPCMinfo != NULL){
 		cDPCMinfo->getDPCMCode(&dpcm_code);
-		i = cDPCMinfo->setDPCMoffset(Header.offsetPCM, mus_bank+2);
+		i = cDPCMinfo->setDPCMoffset(Header.offsetPCM, mus_bank+3);
 	} else {
 		i = Header.offsetPCM;
 	}
@@ -597,7 +597,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 				size_t	pcm_size;
 	unsigned	char	mus_bank;
 	unsigned	char	pcm_bank;
-				char*	romimg		= new char[0x8000+0x80];
+				char*	romimg		= new char[0xC000+0x80];
 	NSF_Header*			nsf			= (NSF_Header*)romimg;
 	FileInput*			_romcode	= new FileInput();
 				bool	dpcm_bank	= false;
@@ -772,7 +772,8 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		}
 	} else {
 		//Bank 対応bin
-		write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
+		write(&romimg[0x0000], bin_size);	//NSFヘッダー ＆ コードの書き込み
+		write(&romimg[0x1080], 0x1000);		//NSFヘッダー ＆ コードの書き込み
 		write(code.c_str(), code.size());	//シーケンスの書き込み
 		//GAP
 		while(mus_size < ((unsigned int)mus_bank<<12)){
@@ -794,7 +795,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 		if(opt != true){
 			//GAP（必ず、32kByte以上にする。）
-			i = (mus_bank + pcm_bank + 2) << 12;
+			i = (mus_bank + pcm_bank + 3) << 12;
 			while(i < 0x8000){
 				put(0);		//0 padding
 				i++;

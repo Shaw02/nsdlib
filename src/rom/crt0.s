@@ -189,10 +189,33 @@ _eff:	.byte	0		;SE start number
 	;コピー
 .ifdef	DPCMBank
 
-	;Bank change
-	lda	#2
+	;Bank change (CODE)
+	lda	#$01
+	sta	$5FFF
+
+	;TNS-HFCシリーズが書き換えたVECTORのコピー
+	lda	#$4C		;JMP
+	sta	$0100
+	lda	$FFFA
+	sta	$0101
+	lda	$FFFB
+	sta	$0102
+
+	lda	#$4C		;JMP
+	sta	$0103
+	lda	$FFFC
+	sta	$0104
+	lda	$FFFD
+	sta	$0105
+
+	;Bank change (CODE)
+	lda	#$02
+	sta	$5FFF
+
+	;Bank change (MUS)
+	lda	#$03
 	sta	$5FF8
-	lda	#3
+	lda	#$04
 	sta	$5FF9
 
 	;Copy bank
@@ -268,13 +291,13 @@ Loop:
 	jne	Loop
 
 	;Bank change
-	lda	#4
-	sta	$5FF8
 	lda	#5
-	sta	$5FF9
+	sta	$5FF8
 	lda	#6
-	sta	$5FFA
+	sta	$5FF9
 	lda	#7
+	sta	$5FFA
+	lda	#8
 	sta	$5FFB
 
 .endif
@@ -375,7 +398,9 @@ Loop:
 
 .ifdef	DPCMBank
 .segment	"VECTORS"
-	.word	_nmi_main	; $fffa vblank nmi
-	.word	_nsf_init	; $fffc reset
+;	.word	_nmi_main	; $fffa vblank nmi
+	.word	$0100		
+;	.word	_nsf_init	; $fffc reset
+	.word	$0103		
 	.word	_irq_main	; $fffe irq / brk
 .endif

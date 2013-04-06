@@ -646,6 +646,35 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 
 	//調号コマンド内の定義
 	static	const	Command_Info	KS_Command[] = {
+		{	"C-Dur",	ks_0		},	//
+		{	"Ds-Dur",	ks_f5		},	//bbbbb
+		{	"D-Dur",	ks_s2		},	//##
+		{	"Es-Dur",	ks_f3		},	//bbb
+		{	"E-Dur",	ks_s4		},	//####
+		{	"F-Dur",	ks_f1		},	//b
+		{	"Fis-Dur",	ks_s6		},	//######
+		{	"Gs-Dur",	ks_f6		},	//bbbbbb
+		{	"G-Dur",	ks_s1		},	//#
+		{	"As-Dur",	ks_f4		},	//bbbb
+		{	"A-Dur",	ks_s3		},	//###
+		{	"B-Dur",	ks_f2		},	//bb
+		{	"H-Dur",	ks_s5		},	//#####
+
+		{	"c-moll",	ks_f3		},	//bbb
+		{	"cis-moll",	ks_s4		},	//####
+		{	"d-moll",	ks_f1		},	//b
+		{	"dis-moll",	ks_s6		},	//######
+		{	"es-moll",	ks_f6		},	//bbbbbb
+		{	"e-moll",	ks_s1		},	//#
+		{	"f-moll",	ks_f4		},	//bbbb
+		{	"fis-moll",	ks_s3		},	//###
+		{	"g-moll",	ks_f2		},	//bb
+		{	"gis-moll",	ks_s5		},	//#####
+		{	"a-moll",	ks_0		},	//
+		{	"b-moll",	ks_f5		},	//bbbbb
+		{	"bs-moll",	ks_f5		},	//bbbbb
+		{	"h-moll",	ks_s2		},	//##
+
 		{	"+",		ks_Sharp	},
 		{	"＋",		ks_Sharp	},
 		{	"#",		ks_Sharp	},
@@ -695,21 +724,8 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		{	"ヘ",		ks_f		},
 		{	"ト",		ks_g		},
 		{	"イ",		ks_a		},
-		{	"ロ",		ks_b		},
+		{	"ロ",		ks_b		}
 
-		{	"C_Dur",	ks_0		},	//
-		{	"Cis_Dur",	ks_f5		},	//bbbbb
-		{	"D_Dur",	ks_s2		},	//##
-		{	"Dis_Dur",	ks_f3		},	//bbb
-		{	"E_Dur",	ks_s4		},	//####
-		{	"F_Dur",	ks_f1		},	//b
-		{	"Fis_Dur",	ks_s6		},	//######
-		{	"Gs_Dur",	ks_f6		},	//bbbbbb
-		{	"G_Dur",	ks_s1		},	//#
-		{	"As_Dur",	ks_f4		},	//bbbb
-		{	"A_Dur",	ks_s3		},	//###
-		{	"B_Dur",	ks_f2		},	//bb
-		{	"H_Dur",	ks_s5		}	//#####
 	};
 
 	unsigned	char	cData;
@@ -765,6 +781,142 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 				break;
 			case(ks_Flat):
 				sign = -1;
+				break;
+
+			case(ks_0):
+				KeySignature[0] = 0;	//c
+				KeySignature[1] = 0;	//d
+				KeySignature[2] = 0;	//e
+				KeySignature[3] = 0;	//f
+				KeySignature[4] = 0;	//g
+				KeySignature[5] = 0;	//a
+				KeySignature[6] = 0;	//b
+				break;
+			case(ks_s1):
+				KeySignature[0] = 0;	//c
+				KeySignature[1] = 0;	//d
+				KeySignature[2] = 0;	//e
+				KeySignature[3] = 1;	//f
+				KeySignature[4] = 0;	//g
+				KeySignature[5] = 0;	//a
+				KeySignature[6] = 0;	//b
+				break;
+			case(ks_s2):
+				KeySignature[0] = 1;	//c
+				KeySignature[1] = 0;	//d
+				KeySignature[2] = 0;	//e
+				KeySignature[3] = 1;	//f
+				KeySignature[4] = 0;	//g
+				KeySignature[5] = 0;	//a
+				KeySignature[6] = 0;	//b
+				break;
+			case(ks_s3):
+				KeySignature[0] = 1;	//c
+				KeySignature[1] = 0;	//d
+				KeySignature[2] = 0;	//e
+				KeySignature[3] = 1;	//f
+				KeySignature[4] = 1;	//g
+				KeySignature[5] = 0;	//a
+				KeySignature[6] = 0;	//b
+				break;
+			case(ks_s4):
+				KeySignature[0] = 1;	//c
+				KeySignature[1] = 1;	//d
+				KeySignature[2] = 0;	//e
+				KeySignature[3] = 1;	//f
+				KeySignature[4] = 1;	//g
+				KeySignature[5] = 0;	//a
+				KeySignature[6] = 0;	//b
+				break;
+			case(ks_s5):
+				KeySignature[0] = 1;	//c
+				KeySignature[1] = 1;	//d
+				KeySignature[2] = 0;	//e
+				KeySignature[3] = 1;	//f
+				KeySignature[4] = 1;	//g
+				KeySignature[5] = 1;	//a
+				KeySignature[6] = 0;	//b
+				break;
+			case(ks_s6):
+				KeySignature[0] = 1;	//c
+				KeySignature[1] = 1;	//d
+				KeySignature[2] = 1;	//e
+				KeySignature[3] = 1;	//f
+				KeySignature[4] = 1;	//g
+				KeySignature[5] = 1;	//a
+				KeySignature[6] = 0;	//b
+				break;
+			case(ks_s7):
+				KeySignature[0] = 1;	//c
+				KeySignature[1] = 1;	//d
+				KeySignature[2] = 1;	//e
+				KeySignature[3] = 1;	//f
+				KeySignature[4] = 1;	//g
+				KeySignature[5] = 1;	//a
+				KeySignature[6] = 1;	//b
+				break;
+			case(ks_f1):
+				KeySignature[0] = 0;	//c
+				KeySignature[1] = 0;	//d
+				KeySignature[2] = 0;	//e
+				KeySignature[3] = 0;	//f
+				KeySignature[4] = 0;	//g
+				KeySignature[5] = 0;	//a
+				KeySignature[6] = -1;	//b
+				break;
+			case(ks_f2):
+				KeySignature[0] = 0;	//c
+				KeySignature[1] = 0;	//d
+				KeySignature[2] = -1;	//e
+				KeySignature[3] = 0;	//f
+				KeySignature[4] = 0;	//g
+				KeySignature[5] = 0;	//a
+				KeySignature[6] = -1;	//b
+				break;
+			case(ks_f3):
+				KeySignature[0] = 0;	//c
+				KeySignature[1] = 0;	//d
+				KeySignature[2] = -1;	//e
+				KeySignature[3] = 0;	//f
+				KeySignature[4] = 0;	//g
+				KeySignature[5] = -1;	//a
+				KeySignature[6] = -1;	//b
+				break;
+			case(ks_f4):
+				KeySignature[0] = 0;	//c
+				KeySignature[1] = -1;	//d
+				KeySignature[2] = -1;	//e
+				KeySignature[3] = 0;	//f
+				KeySignature[4] = 0;	//g
+				KeySignature[5] = -1;	//a
+				KeySignature[6] = -1;	//b
+				break;
+			case(ks_f5):
+				KeySignature[0] = 0;	//c
+				KeySignature[1] = -1;	//d
+				KeySignature[2] = -1;	//e
+				KeySignature[3] = 0;	//f
+				KeySignature[4] = -1;	//g
+				KeySignature[5] = -1;	//a
+				KeySignature[6] = -1;	//b
+				break;
+			case(ks_f6):
+				KeySignature[0] = -1;	//c
+				KeySignature[1] = -1;	//d
+				KeySignature[2] = -1;	//e
+				KeySignature[3] = 0;	//f
+				KeySignature[4] = -1;	//g
+				KeySignature[5] = -1;	//a
+				KeySignature[6] = -1;	//b
+				break;
+			case(ks_f7):
+				KeySignature[0] = -1;	//c
+				KeySignature[1] = -1;	//d
+				KeySignature[2] = -1;	//e
+				KeySignature[3] = -1;	//f
+				KeySignature[4] = -1;	//g
+				KeySignature[5] = -1;	//a
+				KeySignature[6] = -1;	//b
 				break;
 			default:
 				MML->Err(L"調号 K{} コマンドの引数で未知の文字が指定されました。");

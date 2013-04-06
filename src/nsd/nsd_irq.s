@@ -32,16 +32,6 @@
 ;=======================================================================
 .proc	_nsd_irq: near
 
-	;register push
-	lda	__tmp
-	pha
-	lda	__tmp + 1
-	pha
-	lda	__ptr
-	pha
-	lda	__ptr + 1
-	pha
-
 	;DPCM IEQ check
 	lda	APU_CHANCTRL
 	bpl	DPCM_Exit
@@ -94,16 +84,6 @@ DPCM_Exit:
 
 	;-------------------------------
 	;Exit
-
-	;register pop back
-	pla
-	sta	__ptr + 1
-	pla
-	sta	__ptr
-	pla
-	sta	__tmp + 1
-	pla
-	sta	__tmp
 
 	rts
 .endproc
