@@ -1158,6 +1158,7 @@ _nsd_vrc6_ch2_volume:
 
 ;---------------------------------------
 _nsd_vrc6_ch3_volume:
+	and	#$3F
 	sta	VRC6_SAW_CTRL
 	rts
 

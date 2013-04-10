@@ -10,6 +10,7 @@ class MusicTrack :
 {
 //メンバー変数
 private:
+
 				bool	compile_flag;		//現在コンパイル中？
 	unsigned	int		offset_now;			//現在のオフセット
 
@@ -22,7 +23,11 @@ private:
 				int		count_repeat_a;
 	unsigned	int		DefaultLength;
 
+	//調号制御用
 				char	KeySignature[8];	//調号(c,d,e,f,g,a,b,r)
+				char	nowKey;				//現在の調
+				char	nowScale;			//現在のスケール（モード）
+				
 	unsigned	char	pt_oldNote;			//前回の音程
 				char	volume;				//音量
 				char	octave;				//オクターブ
@@ -78,7 +83,12 @@ public:
 
 				void	SetEcho(void);
 				void	SetEcho(MMLfile* MML);
+
+				void	SetKeyFlag(char _c, char _d, char _e, char _f, char _g, char _a, char _b);
+				void	SetKey(int _key, int _scale);
+				void	SetScale(MMLfile* MML);
 				void	SetKeySignature(MMLfile* MML);	//調号の設定
+
 				void	SetNote(MMLfile* MML, int note);
 				void	SetRest(MMLfile* MML);
 				void	SetTai(MMLfile* MML);

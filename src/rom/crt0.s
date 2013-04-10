@@ -82,7 +82,7 @@ _eff:	.byte	0		;SE start number
 	.byte	1			;07	Start Music number
 	.addr	$8000			;08	Load address
 	.addr	_nsf_init		;0A	Init routine address
-	.addr	_nsf_main		;0C	Sound driver main routine address
+	.addr	_nsd_main		;0C	Sound driver main routine address
 	.res	32,	$0
 	.res	32,	$0
 	.res	32,	$0
@@ -101,7 +101,6 @@ _eff:	.byte	0		;SE start number
 ; 	実機ROM用	IRQ	(DPCM)
 ; ------------------------------------------------------------------------
 .ifdef	DPCMBank
-
 .segment	"STARTUP"
 .proc	_irq_main
 
@@ -121,10 +120,12 @@ _eff:	.byte	0		;SE start number
 
 	rti
 .endproc
+.endif
 
 ; ------------------------------------------------------------------------
 ; 	実機ROM用	NMI	(Vblank)
 ; ------------------------------------------------------------------------
+.ifdef	DPCMBank
 .segment	"STARTUP"
 .proc	_nmi_main
 
@@ -387,7 +388,7 @@ Loop:
 .segment	"STARTUP"
 .proc	_nsf_main
 
-	jmp	_nsd_main
+;	jmp	_nsd_main
 
 .endproc
 

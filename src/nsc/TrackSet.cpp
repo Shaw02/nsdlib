@@ -22,6 +22,7 @@ TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const wchar_t _str
 //	定数定義
 enum	Command_ID_mml {
 	mml_Track,
+	mml_Scale,
 	mml_KeySignature,
 	mml_Macro,
 	mml_CallSE,
@@ -107,11 +108,13 @@ enum	Command_ID_mml {
 const	static	Command_Info	Command[] = {
 		{	"TR",		mml_Track				},
 		{	"トラック",	mml_Track				},
-		{	"K",		mml_KeySignature,		},
-		{	"調",		mml_KeySignature,		},
+		{	"Scale",	mml_Scale				},
+		{	"scale",	mml_Scale				},
+		{	"K",		mml_KeySignature		},
+		{	"調",		mml_KeySignature		},
 		{	"SE",		mml_CallSE				},
 		{	"S",		mml_Subroutine			},
-		{	"$",		mml_Macro,				},
+		{	"$",		mml_Macro				},
 
 		{	"L",		mml_Loop				},
 		{	"|:",		mml_Repeat_B_Start		},
@@ -310,6 +313,10 @@ const	static	Command_Info	Command[] = {
 				} else {
 					TrackProc(MML);
 				}
+				break;
+
+			case(mml_Scale):
+				nowTrack->SetScale(MML);
 				break;
 
 			case(mml_KeySignature):

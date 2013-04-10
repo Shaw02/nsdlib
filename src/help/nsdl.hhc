@@ -317,6 +317,10 @@
 					<param name="Local" value="mml_KeySignature.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="scale()：スケール">
+					<param name="Local" value="mml_scale.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="L：無限ループ">
 					<param name="Local" value="mml_loop.html">
 					</OBJECT>

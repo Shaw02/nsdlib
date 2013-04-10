@@ -101,11 +101,6 @@
 		<param name="Local" value="mml_repeatB.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="\">
-		<param name="Name" value="MML reference: Repeat(B)">
-		<param name="Local" value="mml_repeatB.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="&lt;">
 		<param name="Name" value="MML reference: Relative Octave">
 		<param name="Local" value="mml_relative_octave.html">
@@ -114,6 +109,11 @@
 		<param name="Name" value="&gt;">
 		<param name="Name" value="MML reference: Relative Octave">
 		<param name="Local" value="mml_relative_octave.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="\">
+		<param name="Name" value="MML reference: Repeat(B)">
+		<param name="Local" value="mml_repeatB.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="a">
@@ -364,6 +364,11 @@
 		<param name="Name" value="S">
 		<param name="Name" value="MML reference: Subroutine">
 		<param name="Local" value="mml_sub.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="scale">
+		<param name="Name" value="MML reference: Scale">
+		<param name="Local" value="mml_scale.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="SE">

@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Scale</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Scale</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        Scale(<var>mode</var>)
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>mode</h4>
+<p>
+スケールを指定します。<br>
+基本は、長調の音楽の時は"Ionian"(0)スケールを使います。<br>
+短調の時は、自然短音階である"Aeolian"(5)スケールを使う他、
+和声的短音階の"Harmonic minor"(10)や、旋律的短音階の"Melodic minor"(20)を使います。<br>
+その他のスケールは、是非、研究してみてください。<br>
+</p>
+<p>
+10番台のスケールは和声的短音階から発展したスケールです。<br>
+20番台のスケールは旋律的短音階から発展したスケールです。<br>
+</p>
+<table>
+<tr><th>mode</th><th>scale (when Key=C)	</th><th>scale name		</th></tr>
+<tr><td>0	</td><td>c d e f g a b		</td><td>Ionian	（長音階）</th></tr>
+<tr><td>1	</td><td>c d e-f g a b-		</td><td>Dorian			</th></tr>
+<tr><td>2	</td><td>c d-e-f g a-b-		</td><td>Phrygian	</th></tr>
+<tr><td>3	</td><td>c d e f+g a b		</td><td>Lydian	</th></tr>
+<tr><td>4	</td><td>c d e f g a b-		</td><td>Mixo-Lydian	</th></tr>
+<tr><td>5	</td><td>c d e-f g a-b-		</td><td>Aeolian	（自然短音階）	</th></tr>
+<tr><td>6	</td><td>c d-e-f g-a-b-		</td><td>Locrian	</th></tr>
+<tr><td>7	</td><td>c d+e+f+g a+b		</td><td>	</th></tr>
+
+<tr><td>10	</td><td>c d e-f g a-b		</td><td>Harmonic minor	（和声的短音階）	</th></tr>
+<tr><td>11	</td><td>c d-e-f g-a b-		</td><td>Locrian natural13	</th></tr>
+<tr><td>12	</td><td>c d e f g+a b		</td><td>Ionian ＃5	</th></tr>
+<tr><td>13	</td><td>c d e-f g a b-		</td><td>Dorian ＃11	</th></tr>
+<tr><td>14	</td><td>c d-e f g a-b-		</td><td>Harmonic minor perfect 5th below	</th></tr>
+<tr><td>15	</td><td>c d+e f+g a b		</td><td>Lydian ＃9	</th></tr>
+<tr><td>16	</td><td>c d-e-f-g-a-a		</td><td>Altered ♭7	</th></tr>
+
+<tr><td>20	</td><td>c d e-f g a b		</td><td>Melodic minor	（旋律的短音階）	</th></tr>
+<tr><td>21	</td><td>c d-e-f g a b-		</td><td>Dorian ♭9	</th></tr>
+<tr><td>22	</td><td>c d e f+g+a b		</td><td>Lydian ＃5	</th></tr>
+<tr><td>23	</td><td>c d e f+g a b-		</td><td>Mixo-Lydian ＃11 (Lydian ♭7)	</th></tr>
+<tr><td>24	</td><td>c d e f g a-b-		</td><td>Mixo-Lydian ♭13	</th></tr>
+<tr><td>25	</td><td>c d e-f g-a-b-		</td><td>Aeolian ♭5 (Super Locrian)	</th></tr>
+<tr><td>26	</td><td>c d-e-f-g-a-b-		</td><td>Altered	</th></tr>
+<tr><td>27	</td><td>c-d-e-f g a-b-		</td><td>G Altered	</th></tr>
+</table>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+スケールを設定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+ＭＭＬコンパイラーの疑似命令です。<br>
+次に<a href="mml_KeySignature.html"><code>K{}</code>コマンド</a>若しくは、<code>Scale</code>コマンドが来るまで、
+本コマンドで指定された音階に、自動で臨時記号が付加されてコンパイルされます。<br>
+</p>
+<p>
+各記述ブロック（Sub, BGM, SE）では、デフォルトは調号無し（ハ長調、アイオニアンスケール）となります。<br>
+従い、サブルーチンコールする場合は、サブルーチン先も調号・スケールを指定して下さい。<br>
+</p>
+
+<p>
+音楽理論については、別途、和声についての参考書等をご参照ください。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    K{g-moll}   scale(20) gab>cdefg scale(5) agfedc<a g1    <span style="color:green;">/* g-moll melodic minor scale */</span>
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

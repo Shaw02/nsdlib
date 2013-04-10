@@ -31,15 +31,10 @@ MusicTrack::MusicTrack(const wchar_t _strName[]):
 		i++;
 	}
 
-	//調号
-	KeySignature[0]	= 0;
-	KeySignature[1]	= 0;
-	KeySignature[2]	= 0;
-	KeySignature[3]	= 0;
-	KeySignature[4]	= 0;
-	KeySignature[5]	= 0;
-	KeySignature[6]	= 0;
-	KeySignature[7]	= 0;
+	//調号（Default = C-Dur）
+	nowKey		=0;
+	nowScale	=0;
+	SetKey(nowKey, nowScale);
 }
 
 //==============================================================
@@ -608,6 +603,129 @@ void	MusicTrack::SetEcho(MMLfile* MML)
 //		調号の設定
 //--------------------------------------------------------------
 //	●引数
+//		char	_c ～ _b	設定値
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetKeyFlag(char _c, char _d, char _e, char _f, char _g, char _a, char _b)
+{
+	KeySignature[0] = _c;	//c
+	KeySignature[1] = _d;	//d
+	KeySignature[2] = _e;	//e
+	KeySignature[3] = _f;	//f
+	KeySignature[4] = _g;	//g
+	KeySignature[5] = _a;	//a
+	KeySignature[6] = _b;	//b
+}
+
+//==============================================================
+//		調号の設定
+//--------------------------------------------------------------
+//	●引数
+//		int	_key	調のID
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetKey(int _key, int _scale)
+{
+
+//	static	const	char	Shift[13]={4,1,5,2,6,3,0,4,1,5,2,6,3};
+	static	const	char	Shift[13]={3,6,2,5,1,4,0,3,6,2,5,1,4};
+
+	//調
+	static	const	char	Key[13][7]={
+	//	  c  d  e  f  g  a  b			n	ID		Key		Shift
+		{-1,-1,-1, 0,-1,-1,-1},		//	0	-6		Gs		3
+		{ 0,-1,-1, 0,-1,-1,-1},		//	1	-5		Ds		6
+		{ 0,-1,-1, 0, 0,-1,-1},		//	2	-4		As		2
+		{ 0, 0,-1, 0, 0,-1,-1},		//	3	-3		Es		5
+		{ 0, 0,-1, 0, 0, 0,-1},		//	4	-2		Bs		1
+		{ 0, 0, 0, 0, 0, 0,-1},		//	5	-1		F		4
+		{ 0, 0, 0, 0, 0, 0, 0},		//	6	 0		C		0
+		{ 0, 0, 0, 1, 0, 0, 0},		//	7	 1		G		3
+		{ 1, 0, 0, 1, 0, 0, 0},		//	8	 2		D		6
+		{ 1, 0, 0, 1, 1, 0, 0},		//	9	 3		A		2
+		{ 1, 1, 0, 1, 1, 0, 0},		//	10	 4		E		5
+		{ 1, 1, 0, 1, 1, 1, 0},		//	11	 5		H		1
+		{ 1, 1, 1, 1, 1, 1, 0}		//	12	 6		Fis		4
+	};
+
+	//調
+	static	const	char	Scale[28][7]={
+	//	  c  d  e  f  g  a  b		ID		Scale (Key = C)		Name
+		{ 0, 0, 0, 0, 0, 0, 0},	//	0		c d e f g a b		Ionian
+		{ 0, 0,-1, 0, 0, 0,-1},	//	1		c d e-f g a b-		Dorian
+		{ 0,-1,-1, 0, 0,-1,-1},	//	2		c d-e-f g a-b-		Phrygian
+		{ 0, 0, 0, 1, 0, 0, 0},	//	3		c d e f+g a b		Lydian
+		{ 0, 0, 0, 0, 0, 0,-1},	//	4		c d e f g a b-		Mixo-Lydian
+		{ 0, 0,-1, 0, 0,-1,-1},	//	5		c d e-f g a-b-		Aeolian
+		{ 0,-1,-1, 0,-1,-1,-1},	//	6		c d-e-f g-a-b-		Locrian
+		{ 0, 1, 1, 1, 0, 1, 0},	//	7		c d+e+f+g a+b
+		{ 0, 0, 0, 0, 0, 0, 0},	//	8		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	9		Dummy
+		{ 0, 0,-1, 0, 0,-1, 0},	//	10		c d e-f g a-b		Harmonic minor
+		{ 0,-1,-1, 0,-1, 0,-1},	//	11		c d-e-f g-a b-		Locrian natural13
+		{ 0, 0, 0, 0, 1, 0, 0},	//	12		c d e f g+a b		Ionian ＃5
+		{ 0, 0,-1, 1, 0, 0,-1},	//	13		c d e-f g a b-		Dorian ＃11
+		{ 0,-1, 0, 0, 0,-1,-1},	//	14		c d-e f g a-b-		Harmonic minor perfect 5th below
+		{ 0, 1, 0, 1, 0, 0, 0},	//	15		c d+e f+g a b		Lydian ＃9
+		{ 0,-1,-1,-1,-1,-1,-2},	//	16		c d-e-f-g-a-a		Altered ♭7
+		{ 0, 0, 0, 0, 0, 0, 0},	//	17		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	18		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	19		Dummy
+		{ 0, 0,-1, 0, 0, 0, 0},	//	20		c d e-f g a b		Melodic minor
+		{ 0,-1,-1, 0, 0, 0,-1},	//	21		c d-e-f g a b-		Dorian ♭9
+		{ 0, 0, 0, 1, 1, 0, 0},	//	22		c d e f+g+a b		Lydian ＃5
+		{ 0, 0, 0, 1, 0, 0,-1},	//	23		c d e f+g a b-		Mixo-Lydian ＃11 (Lydian ♭7)
+		{ 0, 0, 0, 0, 0,-1,-1},	//	24		c d e f g a-b-		Mixo-Lydian ♭13
+		{ 0, 0,-1, 0,-1,-1,-1},	//	25		c d e-f g-a-b-		Aeolian ♭5 (Super Locrian)
+		{ 0,-1,-1,-1,-1,-1,-1},	//	26		c d-e-f-g-a-b-		Altered
+		{-1,-1,-1, 0, 0,-1,-1}	//	27		c-d-e-f g a-b-		G Altered
+	};
+
+	char	shift;
+	char	shift_scale[7];
+
+	nowKey	 = _key;
+	nowScale = 0;
+
+	shift = Shift[nowKey + 6];
+	shift_scale[0] = (char)Scale[_scale][(shift + 0) % 7];
+	shift_scale[1] = (char)Scale[_scale][(shift + 1) % 7];
+	shift_scale[2] = (char)Scale[_scale][(shift + 2) % 7];
+	shift_scale[3] = (char)Scale[_scale][(shift + 3) % 7];
+	shift_scale[4] = (char)Scale[_scale][(shift + 4) % 7];
+	shift_scale[5] = (char)Scale[_scale][(shift + 5) % 7];
+	shift_scale[6] = (char)Scale[_scale][(shift + 6) % 7];
+
+	SetKeyFlag(	Key[nowKey + 6][0] + shift_scale[0],
+				Key[nowKey + 6][1] + shift_scale[1],
+				Key[nowKey + 6][2] + shift_scale[2],
+				Key[nowKey + 6][3] + shift_scale[3],
+				Key[nowKey + 6][4] + shift_scale[4],
+				Key[nowKey + 6][5] + shift_scale[5],
+				Key[nowKey + 6][6] + shift_scale[6]
+	);
+}
+
+//==============================================================
+//		スケールの設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetScale(MMLfile* MML)
+{
+	nowScale	= MML->GetNum();
+	SetKey(nowKey, nowScale);
+}
+
+//==============================================================
+//		調号の設定
+//--------------------------------------------------------------
+//	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
 //	●返値
 //		無し
@@ -627,6 +745,7 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		ks_a,
 		ks_b,
 		ks_r,
+
 		ks_0,
 		ks_s1,
 		ks_s2,
@@ -641,7 +760,21 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		ks_f4,
 		ks_f5,
 		ks_f6,
-		ks_f7
+		ks_f7,
+
+		ks_m0,
+		ks_ms1,
+		ks_ms2,
+		ks_ms3,
+		ks_ms4,
+		ks_ms5,
+		ks_ms6,
+		ks_mf1,
+		ks_mf2,
+		ks_mf3,
+		ks_mf4,
+		ks_mf5,
+		ks_mf6,
 	};
 
 	//調号コマンド内の定義
@@ -658,22 +791,23 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		{	"As-Dur",	ks_f4		},	//bbbb
 		{	"A-Dur",	ks_s3		},	//###
 		{	"B-Dur",	ks_f2		},	//bb
+		{	"Bs-Dur",	ks_f2		},	//bb
 		{	"H-Dur",	ks_s5		},	//#####
 
-		{	"c-moll",	ks_f3		},	//bbb
-		{	"cis-moll",	ks_s4		},	//####
-		{	"d-moll",	ks_f1		},	//b
-		{	"dis-moll",	ks_s6		},	//######
-		{	"es-moll",	ks_f6		},	//bbbbbb
-		{	"e-moll",	ks_s1		},	//#
-		{	"f-moll",	ks_f4		},	//bbbb
-		{	"fis-moll",	ks_s3		},	//###
-		{	"g-moll",	ks_f2		},	//bb
-		{	"gis-moll",	ks_s5		},	//#####
-		{	"a-moll",	ks_0		},	//
-		{	"b-moll",	ks_f5		},	//bbbbb
-		{	"bs-moll",	ks_f5		},	//bbbbb
-		{	"h-moll",	ks_s2		},	//##
+		{	"c-moll",	ks_m0		},	//
+		{	"ds-moll",	ks_mf5		},	//
+		{	"d-moll",	ks_ms2		},	//
+		{	"es-moll",	ks_mf3		},	//
+		{	"e-moll",	ks_ms4		},	//
+		{	"f-moll",	ks_mf1		},	//
+		{	"fis-moll",	ks_ms6		},	//
+		{	"gs-moll",	ks_mf6		},	//
+		{	"g-moll",	ks_ms1		},	//
+		{	"as-moll",	ks_mf4		},	//
+		{	"a-moll",	ks_ms3		},	//
+		{	"b-moll",	ks_mf2		},	//
+		{	"bs-moll",	ks_mf2		},	//
+		{	"h-moll",	ks_ms5		},	//
 
 		{	"+",		ks_Sharp	},
 		{	"＋",		ks_Sharp	},
@@ -784,140 +918,137 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 				break;
 
 			case(ks_0):
-				KeySignature[0] = 0;	//c
-				KeySignature[1] = 0;	//d
-				KeySignature[2] = 0;	//e
-				KeySignature[3] = 0;	//f
-				KeySignature[4] = 0;	//g
-				KeySignature[5] = 0;	//a
-				KeySignature[6] = 0;	//b
+				nowKey		= 0;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_s1):
-				KeySignature[0] = 0;	//c
-				KeySignature[1] = 0;	//d
-				KeySignature[2] = 0;	//e
-				KeySignature[3] = 1;	//f
-				KeySignature[4] = 0;	//g
-				KeySignature[5] = 0;	//a
-				KeySignature[6] = 0;	//b
+				nowKey		= 1;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_s2):
-				KeySignature[0] = 1;	//c
-				KeySignature[1] = 0;	//d
-				KeySignature[2] = 0;	//e
-				KeySignature[3] = 1;	//f
-				KeySignature[4] = 0;	//g
-				KeySignature[5] = 0;	//a
-				KeySignature[6] = 0;	//b
+				nowKey		= 2;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_s3):
-				KeySignature[0] = 1;	//c
-				KeySignature[1] = 0;	//d
-				KeySignature[2] = 0;	//e
-				KeySignature[3] = 1;	//f
-				KeySignature[4] = 1;	//g
-				KeySignature[5] = 0;	//a
-				KeySignature[6] = 0;	//b
+				nowKey		= 3;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_s4):
-				KeySignature[0] = 1;	//c
-				KeySignature[1] = 1;	//d
-				KeySignature[2] = 0;	//e
-				KeySignature[3] = 1;	//f
-				KeySignature[4] = 1;	//g
-				KeySignature[5] = 0;	//a
-				KeySignature[6] = 0;	//b
+				nowKey		= 4;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_s5):
-				KeySignature[0] = 1;	//c
-				KeySignature[1] = 1;	//d
-				KeySignature[2] = 0;	//e
-				KeySignature[3] = 1;	//f
-				KeySignature[4] = 1;	//g
-				KeySignature[5] = 1;	//a
-				KeySignature[6] = 0;	//b
+				nowKey		= 5;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_s6):
-				KeySignature[0] = 1;	//c
-				KeySignature[1] = 1;	//d
-				KeySignature[2] = 1;	//e
-				KeySignature[3] = 1;	//f
-				KeySignature[4] = 1;	//g
-				KeySignature[5] = 1;	//a
-				KeySignature[6] = 0;	//b
-				break;
-			case(ks_s7):
-				KeySignature[0] = 1;	//c
-				KeySignature[1] = 1;	//d
-				KeySignature[2] = 1;	//e
-				KeySignature[3] = 1;	//f
-				KeySignature[4] = 1;	//g
-				KeySignature[5] = 1;	//a
-				KeySignature[6] = 1;	//b
+				nowKey		= 6;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_f1):
-				KeySignature[0] = 0;	//c
-				KeySignature[1] = 0;	//d
-				KeySignature[2] = 0;	//e
-				KeySignature[3] = 0;	//f
-				KeySignature[4] = 0;	//g
-				KeySignature[5] = 0;	//a
-				KeySignature[6] = -1;	//b
+				nowKey		= -1;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_f2):
-				KeySignature[0] = 0;	//c
-				KeySignature[1] = 0;	//d
-				KeySignature[2] = -1;	//e
-				KeySignature[3] = 0;	//f
-				KeySignature[4] = 0;	//g
-				KeySignature[5] = 0;	//a
-				KeySignature[6] = -1;	//b
+				nowKey		= -2;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_f3):
-				KeySignature[0] = 0;	//c
-				KeySignature[1] = 0;	//d
-				KeySignature[2] = -1;	//e
-				KeySignature[3] = 0;	//f
-				KeySignature[4] = 0;	//g
-				KeySignature[5] = -1;	//a
-				KeySignature[6] = -1;	//b
+				nowKey		= -3;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_f4):
-				KeySignature[0] = 0;	//c
-				KeySignature[1] = -1;	//d
-				KeySignature[2] = -1;	//e
-				KeySignature[3] = 0;	//f
-				KeySignature[4] = 0;	//g
-				KeySignature[5] = -1;	//a
-				KeySignature[6] = -1;	//b
+				nowKey		= -4;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_f5):
-				KeySignature[0] = 0;	//c
-				KeySignature[1] = -1;	//d
-				KeySignature[2] = -1;	//e
-				KeySignature[3] = 0;	//f
-				KeySignature[4] = -1;	//g
-				KeySignature[5] = -1;	//a
-				KeySignature[6] = -1;	//b
+				nowKey		= -5;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
 			case(ks_f6):
-				KeySignature[0] = -1;	//c
-				KeySignature[1] = -1;	//d
-				KeySignature[2] = -1;	//e
-				KeySignature[3] = 0;	//f
-				KeySignature[4] = -1;	//g
-				KeySignature[5] = -1;	//a
-				KeySignature[6] = -1;	//b
+				nowKey		= -6;
+				nowScale	= 0;
+				SetKey(nowKey, nowScale);
 				break;
-			case(ks_f7):
-				KeySignature[0] = -1;	//c
-				KeySignature[1] = -1;	//d
-				KeySignature[2] = -1;	//e
-				KeySignature[3] = -1;	//f
-				KeySignature[4] = -1;	//g
-				KeySignature[5] = -1;	//a
-				KeySignature[6] = -1;	//b
+
+			case(ks_m0):
+				nowKey		= 0;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
 				break;
+			case(ks_ms1):
+				nowKey		= 1;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_ms2):
+				nowKey		= 2;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_ms3):
+				nowKey		= 3;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_ms4):
+				nowKey		= 4;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_ms5):
+				nowKey		= 5;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_ms6):
+				nowKey		= 6;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_mf1):
+				nowKey		= -1;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_mf2):
+				nowKey		= -2;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_mf3):
+				nowKey		= -3;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_mf4):
+				nowKey		= -4;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_mf5):
+				nowKey		= -5;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_mf6):
+				nowKey		= -6;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+
 			default:
 				MML->Err(L"調号 K{} コマンドの引数で未知の文字が指定されました。");
 				break;
