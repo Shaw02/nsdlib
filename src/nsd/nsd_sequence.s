@@ -547,20 +547,20 @@ nsd_op00:
 ;
 ;	Sweepの状態を元に戻す。
 ;
-@SE1:	;lda	__chflag,x
-	and	#nsd_chflag::SE1
-	beq	@SE2
+@SE1:	cpx	#nsd::TR_SE1
+	bne	@SE2
 	lda	__sweep_ch2
 	jsr	_nsd_snd_sweep
 	;周波数設定を必ず呼ぶように。
 	lda	#$FF
 	sta	__frequency + nsd::TR_BGM2
 	sta	__frequency + nsd::TR_BGM2 + 1
+	sta	__apu_frequency2
 	jmp	@Exit
 
 @SE2:	;SE2は無い。
-	and	#nsd_chflag::SE2
-	beq	@Exit
+	cpx	#nsd::TR_SE2
+	bne	@Exit
 	;周波数設定を必ず呼ぶように。
 	lda	#$FF
 	sta	__frequency + nsd::TR_BGM4

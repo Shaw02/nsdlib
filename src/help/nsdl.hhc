@@ -420,6 +420,11 @@
 					<param name="Local" value="n163.html">
 					<param name="ImageNumber" value="37">
 					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="スケールとコード">
+					<param name="Local" value="scale.html">
+					<param name="ImageNumber" value="37">
+					</OBJECT>
 			</UL>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">

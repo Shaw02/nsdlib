@@ -67,7 +67,7 @@ Sub(1000000){	l4 o5 cc+ dd+ e ff+ gg+ aa+ b > cc+ dd+ e1	}
 
 bgm(12){
 	TR1	Ev11	v15	o4	l8
-	K{g-moll}   scale(20) gab>cdefg scale(5) agfedc<ba	g1	/* g-moll melodic minor scale */
+	K{g-moll}   scale(20) gab>cdefg scale(5) agfedc/* g-moll melodic minor scale */
 }
 
 bgm(11){
