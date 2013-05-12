@@ -17,8 +17,8 @@ private:
 //static	const	Command_Info	Command[];	//コマンドの情報
 	map<int,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
 				MusicTrack*		nowTrack;	//コンパイル中のトラック
-	unsigned	int				iTrack;		//コンパイル中のトラック番号
-	unsigned	int				maxTrack;	//トラック番号の最大値
+				int				iTrack;		//コンパイル中のトラック番号
+				int				maxTrack;	//トラック番号の最大値
 				bool			fSub;		//サブルーチン記述ブロックかどうかのフラグ
 	unsigned	int				TrackPt;	//
 	unsigned	int				TrackLine;	//

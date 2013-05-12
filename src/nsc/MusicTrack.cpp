@@ -334,7 +334,7 @@ void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 		}
 	}
 
-	_old_repeat->set_count(count_repeat_a);
+	_old_repeat->set_count((unsigned char)count_repeat_a);
 
 	if(offset_repeat_a_s != 0){
 		_event = new mml_Address(nsd_Repeat_A_End, L"Repeat(A) End");
@@ -359,7 +359,7 @@ void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 //	●返値
 //				無し
 //==============================================================
-void	MusicTrack::SetRepeat_B_Start(MMLfile* MML)
+void	MusicTrack::SetRepeat_B_Start()
 {
 	SetEvent(new mml_general(nsd_Repeat_B_Start, L"Repeat(B) Start"));
 	offset_repeat_b_s = offset_now;	// :| コマンドでは、次のコマンドに戻る。
@@ -535,7 +535,7 @@ void	MusicTrack::SetVRC7(MMLfile* MML)
 void	MusicTrack::SetN163(MMLfile* MML)
 {
 	unsigned	char	cData;
-	mml_Address*		_event = new mml_Address(nsc_N163,MML->GetInt(),L"n163 wave table");
+	mml_Address*		_event = new mml_Address(nsc_N163,(unsigned char)MML->GetInt(),L"n163 wave table");
 
 	cData = MML->GetChar();
 	if(cData != ','){
@@ -590,12 +590,12 @@ void	MusicTrack::SetEcho(MMLfile* MML)
 	}
 
 	echo_flag = true;
-	echo_value	= _value;
+	echo_value	= (unsigned char)_value;
 	if(_volume == -1){
 		echo_slur = true;
 	} else {
 		echo_slur = false;
-		echo_volume	= _volume;
+		echo_volume	= (unsigned char)_volume;
 	}
 }
 
@@ -686,7 +686,7 @@ void	MusicTrack::SetKey(int _key, int _scale)
 	char	shift;
 	char	shift_scale[7];
 
-	nowKey	 = _key;
+	nowKey	 = (char)_key;
 	nowScale = 0;
 
 	shift = Shift[nowKey + 6];
@@ -718,7 +718,7 @@ void	MusicTrack::SetKey(int _key, int _scale)
 //==============================================================
 void	MusicTrack::SetScale(MMLfile* MML)
 {
-	nowScale	= MML->GetNum();
+	nowScale	= (char)MML->GetNum();
 	SetKey(nowKey, nowScale);
 }
 
@@ -794,20 +794,25 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		{	"Bs-Dur",	ks_f2		},	//bb
 		{	"H-Dur",	ks_s5		},	//#####
 
-		{	"c-moll",	ks_m0		},	//
-		{	"ds-moll",	ks_mf5		},	//
-		{	"d-moll",	ks_ms2		},	//
-		{	"es-moll",	ks_mf3		},	//
-		{	"e-moll",	ks_ms4		},	//
-		{	"f-moll",	ks_mf1		},	//
-		{	"fis-moll",	ks_ms6		},	//
-		{	"gs-moll",	ks_mf6		},	//
-		{	"g-moll",	ks_ms1		},	//
-		{	"as-moll",	ks_mf4		},	//
+		{	"c-moll",	ks_m0		},	//bbb
+		{	"cis-moll",	ks_mf5		},	//####
+		{	"d-moll",	ks_ms2		},	//b
+		{	"dis-moll",	ks_mf3		},	//######
+		{	"es-moll",	ks_mf3		},	//bbbbbb
+		{	"e-moll",	ks_ms4		},	//#
+		{	"f-moll",	ks_mf1		},	//bbbb
+		{	"fis-moll",	ks_ms6		},	//###
+		{	"g-moll",	ks_ms1		},	//bb
+		{	"gis-moll",	ks_mf4		},	//#####
 		{	"a-moll",	ks_ms3		},	//
-		{	"b-moll",	ks_mf2		},	//
-		{	"bs-moll",	ks_mf2		},	//
-		{	"h-moll",	ks_ms5		},	//
+		{	"b-moll",	ks_mf2		},	//bbbbb
+		{	"bs-moll",	ks_mf2		},	//bbbbb
+		{	"h-moll",	ks_ms5		},	//##
+
+		//音楽理論的に正しくないが過去互換性の為。＃系の調なのに♭では言わない！
+		{	"ds-moll",	ks_mf5		},	//####
+		{	"gs-moll",	ks_mf6		},	//###
+		{	"as-moll",	ks_mf4		},	//#####
 
 		{	"+",		ks_Sharp	},
 		{	"＋",		ks_Sharp	},
@@ -1081,8 +1086,8 @@ void	MusicTrack::SetNote(MMLfile*	MML,int note)
 	unsigned		char	cData;
 	static	const	char	note_code[]={0,2,4,5,7,9,11};
 					int		_key = note_code[note];
-	unsigned		int		Length = -1;
-	unsigned		int		GateTime = -1;
+					int		Length = -1;
+					int		GateTime = -1;
 					bool	Slur = false;
 
 	//臨時記号
@@ -1148,7 +1153,7 @@ void	MusicTrack::SetNote(MMLfile*	MML,int note)
 	SetEvent(_old_note);
 
 	pt_oldNote++;
-	oldNote[pt_oldNote] = (_key + (octave + octave1)*12) & 0xFF;
+	oldNote[pt_oldNote] = ((char)_key + (octave + octave1)*12) & 0xFF;
 	octave1_old = octave1;
 	octave1 = 0;
 }
@@ -1165,8 +1170,8 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 {
 	unsigned		char	cData;
 	unsigned		char	_code = 0x0F;
-	unsigned		int		Length = -1;
-	unsigned		int		GateTime = -1;
+					int		Length = -1;
+					int		GateTime = -1;
 					bool	Slur = false;
 
 					char	now_note = oldNote[pt_oldNote];
@@ -1341,7 +1346,7 @@ void	MusicTrack::SetLength(MMLfile* MML)
 			_event = new mml_general(nsd_Length_1,  L"Length 1");
 			break;
 		default:
-			_event = new mml_general(nsd_Length, (DefaultLength & 0xFF), L"Length");
+			_event = new mml_general(nsd_Length, (unsigned char)DefaultLength, L"Length");
 			break;
 	}
 	SetEvent(_event);

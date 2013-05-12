@@ -65,12 +65,12 @@ void	mml_Address::set_Address(unsigned int _addr)
 {
 	switch(iSize){
 		case(3):
-			code[1] = ((_addr     ) & 0xFF);
-			code[2] = ((_addr >> 8) & 0xFF);
+			code[1] = (unsigned char)((_addr     ) & 0xFF);
+			code[2] = (unsigned char)((_addr >> 8) & 0xFF);
 			break;
 		case(4):
-			code[2] = ((_addr     ) & 0xFF);
-			code[3] = ((_addr >> 8) & 0xFF);
+			code[2] = (unsigned char)((_addr     ) & 0xFF);
+			code[3] = (unsigned char)((_addr >> 8) & 0xFF);
 			break;
 		default:
 			wcout << L"mml_Address::set_Address()ŠÖ”‚ÅƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" << endl;

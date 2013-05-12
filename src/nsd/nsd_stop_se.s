@@ -43,7 +43,22 @@
 	;Init the channel structure
 	ldx	#nsd::TR_SE1
 Loop:
-	jsr	_nsd_stop
+;	jsr	_nsd_stop
+
+	lda	__Sequence_ptr + 1,x	;[4]
+	beq	@L
+
+	jsr	_nsd_snd_keyoff		;[6]
+	jsr	_nsd_snd_volume		;[6]
+@L:
+	lda	#$00			;[2]
+	sta	__Sequence_ptr,x	;[4]
+	sta	__Sequence_ptr + 1,x	;[4]
+
+	;to do VRC7
+	lda	#$FF			;[2]
+	sta	__note,x		;[5]
+
 	inx
 	inx
 	cpx	#nsd::TR_SE1 + nsd::SE_Track * 2

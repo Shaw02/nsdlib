@@ -82,7 +82,7 @@ const	static	Command_Info	Command[] = {
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<0) || (i>15)){
-					MML->Err(L"n163の波形定義は、0～15の範囲で指定して下さい。");
+					MML->Err(L"n163の波形パターンは0～15の範囲で指定して下さい。");
 				}
 				WAVE.append((char)1, (char)i & 0x0F);
 				ptN163++;
@@ -97,14 +97,14 @@ const	static	Command_Info	Command[] = {
 				break;
 		}
 	}
-	if(ptN163 > 128){
-		MML->Err(L"サンプル長が128個を越えています。");
+	if(ptN163 > 256){
+		MML->Err(L"サンプル長が256個を越えています。");
 	}
 	if((ptN163 & 0x03) != 0){
-		MML->Err(L"サンプル長は、４の倍数として下さい。");
+		MML->Err(L"サンプル長は4の倍数で記述して下さい。");
 	}
 	ptN163 >>= 1;
-	code.append((char)1, ptN163);
+	code.append((char)1, (unsigned char)ptN163);
 	i = 0;
 	while(ptN163>0){
 		code.append((char)1, WAVE[i*2+0] | (WAVE[i*2+1]<<4) );

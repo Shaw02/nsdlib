@@ -112,14 +112,14 @@ const	static	Command_Info	Command[] = {
 
 				if(_mode == 0){
 					if(_pt >= 24){
-						MML->Err(L"VRC7のパラメータの数が多いです。");
+						MML->Err(L"VRC7(パラメータベース)の引数が24個を超えました。");
 					}
-					_opll[_pt] = i & 0xFF;
+					_opll[_pt] = (unsigned char)i;
 				} else {
 					if(_pt >= 8){
-						MML->Err(L"VRC7のパラメータの数が多いです。");
+						MML->Err(L"VRC7(レジスタベース)の引数が8個を超えました。");
 					}
-					code[_pt] = i & 0xFF;
+					code[_pt] = (unsigned char)i;
 				}
 				_pt++;
 				break;
@@ -135,7 +135,7 @@ const	static	Command_Info	Command[] = {
 
 	if(_mode == 0){
 		if(_pt < 24){
-			MML->Err(L"VRC7のパラメータの数が少ないです。");
+			MML->Err(L"VRC7(パラメータベース)の引数が24個に満たないです。");
 		}
 
 		//TL FB
@@ -155,7 +155,7 @@ const	static	Command_Info	Command[] = {
 		code[7] = ((_opll[15] & 0x0F) << 4) |  (_opll[16] & 0x0F);
 	} else {
 		if(_pt < 8){
-			MML->Err(L"VRC7のパラメータの数が少ないです。");
+			MML->Err(L"VRC7(レジスタベース)の引数が8個に満たないです。");
 		}
 	}
 }

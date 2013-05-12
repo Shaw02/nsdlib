@@ -55,7 +55,7 @@ Envelop(100){	L (0,3,3) (3,-3,6) (-3,0,3)	}
 
 //	Voice envelop
 Envelop(200){	L 2 1 R 2 	}
-Envelop(210){	1 0	}
+Envelop(210){	1	D2	0	}
 
 //	for Mote Envelop "Major code"
 Envelop(10000000){	L 0 4 7 }
@@ -215,6 +215,6 @@ se(0){
 }
 
 se(1){
-	TR2	t255	v15	Ev10	[	c4	]8
+	TR2	t255	v15	Ev10	E@210	[	c4	]8
 }
 

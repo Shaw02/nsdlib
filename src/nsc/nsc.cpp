@@ -41,10 +41,13 @@ int	main(int argc, char* argv[])
 	if(cOptionSW->cDebug & 0x02){
 		wcout << L"\n============ [ 2nd phase : Address Setting ] ============\n" << endl;
 	}
+	wcout << L"--------------------" << endl;
+	wcout << L"*Address settlement process" << endl;
+
 	i = cSND->SetOffset(0);
-	wcout << L"Music Size = " << i << endl;
+	wcout << L"  Music Size = " << i << endl;
 	i = cSND->SetDPCMOffset(i);
-	wcout << L"DPCM Size = " << i << endl;
+	wcout << L"  DPCM Size  = " << i << endl;
 
 	cSND->Fix_Address();
 

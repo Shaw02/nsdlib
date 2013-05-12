@@ -17,8 +17,8 @@ mml_poke::mml_poke(unsigned int _addr , unsigned char _data, const wchar_t _strN
 	iSize = 4;
 	code.resize(iSize);
 	code[0] = nsd_Poke;
-	code[1] = ((_addr     ) & 0xFF);
-	code[2] = ((_addr >> 8) & 0xFF);
+	code[1] = (unsigned char)(_addr     );
+	code[2] = (unsigned char)(_addr >> 8);
 	code[3] = _data;
 }
 

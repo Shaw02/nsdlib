@@ -24,7 +24,7 @@ public:
 				string	romcode;
 //ƒƒ“ƒo[ŠÖ”
 public:
-				MusicHeader(MMLfile* MML, string _code);
+				MusicHeader(string _code);
 				~MusicHeader(void);
 		void	Set_Title(MMLfile* MML);
 		void	Set_Copyright(MMLfile* MML);

@@ -7,7 +7,6 @@
 	.setcpu		"6502"
 
 	.export		_nsd_stop_bgm
-	.export		_nsd_stop
 
 	.import		_nsd_snd_volume
 	.import		_nsd_snd_keyoff
@@ -44,27 +43,7 @@
 	;Init the channel structure
 	ldx	#nsd::TR_BGM1
 Loop:
-	jsr	_nsd_stop				;[6]14 clock
-
-	inx						;[2]2
-	inx						;[2]4
-	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2	;[2]6
-	bcc	Loop					;[2]8	Total = 10 clock
-
-	rts
-.endproc
-
-;=======================================================================
-;	Stop
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Stop
-;<<Input>>
-;	nothing
-;<<Output>>
-;	nothing
-;=======================================================================
-.proc	_nsd_stop
+;	jsr	_nsd_stop	
 
 	jsr	_nsd_snd_keyoff		;[6]
 
@@ -78,6 +57,10 @@ Loop:
 	lda	#$FF			;[2]
 	sta	__note,x		;[5]
 
-	rts				;[6]
-.endproc
+	inx						;[2]2
+	inx						;[2]4
+	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2	;[2]6
+	bcc	Loop					;[2]8	Total = 10 clock
 
+	rts
+.endproc

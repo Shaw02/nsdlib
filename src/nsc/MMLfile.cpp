@@ -526,7 +526,7 @@ char	MMLfile::GetChar(void)		//1Byte‚Ì“Ç‚İ‚İ
 			break;		//while(1) ‚Ì break;
 		}
 
-	}while(1);
+	} while(true);
 
 	return(cData);
 }

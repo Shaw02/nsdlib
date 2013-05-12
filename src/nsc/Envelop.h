@@ -15,7 +15,7 @@ private:
 				int		Loop_Normal;
 				int		Loop_Release;
 				bool	Release;
-	unsigned	int		ptEnvelop;
+				int		ptEnvelop;
 
 //static	const	Command_Info	Command[];	//ƒRƒ}ƒ“ƒh‚Ìî•ñ
 

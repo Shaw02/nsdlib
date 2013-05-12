@@ -69,7 +69,7 @@ public:
 				void	SetRepeat_A_Start(MMLfile* MML);
 				void	SetRepeat_A_Branch(MMLfile* MML);
 				void	SetRepeat_A_End(MMLfile* MML);
-				void	SetRepeat_B_Start(MMLfile* MML);
+				void	SetRepeat_B_Start();
 				void	SetRepeat_B_Branch(MMLfile* MML);
 				void	SetRepeat_B_End(MMLfile* MML);
 

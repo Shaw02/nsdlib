@@ -52,6 +52,7 @@ public:
 	
 				void	SetMacro(void);
 				void	CallMacro(void);
+				int		GetMacroNest(void){return(p_macro);};
 
 				int		tellg(void);					//現在のファイルのポインタ取得
 				void	StreamPointerMove(long iSize);	//現在のファイルのポインタ移動

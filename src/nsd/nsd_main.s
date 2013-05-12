@@ -32,6 +32,8 @@
 .proc	_nsd_main: near
 
 .ifdef	DPCMBank
+	sei
+
 	;register push
 	lda	__tmp
 	pha
@@ -122,6 +124,8 @@ SE_Exit:
 	sta	__tmp + 1
 	pla
 	sta	__tmp
+
+	cli
 .endif
 
 	;-------------------------------

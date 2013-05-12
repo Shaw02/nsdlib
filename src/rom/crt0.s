@@ -17,6 +17,7 @@
 	.import		__RODATA_LOAD__,__RODATA_RUN__, __RODATA_SIZE__
 
 	.include	"..\..\include\nsd.inc"
+	.include	"nes.inc"
 
 .ifdef	DPCMBank
 	.import		_nsd_irq
@@ -34,7 +35,7 @@
 _eff:	.byte	0		;SE start number
 
 ; ------------------------------------------------------------------------
-; 	16 bytes NSF header
+; 	256 bytes NSF header
 ; ------------------------------------------------------------------------
 
 	.ifdef	FDS
@@ -96,6 +97,12 @@ _eff:	.byte	0		;SE start number
 	.byte	0			;7A
 	.byte	FDS_Flag + VRC6_Flag + VRC7_Flag + MMC5_Flag + N163_Flag + PSG_Flag
 	.byte	0,0,0,0			;78
+
+; ------------------------------------------------------------------------
+.segment	"DRVINFO"
+DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
+DRV_Version:	.byte	$01
+		.byte	$07
 
 ; ------------------------------------------------------------------------
 ; 	ŽÀ‹@ROM—p	IRQ	(DPCM)
@@ -163,9 +170,9 @@ _eff:	.byte	0		;SE start number
 	jsr	_init
 
 	pla
-	jsr	_play_music
+	jmp	_play_music
 
-	rts
+;	rts
 .endproc
 
 ; ------------------------------------------------------------------------
@@ -173,6 +180,7 @@ _eff:	.byte	0		;SE start number
 ; ------------------------------------------------------------------------
 .segment	"STARTUP"
 .proc	_zero_mem
+
 	lda	#0
 	ldx	#0
 

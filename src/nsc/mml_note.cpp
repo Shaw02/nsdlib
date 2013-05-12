@@ -16,7 +16,7 @@
 mml_note::mml_note(int _code, int length, int gatetime, bool slur, const wchar_t _strName[]):
 	MusicEvent(_strName)
 {
-	unsigned	char	opcode = nsd_Note | _code;
+	unsigned	char	opcode = nsd_Note | (unsigned char)_code;
 	unsigned	int		i = 0;
 
 	if((_code<0) || (_code>15) || (_code==12)){
@@ -45,11 +45,11 @@ mml_note::mml_note(int _code, int length, int gatetime, bool slur, const wchar_t
 	i++;
 
 	if(length != -1){
-		code[i] = length;
+		code[i] = (unsigned char)length;
 		i++;
 	}
 	if(gatetime != -1){
-		code[i] = gatetime;
+		code[i] = (unsigned char)gatetime;
 		i++;
 	}
 

@@ -682,7 +682,7 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	Exit
 .endif
 	.addr	_nsd_nes_voice		;SE  ch1 Pulse
-	.addr	_nsd_noise_voice	;SE  ch2 Noize
+	.addr	_nsd_noise_voice_se2	;SE  ch2 Noize
 
 ;---------------------------------------
 .code
@@ -723,7 +723,32 @@ _nsd_noise_voice:
 
 	;-------------------------------
 	; *** Exit
-	rts
+
+	lda	__frequency,x		;â∫à 8bitÇæÇØÇ†ÇÍÇŒÇ¢Ç¢ÅB
+	jmp	_nsd_nes_ch4_frequency
+
+;	rts
+
+;---------------------------------------
+_nsd_noise_voice_se2:
+
+	;-------------------------------
+	; *** Calculate the voice
+	shl	a, 7	;a <<= 7
+	and	#$80	;a &= 0x80	;for OR to frequency(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__voice_set,x
+
+	;-------------------------------
+	; *** Exit
+
+	lda	__frequency,x		;â∫à 8bitÇæÇØÇ†ÇÍÇŒÇ¢Ç¢ÅB
+	jmp	_nsd_nes_se2_frequency
+
+;	rts
+
 
 ;---------------------------------------
 .ifdef	FDS

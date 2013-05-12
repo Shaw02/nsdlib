@@ -39,8 +39,8 @@ mml_general::mml_general(unsigned char _code, MMLfile* MML, const wchar_t _strNa
 
 	iSize = 2;
 	code.resize(iSize);
-	code[0] = _code;
-	code[1] = (_data & 0xFF);
+	code[0] = (unsigned char)_code;
+	code[1] = (unsigned char)_data;
 }
 
 //==============================================================

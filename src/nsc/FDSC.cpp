@@ -82,7 +82,7 @@ const	static	Command_Info	Command[] = {
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<0) || (i>63)){
-					MML->Err(L"FDSCの波形定義は、0～63の範囲で指定して下さい。");
+					MML->Err(L"FDSCの波形パターンは0～63の範囲で指定して下さい。");
 				}
 				WAVE.append((char)1, (char)i & 0x3F);
 				ptFDSC++;
@@ -98,10 +98,10 @@ const	static	Command_Info	Command[] = {
 		}
 	}
 	if(ptFDSC < 64){
-		MML->Err(L"サンプル長が64を超えています。");
+		MML->Err(L"波形パターンは64個の数字を記述してください。64個に満たないです。");
 	}
 	if(ptFDSC > 64){
-		MML->Err(L"サンプル長が64未満です。");
+		MML->Err(L"波形パターンは64個の数字を記述してください。64個を超えています。");
 	}
 	i = 0;
 	while(ptFDSC>0){

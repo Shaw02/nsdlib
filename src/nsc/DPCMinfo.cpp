@@ -276,7 +276,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	}
 
 	if(max_number < note){
-		max_number = note;
+		max_number = (unsigned char)note;
 	}
 
 	//ファイル名
@@ -290,7 +290,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		//新しいファイルだったら、DPCMオブジェクトを生成する。
 		_DPCM_file.fileopen(infoDPCM[note].file.c_str());
 		if(_DPCM_file.GetSize() > 4081){
-			MML->Err(L"⊿PCMは、4081Byte以下にしてください。");
+			MML->Err(L"⊿PCMは4081Byte以下にしてください。");
 		}
 		_DPCM = new DPCM(&_DPCM_file, m_id);
 		m_id++;
@@ -323,7 +323,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	if((mode==2) && (bank==false)){
 		MML->Err(L"⊿PCMのモード2(IRQ)は、#Bankコマンドの指定が必要です。");
 	}
-	infoDPCM[note].ctrl = (mode<<6) + play_frequency;
+	infoDPCM[note].ctrl = (unsigned char)(mode<<6) + (unsigned char)play_frequency;
 
 	//初期値
 	cData = MML->GetChar();
@@ -332,7 +332,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		if((start_volume<-1) || (start_volume>127)){
 			MML->Err(L"⊿PCMの初期値は-1～127の範囲で指定して下さい。");
 		}
-		infoDPCM[note].DA = start_volume;
+		infoDPCM[note].DA = (unsigned char)start_volume;
 	} else {
 		MML->Back();
 		infoDPCM[note].DA = 0;
@@ -348,7 +348,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		if((next<-1) || (next>255)){
 			MML->Err(L"次のノート番号は0～255の範囲で指定して下さい。");
 		}
-		infoDPCM[note].next = next;
+		infoDPCM[note].next = (unsigned char)next;
 	} else {
 		if(mode == 2){
 			MML->Err(L"モード2(IRQ)の時は必ず次に発音するノート番号を指定してください。");
@@ -406,7 +406,7 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset, unsigned char _MusBan
 				_DPCM = ptcDPCM[infoDPCM[i].file];
 				code[i*4 + 0] = infoDPCM[i].ctrl;
 				code[i*4 + 1] = infoDPCM[i].DA;
-				code[i*4 + 2] = (_DPCM->getOffset() - 0xC000) >> 6;
+				code[i*4 + 2] = (unsigned char)((_DPCM->getOffset() - 0xC000) >> 6);
 				code[i*4 + 3] = _DPCM->getDPCMsize();
 			}
 			i++;
@@ -424,9 +424,9 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset, unsigned char _MusBan
 				_DPCM = ptcDPCM[infoDPCM[i].file];
 				code[i*6 + 0] = infoDPCM[i].ctrl;
 				code[i*6 + 1] = infoDPCM[i].DA;
-				code[i*6 + 2] = (_DPCM->getOffset() & 0x0FFF) >> 6;
+				code[i*6 + 2] = (unsigned char)((_DPCM->getOffset() & 0x0FFF) >> 6);
 				code[i*6 + 3] = _DPCM->getDPCMsize();
-				code[i*6 + 4] = ((_DPCM->getOffset() - 0xC000) / 0x1000) + _MusBank;
+				code[i*6 + 4] = (unsigned char)((_DPCM->getOffset() - 0xC000) / 0x1000) + _MusBank;
 				code[i*6 + 5] = infoDPCM[i].next;
 			}
 			i++;

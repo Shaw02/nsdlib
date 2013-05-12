@@ -1,0 +1,38 @@
+
+#title	"FDS Test for nsd.lib"
+
+#include	"test1.mml"
+
+#Code		"../../bin/nsd_fds.bin"
+
+#BGM	1
+
+#bank
+
+//	FDS career wave table
+FDSC(0){
+	00 01 02 03 04 06 07 09 11 14 16 19 24 32 43 52 
+	60 63 63 62 61 58 54 50 47 44 41 38 36 33 30 24 
+	25 24 30 33 36 38 41 44 47 50 54 58 61 62 63 63 
+	60 52 43 32 24 19 16 14 11 09 07 06 04 03 02 01 
+}
+
+//	FDS modulator wave table
+FDSM(0){
+	0,7,0,7, 0,7,0,7, 0,1,0,1, 0,1,0,1, 
+	0,1,0,1, 0,1,0,1, 0,7,0,7, 0,7,0,7
+}
+
+//	Volume envelop table
+Envelop(0){	(0,63,10) (63,0,50)	L	0		}
+
+//	FDS modulator gain table
+Envelop(1000){	0	D23	1	D7	L	2	}
+
+//	BGM block
+bgm(0){
+	t80	@FC0	@FF16	@FM0	@FV2
+
+	TR6	l4o4v15	Ev0	_+24	E@1000		cdefgab> c1
+}
+

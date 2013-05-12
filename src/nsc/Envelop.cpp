@@ -111,7 +111,7 @@ const	static	Command_Info	Command[] = {
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<-64) || (i>127)){
-					MML->Err(L"エンベロープは、-64～127の範囲で指定して下さい。");
+					MML->Err(L"エンベロープは-64～127の範囲で指定して下さい。");
 				}
 				code.append((char)1, (char)i & 0x7F);
 				ptEnvelop++;
@@ -124,7 +124,7 @@ const	static	Command_Info	Command[] = {
 			case(Env_Hold):
 				i = MML->GetInt();
 				if( (i<0) || (i>255)){
-					MML->Err(L"維持時間は、0～255の範囲で指定して下さい。");
+					MML->Err(L"維持時間は0～255の範囲で指定して下さい。");
 				}
 				setHold(i);
 				break;
@@ -151,7 +151,7 @@ const	static	Command_Info	Command[] = {
 					code.append((char)1, (char)(Loop_Normal | 0xC0));
 				}
 				ptEnvelop++;
-				code[0] = ptEnvelop;
+				code[0] = (unsigned char)ptEnvelop;
 				Release = true;
 				break;
 
@@ -217,7 +217,7 @@ Envelop::~Envelop(void)
 void	Envelop::setHold(int length)
 {
 	while(length>15){
-		code.append((char)1, (char)0x8F);
+		code.append((char)1, (unsigned char)0x8F);
 		ptEnvelop++;
 		length -= 16;		//15を書けば、16フレーム維持
 	}
@@ -242,8 +242,8 @@ void	Envelop::sweep(MMLfile* MML)
 	int		iLength;
 	int		iDelta;
 
-	int		now;
-	int		cnt;
+	int		now	= 0;
+	int		cnt	= 0;
 
 	int		i=0;
 	int		temp;
@@ -254,7 +254,7 @@ void	Envelop::sweep(MMLfile* MML)
 	//
 	iStart = MML->GetInt();
 	if( (iStart<-64) || (iStart>127)){
-		MML->Err(L"開始点は、-64～127の範囲で指定して下さい。");
+		MML->Err(L"開始点は-64～127の範囲で指定して下さい。");
 	}
 
 	cData = MML->GetChar();
@@ -264,7 +264,7 @@ void	Envelop::sweep(MMLfile* MML)
 
 	iEnd = MML->GetInt();
 	if( (iEnd<-64) || (iEnd>127)){
-		MML->Err(L"終了点は、-64～127の範囲で指定して下さい。");
+		MML->Err(L"終了点は-64～127の範囲で指定して下さい。");
 	}
 
 	cData = MML->GetChar();
@@ -274,7 +274,7 @@ void	Envelop::sweep(MMLfile* MML)
 
 	iLength = MML->GetInt();
 	if( (iLength<1) || (iLength>255)){
-		MML->Err(L"長さは、1～255の範囲で指定して下さい。");
+		MML->Err(L"長さは1～255の範囲で指定して下さい。");
 	}
 
 	cData = MML->GetChar();
