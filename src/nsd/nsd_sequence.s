@@ -112,14 +112,14 @@ exit:	rts
 	cmp	#nsd_chflag::KeyOff
 	bne	@E			;Key On(=3)の時のみ、処理。
 
-	;Hardware key off
-	jsr	_nsd_snd_keyoff
-
 	;Software key Off
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
 	ora	__gatemode,x
 	sta	__chflag,x
+
+	;Hardware key off
+	jsr	_nsd_snd_keyoff
 
 	;-----------------------
 	;以降は、⊿PCMでは不要

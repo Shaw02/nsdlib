@@ -1,0 +1,37 @@
+
+#title	"MMC5 Test for nsd.lib"
+
+#include	"test1.mml"
+
+#Code		"../../bin/nsd.bin"
+
+#BGM	12
+
+#OffsetEv	0
+#OffsetEn	200
+#OffsetEm	100
+#OffsetE@	200
+
+
+//	frequency envelop "Volume table"
+Envelop(0){		8 10 12 13 14 15 D10 14 D3 13 D1 12 11 L 10 10 9 9 8 8 9 9 R 8 8 7 7 6 6 5 5 L 4 4 3 3 2 2 3 3 	}
+Envelop(10){	48	32	31	30	29	28	27	26	25	24	23	22	21	L	20	R	18	16	14	12	10	L	8	}
+
+Envelop(100){	L 0 1 2 3 3 2 1 0  -1 -2 -3 -3 -2 -1 	}
+
+Envelop(200){	0	0	1	1	2	2	3	3	L	2	}
+
+bgm( 0){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{c-moll}		cdefgab> c1		}
+bgm( 1){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{cis-moll}		cdefgab> c1		}
+bgm( 2){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{d-moll}		defgab>c d1		}
+bgm( 3){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{dis-moll}		defgab>c d1		}
+//bgm( 3){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{es-moll}		efgab>cd e1		}
+bgm( 4){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{e-moll}		efgab>cd e1		}
+bgm( 5){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{f-moll}		fgab>cde f1		}
+bgm( 6){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{fis-moll}		fgab>cde f1		}
+bgm( 7){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{g-moll}		gab>cdef g1		}
+bgm( 8){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{gis-moll}		gab>cdef g1		}
+bgm( 9){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{a-moll}		ab>cdefg a1		}
+bgm(10){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{b-moll}		b>cdefga b1		}
+bgm(11){	t120	TR1	l4o4v15	Ev0		Em0	E@0	K{h-moll}		b>cdefga b1		}
+

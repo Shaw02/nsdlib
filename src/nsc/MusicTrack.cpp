@@ -630,24 +630,27 @@ void	MusicTrack::SetKey(int _key, int _scale)
 {
 
 //	static	const	char	Shift[13]={4,1,5,2,6,3,0,4,1,5,2,6,3};
-	static	const	char	Shift[13]={3,6,2,5,1,4,0,3,6,2,5,1,4};
+	static	const	char	Shift[16]={3,6,2,5,1,4,0,3,6,2,5,1,4,0,3,6};
 
 	//’²
-	static	const	char	Key[13][7]={
-	//	  c  d  e  f  g  a  b			n	ID		Key		Shift
-		{-1,-1,-1, 0,-1,-1,-1},		//	0	-6		Gs		3
-		{ 0,-1,-1, 0,-1,-1,-1},		//	1	-5		Ds		6
-		{ 0,-1,-1, 0, 0,-1,-1},		//	2	-4		As		2
-		{ 0, 0,-1, 0, 0,-1,-1},		//	3	-3		Es		5
-		{ 0, 0,-1, 0, 0, 0,-1},		//	4	-2		Bs		1
-		{ 0, 0, 0, 0, 0, 0,-1},		//	5	-1		F		4
-		{ 0, 0, 0, 0, 0, 0, 0},		//	6	 0		C		0
-		{ 0, 0, 0, 1, 0, 0, 0},		//	7	 1		G		3
-		{ 1, 0, 0, 1, 0, 0, 0},		//	8	 2		D		6
-		{ 1, 0, 0, 1, 1, 0, 0},		//	9	 3		A		2
-		{ 1, 1, 0, 1, 1, 0, 0},		//	10	 4		E		5
-		{ 1, 1, 0, 1, 1, 1, 0},		//	11	 5		H		1
-		{ 1, 1, 1, 1, 1, 1, 0}		//	12	 6		Fis		4
+	static	const	char	Key[16][7]={
+	//	  c  d  e  f  g  a  b			n	ID		Key			Shift
+		{-1,-1,-1, 0,-1,-1,-1},		//	0	-6		Gs			3
+		{ 0,-1,-1, 0,-1,-1,-1},		//	1	-5		Ds			6
+		{ 0,-1,-1, 0, 0,-1,-1},		//	2	-4		As			2
+		{ 0, 0,-1, 0, 0,-1,-1},		//	3	-3		Es			5
+		{ 0, 0,-1, 0, 0, 0,-1},		//	4	-2		Bs			1
+		{ 0, 0, 0, 0, 0, 0,-1},		//	5	-1		F			4
+		{ 0, 0, 0, 0, 0, 0, 0},		//	6	 0		C			0
+		{ 0, 0, 0, 1, 0, 0, 0},		//	7	 1		G			3
+		{ 1, 0, 0, 1, 0, 0, 0},		//	8	 2		D			6
+		{ 1, 0, 0, 1, 1, 0, 0},		//	9	 3		A			2
+		{ 1, 1, 0, 1, 1, 0, 0},		//	10	 4		E			5
+		{ 1, 1, 0, 1, 1, 1, 0},		//	11	 5		H			1
+		{ 1, 1, 1, 1, 1, 1, 0},		//	12	 6		Fis			4
+		{ 1, 1, 1, 1, 1, 1, 1},		//	13	 7		Cis			0		
+		{ 1, 1, 1, 2, 1, 1, 1},		//	14	 8		Gis			3
+		{ 2, 1, 1, 2, 1, 1, 1}		//	15	 9		Dis			6
 	};
 
 	//’²
@@ -769,6 +772,10 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		ks_ms4,
 		ks_ms5,
 		ks_ms6,
+		ks_ms7,
+		ks_ms8,
+		ks_ms9,
+
 		ks_mf1,
 		ks_mf2,
 		ks_mf3,
@@ -795,15 +802,15 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		{	"H-Dur",	ks_s5		},	//#####
 
 		{	"c-moll",	ks_m0		},	//bbb
-		{	"cis-moll",	ks_mf5		},	//####
+		{	"cis-moll",	ks_ms7		},	//####
 		{	"d-moll",	ks_ms2		},	//b
-		{	"dis-moll",	ks_mf3		},	//######
+		{	"dis-moll",	ks_ms9		},	//######
 		{	"es-moll",	ks_mf3		},	//bbbbbb
 		{	"e-moll",	ks_ms4		},	//#
 		{	"f-moll",	ks_mf1		},	//bbbb
 		{	"fis-moll",	ks_ms6		},	//###
 		{	"g-moll",	ks_ms1		},	//bb
-		{	"gis-moll",	ks_mf4		},	//#####
+		{	"gis-moll",	ks_ms8		},	//#####
 		{	"a-moll",	ks_ms3		},	//
 		{	"b-moll",	ks_mf2		},	//bbbbb
 		{	"bs-moll",	ks_mf2		},	//bbbbb
@@ -1023,6 +1030,24 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 				nowScale	= 5;
 				SetKey(nowKey, nowScale);
 				break;
+			case(ks_ms7):
+				nowKey		= 7;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_ms8):
+				nowKey		= 8;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+			case(ks_ms9):
+				nowKey		= 9;
+				nowScale	= 5;
+				SetKey(nowKey, nowScale);
+				break;
+
+
+
 			case(ks_mf1):
 				nowKey		= -1;
 				nowScale	= 5;
