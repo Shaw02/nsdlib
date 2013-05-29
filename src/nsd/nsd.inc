@@ -456,10 +456,12 @@ PSG_Envelope_Form	= $0D
 
 .ifdef	VRC7
 	VRC7_Frequency	.byte			nsd::VRC7_Track	;VRC7 frequecny
+	VRC7_Reg	.word					;
 .endif
 
 .ifdef	OPLL
 	OPLL_Frequency	.byte			nsd::OPLL_Track_FM	;OPLL frequency (FM)
+	OPLL_Reg	.word		
 	OPLL_Rhythm	.byte						;OPLL Rhythm
 .endif
 
@@ -553,11 +555,13 @@ PSG_Envelope_Form	= $0D
 
 .ifdef	VRC7
 .define	__vrc7_frequency	nsd_work + NSD_work::VRC7_Frequency
+.define	__vrc7_reg		nsd_work + NSD_work::VRC7_Reg
 .endif
 
 .ifdef	OPLL
 .define	__opll_frequency	nsd_work + NSD_work::OPLL_Frequency
 .define	__opll_ryhthm		nsd_work + NSD_work::OPLL_Rhythm
+.define	__opll_reg		nsd_work + NSD_work::OPLL_Reg
 .endif
 
 .ifdef	N163

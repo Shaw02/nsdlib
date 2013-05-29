@@ -644,15 +644,15 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	_nes_vrc7_voice
 .endif
 .ifdef	OPLL
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
+	.addr	_nes_opll_voice
+	.addr	_nes_opll_voice
+	.addr	_nes_opll_voice
+	.addr	_nes_opll_voice
+	.addr	_nes_opll_voice
+	.addr	_nes_opll_voice
+	.addr	_nes_opll_voice
+	.addr	_nes_opll_voice
+	.addr	_nes_opll_voice
 	.addr	Exit
 	.addr	Exit
 	.addr	Exit
@@ -786,11 +786,68 @@ _nes_vrc6_voice:
 .endif
 
 ;---------------------------------------
-.if	.defined(VRC7) || .defined(OPLL)
+.ifdef	VRC7
 _nes_vrc7_voice:
+
+;	 CSV
+;	000x xxxx	val
+;	0010 xxxx	ML(M)
+;	0011 xxxx	ML(C)
+;	01xx xxxx	TL
+
+	ldy	__vrc7_reg
+	sty	__ptr
+	ldy	__vrc7_reg + 1
+	sty	__ptr + 1
+
+	sta	__tmp + 1
+	asl	a
+	asl	a
+	bcs	@TL
+	pha
+	plp
+	bpl	@Voice
+	bvs	@MLC
+
+@MLM:
+	ldy	#0
+	sty	VRC7_Resister
+	lda	(__ptr),y
+	and	#$F0
+	sta	__tmp
+	lda	__tmp + 1
+	and	#$0F
+	ora	__tmp
+	sta	VRC7_Data
+	jmp	@Exit
+
+@MLC:
+	ldy	#1
+	sty	VRC7_Resister
+	lda	(__ptr),y
+	and	#$F0
+	sta	__tmp
+	lda	__tmp + 1
+	and	#$0F
+	ora	__tmp
+	sta	VRC7_Data
+	jmp	@Exit
+
+@TL:
+	ldy	#2
+	sty	VRC7_Resister
+	lda	(__ptr),y
+	and	#$C0
+	sta	__tmp
+	lda	__tmp + 1
+	and	#$3F
+	ora	__tmp
+	sta	VRC7_Data
+	jmp	@Exit
+
 	;-------------------------------
 	; *** Calculate the voice
-	shl	a, 4	;a <<= 6
+@Voice:	shl	a, 2	;a <<= 4
 	and	#$F0	;a &= 0xF0	;for OR to volume(lower 4bit)
 
 	;-------------------------------
@@ -799,7 +856,81 @@ _nes_vrc7_voice:
 
 	;-------------------------------
 	; *** Exit
-	rts
+@Exit:	rts
+.endif
+
+;---------------------------------------
+.ifdef	OPLL
+_nes_opll_voice:
+
+;	 CSV
+;	000x xxxx	val
+;	0010 xxxx	ML(M)
+;	0011 xxxx	ML(C)
+;	01xx xxxx	TL
+
+	ldy	__opll_reg
+	sty	__ptr
+	ldy	__opll_reg + 1
+	sty	__ptr + 1
+
+	sta	__tmp + 1
+	asl	a
+	asl	a
+	bcs	@TL
+	pha
+	plp
+	bpl	@Voice
+	bvs	@MLC
+
+@MLM:
+	ldy	#0
+	sty	OPLL_Resister
+	lda	(__ptr),y
+	and	#$F0
+	sta	__tmp
+	lda	__tmp + 1
+	and	#$0F
+	ora	__tmp
+	sta	OPLL_Data
+	jmp	@Exit
+
+@MLC:
+	ldy	#1
+	sty	OPLL_Resister
+	lda	(__ptr),y
+	and	#$F0
+	sta	__tmp
+	lda	__tmp + 1
+	and	#$0F
+	ora	__tmp
+	sta	OPLL_Data
+	jmp	@Exit
+
+@TL:
+	ldy	#2
+	sty	OPLL_Resister
+	lda	(__ptr),y
+	and	#$C0
+	sta	__tmp
+	lda	__tmp + 1
+	and	#$3F
+	ora	__tmp
+	sta	OPLL_Data
+	jmp	@Exit
+
+	;-------------------------------
+	; *** Calculate the voice
+@Voice:	shl	a, 2	;a <<= 4
+	and	#$F0	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__voice_set,x
+
+	;-------------------------------
+	; *** Exit
+@Exit:	rts
 .endif
 
 ;---------------------------------------

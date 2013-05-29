@@ -102,7 +102,7 @@ _eff:	.byte	0		;SE start number
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	$01
-		.byte	$08
+		.byte	$09
 
 ; ------------------------------------------------------------------------
 ; 	ŽÀ‹@ROM—p	IRQ	(DPCM)

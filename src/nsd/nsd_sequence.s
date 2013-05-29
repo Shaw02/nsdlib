@@ -929,11 +929,19 @@ nsd_op1C:
 	lda	__ptr + 1
 	adc	__tmp + 1
 	sta	__ptr + 1		;__ptr テーブルのポインタ
+.endif
 
 .ifdef	OPLL
 	cpx	#nsd::TR_OPLL
 	bcs	@OPLL
 .endif
+
+.ifdef	VRC7
+@VRC7:
+	lda	__ptr
+	sta	__vrc7_reg
+	lda	__ptr + 1
+	sta	__vrc7_reg + 1
 
 	ldx	#0			;8 byte table
 	ldy	#0
@@ -961,6 +969,11 @@ nsd_op1C:
 
 .ifdef	OPLL
 @OPLL:
+	lda	__ptr
+	sta	__opll_reg
+	lda	__ptr + 1
+	sta	__opll_reg + 1
+
 	ldx	#0			;8 byte table
 	ldy	#0
 @L2:
