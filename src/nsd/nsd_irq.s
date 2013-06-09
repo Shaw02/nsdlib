@@ -32,6 +32,10 @@
 ;=======================================================================
 .proc	_nsd_irq: near
 
+;	lda	__flag
+;	ora	#nsd_flag::Disable
+;	sta	__flag
+
 	;DPCM IEQ check
 	lda	APU_CHANCTRL
 	bpl	DPCM_Exit
@@ -84,6 +88,10 @@ DPCM_Exit:
 
 	;-------------------------------
 	;Exit
+
+;	lda	__flag
+;	and	#~nsd_flag::Disable
+;	sta	__flag
 
 	rts
 .endproc

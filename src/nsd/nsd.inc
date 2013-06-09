@@ -327,6 +327,7 @@ PSG_Envelope_Form	= $0D
 .scope	nsd_flag
 	BGM	= $01
 	SE	= $02
+	Disable	= $80
 .endscope
 
 ;Zero Page Works

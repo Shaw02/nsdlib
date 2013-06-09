@@ -31,9 +31,11 @@ Envelop(200){	0 1 2 3 4 5 6 L 7	}
 
 bgm(0){
 	t120
-	@V1
+	
 
-	TR6	l4o4	v15		@0	E@300	u8	s0 cdef s1 gab>	c1
+	TR9	@V1
+
+	TR6	l4o4	v15		@0	u8	s0 cdef s1 gab>	c1
 //	TR7	l4o4	v9		Em100	Ev0	@4	r-8.	cdefgab> c1
 //	TR8	l4o2	v13		Em100	Ev0	@2			cdefgab> c1
 

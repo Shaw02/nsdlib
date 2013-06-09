@@ -83,7 +83,11 @@ _eff:	.byte	0		;SE start number
 	.byte	1			;07	Start Music number
 	.addr	$8000			;08	Load address
 	.addr	_nsf_init		;0A	Init routine address
+.ifdef	DPCMBank
+	.addr	_nmi_main
+.else
 	.addr	_nsd_main		;0C	Sound driver main routine address
+.endif
 	.res	32,	$0
 	.res	32,	$0
 	.res	32,	$0
@@ -101,8 +105,8 @@ _eff:	.byte	0		;SE start number
 ; ------------------------------------------------------------------------
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
-DRV_Version:	.byte	$01
-		.byte	$09
+DRV_Version:	.byte	1
+		.byte	10
 
 ; ------------------------------------------------------------------------
 ; 	ŽÀ‹@ROM—p	IRQ	(DPCM)
@@ -150,8 +154,7 @@ DRV_Version:	.byte	$01
 	tay
 	pla
 
-	rti
-
+	rts
 .endproc
 
 .endif

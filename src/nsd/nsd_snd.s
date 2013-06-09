@@ -572,6 +572,7 @@ _nsd_vrc7_keyoff:
 
 	lda	__vrc7_frequency,y	;[5]
 	and	#$EF			;[2]
+	sta	__vrc7_frequency,y	;[5]
 	sta	VRC7_Data		;
 
 	rts				;[6]
@@ -603,6 +604,7 @@ _nsd_OPLL_keyoff:
 
 	lda	__opll_frequency,y	;[5]
 	and	#$EF			;[2]
+	sta	__opll_frequency,y	;[5]
 	sta	OPLL_Data		;
 
 _nsd_OPLL_keyoff_exit:
@@ -1327,17 +1329,41 @@ _nsd_vrc7_volume:
 	eor	#$FF			;[2]2
 	tay				;[2]4
 
+	;チャンネルの計算
 	txa				;[2]6
 	sub	#nsd::TR_VRC7		;[]
 	shr	a, 1			;[2]
+	pha
+
+	;音量・音色番号書き込み
 	add	#VRC7_Volume		;[2]
-	sta	VRC7_Resister		;
+	sta	VRC7_Resister		;●Resister Write
 
 	tya				;[2]
 	and	#$0F			;[2]4
 	ora	__voice_set,x		;[4]8
+	sta	VRC7_Data		;●Data Write
 
-	sta	VRC7_Data
+	;周波数 下位byte 書き込み
+	pla				;[4]4	a ← VRC7でのチャンネル番号
+	tay				;[2]6
+
+	lda	__chflag,x		;[4]10
+	and	#$30			;[2]12	 00XX 0000 <2>
+	ora	__vrc7_frequency,y	;[4]16	flag と octave をマージ
+	sta	__vrc7_frequency,y	;[5]21
+
+	lda	(__ptr),y		;[5]26
+	lda	(__ptr),y		;[5]31
+	lda	(__ptr),y		;[5]36
+
+	tya				;[2]38
+	add	#VRC7_Octave		;[4]42 clock !! (VRC7のwait)
+
+	sta	VRC7_Resister		;●Resister Write
+	tya				;[2]
+	lda	__vrc7_frequency,y	;[4]6 clock
+	sta	VRC7_Data		;●Data Write
 
 	rts				;[6]
 
@@ -1354,20 +1380,44 @@ _nsd_OPLL_volume_R:
 
 _nsd_OPLL_volume:
 
-	eor	#$FF
-	tay
+	eor	#$FF			;[2]2
+	tay				;[2]4
 
-	txa
-	sub	#nsd::TR_OPLL
-	shr	a, 1
-	add	#OPLL_Volume
-	sta	OPLL_Resister		;
+	;チャンネルの計算
+	txa				;[2]
+	sub	#nsd::TR_OPLL		
+	shr	a, 1			;[2]
+	pha
+
+	;音量・音色番号書き込み
+	add	#OPLL_Volume		;[2]
+	sta	OPLL_Resister		;●Resister Write
 
 	tya				;[2]
-	and	#$0F			;[2]
-	ora	__voice_set,x		;[4]
+	and	#$0F			;[2]4
+	ora	__voice_set,x		;[4]8
+	sta	OPLL_Data		;●Data Write
 
-	sta	OPLL_Data
+	;周波数 下位byte 書き込み
+	pla				;[4]4	a ← VRC7でのチャンネル番号
+	tay				;[2]6
+
+	lda	__chflag,x		;[4]10
+	and	#$30			;[2]12	 00XX 0000 <2>
+	ora	__opll_frequency,y	;[4]16	flag と octave をマージ
+	sta	__opll_frequency,y	;[5]21
+
+	lda	(__ptr),y		;[5]26
+	lda	(__ptr),y		;[5]31
+	lda	(__ptr),y		;[5]36
+
+	tya				;[2]38
+	add	#OPLL_Octave		;[4]42 clock !! (VRC7のwait)
+
+	sta	OPLL_Resister		;●Resister Write
+	tya				;[2]
+	lda	__opll_frequency,y	;[4]6 clock
+	sta	OPLL_Data		;●Data Write
 
 _nsd_OPLL_volume_exit:
 	rts
@@ -2826,22 +2876,12 @@ Detune:
 	adc	__tmp + 1		;[3]5
 	and	#$0F			;[2]7
 	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
-	lda	__chflag,x		;[4]14
-	and	#$30			;[2]16	 00XX 0000 <2>
-	ora	__tmp + 1		;[3]19	flag と octave をマージ
-	sta	__tmp + 1		;[3]22
 
-	lda	(__ptr,x)		;[6]28
-	lda	__ptr,x			;[4]32
-
-	pla				;[4]36	a ← VRC7でのチャンネル番号
-	tay				;[2]40
-	add	#VRC7_Octave		;[4]42 clock !! (VRC7のwait)
-
-	sta	VRC7_Resister		;●Resister Write
+	;追加
+	pla				;a ← VRC7でのチャンネル番号
+	tay
 	lda	__tmp + 1		;[3]3
 	sta	__vrc7_frequency,y	;[5]8 clock > 6 clock
-	sta	VRC7_Data		;●Data Write
 
 	rts
 .endproc
@@ -2883,22 +2923,12 @@ Detune:
 	adc	__tmp + 1		;[3]5
 	and	#$0F			;[2]7
 	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
-	lda	__chflag,x		;[4]14
-	and	#$30			;[2]16	 00XX 0000 <2>
-	ora	__tmp + 1		;[3]19	flag と octave をマージ
-	sta	__tmp + 1		;[3]22
 
-	lda	(__ptr,x)		;[6]28
-	lda	__ptr,x			;[4]32
-
-	pla				;[4]36	a ← VRC7でのチャンネル番号
-	tay				;[2]40
-	add	#OPLL_Octave		;[4]42 clock !! (OPLLのwait)
-
-	sta	OPLL_Resister		;●Resister Write
+	;追加
+	pla				;a ← VRC7でのチャンネル番号
+	tay
 	lda	__tmp + 1		;[3]3
 	sta	__opll_frequency,y	;[5]8 clock > 6 clock
-	sta	OPLL_Data		;●Data Write
 
 	rts
 .endproc
