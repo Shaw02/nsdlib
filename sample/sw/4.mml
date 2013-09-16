@@ -1,0 +1,37 @@
+
+#title		"‚¸‚Á‚Æ‚S“xis‚ÌÀŒ±"
+#Composer	"S.W."
+#Copyright	"(C) 2013 S.W."
+
+#Code		"../../bin/nsd.bin"
+
+#bgm	1
+
+E(0){	8,10,12,13,14,15 D1 14 D2 13 D3 12 D4 10 D5 9 D6 8 D7 7 D8 6 D9	L	5	5	4	4	5	5	6	6	R4	3	D2	2	D8	1	D15	L	0	}
+E(1){	8	11	13	15	D0	14	13	12	11	10	9	L	8	R	7	5	4	4	3	D2	2	D8	1	D15	L	0	}
+
+E(5){	15,8,4,2,1,L0	}
+E(6){	2	1	L	0	}
+
+E(10){	0	D20	L	1	2	2	2	1	0	-1	-2	-2	-2	-1	0	}
+
+/*
+	‚l‚l‚k‚©‚ç—Õ‹L†‚ğ”rœ‚¹‚æI
+*/
+
+bgm(0){
+
+	t208
+
+	TR1	v12		Ev0	l8o5	Em10	Major	[2	 r2.	]	L	c4"b4c4 e4d4c4	c2<a2 a4>c4	<	Mode(1)	b4a4b4	MMinor(2)	^4a4b4>
+	TR2	v7		Ev1	l8o4			Major	[2	 r4erer	]	L	[2	 r4erer	]	[2	 r4frfr	]	Mode(1)	r4drdr	MMinor(2)	 r4ergr
+	TR3	_+12		l8o4			Major	[2	"c4crcr	]	L	[2	"c4crcr	]	[2	"f4crcr	]<	Mode(1)	"b4frfr	MMinor(2)	"e4grbr
+
+	TR1		Mode(2)	c2.		^2.			d4e4f4	a4g4f4	Major	g2f4	e2d4		Major	c2.^2.^2.^2r4
+	TR2		Mode(2)	[2	 r4erer	]		[2	r4 frfr	]	Major	 r4grgr	 r4frfr		Major	[4	r4erer	]
+	TR3		Mode(2)	[2	"a4arar	]>		[2	"d4drdr	]	Major	"g4drdr	<g4brbr>	Major	[4	"c4crcr	]
+
+	TR4				l4	o6	En6	Ev5	v8	L	r4c4c4
+}
+
+

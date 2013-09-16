@@ -72,8 +72,13 @@ VRC7_Volume		= $30
 ;---------------------------------------
 ;OPLL define
 
+.ifdef	HFX4
+OPLL_Resister		= $5F90		;wait  6 clk
+OPLL_Data		= $5FB0		;wait 42 clk
+.else
 OPLL_Resister		= $9010		;wait  6 clk
 OPLL_Data		= $9030		;wait 42 clk
+.endif
 
 OPLL_Patch0		= $00
 OPLL_Patch1		= $01
@@ -128,8 +133,13 @@ N163_Volume		= $7F
 ;---------------------------------------
 ;PSG define
 
+.ifdef	HFE4
+PSG_Register		= $5FE0
+PSG_Data		= $5FE1
+.else
 PSG_Register		= $C000
 PSG_Data		= $E000
+.endif
 
 PSG_1_Frequency_Low	= $00
 PSG_1_Frequency_High	= $01
@@ -313,9 +323,11 @@ PSG_Envelope_Form	= $0D
 	_ptr		.word					;00 General pointer value
 	_tmp		.word					;02 General value
 	channel		.byte					;04 channel (x resister)
-	flag		.byte					;05 flag
+;	flag		.byte					;05 flag
 	Sequence_ptr	.word			nsd::Track	;06 Address of playing sequence
-	Length		.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
+.ifndef	HFX4
+	LengthCnt	.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
+.endif
 	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
 .Endstruct
 
@@ -333,15 +345,15 @@ PSG_Envelope_Form	= $0D
 ;Zero Page Works
 .define	__ptr		nsd_work_zp + NSD_work_zp::_ptr
 .define	__tmp		nsd_work_zp + NSD_work_zp::_tmp
-.define	__flag		nsd_work_zp + NSD_work_zp::flag
+;.define	__flag		nsd_work_zp + NSD_work_zp::flag
 .define	__channel	nsd_work_zp + NSD_work_zp::channel
 .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
-.define	__Length_ctr	nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::counter
-.define	__Gate		nsd_work_zp + NSD_work_zp::Length + NSD_Length_Cnt::gate
+
 .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
 .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
 
-.define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+.define	__flag		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+.define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F + nsd::TR_BGM5
 .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 
 
@@ -424,6 +436,9 @@ PSG_Envelope_Form	= $0D
 
 .Struct		NSD_work
 	Flag		.tag	NSD_Flag	nsd::Track	;flag
+.ifdef	HFX4
+	LengthCnt	.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
+.endif
 	Length		.tag	NSD_length	nsd::Track	;note length [tick]
 	Gatetime	.tag	NSD_gatetime	nsd::Track	;gate time [tick]
 	Note		.tag	NSD_note	nsd::Track	;octave and note command
@@ -457,11 +472,13 @@ PSG_Envelope_Form	= $0D
 
 .ifdef	VRC7
 	VRC7_Frequency	.byte			nsd::VRC7_Track	;VRC7 frequecny
+	VRC7_Freq_old	.byte			nsd::VRC7_Track
 	VRC7_Reg	.word					;
 .endif
 
 .ifdef	OPLL
 	OPLL_Frequency	.byte			nsd::OPLL_Track_FM	;OPLL frequency (FM)
+	OPLL_Freq_old	.byte			nsd::OPLL_Track_FM
 	OPLL_Reg	.word		
 	OPLL_Rhythm	.byte						;OPLL Rhythm
 .endif
@@ -496,6 +513,14 @@ PSG_Envelope_Form	= $0D
 .endscope
 
 ;RAM Works
+.ifdef	HFX4
+.define	__Length_ctr	nsd_work + NSD_work::LengthCnt + NSD_Length_Cnt::counter
+.define	__Gate		nsd_work + NSD_work::LengthCnt + NSD_Length_Cnt::gate
+.else
+.define	__Length_ctr	nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::counter
+.define	__Gate		nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::gate
+.endif
+
 .define	__chflag	nsd_work + NSD_work::Flag + NSD_Flag::flag
 .define	__gatemode	nsd_work + NSD_work::Flag + NSD_Flag::gatemode
 .define	__tai		nsd_work + NSD_work::Length + NSD_length::tai
@@ -556,13 +581,15 @@ PSG_Envelope_Form	= $0D
 
 .ifdef	VRC7
 .define	__vrc7_frequency	nsd_work + NSD_work::VRC7_Frequency
+.define	__vrc7_freq_old		nsd_work + NSD_work::VRC7_Freq_old
 .define	__vrc7_reg		nsd_work + NSD_work::VRC7_Reg
 .endif
 
 .ifdef	OPLL
 .define	__opll_frequency	nsd_work + NSD_work::OPLL_Frequency
-.define	__opll_ryhthm		nsd_work + NSD_work::OPLL_Rhythm
+.define	__opll_freq_old		nsd_work + NSD_work::OPLL_Freq_old
 .define	__opll_reg		nsd_work + NSD_work::OPLL_Reg
+.define	__opll_ryhthm		nsd_work + NSD_work::OPLL_Rhythm
 .endif
 
 .ifdef	N163

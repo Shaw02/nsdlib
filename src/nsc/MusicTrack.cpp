@@ -725,6 +725,48 @@ void	MusicTrack::SetScale(MMLfile* MML)
 	SetKey(nowKey, nowScale);
 }
 
+//--------------------------------------------------------------
+void	MusicTrack::SetMajor()
+{
+	nowScale = 0;
+	SetKey(nowKey, nowScale);
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetMinor()
+{
+	nowScale = 5;
+	SetKey(nowKey, nowScale);
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetHMinor(MMLfile* MML)
+{
+	char	cData		= MML->GetChar();
+			nowScale	= 10;
+
+	MML->Back();
+
+	if(cData=='('){
+		nowScale	+= (char)MML->GetNum();
+	}
+
+	SetKey(nowKey, nowScale);
+}
+
+//--------------------------------------------------------------
+void	MusicTrack::SetMMinor(MMLfile* MML)
+{
+	char	cData		= MML->GetChar();
+			nowScale	= 20;
+
+	MML->Back();
+
+	if(cData=='('){
+		nowScale	+= (char)MML->GetNum();
+	}
+
+	SetKey(nowKey, nowScale);
+}
+
 //==============================================================
 //		調号の設定
 //--------------------------------------------------------------
@@ -1139,7 +1181,7 @@ void	MusicTrack::SetNote(MMLfile*	MML,int note)
 	}
 
 	cData = MML->GetChar();
-	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.')){
+	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.') || (cData == '~')){
 		MML->Back();
 		Length = MML->GetLength(DefaultLength);
 	} else {
@@ -1188,10 +1230,11 @@ void	MusicTrack::SetNote(MMLfile*	MML,int note)
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
+//		int			mode	
 //	●返値
 //				無し
 //==============================================================
-void	MusicTrack::SetRest(MMLfile*	MML)
+void	MusicTrack::SetRest(MMLfile*	MML, int mode)
 {
 	unsigned		char	cData;
 	unsigned		char	_code = 0x0F;
@@ -1218,23 +1261,27 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 			break;
 		default:
 			MML->Back();
-			switch(KeySignature[7]){
-				case(-1):
-					_code = 0x0D;
-					break;
-				case(+1):
-					_code = 0x0E;
-					break;
-				default:
-					_code = 0x0F;
-					break;
+			if(mode & 0x80){
+				_code = 0x0D + ((char)mode & 0x03);
+			} else {
+				switch(KeySignature[7]){
+					case(-1):
+						_code = 0x0D;
+						break;
+					case(+1):
+						_code = 0x0E;
+						break;
+					default:
+						_code = 0x0D + ((char)mode & 0x03);
+						break;
+				}
 			}
 			break;
 	}
 
 	//長さ
 	cData = MML->GetChar();
-	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.')){
+	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.') || (cData == '~')){
 		MML->Back();
 		Length = MML->GetLength(DefaultLength);
 	} else {
@@ -1305,7 +1352,7 @@ void	MusicTrack::SetRest(MMLfile*	MML)
 void	MusicTrack::SetTai(MMLfile* MML)
 {
 	_old_note->SetTai();
-	SetRest(MML);
+	SetRest(MML,2);
 }
 
 //==============================================================

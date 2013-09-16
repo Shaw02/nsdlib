@@ -59,12 +59,13 @@ TR1～5は、APU（RP2A03）に割り当てられます。<br>
 <li>nsd_mmc5.lib / nsd_mmc5.bin</li>
 <li>nsd_n163.lib / nsd_n163.bin</li>
 <li>nsd_s5b.lib / nsd_s5b.bin</li>
+<li>nsd_vrc7.lib / nsd_opll.bin</li>
 </ul>
 <p>
 ユーザーアプリケーション組み込み用のライブラリです。そのため、音源ドライバ本体からはバンク切り替えをしません。<br>
 （音源ドライバー *.lib の外部（ユーザーアプリケーション側）でバンク切り替えを行う事は可能です。）<br>
 従い、<a href="usage_nsc.html">MMLコンパイラ`nec.exe'</a>で直接NSFを生成する場合は、NSFヘッダーの128byteを除き、合計32kbyteまでとなります。<br>
-メモリマップは、以下表の通りです。<br>
+MMLコンパイラにて、直接NSFにビルドする際のメモリマップは、以下表の通りです。<br>
 </p>
 <table>
 <caption>Memory map</caption>
@@ -79,7 +80,9 @@ TR1～5は、APU（RP2A03）に割り当てられます。<br>
 <h4>バンク切り替え対応版の仕様</h4>
 <ul>
 <li>nsd_all.bin</li>
-<li>nsd_all2.bin</li>
+<li>nsd_all.bin</li>
+<li>nsd_oall.bin</li>
+<li>nsd_hfx4.bin</li>
 </ul>
 <p>
 ＮＳＦ専用の.binです。ユーザーアプリケーションへの組み込みに使うことはできません。<br>
@@ -90,12 +93,25 @@ TR1～5は、APU（RP2A03）に割り当てられます。<br>
 <a href="usage_nsc.html">MMLコンパイラ`nec.exe'</a>で生成されるNSFは、
 NSFヘッダーの128byteを除き合計1024kbyteまでのNSFを作ることができます。<br>
 （NSF music formatの仕様が1024kbyteまでとなっております。）<br>
-但し、曲データ（シーケンス）は24kbyteまでです（元々が組み込み用のため、演奏ポインタがバンクに対応していません）。<br>
-メモリマップは、以下表の通りです。<br>
+但し、曲データ（シーケンス）は24kbyte（OPLL対応版は16kByte）までです<br>
+（元々が組み込み用のため、演奏ポインタがバンクに対応していません）。<br>
+MMLコンパイラにて、直接NSFにビルドする際のメモリマップは、以下表の通りです。<br>
+</p>
 <table>
-<caption>Memory map</caption>
-<tr><th>Address				</th><th>Contents		</th></tr>
+<caption>Memory map (nsd_all.bin, nsd_all.bin)</caption>
+<tr><th>Address				</th><th>Contents				</th></tr>
+<tr><td>0x0000 ～ 0x07FF	</td><td>制御用構造体			</td></tr>
 <tr><td>0x6000 ～ 0xBFFF	</td><td>曲データ（24 kbyte）	</td></tr>
+<tr><td>0xC000 ～ 0xDFFF	</td><td>⊿ＰＣＭデータ	（この領域は再生する⊿PCMによりバンク切り替えが発生します。）</td></tr>
+<tr><td>0xE000 ～ 0xFFFF	</td><td>音源ドライバ本体 ＆ 割り込みベクタ（*.bin）</td></tr>
+</table>
+<br>
+<table>
+<caption>Memory map (nsd_oall.bin, nsd_hfx4.bin)</caption>
+<tr><th>Address				</th><th>Contents				</th></tr>
+<tr><td>0x0000 ～ 0x07FF	</td><td>制御用構造体1			</td></tr>
+<tr><td>0x6000 ～ 0x7FFF	</td><td>制御用構造体2（本体内RAMの2kbyteでは容量が足りないため、拡張RAMを使っています）	</td></tr>
+<tr><td>0x8000 ～ 0xBFFF	</td><td>曲データ（16 kbyte）	</td></tr>
 <tr><td>0xC000 ～ 0xDFFF	</td><td>⊿ＰＣＭデータ	（この領域は再生する⊿PCMによりバンク切り替えが発生します。）</td></tr>
 <tr><td>0xE000 ～ 0xFFFF	</td><td>音源ドライバ本体 ＆ 割り込みベクタ（*.bin）</td></tr>
 </table>
@@ -202,6 +218,54 @@ NSFヘッダーの128byteを除き合計1024kbyteまでのNSFを作ることができます。<br>
 
 <!-- ──────────────── -->
 <div class='block'>
+<h3>nsd_opll.lib / nsd_opll.bin</h3>
+<p>
+内蔵音源（APU）および、OPLL（YM2413）に対応しています。<br>
+</p>
+<p>
+※"nsd_opll.lib" 及び "nsd_opll.bin" は、VRC7をOPLL（YM2413）に換装した、改造拡張音源用の音源ドライバーです。<br>
+ファミコン実機でOPLLを鳴らしたい方は、個人の責任にて改造して下さい。<br>
+</p>
+<table>
+<tr><th>トラック</th><th>音源				</th></tr>
+<tr><td>TR6		</td><td>OPLL FM音源 ch1	</td></tr>
+<tr><td>TR7		</td><td>OPLL FM音源 ch2	</td></tr>
+<tr><td>TR8		</td><td>OPLL FM音源 ch3	</td></tr>
+<tr><td>TR9		</td><td>OPLL FM音源 ch4	</td></tr>
+<tr><td>TR10	</td><td>OPLL FM音源 ch5	</td></tr>
+<tr><td>TR11	</td><td>OPLL FM音源 ch6	</td></tr>
+<tr><td>TR12	</td><td>OPLL FM音源 ch7		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR13	</td><td>OPLL FM音源 ch8		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR14	</td><td>OPLL FM音源 ch9		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR15	</td><td>OPLL Rhythm Bass Drum	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR16	</td><td>OPLL Rhythm Snare Drum	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR17	</td><td>OPLL Rhythm Hi Hat		<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR18	</td><td>OPLL Rhythm Top Cymbal	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR19	</td><td>OPLL Rhythm Tom Tom	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+</table>
+
+<p>
+ch7～9のFM音源／リズム音源の切り替えは、リズムトラック（TR15～19）の`s'コマンドにて設定します。<br>
+曲中での切り替えにも対応しており、デフォルトは、FM音源 9ch（s0）です。<br>
+s0	…	FM音源 9ch	（TR15～19の発音は無効になります。休符を置いてください。）<br>
+s1	…	FM音源 6ch + リズム音源 5ch	（TR12～14の発音は無効になります。休符を置いてください。）<br>
+</p>
+<p>
+リズム音源は、以下のディチューン、オクターブ、音程とする事で、データシートに近い音程となります。<br>
+又、OPLLのハードウェア的に、Snare DrumとHi Hatは同じ周波数レジスターを使用しており、<br>
+Top CymbalとTom Tomも同じ周波数レジスターである点に注意してください。<br>
+</p>
+<dl>
+<dt>Bass Drum	</dt><dd>D-2 o3 a</dd>
+<dt>Snare Drum	</dt><dd>D8 o3 b</dd>
+<dt>Hi Hat		</dt><dd>D8 o3 b</dd>
+<dt>Top Cymbal	</dt><dd>D8 o2 e</dd>
+<dt>Tom Tom		</dt><dd>D8 o2 e</dd>
+</dl>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
 <h3>nsd_all.bin （⊿PCMのバンク切り替え対応）</h3>
 <p>
 FDS音源以外の拡張音源に対応した.binです。<br>
@@ -286,55 +350,7 @@ FDS音源以外の拡張音源に対応した.binです。<br>
 
 <!-- ──────────────── -->
 <div class='block'>
-<h3>nsd_opll.lib / nsd_opll.bin</h3>
-<p>
-内蔵音源（APU）および、OPLL（YM2413）に対応しています。<br>
-</p>
-<p>
-※"nsd_opll.lib" 及び "nsd_opll.bin" は、VRC7をOPLL（YM2413）に換装した、改造拡張音源用の音源ドライバーです。<br>
-ファミコン実機でOPLLを鳴らしたい方は、個人の責任にて改造して下さい。<br>
-</p>
-<table>
-<tr><th>トラック</th><th>音源				</th></tr>
-<tr><td>TR6		</td><td>OPLL FM音源 ch1	</td></tr>
-<tr><td>TR7		</td><td>OPLL FM音源 ch2	</td></tr>
-<tr><td>TR8		</td><td>OPLL FM音源 ch3	</td></tr>
-<tr><td>TR9		</td><td>OPLL FM音源 ch4	</td></tr>
-<tr><td>TR10	</td><td>OPLL FM音源 ch5	</td></tr>
-<tr><td>TR11	</td><td>OPLL FM音源 ch6	</td></tr>
-<tr><td>TR12	</td><td>OPLL FM音源 ch7		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
-<tr><td>TR13	</td><td>OPLL FM音源 ch8		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
-<tr><td>TR14	</td><td>OPLL FM音源 ch9		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
-<tr><td>TR15	</td><td>OPLL Rhythm Bass Drum	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
-<tr><td>TR16	</td><td>OPLL Rhythm Snare Drum	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
-<tr><td>TR17	</td><td>OPLL Rhythm Hi Hat		<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
-<tr><td>TR18	</td><td>OPLL Rhythm Top Cymbal	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
-<tr><td>TR19	</td><td>OPLL Rhythm Tom Tom	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
-</table>
-
-<p>
-ch7～9のFM音源／リズム音源の切り替えは、TR15～19の`s'コマンドにて設定します。<br>
-曲中での切り替えにも対応しており、デフォルトは、FM音源 9ch（s0）です。<br>
-s0	…	FM音源 9ch	（TR15～19の発音は無効になります。休符を置いてください。）<br>
-s1	…	FM音源 6ch + リズム音源 5ch	（TR12～14の発音は無効になります。休符を置いてください。）<br>
-</p>
-<p>
-リズム音源は、以下のディチューン、オクターブ、音程とする事で、データシートに近い音程となります。<br>
-又、OPLLのハードウェア的に、Snare DrumとHi Hatは同じ周波数レジスターを使用しており、<br>
-Top CymbalとTom Tomも同じ周波数レジスターである点に注意してください。<br>
-</p>
-<dl>
-<dt>Bass Drum	</dt><dd>D-2 o3 a</dd>
-<dt>Snare Drum	</dt><dd>D8 o3 b</dd>
-<dt>Hi Hat		</dt><dd>D8 o3 b</dd>
-<dt>Top Cymbal	</dt><dd>D8 o2 e</dd>
-<dt>Tom Tom		</dt><dd>D8 o2 e</dd>
-</dl>
-</div>
-
-<!-- ──────────────── -->
-<div class='block'>
-<h3>nsd_opll.bin</h3>
+<h3>nsd_oall.bin</h3>
 <p>
 全ての拡張音源に対応した.binですが、VRC7はOPLLに変わっています。<br>
 </p>
@@ -384,6 +400,61 @@ Top CymbalとTom Tomも同じ周波数レジスターである点に注意してください。<br>
 
 </div>
 
+<!-- ──────────────── -->
+<div class='block'>
+<h3>nsd_hfx4.bin</h3>
+<p>
+全ての拡張音源に対応した.binですが、VRC7はOPLLに変わっています。<br>
+</p>
+<p>
+ ※ "nsd_hfx4.bin"は、TNS-HFCシリーズ及び、TNS-HFX4に専用のコードです。<br>
+</p>
+<table>
+<tr><th>トラック</th><th>音源				</th></tr>
+<tr><td>TR6		</td><td>FDS（ディスクシステム音源）</td></tr>
+<tr><td>TR7		</td><td>VRC6 パルス波 ch1			</td></tr>
+<tr><td>TR8		</td><td>VRC6 パルス波 ch2			</td></tr>
+<tr><td>TR9		</td><td>VRC6 鋸波					</td></tr>
+<tr><td>TR10	</td><td>VRC7（FM音源） ch1			</td></tr>
+<tr><td>TR11	</td><td>VRC7（FM音源） ch2			</td></tr>
+<tr><td>TR12	</td><td>VRC7（FM音源） ch3			</td></tr>
+<tr><td>TR13	</td><td>VRC7（FM音源） ch4			</td></tr>
+<tr><td>TR14	</td><td>VRC7（FM音源） ch5			</td></tr>
+<tr><td>TR15	</td><td>VRC7（FM音源） ch6			</td></tr>
+<tr><td>TR16	</td><td>OPLL FM音源 ch1			</td></tr>
+<tr><td>TR17	</td><td>OPLL FM音源 ch2			</td></tr>
+<tr><td>TR18	</td><td>OPLL FM音源 ch3			</td></tr>
+<tr><td>TR19	</td><td>OPLL FM音源 ch4			</td></tr>
+<tr><td>TR20	</td><td>OPLL FM音源 ch5			</td></tr>
+<tr><td>TR21	</td><td>OPLL FM音源 ch6			</td></tr>
+<tr><td>TR22	</td><td>OPLL FM音源 ch7		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR23	</td><td>OPLL FM音源 ch8		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR24	</td><td>OPLL FM音源 ch9		<strong>（Rhythmが有効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR25	</td><td>OPLL Rhythm Bass Drum	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR26	</td><td>OPLL Rhythm Snare Drum	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR27	</td><td>OPLL Rhythm Hi Hat		<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR28	</td><td>OPLL Rhythm Top Cymbal	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR29	</td><td>OPLL Rhythm Tom Tom	<strong>（Rhythmが無効な時は、デバイス出力しません）</strong></td></tr>
+<tr><td>TR30	</td><td>MMC5 パルス波 ch1			</td></tr>
+<tr><td>TR31	</td><td>MMC5 パルス波 ch2			</td></tr>
+<tr><td>TR32	</td><td>N163（波形メモリ音源） ch8	</td></tr>
+<tr><td>TR33	</td><td>N163（波形メモリ音源） ch7	</td></tr>
+<tr><td>TR34	</td><td>N163（波形メモリ音源） ch6	</td></tr>
+<tr><td>TR35	</td><td>N163（波形メモリ音源） ch5	</td></tr>
+<tr><td>TR36	</td><td>N163（波形メモリ音源） ch4	</td></tr>
+<tr><td>TR37	</td><td>N163（波形メモリ音源） ch3	</td></tr>
+<tr><td>TR38	</td><td>N163（波形メモリ音源） ch2	</td></tr>
+<tr><td>TR39	</td><td>N163（波形メモリ音源） ch1	</td></tr>
+<tr><td>TR40	</td><td>Sunsoft 5B ch1				</td></tr>
+<tr><td>TR41	</td><td>Sunsoft 5B ch2				</td></tr>
+<tr><td>TR42	</td><td>Sunsoft 5B ch3				</td></tr>
+<tr><td>TR43	</td><td>制御用トラックです（音符は発音しません）。<br>曲全体のコマンド（テンポや、n163の音色設定等）を記述できます。</td></tr>
+</table>
+<p>
+@VコマンドによるＦＭ音源のユーザー音色の設定は、TR15以前に記述した場合はVRC7へ設定、TR16以降に記述した場合はOPLLへ設定します。<br>
+</p>
+</div>
+<!-- ──────────────── -->
 
 
 

@@ -8,8 +8,10 @@
 
 	.export		_nsd_stop_bgm
 
+	.import		_nsd_snd_voice
 	.import		_nsd_snd_volume
 	.import		_nsd_snd_keyoff
+	
 
 	.import		nsd_work
 	.importzp	nsd_work_zp
@@ -36,8 +38,6 @@
 	lda	#nsd_flag::BGM
 	ora	__flag
 	sta	__flag			;BGM Disable
-
-
 
 	;-----------------------
 	;Init the channel structure

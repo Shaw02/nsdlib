@@ -16,6 +16,10 @@
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
+.if	.defined(VRC7) || .defined(OPLL)
+	.import		_Wait42
+.endif
+
 	.include	"nes.inc"
 	.include	"nsd.inc"
 
@@ -374,7 +378,9 @@ opaddr:	.addr	nsd_op00
 	jsr	nsd_keyoff		; 	nsd_keyoff();
 GateTime_Exit:				; }
 	lda	__Length_ctr,x
-	bne	Exit		; if(__Length_ctr != 0){ return(); };
+	beq	Sequence		; if(__Length_ctr != 0){ return(); };
+Exit:
+	rts
 
 	;-------------------------------
 	;Sequence		(length == 0)
@@ -403,10 +409,10 @@ Chk_Slur:
 Chk_Length:
 	tya
 	and	#$20
-	beq	@L
-	jsr	nsd_load_sequence
-	jmp	@E
-@L:	lda	__length,x
+	bne	@L
+	lda	__length,x
+	bne	@E			;äÓñ{0Ç∂Ç·Ç»Ç¢ÅB
+@L:	jsr	nsd_load_sequence
 @E:	sta	__Length_ctr,x
 
 	;-------
@@ -445,22 +451,13 @@ Calc_Note_Number:
 	sta	__tmp
 	lda	__tai,x
 	and	#$02
-	bne	Exit		;If tai then exit
+	bne	@Exit		;If tai then exit
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
 	ora	__tmp
 	sta	__chflag,x
-Exit:
+@Exit:
 	rts
-
-NoteSet:
-	add	__octave,x
-	add	__trans_one,x
-	sta	__note,x
-	lda	#0
-	sta	__trans_one,x	;0 reset
-	jmp	nsd_keyon
-
 
 
 	;-----------------------
@@ -524,6 +521,18 @@ op70:	;Ser release volume
 	ora	__tmp
 	sta	__volume,x		;__volume = (__volume & 0x0F) | (a << 4);
 	jmp	Sequence
+
+
+	;---------------
+NoteSet:
+	add	__octave,x
+	add	__trans,x
+	add	__trans_one,x
+	sta	__note,x
+	lda	#0
+	sta	__trans_one,x	;0 reset
+	jmp	nsd_keyon
+
 
 ;=======================================================================
 ;		opcode	0x00:	End of Track / End of Subroutine
@@ -818,6 +827,9 @@ nsd_op11:
 nsd_op12:
 	jsr	nsd_load_ptr
 
+	cpx	#nsd::TR_BGM5
+	beq	@Exit
+
 	ora	__tmp
 	beq	@Zero
 
@@ -838,6 +850,9 @@ nsd_op12:
 ;-----------------------------------------------------------------------
 nsd_op13:
 	jsr	nsd_load_ptr
+
+	cpx	#nsd::TR_BGM5
+	beq	@Exit
 
 	ora	__tmp
 	beq	@Zero
@@ -950,13 +965,7 @@ nsd_op1C:
 	lda	(__ptr),y		;[5]
 	iny				;[2]
 	sta	VRC7_Data		;ÅúData Write
-
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]	36
+	jsr	_Wait42
 
 	inx				;[2]
 	cpx	#8			;[2]
@@ -981,13 +990,7 @@ nsd_op1C:
 	lda	(__ptr),y		;[5]
 	iny				;[2]
 	sta	OPLL_Data		;ÅúData Write
-
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]
-	lda	(__ptr,x)		;[6]	36
+	jsr	_Wait42
 
 	inx				;[2]
 	cpx	#8			;[2]

@@ -127,7 +127,6 @@ Frequency:
 
 	;-------------------------------
 	; __tmp = (__note,x + __trans,x) << 4;
-	add	__trans,x
 	sta	__tmp + 1
 	shl	a, 4
 	sta	__tmp

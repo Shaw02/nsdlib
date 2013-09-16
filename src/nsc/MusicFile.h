@@ -63,7 +63,7 @@ public:
 	void	Fix_Address(void);
 
 	//バイナリーを作る
-	void	make_bin(size_t rom_size);
+	void	make_bin(size_t rom_size, int ptOffset);
 
 	//保存フェーズ
 	void	saveNSF(const char*	strFileName, bool opt);

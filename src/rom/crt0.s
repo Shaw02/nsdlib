@@ -33,6 +33,7 @@
 .bss
 
 _eff:	.byte	0		;SE start number
+_play:	.byte	0
 
 ; ------------------------------------------------------------------------
 ; 	256 bytes NSF header
@@ -83,17 +84,21 @@ _eff:	.byte	0		;SE start number
 	.byte	1			;07	Start Music number
 	.addr	$8000			;08	Load address
 	.addr	_nsf_init		;0A	Init routine address
-.ifdef	DPCMBank
+;.ifdef	DPCMBank
 	.addr	_nmi_main
-.else
-	.addr	_nsd_main		;0C	Sound driver main routine address
-.endif
+;.else
+;	.addr	_nsd_main		;0C	Sound driver main routine address
+;.endif
 	.res	32,	$0
 	.res	32,	$0
 	.res	32,	$0
 	.word	$411A			;6E	60Hz
 .ifdef	DPCMBank
-	.byte	2,3,4,5,6,7,0,1		;70	bank	(nsc.exe で検出して、bank対応か調べる。)
+ .ifdef	ExRAM
+	.byte	3,4,5,6,7,8,0,1		;70	bank	(nsc.exe で検出して、bank対応か調べる。)
+ .else
+	.byte	3,4,5,6,0,0,0,1		;70	
+ .endif
 .else
 	.byte	0,0,0,0,0,0,0,0		;70	bank
 .endif
@@ -105,8 +110,8 @@ _eff:	.byte	0		;SE start number
 ; ------------------------------------------------------------------------
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
-DRV_Version:	.byte	1
-		.byte	10
+DRV_Version:	.byte	$01
+		.byte	$0b
 
 ; ------------------------------------------------------------------------
 ; 	実機ROM用	IRQ	(DPCM)
@@ -136,85 +141,83 @@ DRV_Version:	.byte	1
 ; ------------------------------------------------------------------------
 ; 	実機ROM用	NMI	(Vblank)
 ; ------------------------------------------------------------------------
-.ifdef	DPCMBank
 .segment	"STARTUP"
 .proc	_nmi_main
 
 	pha			;register push
+
+	inc	_play
+	lda	_play
+	cmp	#1
+	bne	@exit		;演奏中だったら終わり。
+
 	tya
 	pha
 	txa
 	pha
-
+@loop:
 	jsr	_nsd_main
+	dec	_play
+	bne	@loop		;frame over?
 
-	pla			;register pop
+	pla
 	tax
 	pla
 	tay
-	pla
+
+@exit:
+
+	pla			;register pop
 
 	rts
 .endproc
 
+; ------------------------------------------------------------------------
+; 	Init for TNS-HFC Series
+; ------------------------------------------------------------------------
+.segment	"STARTUP"
+.ifdef	DPCMBank
+.proc	_nsf_init2
+
+	sei
+
+	;Bank change (CODE)
+	lda	#$01
+	sta	$5FFF		;リセット連打によるハング防止
+
+	jmp	$0103
+
+.endproc
 .endif
+
 ; ------------------------------------------------------------------------
 ; 	Init
 ; ------------------------------------------------------------------------
-.segment	"STARTUP"
 .proc	_nsf_init
 
-	cli
-
+	sei
 	pha
 
-	jsr	_zero_mem
+	lda	#nsd_flag::BGM + nsd_flag::SE
+	sta	__flag		;BGM, SE処理を禁止（RAM未初期化対策）
 
-	jsr	_init
-
-	pla
-	jmp	_play_music
-
-;	rts
-.endproc
-
-; ------------------------------------------------------------------------
-; 	Zero memory
-; ------------------------------------------------------------------------
-.segment	"STARTUP"
-.proc	_zero_mem
-
-	lda	#0
-	ldx	#0
-
-@L:
-	sta	$0000,x	;Stackはクリアしない。
-	sta	$0200,x
-	sta	$0300,x
-	sta	$0400,x
-	sta	$0500,x
-	sta	$0600,x
-	sta	$0700,x
-	inx
-	bne	@L
-
-	;コピー
 .ifdef	DPCMBank
+
+	;まず、JMP命令を書き込み
+	lda	#$4C
+	sta	$0100
+	sta	$0103
 
 	;Bank change (CODE)
 	lda	#$01
 	sta	$5FFF
 
 	;TNS-HFCシリーズが書き換えたVECTORのコピー
-	lda	#$4C		;JMP
-	sta	$0100
 	lda	$FFFA
 	sta	$0101
 	lda	$FFFB
 	sta	$0102
 
-	lda	#$4C		;JMP
-	sta	$0103
 	lda	$FFFC
 	sta	$0104
 	lda	$FFFD
@@ -224,12 +227,17 @@ DRV_Version:	.byte	1
 	lda	#$02
 	sta	$5FFF
 
-	;Bank change (MUS)
-	lda	#$03
-	sta	$5FF8
-	lda	#$04
-	sta	$5FF9
+.endif
 
+.ifdef	ExRAM
+
+	;Bank change (MUS)
+	ldx	#$03
+	stx	$5FF8
+	inx
+	stx	$5FF9
+
+	;コピー
 	;Copy bank
 	ldx	#0
 Loop:
@@ -303,18 +311,44 @@ Loop:
 	jne	Loop
 
 	;Bank change
-	lda	#5
-	sta	$5FF8
-	lda	#6
-	sta	$5FF9
-	lda	#7
-	sta	$5FFA
-	lda	#8
-	sta	$5FFB
+	ldx	#5
+	stx	$5FF8
+	inx
+	stx	$5FF9
+	inx
+	stx	$5FFA
+	inx
+	stx	$5FFB
 
 .endif
 
-	rts
+	lda	#0
+	ldx	#0
+@L:
+	sta	$0000,x	;Stackはクリアしない。
+	sta	$0200,x
+	sta	$0300,x
+	sta	$0400,x
+	sta	$0500,x
+	sta	$0600,x
+	sta	$0700,x
+	inx
+	bne	@L
+
+	sta	_play		;フレームオーバー防止用変数
+
+	jsr	_init
+
+.ifdef	DPCMBank
+
+	cli
+
+.endif
+
+	pla
+	jmp	_play_music
+
+;	rts
 .endproc
 
 ; ------------------------------------------------------------------------
@@ -328,8 +362,13 @@ Loop:
 .ifdef	DPCMBank
 	lda	#$00
 	sta	__ptr
-	lda	#$60
+ .ifdef	ExRAM
+	lda	#$60	;拡張RAMにシーケンスを転送する場合。
+ .else
+	lda	#$80	;拡張RAMにシーケンスを転送しない場合。
+ .endif
 	sta	__ptr+1		;__ptr = __ROM0_START__
+
 .else
 	lda	#<(__ROM0_LAST__)
 	sta	__ptr
@@ -363,7 +402,11 @@ Loop:
 .ifdef	DPCMBank
 	lda	#$00
 	sta	__ptr
-	lda	#$60
+ .ifdef	ExRAM
+	lda	#$60	;拡張RAMにシーケンスを転送する場合。
+ .else
+	lda	#$80	;拡張RAMにシーケンスを転送しない場合。
+ .endif
 	sta	__ptr+1		;__ptr = __ROM0_START__
 .else
 	lda	#<(__ROM0_LAST__)
@@ -392,18 +435,6 @@ Loop:
 @L:	jmp	_nsd_play_se
 .endproc
 
-
-; ------------------------------------------------------------------------
-; 	NSF用
-; ------------------------------------------------------------------------
-.segment	"STARTUP"
-.proc	_nsf_main
-
-;	jmp	_nsd_main
-
-.endproc
-
-
 ; ------------------------------------------------------------------------
 ; 	Hardware vectors
 ; ------------------------------------------------------------------------
@@ -413,6 +444,6 @@ Loop:
 ;	.word	_nmi_main	; $fffa vblank nmi
 	.word	$0100		
 ;	.word	_nsf_init	; $fffc reset
-	.word	$0103		
+	.word	_nsf_init2	
 	.word	_irq_main	; $fffe irq / brk
 .endif

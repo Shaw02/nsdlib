@@ -137,6 +137,7 @@ Loop_End:
 	sta	__detune_fine,x
 	sta	__por_target,x
 	sta	__trans,x
+	sta	__trans_one,x
 	sta	__subroutine,x
 	sta	__subroutine + 1,x
 

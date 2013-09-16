@@ -32,30 +32,37 @@
 ;=======================================================================
 .proc	_nsd_irq: near
 
-;	lda	__flag
-;	ora	#nsd_flag::Disable
-;	sta	__flag
+Start:
 
 	;DPCM IEQ check
+DPCM_CHK:
 	lda	APU_CHANCTRL
-	bpl	DPCM_Exit
+	bpl	DPCM_END
 
-	lda	#$0F
+	and	#$7F
 	sta	APU_CHANCTRL
+
+	and	#%00010000		;カウンタが残っていた場合。
+	beq	DPCM_IRQ
+DPCM_END:
+
+Exit:
+	rts
+
+DPCM_IRQ:
+	lda	#$10			
+	sta	APU_MODCTRL		;End of IRQ の発行
 
 	;next DPCM
 	ldx	#nsd::TR_BGM5
-	jsr	_nsd_dpcm_calc
+	jsr	_nsd_dpcm_calc		;現在の構造体から取得
 
 	;次に発音するノート番号
 	ldy	#5
 	lda	(__ptr),y
 	sta	__note,x
 
-	;key on
-;	jsr	_nsd_snd_keyon
-
-	jsr	_nsd_dpcm_calc
+	jsr	_nsd_dpcm_calc		;これから発音する構造体から取得
 
 	;bank number
 	ldy	#4
@@ -84,16 +91,8 @@
 	lda	#$1F
 	sta	APU_CHANCTRL
 
-DPCM_Exit:
+	bne	Start
 
-	;-------------------------------
-	;Exit
-
-;	lda	__flag
-;	and	#~nsd_flag::Disable
-;	sta	__flag
-
-	rts
 .endproc
 
 ;=======================================================================

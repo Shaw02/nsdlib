@@ -21,6 +21,10 @@
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
+.if	.defined(VRC7) || .defined(OPLL)
+	.export		_Wait42
+.endif
+
 	.include	"nes.inc"
 	.include	"nsd.inc"
 
@@ -78,6 +82,9 @@
 	sta	VRC6_Pulse1_CTRL
 	sta	VRC6_Pulse2_CTRL
 	sta	VRC6_SAW_CTRL
+	sta	VRC6_Pulse1_CTUNE
+	sta	VRC6_Pulse2_CTUNE
+	sta	VRC6_SAW_CTUNE
 .endif
 
 .ifdef	FDS
@@ -100,8 +107,8 @@
 	lda	#$10
 	sta	APU_MODCTRL		; Delta Modulation Control Register (W)
 
-;	lda	#$80
-;	sta	APU_PAD2		; SOFTCLK (RW)
+	lda	#$80
+	sta	APU_PAD2		; SOFTCLK (RW)
 
 .ifdef	N163
 ;	lda	#$20
@@ -365,76 +372,68 @@ _nsd_vrc7_keyon_exit:
 .ifdef	OPLL
 
 .proc	_nsd_opll_BD_keyon
-	lda	__opll_ryhthm
-	ora	#$10
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#$10
+	bne	_nsd_opll_rhythm_set_or
 .endproc
 
 .proc	_nsd_opll_SD_keyon
-	lda	__opll_ryhthm
-	ora	#$08
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#$08
+	bne	_nsd_opll_rhythm_set_or
 .endproc
 
 .proc	_nsd_opll_HH_keyon
-	lda	__opll_ryhthm
-	ora	#$01
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#$01
+	bne	_nsd_opll_rhythm_set_or
 .endproc
 
 .proc	_nsd_opll_Cym_keyon
-	lda	__opll_ryhthm
-	ora	#$02
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#$02
+	bne	_nsd_opll_rhythm_set_or
 .endproc
 
 .proc	_nsd_opll_Tom_keyon
-	lda	__opll_ryhthm
-	ora	#$04
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#$04
+;	bne	_nsd_opll_rhythm_set_or
+.endproc
+
+.proc	_nsd_opll_rhythm_set_or
+	ora	__opll_ryhthm
+	bne	_nsd_opll_rhythm_set		;※必ず1以上
 .endproc
 
 .proc	_nsd_opll_BD_keyoff
-	lda	__opll_ryhthm
-	and	#~$10
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#~$10
+	bne	_nsd_opll_rhythm_set_and
 .endproc
 
 .proc	_nsd_opll_SD_keyoff
-	lda	__opll_ryhthm
-	and	#~$08
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#~$08
+	bne	_nsd_opll_rhythm_set_and
 .endproc
 
 .proc	_nsd_opll_HH_keyoff
-	lda	__opll_ryhthm
-	and	#~$01
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#~$01
+	bne	_nsd_opll_rhythm_set_and
 .endproc
 
 .proc	_nsd_opll_Cym_keyoff
-	lda	__opll_ryhthm
-	and	#~$02
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#~$02
+	bne	_nsd_opll_rhythm_set_and
 .endproc
 
 .proc	_nsd_opll_Tom_keyoff
-	lda	__opll_ryhthm
-	and	#~$04
-	sta	__opll_ryhthm
-	jmp	_nsd_opll_rhythm_set
+	lda	#~$04
+;	bne	_nsd_opll_rhythm_set_and
+.endproc
+
+.proc	_nsd_opll_rhythm_set_and
+	and	__opll_ryhthm
+;	jmp	_nsd_opll_rhythm_set
 .endproc
 
 .proc	_nsd_opll_rhythm_set
+	sta	__opll_ryhthm
+
 	;OPLL_Rhythm check
 	ldy	__opll_ryhthm
 	cpy	#$20
@@ -570,9 +569,9 @@ _nsd_vrc7_keyoff:
 	add	#VRC7_Octave		;[2]
 	sta	VRC7_Resister		;レジスターをセット
 
-	lda	__vrc7_frequency,y	;[5]
+	lda	__vrc7_freq_old,y	;[5]
 	and	#$EF			;[2]
-	sta	__vrc7_frequency,y	;[5]
+	sta	__vrc7_freq_old,y	;[5]
 	sta	VRC7_Data		;
 
 	rts				;[6]
@@ -590,21 +589,21 @@ _nsd_OPLL_keyoff_R:
 _nsd_OPLL_keyoff:
 
 	;取りあえず、必ずKeyOffする。
-	lda	__chflag,x
-	and	#~nsd_chflag::KeyOn
-	sta	__chflag,x
+	lda	__chflag,x		;[4]4
+	and	#~nsd_chflag::KeyOn	;[2]6
+	sta	__chflag,x		;[4]10
 
 	;書かれない可能性があるので、ここでレジスタに書く。
-	txa
-	sub	#nsd::TR_OPLL
-	shr	a, 1
-	tay
-	add	#OPLL_Octave
+	txa				;[2]12
+	sub	#nsd::TR_OPLL		;[]
+	shr	a, 1			;[2]
+	tay				;[2]
+	add	#OPLL_Octave		;[2]
 	sta	OPLL_Resister		;レジスターをセット
 
-	lda	__opll_frequency,y	;[5]
+	lda	__opll_freq_old,y	;[5]
 	and	#$EF			;[2]
-	sta	__opll_frequency,y	;[5]
+	sta	__opll_freq_old,y	;[5]
 	sta	OPLL_Data		;
 
 _nsd_OPLL_keyoff_exit:
@@ -807,7 +806,11 @@ _nes_vrc7_voice:
 	asl	a
 	bcs	@TL
 	pha
+	and	#%11110111	;Reset D
+	ora	#%00000100	;Set   I
+	pha
 	plp
+	pla
 	bpl	@Voice
 	bvs	@MLC
 
@@ -881,7 +884,11 @@ _nes_opll_voice:
 	asl	a
 	bcs	@TL
 	pha
+	and	#%11110111	;Reset D
+	ora	#%00000100	;Set   I
+	pha
 	plp
+	pla
 	bpl	@Voice
 	bvs	@MLC
 
@@ -953,49 +960,49 @@ _nsd_n163_ch2_voice:
 	cpy	#$10
 	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 1)
-	jmp	_nsd_n163_ch1_voice_set
+	bne	_nsd_n163_ch1_voice_set
 
 _nsd_n163_ch3_voice:
 	ldy	__n163_num
 	cpy	#$20
 	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 2)
-	jmp	_nsd_n163_ch1_voice_set
+	bne	_nsd_n163_ch1_voice_set
 
 _nsd_n163_ch4_voice:
 	ldy	__n163_num
 	cpy	#$30
 	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 3)
-	jmp	_nsd_n163_ch1_voice_set
+	bne	_nsd_n163_ch1_voice_set
 
 _nsd_n163_ch5_voice:
 	ldy	__n163_num
 	cpy	#$40
 	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 4)
-	jmp	_nsd_n163_ch1_voice_set
+	bne	_nsd_n163_ch1_voice_set
 
 _nsd_n163_ch6_voice:
 	ldy	__n163_num
 	cpy	#$50
 	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 5)
-	jmp	_nsd_n163_ch1_voice_set
+	bne	_nsd_n163_ch1_voice_set
 
 _nsd_n163_ch7_voice:
 	ldy	__n163_num
 	cpy	#$60
 	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 6)
-	jmp	_nsd_n163_ch1_voice_set
+	bne	_nsd_n163_ch1_voice_set
 
 _nsd_n163_ch8_voice:
 	ldy	__n163_num
 	cpy	#$70
 	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
 	ldy	#N163_Waveform - (8 * 7)
-	jmp	_nsd_n163_ch1_voice_set
+	bne	_nsd_n163_ch1_voice_set
 
 .endif
 
@@ -1327,43 +1334,44 @@ _nsd_vrc6_ch3_volume:
 _nsd_vrc7_volume:
 
 	eor	#$FF			;[2]2
-	tay				;[2]4
+	and	#$0F			;[2]4
+	sta	__tmp			;[3]7
 
 	;チャンネルの計算
-	txa				;[2]6
-	sub	#nsd::TR_VRC7		;[]
-	shr	a, 1			;[2]
-	pha
+	txa				;[2]9
+	sub	#nsd::TR_VRC7		;[3]12
+	shr	a, 1			;[2]14
+	tay				;[2]16
 
 	;音量・音色番号書き込み
-	add	#VRC7_Volume		;[2]
+	add	#VRC7_Volume		;[4]20
 	sta	VRC7_Resister		;●Resister Write
-
-	tya				;[2]
-	and	#$0F			;[2]4
-	ora	__voice_set,x		;[4]8
+	lda	__tmp			;[3]
+	ora	__voice_set,x		;[4]
 	sta	VRC7_Data		;●Data Write
 
 	;周波数 下位byte 書き込み
-	pla				;[4]4	a ← VRC7でのチャンネル番号
-	tay				;[2]6
 
-	lda	__chflag,x		;[4]10
-	and	#$30			;[2]12	 00XX 0000 <2>
-	ora	__vrc7_frequency,y	;[4]16	flag と octave をマージ
-	sta	__vrc7_frequency,y	;[5]21
+	lda	__chflag,x		;[4]4
+	and	#$30			;[2]6	 00XX 0000 <2>
+	ora	__vrc7_frequency,y	;[4]10	flag と octave をマージ
+	cmp	__vrc7_freq_old,y	;[4]14
+	beq	@freq_exit		;[2]16
+	sta	__vrc7_freq_old,y	;[5]21
 
 	lda	(__ptr),y		;[5]26
 	lda	(__ptr),y		;[5]31
 	lda	(__ptr),y		;[5]36
 
 	tya				;[2]38
-	add	#VRC7_Octave		;[4]42 clock !! (VRC7のwait)
+	add	#VRC7_Octave		;[4]42 > 42 clock !! (VRC7のwait)
 
 	sta	VRC7_Resister		;●Resister Write
 	tya				;[2]
-	lda	__vrc7_frequency,y	;[4]6 clock
+	lda	__vrc7_freq_old,y	;[4]6 clock
 	sta	VRC7_Data		;●Data Write
+
+@freq_exit:
 
 	rts				;[6]
 
@@ -1381,96 +1389,84 @@ _nsd_OPLL_volume_R:
 _nsd_OPLL_volume:
 
 	eor	#$FF			;[2]2
-	tay				;[2]4
+	and	#$0F			;[2]4
+	sta	__tmp			;[3]7
 
 	;チャンネルの計算
-	txa				;[2]
-	sub	#nsd::TR_OPLL		
-	shr	a, 1			;[2]
-	pha
+	txa				;[2]9
+	sub	#nsd::TR_OPLL		;[3]12
+	shr	a, 1			;[2]14
+	tay				;[2]16
 
 	;音量・音色番号書き込み
-	add	#OPLL_Volume		;[2]
+	add	#OPLL_Volume		;[4]20
 	sta	OPLL_Resister		;●Resister Write
-
-	tya				;[2]
-	and	#$0F			;[2]4
-	ora	__voice_set,x		;[4]8
+	lda	__tmp			;[3]
+	ora	__voice_set,x		;[4]
 	sta	OPLL_Data		;●Data Write
 
 	;周波数 下位byte 書き込み
-	pla				;[4]4	a ← VRC7でのチャンネル番号
-	tay				;[2]6
 
-	lda	__chflag,x		;[4]10
-	and	#$30			;[2]12	 00XX 0000 <2>
-	ora	__opll_frequency,y	;[4]16	flag と octave をマージ
-	sta	__opll_frequency,y	;[5]21
+	lda	__chflag,x		;[4]4
+	and	#$30			;[2]6	 00XX 0000 <2>
+	ora	__opll_frequency,y	;[4]10	flag と octave をマージ
+	cmp	__opll_freq_old,y	;[4]14
+	beq	@freq_exit		;[2]16
+	sta	__opll_freq_old,y	;[5]21
 
 	lda	(__ptr),y		;[5]26
 	lda	(__ptr),y		;[5]31
 	lda	(__ptr),y		;[5]36
 
 	tya				;[2]38
-	add	#OPLL_Octave		;[4]42 clock !! (VRC7のwait)
+	add	#OPLL_Octave		;[4]42 > 42 clock !! (OPLLのwait)
 
 	sta	OPLL_Resister		;●Resister Write
 	tya				;[2]
-	lda	__opll_frequency,y	;[4]6 clock
+	lda	__opll_freq_old,y	;[4]6 clock
 	sta	OPLL_Data		;●Data Write
 
+@freq_exit:
+
 _nsd_OPLL_volume_exit:
+
 	rts
 
 ;---------------------------------------
 _nsd_opll_BD_volume:
-	;OPLL_Rhythm check
-	lda	__opll_ryhthm
-	cmp	#$20
-	bcc	@Exit
-
-	ldy	#OPLL_BD
-	sty	OPLL_Resister
+	lda	#$0F
+	sta	__tmp
 	lda	__volume + nsd::TR_OPLL + 18
-	eor	#$FF
-	and	#$0F
-	sta	OPLL_Data
-@Exit:
-	rts
+	sta	__tmp + 1
+	ldy	#OPLL_BD
+	bne	_nsd_opll_DR_volume
 
-;---------------------------------------
 _nsd_opll_SD_HH_volume:
-	;OPLL_Rhythm check
-	lda	__opll_ryhthm
-	cmp	#$20
-	bcc	@Exit
-
-	ldy	#OPLL_HH_SD
-	sty	OPLL_Resister
 	lda	__volume + nsd::TR_OPLL + 22
-	shl	a, 4
 	sta	__tmp
 	lda	__volume + nsd::TR_OPLL + 20
-	and	#$0F
-	ora	__tmp
-	eor	#$FF
-	sta	OPLL_Data
-@Exit:
-	rts
+	sta	__tmp + 1
+	ldy	#OPLL_HH_SD
+	bne	_nsd_opll_DR_volume
 
-;---------------------------------------
 _nsd_opll_Cym_Tom_volume:
-	;OPLL_Rhythm check
+	lda	__volume + nsd::TR_OPLL + 26
+	sta	__tmp
+	lda	__volume + nsd::TR_OPLL + 24
+	sta	__tmp + 1
+	ldy	#OPLL_TOM_CYM
+;	bne	_nsd_opll_DR_volume
+
+_nsd_opll_DR_volume:
 	lda	__opll_ryhthm
 	cmp	#$20
 	bcc	@Exit
 
-	ldy	#OPLL_TOM_CYM
 	sty	OPLL_Resister
-	lda	__volume + nsd::TR_OPLL + 26
+	lda	__tmp
 	shl	a, 4
 	sta	__tmp
-	lda	__volume + nsd::TR_OPLL + 24
+	lda	__tmp + 1
 	and	#$0F
 	ora	__tmp
 	eor	#$FF
@@ -1551,7 +1547,7 @@ _nsd_n163_ch3_volume:
 	cpy	#$20
 	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
 	ldy	#N163_Volume - (8 * 2)
-	jmp	_nsd_n163_ch1_volume_Set
+	bne	_nsd_n163_ch1_volume_Set
 
 ;---------------------------------------
 _nsd_n163_ch4_volume:
@@ -1559,7 +1555,7 @@ _nsd_n163_ch4_volume:
 	cpy	#$30
 	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
 	ldy	#N163_Volume - (8 * 3)
-	jmp	_nsd_n163_ch1_volume_Set
+	bne	_nsd_n163_ch1_volume_Set
 
 ;---------------------------------------
 _nsd_n163_ch5_volume:
@@ -1567,7 +1563,7 @@ _nsd_n163_ch5_volume:
 	cpy	#$40
 	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
 	ldy	#N163_Volume - (8 * 4)
-	jmp	_nsd_n163_ch1_volume_Set
+	bne	_nsd_n163_ch1_volume_Set
 
 ;---------------------------------------
 _nsd_n163_ch6_volume:
@@ -1575,7 +1571,7 @@ _nsd_n163_ch6_volume:
 	cpy	#$50
 	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
 	ldy	#N163_Volume - (8 * 5)
-	jmp	_nsd_n163_ch1_volume_Set
+	bne	_nsd_n163_ch1_volume_Set
 
 ;---------------------------------------
 _nsd_n163_ch7_volume:
@@ -1583,7 +1579,7 @@ _nsd_n163_ch7_volume:
 	cpy	#$60
 	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
 	ldy	#N163_Volume - (8 * 6)
-	jmp	_nsd_n163_ch1_volume_Set
+	bne	_nsd_n163_ch1_volume_Set
 
 ;---------------------------------------
 _nsd_n163_ch8_volume:
@@ -1591,7 +1587,7 @@ _nsd_n163_ch8_volume:
 	cpy	#$70
 	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
 	ldy	#N163_Volume - (8 * 7)
-	jmp	_nsd_n163_ch1_volume_Set
+	bne	_nsd_n163_ch1_volume_Set
 
 .endif
 
@@ -1613,12 +1609,12 @@ _nsd_psg_set_volume:
 _nsd_psg_ch2_volume:
 	ldy	#PSG_2_Volume
 	sty	PSG_Register
-	jmp	_nsd_psg_set_volume
+	bne	_nsd_psg_set_volume
 
 _nsd_psg_ch3_volume:
 	ldy	#PSG_3_Volume
 	sty	PSG_Register
-	jmp	_nsd_psg_set_volume
+	bne	_nsd_psg_set_volume
 
 .endif
 
@@ -1780,58 +1776,53 @@ L01:
 	ldy	#$16
 	sty	OPLL_Resister
 	lda	#$20
-	tay
-	ldy	#10
+	nop
+	nop
 	sta	OPLL_Data
-@L:	dey
-	bne	@L
+	jsr	_Wait42
 
 L02:
 	ldy	#$17
 	sty	OPLL_Resister
 	lda	#$50
-	tay
-	ldy	#10
+	nop
+	nop
 	sta	OPLL_Data
-@L:	dey
-	bne	@L
+	jsr	_Wait42
 
 L03:
 	ldy	#$18
 	sty	OPLL_Resister
 	lda	#$C0
-	tay
-	ldy	#10
+	nop
+	nop
 	sta	OPLL_Data
-@L:	dey
-	bne	@L
+	jsr	_Wait42
 
 L04:
 	ldy	#$26
 	sty	OPLL_Resister
 	lda	#$05
-	tay
-	ldy	#10
+	nop
+	nop
 	sta	OPLL_Data
-@L:	dey
-	bne	@L
+	jsr	_Wait42
 
 L05:
 	ldy	#$27
 	sty	OPLL_Resister
 	lda	#$05
-	tay
-	ldy	#10
+	nop
+	nop
 	sta	OPLL_Data
-@L:	dey
-	bne	@L
+	jsr	_Wait42
 
 L06:
 	ldy	#$28
 	sty	OPLL_Resister
 	lda	#$01
-	tay
-	tay
+	nop
+	nop
 	sta	OPLL_Data
 
 Exit:
@@ -2495,6 +2486,7 @@ Freq_N163_50:
 .code
 
 .proc	_nsd_snd_frequency
+
 .rodata
 
 JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
@@ -3141,208 +3133,115 @@ Exit:
 .proc	_nsd_n163_ch1_frequency
 
 	jsr	N163_frequency
-
-	lda	#N163_Frequency_Low - (8 * 0)
-	sta	N163_Resister
-	lda	__tmp
-	sta	N163_Data
-
-	lda	#N163_Frequency_Middle - (8 * 0)
-	sta	N163_Resister
-	lda	__tmp + 1
-	sta	N163_Data
-
-	lda	#N163_Frequency_High - (8 * 0)
-	sta	N163_Resister
-	lda	__ptr
-	ora	__n163_frequency + 0
-	sta	N163_Data
-Exit:
-	rts
+	ldy	#N163_Frequency_Low - (8 * 0)
+	bne	_nsd_n163_frequency
 .endproc
 
 .proc	_nsd_n163_ch2_frequency
 	ldy	__n163_num
 	cpy	#$10
-	bcc	Exit			;1未満だったら終了
+	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
 	jsr	N163_frequency
 
-	lda	#N163_Frequency_Low - (8 * 1)
-	sta	N163_Resister
-	lda	__tmp
-	sta	N163_Data
-
-	lda	#N163_Frequency_Middle - (8 * 1)
-	sta	N163_Resister
-	lda	__tmp + 1
-	sta	N163_Data
-
-	lda	#N163_Frequency_High - (8 * 1)
-	sta	N163_Resister
-	lda	__ptr
-	ora	__n163_frequency + 1
-	sta	N163_Data
-Exit:
-	rts
+	ldy	#N163_Frequency_Low - (8 * 1)
+	bne	_nsd_n163_frequency
 .endproc
 
 .proc	_nsd_n163_ch3_frequency
 	ldy	__n163_num
 	cpy	#$20
-	bcc	Exit			;1未満だったら終了
+	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
 	jsr	N163_frequency
 
-	lda	#N163_Frequency_Low - (8 * 2)
-	sta	N163_Resister
-	lda	__tmp
-	sta	N163_Data
-
-	lda	#N163_Frequency_Middle - (8 * 2)
-	sta	N163_Resister
-	lda	__tmp + 1
-	sta	N163_Data
-
-	lda	#N163_Frequency_High - (8 * 2)
-	sta	N163_Resister
-	lda	__ptr
-	ora	__n163_frequency + 2
-	sta	N163_Data
-Exit:
-	rts
+	ldy	#N163_Frequency_Low - (8 * 2)
+	bne	_nsd_n163_frequency
 .endproc
 
 .proc	_nsd_n163_ch4_frequency
 	ldy	__n163_num
 	cpy	#$30
-	bcc	Exit			;1未満だったら終了
+	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
 	jsr	N163_frequency
 
-	lda	#N163_Frequency_Low - (8 * 3)
-	sta	N163_Resister
-	lda	__tmp
-	sta	N163_Data
-
-	lda	#N163_Frequency_Middle - (8 * 3)
-	sta	N163_Resister
-	lda	__tmp + 1
-	sta	N163_Data
-
-	lda	#N163_Frequency_High - (8 * 3)
-	sta	N163_Resister
-	lda	__ptr
-	ora	__n163_frequency + 3
-	sta	N163_Data
-Exit:
-	rts
+	ldy	#N163_Frequency_Low - (8 * 3)
+	bne	_nsd_n163_frequency
 .endproc
 
 .proc	_nsd_n163_ch5_frequency
 	ldy	__n163_num
 	cpy	#$40
-	bcc	Exit			;1未満だったら終了
+	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
 	jsr	N163_frequency
 
-	lda	#N163_Frequency_Low - (8 * 4)
-	sta	N163_Resister
-	lda	__tmp
-	sta	N163_Data
-
-	lda	#N163_Frequency_Middle - (8 * 4)
-	sta	N163_Resister
-	lda	__tmp + 1
-	sta	N163_Data
-
-	lda	#N163_Frequency_High - (8 * 4)
-	sta	N163_Resister
-	lda	__ptr
-	ora	__n163_frequency + 4
-	sta	N163_Data
-Exit:
-	rts
+	ldy	#N163_Frequency_Low - (8 * 4)
+	bne	_nsd_n163_frequency
 .endproc
 
 .proc	_nsd_n163_ch6_frequency
 	ldy	__n163_num
 	cpy	#$50
-	bcc	Exit			;1未満だったら終了
+	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
 	jsr	N163_frequency
 
-	lda	#N163_Frequency_Low - (8 * 5)
-	sta	N163_Resister
-	lda	__tmp
-	sta	N163_Data
-
-	lda	#N163_Frequency_Middle - (8 * 5)
-	sta	N163_Resister
-	lda	__tmp + 1
-	sta	N163_Data
-
-	lda	#N163_Frequency_High - (8 * 5)
-	sta	N163_Resister
-	lda	__ptr
-	ora	__n163_frequency + 5
-	sta	N163_Data
-Exit:
-	rts
+	ldy	#N163_Frequency_Low - (8 * 5)
+	bne	_nsd_n163_frequency
 .endproc
 
 .proc	_nsd_n163_ch7_frequency
 	ldy	__n163_num
 	cpy	#$60
-	bcc	Exit			;1未満だったら終了
+	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
 	jsr	N163_frequency
 
-	lda	#N163_Frequency_Low - (8 * 6)
-	sta	N163_Resister
-	lda	__tmp
-	sta	N163_Data
-
-	lda	#N163_Frequency_Middle - (8 * 6)
-	sta	N163_Resister
-	lda	__tmp + 1
-	sta	N163_Data
-
-	lda	#N163_Frequency_High - (8 * 6)
-	sta	N163_Resister
-	lda	__ptr
-	ora	__n163_frequency + 6
-	sta	N163_Data
-Exit:
-	rts
+	ldy	#N163_Frequency_Low - (8 * 6)
+	bne	_nsd_n163_frequency
 .endproc
 
 .proc	_nsd_n163_ch8_frequency
 	ldy	__n163_num
 	cpy	#$70
-	bcc	Exit			;1未満だったら終了
+	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
 	jsr	N163_frequency
 
-	lda	#N163_Frequency_Low - (8 * 7)
-	sta	N163_Resister
+	ldy	#N163_Frequency_Low - (8 * 7)
+;	bne	_nsd_n163_frequency
+.endproc
+
+.proc	_nsd_n163_frequency
+	sty	N163_Resister
 	lda	__tmp
 	sta	N163_Data
 
-	lda	#N163_Frequency_Middle - (8 * 7)
-	sta	N163_Resister
+	iny
+	iny
+	sty	N163_Resister
 	lda	__tmp + 1
 	sta	N163_Data
 
-	lda	#N163_Frequency_High - (8 * 7)
-	sta	N163_Resister
+	iny
+	iny
+	sty	N163_Resister
+
+	txa
+	sub	#nsd::TR_N163
+	shr	a, 1
+	tay
+
 	lda	__ptr
-	ora	__n163_frequency + 7
+	ora	__n163_frequency,y
 	sta	N163_Data
-Exit:
-	rts
 .endproc
 
+.proc	_nsd_n163_frequency_Exit
+	rts
+.endproc
 
 .endif
 
@@ -3351,34 +3250,22 @@ Exit:
 .proc	_nsd_psg_ch1_frequency
 	jsr	Normal12_frequency
 	ldy	#PSG_1_Frequency_Low
-	sty	PSG_Register
-	lda	__tmp
-	sta	PSG_Data
-	iny
-	sty	PSG_Register
-	lda	__tmp + 1
-	sta	PSG_Data
-Exit:
-	rts
+	beq	_nsd_psg_frequency	;これは、0
 .endproc
 
 .proc	_nsd_psg_ch2_frequency
 	jsr	Normal12_frequency
 	ldy	#PSG_2_Frequency_Low
-	sty	PSG_Register
-	lda	__tmp
-	sta	PSG_Data
-	iny
-	sty	PSG_Register
-	lda	__tmp + 1
-	sta	PSG_Data
-Exit:
-	rts
+	bne	_nsd_psg_frequency
 .endproc
 
 .proc	_nsd_psg_ch3_frequency
 	jsr	Normal12_frequency
 	ldy	#PSG_3_Frequency_Low
+;	bne	_nsd_psg_frequency
+.endproc
+
+.proc	_nsd_psg_frequency
 	sty	PSG_Register
 	lda	__tmp
 	sta	PSG_Data
@@ -3614,3 +3501,18 @@ Exit:
 .endproc
 .endif
 
+.if	.defined(VRC7) || .defined(OPLL)
+.proc	_Wait42
+				;[6]
+
+	pha			;[4]
+	pla			;[4]
+	pha			;[4]
+	pla			;[4]
+	pha			;[4]
+	pla			;[4]	24
+
+	rts			;[6]	14+24	=38
+
+.endproc
+.endif

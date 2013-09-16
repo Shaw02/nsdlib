@@ -28,14 +28,25 @@
 <h3>’è‹`iDefinej</h3>
 <code><pre>
         Scale(<var>mode</var>)
+        Mode(<var>mode</var>)
+        HMinor(<var>hmode</var>)
+        MMinor(<var>mmode</var>)
 </pre></code>
+
+<code><pre>
+        Major
+        Minor
+        HMinor
+        MMinor
+</pre></code>
+
 </div>
 
 <!-- „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ -->
 <div class='block'>
 <h3>ˆø”iInputsj</h3>
 
-<h4>mode</h4>
+<h4>mode, mmode, hmode</h4>
 <p>
 ƒXƒP[ƒ‹‚ğw’è‚µ‚Ü‚·B<br>
 </p>
@@ -50,6 +61,7 @@
 	<th><var>mode</var></th>
 	<th colspan='7'>Scale</th>
 	<th>Scale when Key = C</th>
+	<th>”õl</th>
 </tr>
 <tr><th>Ionian	i’·‰¹ŠKj</th>
 	<td>0	</td>
@@ -61,6 +73,7 @@
 	<td>‡Y</td>
 	<td>‡Z</td>
 	<td>c d e f g a b	</td>
+	<td>Major ƒRƒ}ƒ“ƒhw’è</td>
 </tr>
 <tr><th>Dorian</th>
 	<td>1	</td>
@@ -72,6 +85,7 @@
 	<td>‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d e-f g a b-	</td>
+	<td></td>
 </tr>
 <tr><th>Phrygian</th>
 	<td>2	</td>
@@ -83,6 +97,7 @@
 	<td>ó‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d-e-f g a-b-	</td>
+	<td></td>
 </tr>
 <tr><th>Lydian</th>
 	<td>3	</td>
@@ -94,6 +109,7 @@
 	<td>‡Y</td>
 	<td>‡Z</td>
 	<td>c d e f+g a b	</td>
+	<td></td>
 </tr>
 <tr><th>Mixo-Lydian</th>
 	<td>4	</td>
@@ -105,6 +121,7 @@
 	<td>‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d e f g a b-	</td>
+	<td></td>
 </tr>
 <tr><th>Aeolian	i©‘R’Z‰¹ŠKj</th>
 	<td>5	</td>
@@ -116,6 +133,7 @@
 	<td>ó‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d e-f g a-b-	</td>
+	<td>Minor ƒRƒ}ƒ“ƒhw’è</td>
 </tr>
 <tr><th>Locrian</th>
 	<td>6	</td>
@@ -127,6 +145,7 @@
 	<td>ó‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d-e-f g-a-b-	</td>
+	<td></td>
 </tr>
 <tr><th>Pentatonic minor blues</th>
 	<td>7	</td>
@@ -138,6 +157,7 @@
 	<td>”‡Y</td>
 	<td>‡Z	</td>
 	<td>c d+e+f+g a+b		</td>
+	<td></td>
 </tr>
 </table>
 <br>
@@ -146,11 +166,14 @@
 <caption>˜aº“I‰¹ŠK</caption>
 <tr><th>Scale name</th>
 	<th><var>mode</var></th>
+	<th><var>hmode</var></th>
 	<th colspan='7'>Scale</th>
 	<th>Scale when Key = C</th>
+	<th>”õl</th>
 </tr>
 <tr><th>Harmonic minor	i˜aº“I’Z‰¹ŠKj</th>
 	<td>10	</td>
+	<td>0	</td>
 	<td>‡T</td>
 	<td>‡U</td>
 	<td>ó‡V</td>
@@ -159,9 +182,11 @@
 	<td>ó‡Y</td>
 	<td>‡Z</td>
 	<td>c d e-f g a-b	</td>
+	<td>HMinor ƒRƒ}ƒ“ƒh‚É‚ÄAˆø”–³‚µ</td>
 </tr>
 <tr><th>Locrian natural13</th>
 	<td>11	</td>
+	<td>1	</td>
 	<td>‡T</td>
 	<td>ó‡U</td>
 	<td>ó‡V</td>
@@ -170,9 +195,11 @@
 	<td>‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d-e-f g-a b-	</td>
+	<td>	</td>
 </tr>
 <tr><th>Ionian ”5</th>
 	<td>12	</td>
+	<td>2	</td>
 	<td>‡T</td>
 	<td>‡U</td>
 	<td>‡V</td>
@@ -181,9 +208,11 @@
 	<td>‡Y</td>
 	<td>‡Z</td>
 	<td>c d e f g+a b	</td>
+	<td>	</td>
 </tr>
 <tr><th>Dorian ”11</th>
 	<td>13	</td>
+	<td>3	</td>
 	<td>‡T</td>
 	<td>‡U</td>
 	<td>ó‡V</td>
@@ -192,9 +221,11 @@
 	<td>‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d e-f g a b-	</td>
+	<td>	</td>
 </tr>
 <tr><th>Harmonic minor perfect 5th below</th>
 	<td>14	</td>
+	<td>4	</td>
 	<td>‡T</td>
 	<td>ó‡U</td>
 	<td>‡V</td>
@@ -203,9 +234,11 @@
 	<td>ó‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d-e f g a-b-	</td>
+	<td>	</td>
 </tr>
 <tr><th>Lydian ”9</th>
 	<td>15	</td>
+	<td>5	</td>
 	<td>‡T</td>
 	<td>”‡U</td>
 	<td>‡V</td>
@@ -214,9 +247,11 @@
 	<td>‡Y</td>
 	<td>‡Z</td>
 	<td>c d+e f+g a b	</td>
+	<td>	</td>
 </tr>
 <tr><th>Altered ó7</th>
 	<td>16	</td>
+	<td>6	</td>
 	<td>‡T</td>
 	<td>ó‡U</td>
 	<td>ó‡V</td>
@@ -225,6 +260,7 @@
 	<td>ó‡Y</td>
 	<td>óó‡Z</td>
 	<td>c d-e-f-g-a-b--	</td>
+	<td>	</td>
 </tr>
 </table>
 <br>
@@ -233,11 +269,14 @@
 <caption>ù—¥“I‰¹ŠK</caption>
 <tr><th>Scale name</th>
 	<th><var>mode</var></th>
+	<th><var>mmode</var></th>
 	<th colspan='7'>Scale</th>
 	<th>Scale when Key = C</th>
+	<th>”õl</th>
 </tr>
 <tr><th>Melodic minor	iù—¥“I’Z‰¹ŠKj</th>
 	<td>20	</td>
+	<td>0	</td>
 	<td>‡T</td>
 	<td>‡U</td>
 	<td>ó‡V</td>
@@ -246,9 +285,11 @@
 	<td>‡Y</td>
 	<td>‡Z</td>
 	<td>c d e-f g a b	</td>
+	<td>MMinor ƒRƒ}ƒ“ƒh‚É‚ÄAˆø”–³‚µ</td>
 </tr>
 <tr><th>Dorian ó9</th>
 	<td>21	</td>
+	<td>1	</td>
 	<td>‡T</td>
 	<td>ó‡U</td>
 	<td>ó‡V</td>
@@ -257,9 +298,11 @@
 	<td>‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d-e-f g a b-	</td>
+	<td>	</td>
 </tr>
 <tr><th>Lydian ”5<br></th>
 	<td>22	</td>
+	<td>2	</td>
 	<td>‡T</td>
 	<td>‡U</td>
 	<td>‡V</td>
@@ -268,9 +311,11 @@
 	<td>‡Y</td>
 	<td>‡Z</td>
 	<td>c d e f+g+a b	</td>
+	<td>	</td>
 </tr>
 <tr><th>Mixo-Lydian ”11 (Lydian ó7)</th>
 	<td>23	</td>
+	<td>3	</td>
 	<td>‡T</td>
 	<td>‡U</td>
 	<td>‡V</td>
@@ -279,9 +324,11 @@
 	<td>‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d e f+g a b-	</td>
+	<td>	</td>
 </tr>
 <tr><th>Mixo-Lydian ó13<br></th>
 	<td>24	</td>
+	<td>4	</td>
 	<td>‡T</td>
 	<td>‡U</td>
 	<td>‡V</td>
@@ -290,9 +337,11 @@
 	<td>ó‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d e f g a-b-	</td>
+	<td>	</td>
 </tr>
 <tr><th>Aeolian ó5 (Super Locrian)<br></th>
 	<td>25	</td>
+	<td>5	</td>
 	<td>‡T</td>
 	<td>‡U</td>
 	<td>ó‡V</td>
@@ -301,9 +350,11 @@
 	<td>ó‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d e-f g-a-b-	</td>
+	<td>	</td>
 </tr>
 <tr><th>Altered<br></th>
 	<td>26	</td>
+	<td>6	</td>
 	<td>‡T</td>
 	<td>ó‡U</td>
 	<td>ó‡V</td>
@@ -312,9 +363,11 @@
 	<td>ó‡Y</td>
 	<td>ó‡Z</td>
 	<td>c d-e-f-g-a-b-	</td>
+	<td>	</td>
 </tr>
 <tr><th>G Altered	</th>
 	<td>27	</td>
+	<td>7	</td>
 	<td>ó‡T</td>
 	<td>ó‡U</td>
 	<td>ó‡V</td>
@@ -323,6 +376,7 @@
 	<td>ó‡Y</td>
 	<td>ó‡Z</td>
 	<td>c-d-e-f g a-b-		</td>
+	<td>	</td>
 </tr>
 </table>
 <br>
@@ -373,7 +427,7 @@ Harmonic minor‚âMelodic minor‚ÍA“±‰¹i‡Z‚Ì‰¹j‚Éó‚ª•t‚©‚È‚¢‚½‚ßA
 <h3>—áiSamplej</h3>
 
 <code><pre>
-    K{g-moll}   scale(20) gab>cdefg scale(5) agfedc<a g1    <span style="color:green;">/* g-moll melodic minor scale */</span>
+    K{g-moll}   MMinor gab&gt;cdefg Minor agfedc&lt;ba g1    <span style="color:green;">/* g-moll melodic minor scale */</span>
 </pre></code>
 
 </div>

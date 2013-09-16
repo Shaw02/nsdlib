@@ -23,6 +23,10 @@ TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const wchar_t _str
 enum	Command_ID_mml {
 	mml_Track,
 	mml_Scale,
+	mml_Major,
+	mml_Minor,
+	mml_HMinor,
+	mml_MMinor,
 	mml_KeySignature,
 	mml_Macro,
 	mml_CallSE,
@@ -49,6 +53,7 @@ enum	Command_ID_mml {
 	mml_Fa,
 	mml_Sol,
 	mml_Rest,
+	mml_Wait,
 	mml_Tai,
 
 	mml_Length,
@@ -110,6 +115,17 @@ const	static	Command_Info	Command[] = {
 		{	"ƒgƒ‰ƒbƒN",	mml_Track				},
 		{	"Scale",	mml_Scale				},
 		{	"scale",	mml_Scale				},
+		{	"Mode",		mml_Scale				},
+		{	"mode",		mml_Scale				},
+		{	"Major",	mml_Major				},
+		{	"major",	mml_Major				},
+		{	"Minor",	mml_Minor				},
+		{	"minor",	mml_Minor				},
+		{	"HMinor",	mml_HMinor				},
+		{	"hminor",	mml_HMinor				},
+		{	"MMinor",	mml_MMinor				},
+		{	"mminor",	mml_MMinor				},
+
 		{	"K",		mml_KeySignature		},
 		{	"’²",		mml_KeySignature		},
 		{	"SE",		mml_CallSE				},
@@ -146,6 +162,7 @@ const	static	Command_Info	Command[] = {
 		{	"f",	mml_Fa					},
 		{	"g",	mml_Sol					},
 		{	"r",	mml_Rest				},
+		{	"w",	mml_Wait				},
 		{	"^",	mml_Tai					},
 
 		{	"‚ç",	mml_La					},
@@ -319,6 +336,22 @@ const	static	Command_Info	Command[] = {
 				nowTrack->SetScale(MML);
 				break;
 
+			case(mml_Major):
+				nowTrack->SetMajor();
+				break;
+
+			case(mml_Minor):
+				nowTrack->SetMinor();
+				break;
+
+			case(mml_HMinor):
+				nowTrack->SetHMinor(MML);
+				break;
+
+			case(mml_MMinor):
+				nowTrack->SetMMinor(MML);
+				break;
+
 			case(mml_KeySignature):
 				nowTrack->SetKeySignature(MML);
 				break;
@@ -412,7 +445,11 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Rest):
-				nowTrack->SetRest(MML);
+				nowTrack->SetRest(MML, MML->rest);
+				break;
+
+			case(mml_Wait):
+				nowTrack->SetRest(MML, MML->wait | 0x80);
 				break;
 
 			case(mml_Tai):

@@ -1,0 +1,147 @@
+/***************************************
+ オリジナル曲
+                          MML作成：ゆみ
+***************************************/
+
+// メタ定義
+#Code		"../../bin/nsd_vrc6.bin"
+#title		"オリジナル曲"
+#Copyright	"Team Kitty"
+#Composer	"ゆみ"
+#bgm		1
+#se			0
+#OffsetEv	0
+#OffsetEm	10000
+#OffsetEn 	20000
+#OffsetE@	30000
+
+
+/************************************
+ エンベロープ定義
+************************************/
+E(00000) { (43,15,5) (15,0,50) L 0 R L 0 }
+E(00001) { (15,10,5) L 10 R (5,0,3) L 0 }
+E(00002) { (15,0,3) L 0 }
+E(00003) { (15,8,4) (8,0,20) L 0 }
+E(10000) { 0 D22 L 1 2 3 2 1 0 -1 -2 -3 -2 -1 0 }
+E(20000) { L 0 -1 -2 -1 }
+E(20001) { (0,-24,12) L -24 }
+E(30000) { 7 L 5 }
+E(30001) { 1 2 3 2 1 2 3 2 (1,4,48) L 4 }
+
+
+/************************************
+ マクロ定義
+************************************/
+$noise_kick  { Ev2 En* v15 _4  }
+$noise_snare { Ev3 En0 v15 _-3 }
+$noise_hat   { Ev2 En* v14 _1  }
+
+
+/************************************
+ サブルーチン定義
+************************************/
+sub(03000) { [ cr : `cr ]8 }
+sub(03001) { [ c : r `cr ]8 }
+sub(04000) { [ $noise_kick c8   $noise_hat cc $noise_snare c8 : $noise_hat cc ]8 cc }
+sub(04001) { [ $noise_kick c8 : $noise_hat cc $noise_snare c8   $noise_hat cc ]8 $noise_snare c8c8c8 }
+sub(04002) { $noise_kick }
+sub(04003) { $noise_snare }
+sub(04004) { $noise_hat }
+sub(06000) { l8 o4 gga }
+sub(06001) { b-^2b->cd4.d4c4 }
+sub(06002) { <b-4 `c4.b-4.a4^1 }
+sub(06003) { "b-4 c1 P0,1,4,2 e4.d^2< }
+sub(06004) { d4 f4.g4.d2.. }
+sub(06005) {
+	de-f
+	l2 [ g. P0,1,4,2 a-4af g. P0,1,4,2 a-4`ca ]2 
+	g1^2.g4 g1^2^8
+}
+sub(07000) { g^2gab-4.b-4a4 }
+sub(07001) { e-2. P0,1,4,2 f4f }
+sub(07002) { P0,1,4,2 f4af }
+
+
+/************************************
+ BGMデータ定義
+************************************/
+bgm(0) {
+
+TR1
+	t150
+	/* 本当はループやサブルーチンを使いたいけど、ECコマンドはコンパイラ側処理なのでやっちゃうとキチンと演奏されないんだって */
+	_1 l32 o3 @1 v10 EC1,3 r-2
+	b-r
+	L
+	>drgrb-r>drgrb-r>drgrdr<b-rgrdr<b-rgrdr<
+	b-r>drgrb-r>drgrb-r>drgrdr<b-rgrdr<b-rgrdr<
+	ar>crfrar>crfrar>crfrcr<arfrcr<arfrcr<
+	ar>crfrar>crfrar>crfrcr<arfrcr<arfrcr<
+	b-r>e-rgrb-r>e-rgrb-r>e-rgre-r<b-rgre-r<b-rgre-r<
+	b-r>e-rgrb-r>e-rgrb-r>e-rgre-r<b-rgre-r<b-rgre-r<
+	>crfrar>crfrar>crfrarfrcr<arfrcr<arfr
+	drg-rar>crdrg-rar>crdrcr<arg-rdrcr<arg-r<
+	b-r>drgrb-r>drgrb-r>drgrdr<b-rgrdr<b-rgrdr<
+	b-r>drgrb-r>drgrb-r>drgrdr<b-rgrdr<b-rgrdr<
+	ar>crfrar>crfrar>crfrcr<arfrcr<arfrcr<
+	ar>crfrar>crfrar>crfrcr<arfrcr<arfrcr<
+	b-r>e-rgrb-r>e-rgrb-r>e-rgre-r<b-rgre-r<b-rgre-r<
+	ar>crfrar>crfrar>crfrcr<arfrcr<arfrcr<
+	gr>crergr>crergr>crercr<grercr<grercr<
+	grb-r>e-rgrb-r>e-rgrb-r>e-r<b-rgre-r<b-rgre-r<b-r
+	gr>cre-rgr>cre-rgr>cre-rcr<gre-rcr<gre-rcr<
+	ar>drfrar>drfrar>drfrdr<arfrdr<arfrdr<
+	b-r>e-rgrb-r>e-rgrb-r>e-rgre-r<b-rgre-r<b-rgre-r
+	crfrar>crfrar>crfrarfrcr<arfrcr<arfr<
+	drgr>crdrgr>crdrgr>cr<grdrcr<grdrcr<gr
+	drgr>crdrgr>crdrgr>cr<grdrcr<grdrcr<gr
+	drgrbr>drgrbr>drgrbrgrdr<brgrdr<brgr
+	drgrbr>drgrbr>drgrbrgrdr<brgrdr<brgr
+	b-r
+
+
+TR3
+	En1 l8 u%10 o4 c L >ccc<
+	|: S3000 >cc16c16< \ S3001 >aec< :|
+	S3000 >a16a16e16c16< S3001 >aec< S3001
+
+
+TR4
+	o6 l16 S4002 c8 S4003 c8c8c8 L
+	S4000 S4001 S4000
+	[ S4002 c8 S4004 cc S4003 : c8 S4004 cc ]8 cccc
+	S4001 S4001
+
+
+TR6
+	_1 Em0 Ev1 v13 q1 r-8     L E@0
+TR2
+	_1 Em0 Ev1 v9  q1 r-4 D-1 L @1
+TR6,2
+	S6000 S6001 S6002 S6001 S6003 S6001 S6004
+TR6
+	E@1
+TR2
+	@0
+TR6,2
+	S6005
+
+
+TR7
+	_1 Em0 Ev1 v11 q1 r-8 L E@0 l8 o4 ddf 
+	S7000 g4 a4.g4.f4^1
+	S7000 g4 a1 P0,1,4,2 `c4.a^2
+	S7000 b-4 >d4.d4.<b-2.. E@1 b->cd l2
+	S7001 ce.  S7002
+	S7001 de-. S7002
+	c1^2.c4 c-1^2^8
+
+
+TR8
+	_1 Ev0 v14 o2 q0 l16 r-2 L
+	|: [ "g8gg ]7 <gg`gg> [ "d8dd ]8 \ [ "e-8e-e- ]7 <e-e-`e-e-> [ "f8ff ]4 [ "d8dd ]3 <dde-f> :|
+	[ "e-8e-e- ]4 [ "f8ff ]4 [ "e8ee ]4 [ "e-8e-e- ]3 <e-e-`e-e-
+	q1 [ cc>cc< ]4 [ dd>dd< ]4 [ e-e->e-e-< ]4 [ ff>ff< ]4 > q0 [ "g8gg ]16
+}
+

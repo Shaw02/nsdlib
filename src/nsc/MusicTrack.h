@@ -86,11 +86,16 @@ public:
 
 				void	SetKeyFlag(char _c, char _d, char _e, char _f, char _g, char _a, char _b);
 				void	SetKey(int _key, int _scale);
+
+				void	SetMajor();
+				void	SetMinor();
+				void	SetHMinor(MMLfile* MML);
+				void	SetMMinor(MMLfile* MML);
 				void	SetScale(MMLfile* MML);
 				void	SetKeySignature(MMLfile* MML);	//í≤çÜÇÃê›íË
 
 				void	SetNote(MMLfile* MML, int note);
-				void	SetRest(MMLfile* MML);
+				void	SetRest(MMLfile* MML, int mode);
 				void	SetTai(MMLfile* MML);
 				void	SetLength(MMLfile* MML);
 

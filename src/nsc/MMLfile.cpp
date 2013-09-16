@@ -16,6 +16,8 @@ MMLfile::MMLfile(const char*	strFileName):
 	offset_Em(0),
 	timebase(24),
 	octave_reverse(false),
+	rest(2),
+	wait(0),
 //	f_macro(false),
 	p_macro(0),
 	f_macro2(false),
@@ -193,17 +195,23 @@ void	MMLfile::CallMacro(void)
 	char		cData;
 	int			i		= 0;
 	string		_name	= "";
+	bool		f		= false;
 
 	//------------------
 	//マクロ名の取得
 	while((cData = cRead()) > 0x20){
 		_name += cData;
+		if(ptcMac.count(_name) != 0){
+			f = true;
+			break;
+		}
 	};
-	Back();
+//	Back();
 
 	//------------------
 	//マクロ名の存在チェック
-	if(ptcMac.count(_name) == 0){
+//	if(ptcMac.count(_name) == 0){
+	if(f == false){
 		Err(L"そのマクロ名は存在していません。");
 	}
 
@@ -694,10 +702,11 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 	//読み込み
 	cData = GetChar();
 
+	//ポインタを１つ戻す
+	Back();							//StreamPointerAdd(-1);
+
 	//Length
 	if(((cData >= '0') && (cData <= '9')) || (cData == '.')){
-		//ポインタを１つ戻す
-		Back();							//StreamPointerAdd(-1);
 		if((cData >= '0') && (cData <= '9')){
 			i = GetInt();
 			iLength = (timebase * 4) / i;
@@ -725,10 +734,11 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 
 	//Tick
 	} else if (cData == '%'){
+		GetChar();	//1つ進める。
 		iLength = GetInt();
 
 	} else {
-		iLength = -1;
+		iLength = -1;		//引数を書かない場合
 	}
 
 	return(iLength);
@@ -752,13 +762,14 @@ int		MMLfile::GetLength(unsigned int DefaultLength)	//
 
 	//音長読み込み
 	iLength = readLength(DefaultLength);
-	if(iLength == -1){
-		return(iLength);
-	}
 
 	//音長の加減算
 	cData = cRead();
-	while((cData == '+') || (cData == '-')){
+	while((cData == '+') || (cData == '-') || (cData == '~')){
+		if(iLength == -1){
+			iLength = DefaultLength;
+		}
+
 		//後で計算する符号のチェック
 		if(cData == '+'){
 			add = true;
@@ -777,6 +788,10 @@ int		MMLfile::GetLength(unsigned int DefaultLength)	//
 		cData = cRead();
 	};
 	Back();							//StreamPointerAdd(-1);
+
+	if(iLength == -1){
+		return(iLength);
+	}
 
 	if((iLength < 1) || (iLength > 255)){
 		Err(L"音長は、%1（96）～%255（1+1+2+8）の間で指定して下さい。255[tick]を超える場合はタイ`&', `^'を使って下さい。");
