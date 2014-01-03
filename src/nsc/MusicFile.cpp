@@ -35,6 +35,7 @@ enum	Command_ID_MusicFile {
 	id_SegmentSEQ,
 	id_SegmentPCM,
 	id_Label,
+	id_Priority,
 
 	//General
 	id_include,
@@ -99,6 +100,7 @@ const	static	Command_Info	Command[] = {
 		{	"#segment",			id_SegmentSEQ	},
 		{	"#Label",			id_Label		},
 		{	"#label",			id_Label		},
+
 		//General
 		{	"#Include",			id_include		},
 		{	"#include",			id_include		},
@@ -121,6 +123,8 @@ const	static	Command_Info	Command[] = {
 		{	"#offsetEm",		id_offset_Em	},
 		{	"#OffsetEn",		id_offset_En	},
 		{	"#offsetEn",		id_offset_En	},
+		{	"#Priority",		id_Priority		},
+		{	"#priority",		id_Priority		},
 		{	"#Rest",			id_rest			},
 		{	"#rest",			id_rest			},
 		{	"#Wait",			id_wait			},
@@ -261,6 +265,12 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(id_offset_Em):
 				MML->offset_Em = MML->GetInt();
+				break;
+			case(id_Priority):
+				MML->priority = MML->GetInt();
+				if((MML->priority<0) || (MML->priority>3)){
+					MML->Err(L"#priorityコマンドは、0～3の範囲で指定してください。");
+				}
 				break;
 			case(id_rest):
 				MML->rest = MML->GetInt();
@@ -643,11 +653,12 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 	if((nsf->Bank[0] == 0) && (nsf->Bank[1] == 0) && (nsf->Bank[2] == 0) && (nsf->Bank[3] == 0)){
 
+		//------------------------------
+		//Bank 非対応bin
+
 		//シーケンスのバイナリを生成
 		make_bin(bin_size, 0x8000);
 
-		//------------------------------
-		//Bank 非対応bin
 		if(Header.bank == true){
 			wcout << L"指定の.binファイルは、⊿PCMのバンクに対応していません。" << endl;
 			wcout << L"⊿PCMのバンクに対応した.binファイルを指定してください。" << endl;
@@ -655,17 +666,11 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		}
 
 		mus_size = bin_size - 0x80 + code.size();
-//		if(opt == true){
-			mus_bank = (unsigned char)(mus_size >> 12);
-			if((mus_size & 0x0FFF) != 0){
-				mus_bank++;
-			}
-//		} else {
-//			mus_bank = (Header.offsetPCM - 0x8000) >> 12; 
-//			if((Header.offsetPCM & 0x0FFF) != 0){
-//				mus_bank++;
-//			}
-//		}
+		mus_bank = (unsigned char)(mus_size >> 12);
+		if((mus_size & 0x0FFF) != 0){
+			mus_bank++;
+		}
+
 		//サイズチェック
 		wcout << L"[CODE & MUSIC]" << endl;
 		wcout << L"  Bank = " << (unsigned int)mus_bank << endl;
@@ -673,24 +678,18 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 		if((0x8000 + mus_size) > Header.offsetPCM){
 			wcout << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
-	//		wcout << L"　許容値：" << Header.offsetPCM - 0x8000 << L"[Byte]" << endl;
-	//		wcout << L"　サイズ：" << (unsigned int)mus_size << L"[Byte]" << endl;
 			exit(-1);
 		}
-	} else {
 
-		if((nsf->Bank[4] == 0) && (nsf->Bank[5] == 0)){
-			//シーケンスのバイナリを生成
-			make_bin(bin_size, 0x8000);
-			iSizeLimit = 0x4000;	//拡張RAMへの転送無し
-		} else {
-			//シーケンスのバイナリを生成
-			make_bin(bin_size, 0x6000);
-			iSizeLimit = 0x6000;	//拡張RAMへの転送有り
-		}
+	} else {
 
 		//------------------------------
 		//Bank対応bin？
+
+		//シーケンスのバイナリを生成
+		make_bin(bin_size, 0x0000);
+		iSizeLimit = 0x10000;	//拡張RAMへの転送有り
+
 		if(Header.bank == false){
 			wcout << L"指定の.binファイルは、⊿PCMのバンクに対応しています。" << endl;
 			wcout << L"#Bankコマンドを指定してください。" << endl;
@@ -715,14 +714,10 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		//サイズチェック
 		if(mus_size > iSizeLimit){
 			wcout << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
-		//	wcout << L"　許容値：" << 0x6000 << L" [Byte]" << endl;
-		//	wcout << L"　サイズ：" << (unsigned int)mus_size << L" [Byte]" << endl;
 			exit(-1);
 		}
 
-
 	}
-
 
 	//⊿PCM
 	wcout << L"[DPCM]" << endl;
@@ -741,8 +736,6 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 		if(	(Header.offsetPCM + pcm_size) > 0x10000	){
 			wcout << L"⊿PCMのサイズが許容値を越えました。" << endl;
-	//		wcout << L"　許容値：" << 0x10000 - Header.offsetPCM << L"[Byte]" << endl;
-	//		wcout << L"　サイズ：" << (unsigned int)pcm_size << L"[Byte]" << endl;
 			exit(-1);
 		}
 
@@ -829,18 +822,12 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 	} else {
 		//Bank 対応bin
 		write(&romimg[0x0000], bin_size);	//NSFヘッダー ＆ コードの書き込み
-		write(&romimg[0x1080], 0x1000);		//NSFヘッダー ＆ コードの書き込み
 		write(code.c_str(), code.size());	//シーケンスの書き込み
 		//GAP
 		while(mus_size < ((unsigned int)mus_bank<<12)){
 			put(0);		//0 padding
 			mus_size++;
 		}
-
-	//	while(mus_size < 0x6000){
-	//		put(0);		//0 padding
-	//		mus_size++;
-	//	}
 
 		write(dpcm_code.c_str(), pcm_size);		//⊿PCMの書き込み
 		//GAP
@@ -859,8 +846,6 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		}
 
 	}
-
-
 
 	close();
 

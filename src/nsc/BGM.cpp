@@ -12,7 +12,7 @@
 //					–³‚µ
 //==============================================================
 BGM::BGM(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
-	TrackSet(MML, _id, false, _strName)
+	TrackSet(MML, _id, false, false, _strName)
 {
 }
 

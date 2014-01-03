@@ -12,6 +12,11 @@
 	.import		_nsd_snd_volume
 	.import		_nsd_snd_frequency
 	.import		_nsd_mul
+
+.ifdef	DPCMBank
+	.import		_nsd_ptr_bank
+.endif
+
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
@@ -51,6 +56,9 @@
 
 @Done:	lda	Address,x
 	sta	__ptr			;  __ptr = (table address of envelop)
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 	ldy	Pointer,x		;  y     = (_envelop pointer)
 @Loop:	lda	(__ptr),y		;  do{
 	bpl	@Value			;  a = __ptr[y]
@@ -113,7 +121,13 @@ Frequency:
 	;-------------------------------
 	;Envelop of Note
 	lda	__env_note + 1,x
+.ifdef	DPCMBank
+	ora	__env_note,x
+	beq	@NOENV
+	lda	__env_note + 1,x
+.else
 	beq	@NOENV				;envelop is disable?
+.endif
 	sta	__ptr + 1
 	ENV	__env_note, __env_note_ptr, __env_note_now, __Envelop_F, 4
 	cmp	#$40
@@ -196,8 +210,15 @@ Por_E:
 
 	;-------------------------------
 	;Envelop of Frequency
-F_Env:	lda	__env_frequency + 1,x
+F_Env:	
+	lda	__env_frequency + 1,x
+.ifdef	DPCMBank
+	ora	__env_frequency,x
 	beq	@Freq_Exit
+	lda	__env_frequency + 1,x
+.else
+	beq	@Freq_Exit
+.endif
 	sta	__ptr + 1
 	ENV	__env_frequency, __env_freq_ptr, __env_freq_now, __Envelop_F, 0
 	ldy	#$00
@@ -244,9 +265,10 @@ exit:	rts
 	;-------------------------------
 	;Envelop of Voice
 Voice:
-	ldy	__env_voice + 1,x	;●●●　最適化　●●●
+	ldy	__env_voice + 1,x
+	lda	__gatemode,x
+	and	#nsd_mode::voice	;●●●　最適化　●●●
 	beq	Voice_Exit		;音色エンベロープOffの場合は飛ばす
-
 	lda	__chflag,x		;且つ(gatemode==1)でも飛ばす。設定は
 	and	#$02			;nsd_key_on()関数及び
 	beq	Voice_Exit		;nsd_key_off()関数でやる。
@@ -263,6 +285,9 @@ Voice:
 @Done:	sty	__ptr + 1
 	lda	__env_voice,x
 	sta	__ptr			;  __ptr = (table address of envelop)
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 	ldy	__env_voi_ptr,x		;  y     = (_envelop pointer)
 @Loop:	lda	(__ptr),y		;  do{
 	bpl	@Value			;  a = __ptr[y]
@@ -305,8 +330,15 @@ Volume:
 
 @L2:	;Release (Envelope)
 	lda	__env_volume + 1,x
+.ifdef	DPCMBank
+	ora	__env_volume,x
+	beq	@NOENV
+	lda	__env_volume + 1,x
+	jmp	@Envelop
+.else
 	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
-
+.endif
+@NOENV:
 .ifdef	VRC7
 	;VRC7は、mode 2の時はリリース処理しない。
 	cpx	#nsd::TR_VRC7

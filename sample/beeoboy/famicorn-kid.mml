@@ -1,0 +1,425 @@
+
+
+
+#title		"Famicorn Kid 1.1 prototype"
+
+#Composer	"BEEPBOY"
+
+#Copyright	"BEEPBOY"
+
+
+
+/* --- common initialize --- --- --- --- --- --- --- --- */
+
+
+#code "nsd_all2.bin"
+#Bank
+#BGM		1
+
+#Timebase 28
+
+$init { t129 Rv0 }
+
+$init_n163 { NC4 }
+
+@N(0) = {7,9,11,13,15,13,11,9, 8,6,4,2,0,2,4,6} // Triangle
+
+@N(1) = {15,15,14,14,13,13,12,12,0,0,1,1,2,2,3,3} // SawPulse
+
+$rest_7m { r1r1r1r1r1r1r1 }
+$rest_8m { r1r1r1r1r1r1r1r1 }
+
+
+
+/* --- sample (low-rhythm) --- --- --- --- --- --- --- --- */
+
+DPCM{
+	c5,	"dmc\900bass.dmc",15,0
+	d5,	"dmc\samba.dmc",15,0
+	e5,	"dmc\samba.dmc",9,0
+}
+
+$DPCM {l16 o5}
+
+$low-rhythm_riff  { d8d8e8ed8e8de8e8 }
+$low-rhythm_riff2 { r2.d8e8 }
+
+$low-rhythm_0 { c8.cd8c8 c8.cd8c8 }
+$low-rhythm_1 { c8.dc8d8 c8.dc8d8 }
+
+$low-rhythm_4hits { c4c4c4c4 }
+
+
+/* section sample (low-rhythm) */
+
+$sample..break1 {
+[r1]15 $low-rhythm_riff
+[ $low-rhythm_0 ]7 $low-rhythm_riff
+[ $low-rhythm_0 ]7 $low-rhythm_riff2
+}
+
+$sample..main1 {
+[ $low-rhythm_0 ]7 $low-rhythm_riff
+[ $low-rhythm_0 ]7 $low-rhythm_riff
+[ $low-rhythm_0 ]7 $low-rhythm_riff
+[ $low-rhythm_0 ]7 $low-rhythm_riff
+}
+
+$sample..break2 {
+  $rest_8m
+[ $low-rhythm_4hits ]7 $low-rhythm_riff
+}
+
+$sample..main2 {
+[ $low-rhythm_1 ]7 $low-rhythm_riff
+[ $low-rhythm_1 ]7 $low-rhythm_riff
+[ $low-rhythm_1 ]7 $low-rhythm_riff
+[ $low-rhythm_1 ]4 [ $low-rhythm_4hits ]2 r1r1
+}
+
+
+
+/* --- noise (high-rhythm) --- --- --- --- --- --- --- --- */
+
+/* vol  */ E(0) {12 6 2 L 0}
+/* note */ E(1) {L 10}
+/* inst */ E(2) {0 0 L 1}
+
+/* vol  */ E(3) {12 8 L 4 R L 0}
+
+/* vol  */ E(4) {15 11 7 6 5 4 4 3 3 2 2 2 L 1 R L 0}
+/* note */ E(5) {8 8 L 12}
+/* inst */ E(6) {1 1 L 0}
+
+$hx { Ev0 En1 E@2 c16}
+
+$ho16 { Ev3 En1 E@2 c16}
+$ho8  { Ev3 En1 E@2 c8}
+
+$Noise { l16 @0 v15 o5 }
+
+$cymbal { Ev4 En5 E@6 c1}
+
+$high-rhythm_0 {
+
+r (( $hx )) $hx r r (( $hx )) $hx r r (( $hx )) $hx r r (( $hx )) $ho8
+}
+
+$high-rhythm_1 {
+
+r (( $hx )) $hx r (( $hx )) $hx r (( $hx ))
+r (( $hx )) $hx r (( $hx )) $hx $ho8
+}
+
+$high-rhythm_2 {
+
+r $hx $ho8 r $hx r $ho16
+r $hx $ho8 r $hx r $ho16
+
+}
+
+$high-rhythm_3 {
+
+rr $hx r rr $hx r rr $hx r rr $hx r
+
+}
+
+$cymbal_break { $cymbal $rest_7m }
+
+$rhythms1   { [ $high-rhythm_1 ]7 r1 }
+$rhythms2   { r1r1r1r1 [ $high-rhythm_3 ]3 r1 }
+$rhythms3-1 { [ $high-rhythm_2 ]7 r1 }
+$rhythms3-2 { [ $high-rhythm_3 ]4 r1r1r1r1 }
+
+
+/* section noise (high-rhythm) */
+
+$noise..break1 { $cymbal_break $rhythms1 $rhythms1 $rhythms1 }
+
+$noise..main1 { $rhythms1 $rhythms1 $rhythms1 $rhythms1 }
+
+$noise..break2 { $cymbal_break $rhythms2 }
+
+$noise..main2 { $rhythms3-1 $rhythms3-1 $rhythms3-1 $rhythms3-2 }
+
+
+
+/* --- lead melody --- --- --- --- --- --- --- --- */
+
+/* vol  */ E(10) {12 10 L 8 R L 0}
+/* vol  */ E(11) {15 14 L 13 R L 0}
+/* vol  */ E(12) {11 9 L 7 R L 0}
+/* note */ E(13) {12 12 L 0}
+/* vol  */ E(14) {L 2 R L 0}
+
+$SeapunkLead { @N8,1 @8 s60 v15 Ev11 En13 l8 o6 }
+
+$SeapunkLead_sub { $SeapunkLead r16 v10 D-1 }
+
+$melody_1 {
+
+g1
+rrr c > c4 < P14,1,-8,-4 b4&b1
+rrr c > c4 < P14,1,-8,-4 b4&b1
+rrr c   f4   P14,1,-8,-4 e4&e1
+r1
+
+}
+
+$melody_2 {
+
+g1
+rrr c > c4 < P14,1,-8,-4 b4. > c2 g P14,1,8,2 d4&d4. <
+    c > c4 < P14,1,-8,-4 b4&b1
+rrr c   f4   P14,1,-8,-4 e4&e1
+r1
+
+}
+
+/* section lead */
+
+$lead..break1 { [ $melody_1 ]4 }
+
+$lead..main1 { [ $rest_8m ]4 }
+
+$lead..break2 { [ $melody_1 ]2 }
+
+$lead..main2 { $melody_1 $melody_2 }
+
+
+
+/* --- pulse melody --- --- --- --- --- --- --- --- */
+
+$pAPU { @2 v15 Ev12 l16 o4 }
+
+$pulse_high { >c< rrr grea rarb rabr }
+$pulse_low  { errr cr<g>c rcrd rcdr }
+
+$bendup_8m { @2 Ev14 P0,1,1,60 o4 c1&c1&c1&c1&c1&c1&c1&c1 }
+
+
+/* section pulse */
+
+$pulse-h..break1 { $rest_8m $bendup_8m $rest_8m $rest_7m $pAPU $pulse_high }
+
+$pulse-h..main1 { [ $pulse_high ]32 }
+
+$pulse-h..break2 { $rest_7m $bendup_8m $pAPU $pulse_high }
+
+$pulse-h..main2 { [ $rest_7m $pulse_high ]2 }
+
+
+$pulse-l..break1 { $pAPU [ $rest_8m ]3 $rest_7m $pulse_low }
+
+$pulse-l..main1 { [ $pulse_low  ]32 }
+
+$pulse-l..break2 {   $rest_8m $rest_7m $pulse_low }
+
+$pulse-l..main2 { [ $rest_7m $pulse_low ]2 }
+
+
+
+/* --- chord --- --- --- --- --- --- --- --- */
+
+/* note */ E(20) {-24 -12 L 0}
+
+$SteelDrum    { l16 v6 En20 o5 D2  }
+$SteelDrum_dt { l16 v6 En20 o5 D-2 }
+
+$chord_f {rr f8.f8.f8.f8.f8}
+$chord_d {rr d8.d8.d8.d8.d8}
+
+$chord_e {rr e8.e8.e8.e8.e8}
+$chord_c {rr c8.c8.c8.c8.c8}
+
+$chord_g {rr g8.g8.g8.g8.g8}
+$chord_e- {rr e-8.e-8.e-8.e-8.e-8}
+
+$chord_b {rr b8.b8.b8.b8.b8}
+
+$chords_h1 { $chord_f $chord_f $chord_e $chord_e   $chord_f $chord_f   $chord_g  $chord_f }
+$chords_l1 { $chord_d $chord_d $chord_c $chord_c < $chord_b $chord_b > $chord_e- $chord_d }
+
+$chords_h2 { $chord_f $chord_f $chord_e $chord_e   $chord_f $chord_f $chord_e   r1}
+$chords_l2 { $chord_d $chord_d $chord_c $chord_c < $chord_b $chord_b $chord_b > r1 }
+
+$chords_h2_last { $chord_f $chord_f $chord_e $chord_e   $chord_f $chord_f $chord_e $chord_e }
+$chords_l2_last { $chord_d $chord_d $chord_c $chord_c < $chord_b $chord_b $chord_b $chord_b > }
+
+
+/* section chord */
+
+$chord-h..break1 { [ $chords_h1 ]3 $chords_h2 }
+
+$chord-h..main1 { [ $rest_8m ]3 $chords_h1 }
+
+$chord-h..break2 { [ $chords_h1 ]2 }
+
+$chord-h..main2 { [ $chords_h1 ]3 $chords_h2_last }
+
+
+$chord-l..break1 { [ $chords_l1 ]3 $chords_l2 }
+
+$chord-l..main1 { [ $rest_8m ]3 $chords_l1 }
+
+$chord-l..break2 { [ $chords_l1 ]2 }
+
+$chord-l..main2 { [ $chords_l1 ]3 $chords_l2_last }
+
+
+
+/* --- bass --- --- --- --- --- --- --- --- */
+
+/* note */ E(30) {24 12 L 0}
+
+$Bass { l16 v10 En30 o2 }
+
+$bass_a  {rrar rrar rrar rrar}
+$bass_g  {rrgr rrgr rrgr rrgr}
+$bass_b- {rrb-r rrb-r rrb-r rrb-r}
+
+$bass_gc {rg8r >c<grg rg8r >c<grg}
+
+$bass_a2  {rara rara rara rara}
+$bass_g2  {rgrg rgrg rgrg rgrg}
+$bass_b-2 {rb-rb- rb-rb- rb-rb- rb-rb-}
+
+$bass1-1 { $bass_a $bass_a $bass_g $bass_g $bass_a $bass_g $bass_b- $bass_b- }
+$bass1-2 { $bass_a $bass_a $bass_g $bass_g $bass_a $bass_g $bass_g r1 }
+$bass2-1 { [ $bass_gc ]8 }
+$bass3-1 { $bass_a2 $bass_a2 $bass_g2 $bass_g2 $bass_a2 $bass_g2 $bass_b-2 $bass_b-2 }
+
+
+/* section bass */
+
+$bass..break1 { $rest_8m $bass1-1 $bass1-1 $bass1-2 }
+
+$bass..main1 { $rest_8m $bass2-1 $bass2-1 $bass2-1 }
+  
+$bass..break2 { $rest_8m $bass3-1 }
+
+$bass..main2 { $bass3-1 $bass3-1 $bass3-1 }
+
+
+
+/* --- arpegio --- --- --- --- --- --- --- --- */
+
+/* vol  */ E(40) {10 9 6 3 L 0}
+
+$TriArp = {@N0,0 @0 s60 l16 Ev40 o6}
+
+$arpegio_1 { rreg >ce<re g>cec drgr< }
+$arpegio_2 { r>ec<r agrr rrrr rrrr }
+
+$arps1 { [ $arpegio_1 ]8 }
+$arps2 { $arpegio_1 $arpegio_2 $arpegio_1 $arpegio_2 $arpegio_1 $arpegio_2 $arpegio_1 $arpegio_1 }
+
+
+/* section arp */
+
+$arp..break1 { [ $rest_8m ]4 }
+
+$arp..main1 { [ $rest_8m ]2 $arps1 $arps1 }
+
+$arp..break2 { $arps2 $arps2 }
+
+$arp..main2 { [ $arps2 $arps2 $arps1 $arps1 }
+
+
+
+/* --- bubble percassion --- --- --- --- --- --- --- --- */
+
+/* vol  */ E(50) { 11 10 9 8 7 6 5 L 0 }
+/* note */ E(51) { 0 5 10 15 20 25 L 30 }
+
+$Bubble = {@N0,0 @0 s60 l16 Ev50 En51 o3}
+
+$bubble_rhythm { rrrr rr(((b)))b rrrr rrrr}
+
+$bubble_7mr { [ $bubble_rhythm ]7 r1 }
+$bubble_8m  { [ $bubble_rhythm ]8 }
+$bubble_riff { $rest_7m $bubble_rhythm }
+
+
+/* section bubble */
+
+$bubble..break1 { $rest_8m $bubble_riff $bubble_8m $bubble_7mr }
+
+$bubble..main1 { $bubble_8m $bubble_8m $bubble_8m $bubble_8m }
+
+$bubble..break2 { $rest_8m $bubble_riff }
+
+$bubble..main2 { $bubble_8m $bubble_8m $bubble_8m [ $bubble_rhythm ]6 }
+
+
+
+/* === mix === === === === === === === === */
+
+bgm(0){
+
+
+TR1 $init $pAPU
+
+$pulse-h..break1 $pulse-h..main1 $pulse-h..break2 $pulse-h..main2
+
+
+TR2 $init $pAPU
+
+$pulse-l..break1 $pulse-l..main1 $pulse-l..break2 $pulse-l..main2
+
+
+TR4 $init $Noise
+
+$noise..break1 $noise..main1 $noise..break2 $noise..main2
+
+
+TR5 $init $DPCM
+
+$sample..break1 $sample..main1 $sample..break2 $sample..main2
+
+
+TR11 $init $SteelDrum
+
+$chord-h..break1 $chord-h..main1 $chord-h..break2 $chord-h..main2
+
+
+TR12 $init $SteelDrum_dt
+
+$chord-h..break1 $chord-h..main1 $chord-h..break2 $chord-h..main2
+
+
+TR13 $init $SteelDrum
+
+$chord-l..break1 $chord-l..main1 $chord-l..break2 $chord-l..main2
+
+
+TR14 $init $SteelDrum_dt
+
+$chord-l..break1 $chord-l..main1 $chord-l..break2 $chord-l..main2
+
+
+TR15 $init $Bass
+
+$bass..break1 $bass..main1 $bass..break2 $bass..main2
+
+
+TR18 $init $init_n163 $TriArp
+
+$arp..break1 $arp..main1 $arp..break2 $arp..main2
+
+
+TR19 $init $Bubble
+
+$bubble..break1 $bubble..main1 $bubble..break2 $bubble..main2
+
+
+TR20 $init $SeapunkLead
+
+$lead..break1 $lead..main1 $lead..break2 $lead..main2
+
+
+TR21 $init $SeapunkLead_sub
+
+$lead..break1 $lead..main1 $lead..break2 $lead..main2
+
+}

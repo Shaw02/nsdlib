@@ -18,6 +18,7 @@ MMLfile::MMLfile(const char*	strFileName):
 	octave_reverse(false),
 	rest(2),
 	wait(0),
+	priority(0),
 //	f_macro(false),
 	p_macro(0),
 	f_macro2(false),
@@ -192,31 +193,51 @@ void	MMLfile::SetMacro(void)
 //==============================================================
 void	MMLfile::CallMacro(void)
 {
-	char		cData;
-	int			i		= 0;
-	string		_name	= "";
-	bool		f		= false;
+	char							cData;
+	int								i		= 0;
+	int								n		= 0;
+	int								iSize	= ptcMac.size();
+	string							_name	= "";
+	string*							strMac	= new	string[iSize];
+	map<string,string>::iterator	itMac	= ptcMac.begin();
 
 	//------------------
-	//マクロ名の取得
-	while((cData = cRead()) > 0x20){
+	//全マクロ名の取得
+	do{
+		strMac[i] = itMac->first;
+		i++;
+		itMac++;
+	}while(itMac != ptcMac.end());
+
+	//------------------
+	//マクロ名の照合
+	do{
+		cData = cRead();
 		_name += cData;
-		if(ptcMac.count(_name) != 0){
-			f = true;
-			break;
+		i = 0;			//ループ用
+		n = 0;			//ヒット数
+		if(cData > 0x20){
+			while(i<iSize){
+				if(strMac[i].find(_name.c_str()) == 0){
+					n++;		//マクロ名先頭文字列ヒット
+				}
+				i++;
+			}
 		}
-	};
-//	Back();
+	} while(n>0);		//ヒット数が0になるまで、繰り返し。
+
+	Back();										//ポインタを１つ戻す。
+	_name = _name.substr(0, _name.length()-1);	//１文字減らす。
 
 	//------------------
 	//マクロ名の存在チェック
-//	if(ptcMac.count(_name) == 0){
-	if(f == false){
+	if(ptcMac.count(_name) == 0){
 		Err(L"そのマクロ名は存在していません。");
 	}
 
 	//------------------
 	//マクロ名の重複チェック
+	i = 0;
 	while(i < p_macro){
 		if(s_macro[i].name == _name){
 			Err(L"マクロ内で同じマクロを呼び出しています。");
@@ -237,6 +258,7 @@ void	MMLfile::CallMacro(void)
 	s_macro.push_back(nowMacro);
 	p_macro++;
 
+	delete[]	strMac;
 }
 
 //==============================================================

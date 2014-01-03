@@ -80,8 +80,9 @@ MMLコンパイラにて、直接NSFにビルドする際のメモリマップは、以下表の通りです。<br>
 <h4>バンク切り替え対応版の仕様</h4>
 <ul>
 <li>nsd_all.bin</li>
-<li>nsd_all.bin</li>
+<li>nsd_all2.bin</li>
 <li>nsd_oall.bin</li>
+<li>nsd_hfe4.bin</li>
 <li>nsd_hfx4.bin</li>
 </ul>
 <p>
@@ -93,27 +94,23 @@ MMLコンパイラにて、直接NSFにビルドする際のメモリマップは、以下表の通りです。<br>
 <a href="usage_nsc.html">MMLコンパイラ`nec.exe'</a>で生成されるNSFは、
 NSFヘッダーの128byteを除き合計1024kbyteまでのNSFを作ることができます。<br>
 （NSF music formatの仕様が1024kbyteまでとなっております。）<br>
-但し、曲データ（シーケンス）は24kbyte（OPLL対応版は16kByte）までです<br>
-（元々が組み込み用のため、演奏ポインタがバンクに対応していません）。<br>
+但し、曲データ（シーケンス）は64kbyteまでです<br>
 MMLコンパイラにて、直接NSFにビルドする際のメモリマップは、以下表の通りです。<br>
 </p>
+<p>
+<strong>注意</strong>
+これらの⊿PCM-IRQに対応したbinを使用時は、TNS-HFC4へ直接VRC6, VRC7を刺すことはできません。<br>
+別途、TNS-HFX4が必要となります。<br>
+</p>
 <table>
-<caption>Memory map (nsd_all.bin, nsd_all.bin)</caption>
+<caption>Memory map</caption>
 <tr><th>Address				</th><th>Contents				</th></tr>
-<tr><td>0x0000 ～ 0x07FF	</td><td>制御用構造体			</td></tr>
-<tr><td>0x6000 ～ 0xBFFF	</td><td>曲データ（24 kbyte）	</td></tr>
-<tr><td>0xC000 ～ 0xDFFF	</td><td>⊿ＰＣＭデータ	（この領域は再生する⊿PCMによりバンク切り替えが発生します。）</td></tr>
-<tr><td>0xE000 ～ 0xFFFF	</td><td>音源ドライバ本体 ＆ 割り込みベクタ（*.bin）</td></tr>
-</table>
-<br>
-<table>
-<caption>Memory map (nsd_oall.bin, nsd_hfx4.bin)</caption>
-<tr><th>Address				</th><th>Contents				</th></tr>
-<tr><td>0x0000 ～ 0x07FF	</td><td>制御用構造体1			</td></tr>
+<tr><td>0x0000 ～ 0x07FF	</td><td>制御用構造体1					</td></tr>
 <tr><td>0x6000 ～ 0x7FFF	</td><td>制御用構造体2（本体内RAMの2kbyteでは容量が足りないため、拡張RAMを使っています）	</td></tr>
-<tr><td>0x8000 ～ 0xBFFF	</td><td>曲データ（16 kbyte）	</td></tr>
+<tr><td>0x8000 ～ 0x9FFF	</td><td>曲データ（この領域はバンク切り替えが発生します。）	</td></tr>
+<tr><td>0xA000 ～ 0xBFFF	</td><td>音源ドライバ本体（データ） ＆ 割り込みベクタ（*.bin）</td></tr>
 <tr><td>0xC000 ～ 0xDFFF	</td><td>⊿ＰＣＭデータ	（この領域は再生する⊿PCMによりバンク切り替えが発生します。）</td></tr>
-<tr><td>0xE000 ～ 0xFFFF	</td><td>音源ドライバ本体 ＆ 割り込みベクタ（*.bin）</td></tr>
+<tr><td>0xE000 ～ 0xFFFF	</td><td>音源ドライバ本体（コード） ＆ 割り込みベクタ（*.bin）</td></tr>
 </table>
 
 </div>

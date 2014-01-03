@@ -15,10 +15,10 @@ AMMC5 = -D MMC5
 AN163 = -D N163
 APSG  = -D PSG
 
-AHFE4 =        -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank -D ExRAM
-AALL  =        -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank -D ExRAM
+AHFE4 =        -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank	#;-D ExRAM
+AALL  =        -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank	#;-D ExRAM
 AOALL =        -D VRC6 -D OPLL         -D MMC5 -D N163 -D PSG -D DPCMBank
-AALL2 = -D FDS -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank -D ExRAM
+AALL2 = -D FDS -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank	#;-D ExRAM
 AHFX4 = -D FDS -D VRC6 -D OPLL -D VRC7 -D MMC5 -D N163 -D PSG -D DPCMBank
 
 
@@ -67,12 +67,12 @@ INC_FILES =
 FILES = crt0.s
 OFILES = $(FILES:.s=.o)
 
-clean: $(PROJ).bin $(PROJ_FDS).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_OPLL).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin $(PROJ_ALL2).bin $(PROJ_OALL).bin $(PROJ_HFX4).bin $(PROJ_HFE4).bin
+clean: $(PROJ).bin $(PROJ_FDS).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_OPLL).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin $(PROJ_ALL2).bin $(PROJ_OALL).bin $(PROJ_HFE4).bin $(PROJ_HFX4).bin
 	@del *.bak
 	@del *.o
 	@del *.map
 
-all:   $(PROJ).bin $(PROJ_FDS).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_OPLL).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin $(PROJ_ALL2).bin $(PROJ_OALL).bin $(PROJ_HFX4).bin $(PROJ_HFE4).bin
+all:   $(PROJ).bin $(PROJ_FDS).bin $(PROJ_VRC6).bin $(PROJ_VRC7).bin $(PROJ_OPLL).bin $(PROJ_MMC5).bin $(PROJ_N163).bin $(PROJ_PSG).bin $(PROJ_ALL).bin $(PROJ_ALL2).bin $(PROJ_OALL).bin $(PROJ_HFE4).bin $(PROJ_HFX4).bin
 
 $(PROJ).bin : $(FILES) $(INC_FILES) $(LIB)
 	@$(ASM) $(AFLAG) $(FILES)
@@ -118,12 +118,11 @@ $(PROJ_OALL).bin : $(FILES) $(INC_FILES) $(LIB_OALL)
 	@$(ASM) $(AOALL) $(FILES)
 	@$(LINKER) $(LFLAGOALL) $*.bin $(OFILES) $(LIB_OALL)
 
-$(PROJ_HFX4).bin : $(FILES) $(INC_FILES) $(LIB_HFX4)
-	@$(ASM) $(AHFX4) $(FILES)
-	@$(LINKER) $(LFLAGOALL) $*.bin $(OFILES) $(LIB_HFX4)
-
-
 $(PROJ_HFE4).bin : $(FILES) $(INC_FILES) $(LIB_HFE4)
 	@$(ASM) $(AHFE4) $(FILES)
 	@$(LINKER) $(LFLAGALL) $*.bin $(OFILES) $(LIB_HFE4)
+
+$(PROJ_HFX4).bin : $(FILES) $(INC_FILES) $(LIB_HFX4)
+	@$(ASM) $(AHFX4) $(FILES)
+	@$(LINKER) $(LFLAGOALL) $*.bin $(OFILES) $(LIB_HFX4)
 

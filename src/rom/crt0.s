@@ -21,6 +21,7 @@
 
 .ifdef	DPCMBank
 	.import		_nsd_irq
+	.import		_nsd_ptr_bank
 .endif
 
 .MACPACK generic
@@ -94,11 +95,7 @@ _play:	.byte	0
 	.res	32,	$0
 	.word	$411A			;6E	60Hz
 .ifdef	DPCMBank
- .ifdef	ExRAM
-	.byte	3,4,5,6,7,8,0,1		;70	bank	(nsc.exe で検出して、bank対応か調べる。)
- .else
-	.byte	3,4,5,6,0,0,0,1		;70	
- .endif
+	.byte	3,4,2,5,6,7,1,0		;70	
 .else
 	.byte	0,0,0,0,0,0,0,0		;70	bank
 .endif
@@ -111,7 +108,7 @@ _play:	.byte	0
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	$01
-		.byte	$0b
+		.byte	$0c
 
 ; ------------------------------------------------------------------------
 ; 	実機ROM用	IRQ	(DPCM)
@@ -179,11 +176,18 @@ DRV_Version:	.byte	$01
 .ifdef	DPCMBank
 .proc	_nsf_init2
 
+	;リセット連打によるハング防止
+
 	sei
 
+@wait1:	lda	$2002
+	bpl	@wait1
+@wait2:	lda	$2002
+	bpl	@wait2
+
 	;Bank change (CODE)
-	lda	#$01
-	sta	$5FFF		;リセット連打によるハング防止
+	lda	#$00
+	sta	$5FFF
 
 	jmp	$0103
 
@@ -208,10 +212,6 @@ DRV_Version:	.byte	$01
 	sta	$0100
 	sta	$0103
 
-	;Bank change (CODE)
-	lda	#$01
-	sta	$5FFF
-
 	;TNS-HFCシリーズが書き換えたVECTORのコピー
 	lda	$FFFA
 	sta	$0101
@@ -224,8 +224,17 @@ DRV_Version:	.byte	$01
 	sta	$0105
 
 	;Bank change (CODE)
+	lda	#$00
+	sta	$5FFA
+
 	lda	#$02
 	sta	$5FFF
+
+	;Bank change (MUS)
+	ldx	#$03
+	stx	$5FF8
+	inx
+	stx	$5FF9
 
 .endif
 
@@ -362,13 +371,8 @@ Loop:
 .ifdef	DPCMBank
 	lda	#$00
 	sta	__ptr
- .ifdef	ExRAM
-	lda	#$60	;拡張RAMにシーケンスを転送する場合。
- .else
-	lda	#$80	;拡張RAMにシーケンスを転送しない場合。
- .endif
 	sta	__ptr+1		;__ptr = __ROM0_START__
-
+	jsr	_nsd_ptr_bank
 .else
 	lda	#<(__ROM0_LAST__)
 	sta	__ptr
@@ -387,9 +391,9 @@ Loop:
 	lda	(__ptr),y
 	tax			;ax = Pointer of ⊿PCM infomation Struct
 	lda	__tmp
-	jsr	_nsd_set_dpcm
-
-	rts
+	jmp	_nsd_set_dpcm
+;
+;	rts
 .endproc
 
 ; ------------------------------------------------------------------------
@@ -402,12 +406,8 @@ Loop:
 .ifdef	DPCMBank
 	lda	#$00
 	sta	__ptr
- .ifdef	ExRAM
-	lda	#$60	;拡張RAMにシーケンスを転送する場合。
- .else
-	lda	#$80	;拡張RAMにシーケンスを転送しない場合。
- .endif
 	sta	__ptr+1		;__ptr = __ROM0_START__
+	jsr	_nsd_ptr_bank
 .else
 	lda	#<(__ROM0_LAST__)
 	sta	__ptr
@@ -440,10 +440,19 @@ Loop:
 ; ------------------------------------------------------------------------
 
 .ifdef	DPCMBank
+
 .segment	"VECTORS"
 ;	.word	_nmi_main	; $fffa vblank nmi
 	.word	$0100		
 ;	.word	_nsf_init	; $fffc reset
 	.word	_nsf_init2	
 	.word	_irq_main	; $fffe irq / brk
+
+.segment	"VECTORS2"
+;	.word	_nmi_main	; $fffa vblank nmi
+	.word	$0100		
+;	.word	_nsf_init	; $fffc reset
+	.word	_nsf_init2	
+	.word	_irq_main	; $fffe irq / brk
+
 .endif

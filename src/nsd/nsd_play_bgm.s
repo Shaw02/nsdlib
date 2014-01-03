@@ -11,6 +11,10 @@
 
 	.import		_nsd_stop_bgm
 
+.ifdef	DPCMBank
+	.import		_nsd_ptr_bank
+.endif
+
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
@@ -37,16 +41,27 @@
 
 	jsr	_nsd_stop_bgm		;stop the BGM (disable BGM)
 
+	lda	#nsd_flag::Disable
+	ora	__flag
+	sta	__flag			;サウンド処理禁止
+
 	pla
 	sta	__ptr + 1
+.ifdef	DPCMBank
+	sta	__tmp + 1	;保存
+.endif
 	pla
 	sta	__ptr
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 
 	ldy	#0
 
+	;-----------------------
 	lda	(__ptr),y		; a = number of track
 	shl	a, 1
-	sta	__tmp
+	sta	__channel
 	iny
 	iny
 
@@ -55,15 +70,28 @@
 	ldx	#nsd::TR_BGM1
 
 Loop:
-	lda	#00
-	sta	__chflag,x
-	jsr	_nsd_play
+	cpx	__channel
+	bcs	Loop_End
 
+	lda	(__ptr),y
+	iny
+	sta	__tmp
+	lda	(__ptr),y
+	ora	__tmp
+	bne	@L		;ポインターが0だったら、トラック無し。
+	iny
+	jmp	@E
+
+@L:
+	lda	#0
+	jsr	_nsd_play
+	iny
+
+@E:
 	inx
 	inx
 	cpx	#nsd::TR_BGM1 + nsd::BGM_Track * 2
-	bcs	Loop_End
-	jmp	Loop
+	bcc	Loop
 Loop_End:
 
 	;-----------------------
@@ -90,9 +118,9 @@ Loop_End:
 	sta	OPLL_Data
 .endif
 
-	lda	#~nsd_flag::BGM
+	lda	#~(nsd_flag::BGM + nsd_flag::Disable)
 	and	__flag
-	sta	__flag			;BGM Enable
+	sta	__flag			;BGM & Main Enable
 
 	rts
 .endproc
@@ -103,32 +131,28 @@ Loop_End:
 ;<<Contents>>
 ;	Play
 ;<<Input>>
+;	a	__chflag,x	の値
+;	__tmp	(__ptr),y-1
 ;	__ptr	pointer
-;	__tmp	channel
 ;<<Output>>
 ;	nothing
 ;=======================================================================
 .proc	_nsd_play
 
-	cpx	__tmp
-	bcs	@L
-	lda	(__ptr),y
+	sta	__chflag,x
+
+	lda	__tmp
 	add	__ptr
-	php
 	sta	__Sequence_ptr,x
-	iny
 	lda	(__ptr),y
-	plp
+.ifdef	DPCMBank
+	adc	__tmp + 1
+.else
 	adc	__ptr + 1
+.endif
 	sta	__Sequence_ptr + 1,x	;__Sequence_ptr = __ptr + (__ptr),y
-	iny
+
 	lda	#0
-	jmp	@E
-@L:
-	lda	#0
-	sta	__Sequence_ptr,x
-	sta	__Sequence_ptr + 1,x
-@E:
 	sta	__tai,x
 	sta	__Gate,x
 	sta	__gate_q,x

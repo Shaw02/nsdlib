@@ -31,8 +31,8 @@
 ;=======================================================================
 .proc	_nsd_main: near
 
-;	lda	__flag		;無効の場合は、呼ばない。
-;	jmi	Exit		;（最上位 1bit = `H'の場合、終了）
+	lda	__flag		;無効の場合は、呼ばない。
+	jmi	Exit		;（最上位 1bit = `H'の場合、終了）
 
 .ifdef	DPCMBank
 	sei
@@ -97,18 +97,27 @@ BGM_Exit:
 
 	ldx	#nsd::TR_SE1
 	lda	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	ora	__Sequence_ptr,x
+.endif
 	beq	@SE0
 	jsr	nsd_sequence
 	jsr	nsd_envelop
 @SE0:
 	ldx	#nsd::TR_SE2
 	lda	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	ora	__Sequence_ptr,x
+.endif
 	beq	@SE1
 	jsr	nsd_sequence
 	jsr	nsd_envelop
 	jmp	SE_Exit
 @SE1:
 	ora	__Sequence_ptr + nsd::TR_SE1 + 1
+.ifdef	DPCMBank
+	ora	__Sequence_ptr + nsd::TR_SE1
+.endif
 	bne	SE_Exit
 
 	;SE Disable

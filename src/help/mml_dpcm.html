@@ -160,28 +160,25 @@ DPCM{
 
 <p>
 また、多くのNSFプレイヤーは、IRQに対応しておりません。<br>
-以下、2013年 2月14時点での対応状況です。<br>
+以下、2014年 1月 3日時点での対応状況です。<br>
 </p>
 <h4>IRQ対応プレイヤ</h4>
 <ul>
+<li>TNS-HFC3</li>
+<li>TNS-HFC4</li>
 <li>VirtuaNSF</li>
 <li>VirtuaNES</li>
 <li>Nintendulator</li>
+<li>NEZPlug　（Version0.9.4.8+3+22.00～）</li>
+<li>hoot　(2013/06/02版～)</li>
 </ul>
 <h4>IRQ非対応プレイヤ</h4>
 <ul>
-<li>TNS-HFC3　…（割り込みベクタを全て書き換えてしまうため）</li>
-<li>TNS-HFC4　…（割り込みベクタを全て書き換えてしまうため）　</li>
 <li>NSFPlay　…（IRQそのものが実装されていません。）</li>
-<li>NEZPlug　…（IRQが無効になっています。）</li>
-<li>hoot　…（IRQが無効になっています。）</li>
+<li>G-NSF</li>
+<li>Nestopia</li>
+<li>FCEUX</li>
 </ul>
-<p>
-※実機での再生環境TNS-HFC3でもIRQに対応しておりません。<br>
-これは、6502の割り込みベクタをIRQ含め全て書き換えてしまうためです。<br>
-IRQの割り込みベクトル先は、RTI命令のみになっているとのことです。<br>
-また、TNS-HFC4でも非対応とのことですが、検討課題として頂きました。<br>
-</p>
 
 </div>
 

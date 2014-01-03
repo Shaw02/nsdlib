@@ -13,7 +13,7 @@
 //					–³‚µ
 //==============================================================
 Sub::Sub(MMLfile* MML, unsigned int _id, wchar_t _strName[]/* = "==== [ Sub ]===="*/):
-	TrackSet(MML, _id, true, _strName)
+	TrackSet(MML, _id, true, false, _strName)
 {
 	
 }

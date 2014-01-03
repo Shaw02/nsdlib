@@ -31,7 +31,7 @@
 <table>
 <tr><th>Address	</th><th>Size</th><th>Contents					</th></tr>
 <tr><td>0x0000	</td><td>BYTE	</td><td>Number of track (BGM:max=5, SE:max=2)	</td></tr>
-<tr><td>0x0001	</td><td>BYTE	</td><td>Undefined (reserve)			</td></tr>
+<tr><td>0x0001	</td><td>BYTE	</td><td>下位2bit : 優先度（効果音のみ）		</td></tr>
 <tr><td>0x0002	</td><td>WORD[n]</td><td>曲データの先頭を基点としたオフセットアドレス。	</td></tr>
 <tr><td> -	</td><td> -	</td><td>Datas.					</td></tr>
 </table>

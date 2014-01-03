@@ -41,7 +41,9 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 <tr><th>Command</th><th>Contens</th></tr>
 <tr><td>#include	"<var>filename</var>"	</td><td>外部ファイルを呼び込みます。</td></tr>
 <tr><td>#bgm <var>n</var>					</td><td>BGMの曲数を設定します。（Default: <var>n</var> = 1）</td></tr>
-<tr><td>#se  <var>n</var>					</td><td>SE の曲数を設定します。（Default: <var>n</var> = 0）</td></tr>
+<tr><td>#se <var>n</var>					</td><td>SE の曲数を設定します。（Default: <var>n</var> = 0）</td></tr>
+<tr><td>#priority <var>n</var>				</td><td>以降のSE の優先度を設定します。（Default: <var>n</var> = 0）<br>
+													　（0 : 優先度高 ～ 3:優先度低）</td></tr>
 <tr><td>#timebase <var>n</var>				</td><td>以降のBGM, SE, Subブロックの四分音符の分割数を設定します。（Default: <var>n</var> = 24）<br>
 													何度でも指定可能であり、各BGM, SE, サブルーチン毎に設定することもできます。<br>
 													MMLコンパイラの疑似命令です。</td></tr>

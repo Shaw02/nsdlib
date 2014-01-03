@@ -12,7 +12,7 @@
 //	●返値
 //					無し
 //==============================================================
-TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const wchar_t _strName[]):
+TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const wchar_t _strName[]):
 	MusicItem(_strName),
 	m_id(_id)
 {
@@ -105,6 +105,8 @@ enum	Command_ID_mml {
 
 	mml_VRC7_Write,
 	mml_Memory_Write,
+
+	mml_Priority,
 
 	mml_Bar
 };
@@ -273,6 +275,9 @@ const	static	Command_Info	Command[] = {
 		{	"yV",	mml_VRC7_Write			},
 		{	"y",	mml_Memory_Write		},
 
+		{	"#Priority",	mml_Priority	},
+		{	"#priority",	mml_Priority	},
+
 		{	"　",	mml_Bar					},
 		{	"|",	mml_Bar					},
 		{	"｜",	mml_Bar					}
@@ -284,8 +289,15 @@ const	static	Command_Info	Command[] = {
 	//------------------------------
 	//クラスの初期設定
 	fSub		= _sub;		//サブルーチンのフラグ
+	fSE			= _se;		//
 	iTrack		= 0;		//コンパイル中のトラック（Default = 0）
 	maxTrack	= 0;		//最大トラック番号
+
+	if(fSE == true){
+		Priority	= MML->priority;
+	} else {
+		Priority	= 0;
+	}
 
 	//まずは、１つだけトラック（0番）のオブジェクトを作る。
 	nowTrack	= makeTrack(iTrack);
@@ -628,6 +640,10 @@ const	static	Command_Info	Command[] = {
 				SetPoke(MML);
 				break;
 
+			case(mml_Priority):
+				SetPriority(MML);
+				break;
+
 			case(mml_Bar):
 				break;
 
@@ -649,7 +665,7 @@ const	static	Command_Info	Command[] = {
 		code.resize(i);						//ヘッダ用にコードサイズを確保
 
 		code[0] = (unsigned char)maxTrack + 1;				//トラック数
-		code[1] = 0;						//
+		code[1] = Priority;									//各種フラグ
 
 		//各トラックに終端を書いて、曲データのアドレス情報を作成
 		iTrack = 0;
@@ -1352,3 +1368,27 @@ void	TrackSet::Set_FME7_Frequency(MMLfile* MML)
 	}
 }
 
+//==============================================================
+//			効果音優先度設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::SetPriority(MMLfile* MML)
+{
+	int	i = MML->GetInt();
+
+	//se?
+	if(fSE == false){
+		MML->Warning(L"SEブロック以外では優先度指定はできません。無視します。");
+	} else {
+		if( (i <= 3) && (i >=0) ){
+			Priority = i;
+		} else {
+			MML->Err(L"効果音の優先度は、は0～3の範囲で指定して下さい。");
+		}
+	}
+
+}

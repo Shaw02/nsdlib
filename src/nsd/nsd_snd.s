@@ -21,6 +21,10 @@
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
+.ifdef	DPCMBank
+	.import		_nsd_ptr_bank
+.endif
+
 .if	.defined(VRC7) || .defined(OPLL)
 	.export		_Wait42
 .endif
@@ -291,6 +295,7 @@ _nsd_dpcm_keyon:
 	jsr	_nsd_dpcm_calc
 
 .ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
 	;bank number
 	ldy	#4
 	lda	(__ptr),y
@@ -801,6 +806,10 @@ _nes_vrc7_voice:
 	ldy	__vrc7_reg + 1
 	sty	__ptr + 1
 
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
+
 	sta	__tmp + 1
 	asl	a
 	asl	a
@@ -878,6 +887,10 @@ _nes_opll_voice:
 	sty	__ptr
 	ldy	__opll_reg + 1
 	sty	__ptr + 1
+
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 
 	sta	__tmp + 1
 	asl	a
@@ -1849,12 +1862,15 @@ Exit:
 ;---------------------------------------
 .ifdef	PSG
 .proc	_nsd_psg_envelop
+	cmp	#$10
+	bcc	@L
 	ldy	#PSG_Envelope_Form
 	sty	PSG_Register
 	tay
 	and	#$0F
 	sta	PSG_Data
 	tya
+@L:
 	and	#nsd_chflag::Envelop
 	sta	__tmp
 	lda	__chflag,x

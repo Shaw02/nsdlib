@@ -64,7 +64,7 @@
 </p>
 <p>
 呼び出し元のマクロと同じ名前のマクロは呼び出せません。<br>
-また、呼び出すマクロは、定義されているマクロの中で、一番短い名前のマクロが優先されます。<br>
+また、呼び出すマクロは、定義されているマクロの中で、長い名前のマクロが優先されます。<br>
 </p>
 <p>
 マクロの定義は、マクロを呼び出すよりも前に行ってください。<br>
@@ -87,7 +87,7 @@ $macro2{ l4 o4 }
 
 <span style="color:green;">/* Block of BGM[0] */</span>
 BGM(0){
-    TR1     $macro 1		<span style="color:green;">/* = l4 o4 cdefgab>c1 */</span>
+    TR1     $macro1		<span style="color:green;">/* = l4 o4 cdefgab>c1 */</span>
 }
 </pre></code>
 

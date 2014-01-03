@@ -20,6 +20,10 @@
 	.import		_Wait42
 .endif
 
+.ifdef	DPCMBank
+	.export		_nsd_ptr_bank
+.endif
+
 	.include	"nes.inc"
 	.include	"nsd.inc"
 
@@ -85,9 +89,10 @@
 	sta	__env_vol_ptr,x
 
 	;音色エンベロープ
-	lda	__env_voice + 1,x	;●●●　最適化　●●●
-	bne	@L2			;音量エンベロープが無効だったら
-	lda	__env_voice,x		;ここでKeyOn時の音色にする。
+	lda	__gatemode,x		;●●●　最適化　●●●
+	and	#nsd_mode::voice	;音量エンベロープが無効だったら
+	bne	@L2			;ここでKeyOn時の音色にする。
+	lda	__env_voice,x		;
 	jsr	_nsd_snd_voice		;
 @L2:
 
@@ -109,17 +114,21 @@ exit:	rts
 	; to do	tai check
 	lda	__tai,x
 	and	#$01
-	beq	@L			;今回の音符がタイ・スラーだった終了
-@E:	rts
-@L:	lda	__chflag,x
+	bne	exit0			;今回の音符がタイ・スラーだった終了
+	lda	__chflag,x
 	and	#nsd_chflag::KeyOff
 	cmp	#nsd_chflag::KeyOff
-	bne	@E			;Key On(=3)の時のみ、処理。
-
+	beq	done			;Key On(=3)の時のみ、処理。
+exit0:
+	rts
+done:
 	;Software key Off
+	lda	__gatemode,x
+	and	#nsd_mode::gatemode
+	sta	__tmp
 	lda	__chflag,x
 	and	#~nsd_chflag::KeyOff
-	ora	__gatemode,x
+	ora	__tmp
 	sta	__chflag,x
 
 	;Hardware key off
@@ -128,7 +137,7 @@ exit:	rts
 	;-----------------------
 	;以降は、⊿PCMでは不要
 	cpx	#nsd::TR_BGM5
-	beq	exit
+	beq	exit0
 
 	;Portamento
 	lda	#$00
@@ -137,10 +146,19 @@ exit:	rts
 
 	;Frequency Envelop keyoff
 	lda	__env_frequency + 1,x
+.ifdef	DPCMBank
+	ora	__env_frequency,x
 	beq	Freq_End
+	lda	__env_frequency + 1,x
+.else
+	beq	Freq_End
+.endif
 	sta	__ptr + 1
 	lda	__env_frequency,x
 	sta	__ptr
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 	lda	(__ptr),y
 	beq	Freq_End
 	sta	__env_freq_ptr,x
@@ -151,10 +169,19 @@ Freq_End:
 
 	;Note Envelop keyoff
 	lda	__env_note + 1,x
+.ifdef	DPCMBank
+	ora	__env_note,x
 	beq	Note_End
+	lda	__env_note + 1,x
+.else
+	beq	Note_End
+.endif
 	sta	__ptr + 1
 	lda	__env_note,x
 	sta	__ptr
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 	lda	(__ptr),y
 	beq	Note_End
 	sta	__env_note_ptr,x
@@ -169,11 +196,16 @@ Note_End:
 	beq	exit
 
 	;Voice Envelop keyoff
-	lda	__env_voice + 1,x
+	lda	__gatemode,x
+	and	#nsd_mode::voice
 	beq	Voice_End
+	lda	__env_voice + 1,x
 	sta	__ptr + 1
 	lda	__env_voice,x
 	sta	__ptr
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 	lda	(__ptr),y
 	beq	Voice_End
 	sta	__env_voi_ptr,x
@@ -188,6 +220,9 @@ Voice_End:
 	sta	__ptr + 1
 	lda	__env_volume,x
 	sta	__ptr
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 	lda	(__ptr),y
 	beq	Volume_End
 	sta	__env_vol_ptr,x
@@ -220,7 +255,27 @@ exit:	rts
 ;	a	sequence data
 ;=======================================================================
 .proc	nsd_load_sequence
+.ifdef	DPCMBank
+
+	tya
+	pha
+
+	lda	__Sequence_ptr,x
+	sta	__ptr
+	lda	__Sequence_ptr + 1,x
+	sta	__ptr + 1
+	jsr	_nsd_ptr_bank
+	ldy	#0
+	lda	(__ptr),y
+
+	sta	__ptr
+	pla
+	tay
+	lda	__ptr
+
+.else
 	lda	(__Sequence_ptr,x)	;[6]
+.endif
 	inc	__Sequence_ptr,x	;[6]
 	bne	exit			;[2]
 	inc	__Sequence_ptr + 1,x
@@ -242,6 +297,29 @@ exit:	rts				;[6]
 ;=======================================================================
 .proc	nsd_load_ptr
 
+.ifdef	DPCMBank
+	lda	__Sequence_ptr,x	;
+	sta	__ptr			;
+	lda	__Sequence_ptr + 1,x	;
+	sta	__ptr + 1		;__ptr = __Sequence_ptr
+
+	jsr	_nsd_ptr_bank
+	ldy	#0
+	lda	(__ptr),y
+	sta	__tmp
+	iny
+	lda	(__ptr),y
+	sta	__tmp + 1
+
+	lda	__Sequence_ptr,x
+	sta	__ptr
+	add	#2
+	sta	__Sequence_ptr,x
+	lda	__Sequence_ptr + 1,x
+	sta	__ptr + 1
+	adc	#0
+	sta	__Sequence_ptr + 1,x
+.else
 	ldy	__Sequence_ptr,x	;
 	sty	__ptr			;
 	ldy	__Sequence_ptr + 1,x	;
@@ -258,10 +336,48 @@ exit:	rts				;[6]
 	bne	@L2			;[2]
 	inc	__Sequence_ptr + 1,x
 @L2:	sta	__tmp + 1		;__tmp = value
+.endif
 
 	rts
 .endproc
 
+;=======================================================================
+;		_nsd_ptr_bank;
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Bank Change and Calc. pointer
+;<<Input>>
+;	__ptr	16bit Pointer
+;<<Output>>
+;	__ptr	Real Address (8000 - BFFF) 100x xxxx xxxx xxxx
+;=======================================================================
+.ifdef	DPCMBank
+.proc	_nsd_ptr_bank
+
+	pha
+	tya
+	pha
+
+	lda	__ptr + 1
+	pha
+	and	#$0F
+	ora	#$80
+	sta	__ptr + 1
+	pla
+
+	shr	a, 4
+	add	#$03		;最初 3 bank は、音源ドライバ本体
+	sta	$5FF8
+	add	#1
+	sta	$5FF9
+
+	pla
+	tay
+	pla
+
+	rts
+.endproc
+.endif
 ;=======================================================================
 ;	void	nsd_sequence(void);
 ;-----------------------------------------------------------------------
@@ -363,6 +479,9 @@ opaddr:	.addr	nsd_op00
 	;-------------------------------
 	;now play?	(check: Sequence_ptr == 0 ?)	** upper 1 byte only **
 	lda	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	ora	__Sequence_ptr,x
+.endif
 	beq	Exit
 
 	stx	__channel		;channel <- x
@@ -694,12 +813,12 @@ nsd_op1A:
 ;-----------------------------------------------------------------------
 nsd_op07:
 	jsr	nsd_load_sequence
-	sta	__ptr
+	sta	__tmp
 	jsr	nsd_load_sequence
-	sta	__ptr + 1
+	sta	__tmp + 1
 	jsr	nsd_load_sequence
 	ldy	#0
-	sta	(__ptr),y
+	sta	(__tmp),y
 	jmp	Sequence
 
 ;=======================================================================
@@ -754,21 +873,27 @@ nsd_op0B:
 ;		opcode	0x0D:	gate mode	(vol = 0)
 ;-----------------------------------------------------------------------
 nsd_op0D:
-	lda	#$00
+	lda	__gatemode,x
+	and	#~nsd_mode::gatemode
+;	ora	#$00
 	sta	__gatemode,x
 	jmp	Sequence
 ;=======================================================================
 ;		opcode	0x0E:	gate mode
 ;-----------------------------------------------------------------------
 nsd_op0E:
-	lda	#$01
+	lda	__gatemode,x
+	and	#~nsd_mode::gatemode
+	ora	#$01
 	sta	__gatemode,x
 	jmp	Sequence
 ;=======================================================================
 ;		opcode	0x0F:	gate mode	(release)
 ;-----------------------------------------------------------------------
 nsd_op0F:
-	lda	#$02
+	lda	__gatemode,x
+	and	#~nsd_mode::gatemode
+	ora	#$02
 	sta	__gatemode,x
 	jmp	Sequence
 
@@ -776,6 +901,10 @@ nsd_op0F:
 ;		opcode	0x10:	Voice envelop. 
 ;-----------------------------------------------------------------------
 nsd_op10:
+	lda	__gatemode,x
+	ora	#nsd_mode::voice
+	sta	__gatemode,x
+
 	jsr	nsd_load_ptr
 
 	cpx	#nsd::TR_BGM3
@@ -806,9 +935,14 @@ nsd_op11:
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
 
+	lda	__tmp + 1
 	ora	__tmp
+.ifdef	DPCMBank
+	bne	@L
+	sta	__env_volume,x
+.endif
 	beq	@Zero
-
+@L:
 	lda	__ptr
 	add	__tmp
 	sta	__env_volume,x
@@ -821,6 +955,7 @@ nsd_op11:
 @Exit:
 	jmp	Sequence
 
+
 ;=======================================================================
 ;		opcode	0x12:	Frequency envelop. 
 ;-----------------------------------------------------------------------
@@ -830,9 +965,14 @@ nsd_op12:
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
 
+	lda	__tmp + 1
 	ora	__tmp
+.ifdef	DPCMBank
+	bne	@L
+	sta	__env_frequency,x
+.endif
 	beq	@Zero
-
+@L:
 	lda	__ptr
 	add	__tmp
 	sta	__env_frequency,x
@@ -854,9 +994,14 @@ nsd_op13:
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
 
+	lda	__tmp + 1
 	ora	__tmp
+.ifdef	DPCMBank
+	bne	@L
+	sta	__env_note,x
+.endif
 	beq	@Zero
-
+@L:
 	lda	__ptr
 	add	__tmp
 	sta	__env_note,x
@@ -924,6 +1069,10 @@ nsd_op17:
 ;		opcode	0x1B:	Voice
 ;-----------------------------------------------------------------------
 nsd_op1B:
+	lda	__gatemode,x
+	and	#~nsd_mode::voice
+	sta	__gatemode,x
+
 	lda	#0
 	sta	__env_voice + 1,x
 	jsr	nsd_load_sequence
@@ -960,6 +1109,9 @@ nsd_op1C:
 
 	ldx	#0			;8 byte table
 	ldy	#0
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 @L:
 	stx	VRC7_Resister		;●Resister Write
 	lda	(__ptr),y		;[5]
@@ -985,6 +1137,9 @@ nsd_op1C:
 
 	ldx	#0			;8 byte table
 	ldy	#0
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 @L2:
 	stx	OPLL_Resister		;●Resister Write
 	lda	(__ptr),y		;[5]
@@ -1052,6 +1207,10 @@ nsd_op1E:
 	lda	__ptr + 1
 	adc	__tmp + 1
 	sta	__ptr + 1		;__ptr テーブルのポインタ
+
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 
 	ldy	#0
 	lda	(__ptr),y
@@ -1124,6 +1283,9 @@ nsd_op22:
 	lda	#$80
 	sta	FDS_Write_Enable
 
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 	ldy	#0
 @L:
 	lda	(__ptr),y
@@ -1159,6 +1321,9 @@ nsd_op23:
 	ora	#$80
 	sta	FDS_Mod_CTUNE
 
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 	ldy	#0
 @L:
 	lda	(__ptr),y

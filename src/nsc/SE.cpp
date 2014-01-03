@@ -13,7 +13,7 @@
 //					–³‚µ
 //==============================================================
 SE::SE(MMLfile* MML, unsigned int _id, wchar_t _strName[]):
-	TrackSet(MML, _id, false, _strName)
+	TrackSet(MML, _id, false, true, _strName)
 {
 	
 }

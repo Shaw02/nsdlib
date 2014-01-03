@@ -244,9 +244,10 @@
 ;	Defines for work structures
 
 .scope	nsd_flag
-	BGM	= $01
-	SE	= $02
-	Disable	= $80
+	BGM		= $01
+	SE		= $02
+	Priority	= $0C
+	Disable		= $80
 .endscope
 
 ;Zero Page Works
@@ -418,6 +419,12 @@
 				;10	Key Off	:  envelop
 				;11	Note On	: (envelop)
 .endscope
+
+.scope	nsd_mode
+	voice		= $08
+	gatemode	= $03
+.endscope
+
 
 ;RAM Works
 .ifdef	HFX4

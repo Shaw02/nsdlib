@@ -23,13 +23,13 @@ bgm(0){
 
 	t208
 
-	TR1	v12		Ev0	l8o5	Em10	Major	[2	 r2.	]	L	c4"b4c4 e4d4c4	c2<a2 a4>c4	<	Mode(1)	b4a4b4	MMinor(2)	^4a4b4>
-	TR2	v7		Ev1	l8o4			Major	[2	 r4erer	]	L	[2	 r4erer	]	[2	 r4frfr	]	Mode(1)	r4drdr	MMinor(2)	 r4ergr
-	TR3	_+12		l8o4			Major	[2	"c4crcr	]	L	[2	"c4crcr	]	[2	"f4crcr	]<	Mode(1)	"b4frfr	MMinor(2)	"e4grbr
+	TR1	v12		Ev0	l8o5	Em10	Major	[2	 r2.	]	L	c4"b4c4 e4d4c4		c2<a2 a4>c4	<		Mode(1)	b4a4b4	MMinor(2)	^4a4b4>
+	TR2	v7		Ev1	l8o4			Major	[2	 r4erer	]	L	[2	 r4erer	]		[2	 r4frfr	]		Mode(1)	r4drdr	MMinor(2)	 r4ergr
+	TR3	_+12		l8o4			Major	[2	"c4crcr	]	L	"c4crcr	""g4crcr	"f4crcr "c4crcr<	Mode(1)	"b4frfr	MMinor(2)	"e4grbr
 
-	TR1		Mode(2)	c2.		^2.			d4e4f4	a4g4f4	Major	g2f4	e2d4		Major	c2.^2.^2.^2r4
-	TR2		Mode(2)	[2	 r4erer	]		[2	r4 frfr	]	Major	 r4grgr	 r4frfr		Major	[4	r4erer	]
-	TR3		Mode(2)	[2	"a4arar	]>		[2	"d4drdr	]	Major	"g4drdr	<g4brbr>	Major	[4	"c4crcr	]
+	TR1		Mode(2)	c2.		^2.			d4e4f4	a4g4f4		Major	g2f4		e2d4		Major	c2.^2.^2.^2r4
+	TR2		Mode(2)	[2	 r4erer	]		[2	r4 frfr	]		Major	r4grgr		r4frfr		Major	[4	r4erer	]
+	TR3		Mode(2)	"a4arar	"e4arar>	"d4drdr	""a4drdr	Major	""g4drdr	<d4brbr>	Major	[2	"c4crcr	""g4crcr	]
 
 	TR4				l4	o6	En6	Ev5	v8	L	r4c4c4
 }

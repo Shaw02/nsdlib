@@ -20,11 +20,13 @@ private:
 				int				iTrack;		//コンパイル中のトラック番号
 				int				maxTrack;	//トラック番号の最大値
 				bool			fSub;		//サブルーチン記述ブロックかどうかのフラグ
+				bool			fSE;		//SEかどうかのフラグ
 	unsigned	int				TrackPt;	//
 	unsigned	int				TrackLine;	//
+				int				Priority;	//
 //メンバー関数
 public:
-				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, const wchar_t _strName[] = L"==== [ Track Set ]====");
+				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const wchar_t _strName[] = L"==== [ Track Set ]====");
 				~TrackSet(void);
 
 		void	getAsm(MusicFile* MUS);
@@ -65,4 +67,6 @@ public:
 		void	SetVRC7_Write(MMLfile* MML);
 		void	SetN163Channel(MMLfile* MML);
 		void	Set_FME7_Frequency(MMLfile* MML);
+
+		void	SetPriority(MMLfile* MML);
 };
