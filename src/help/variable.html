@@ -204,7 +204,9 @@ typedef struct NSD_work {
 	<td>チャンネル毎のフラグ</td></tr>
 <tr><td>Flag[<var>n</var>].gatemode</td>
 	<td>__gatemode</td>
-	<td>ゲートモード（Rmコマンドの設定値）</td></tr>
+	<td>.... ..rr :	ゲートモード（Rmコマンドの設定値）<br>
+		.... e... :	音色エンベロープのスイッチ<br>
+		vvvv .... :	リリース時の音色（R@コマンドの数値）</td></tr>
 <tr><td>Length[<var>n</var>].length</td>
 	<td>__length</td>
 	<td>音長省略時の音長（lコマンドの設定値）</td></tr>
@@ -270,10 +272,10 @@ typedef struct NSD_work {
 		TR5（⊿PCM）はAPU ch2のsweepレジスタの現在値として使用。	</td></tr>
 <tr><td>Voice[<var>n</var>].voice</td>
 	<td>__voice</td>
-	<td>音色（R@コマンドの数値）</td></tr>
+	<td>音色（R@コマンドの数値）　<strong>※移動のため廃止</strong></td></tr>
 <tr><td>Voice[<var>n</var>].voice_set</td>
 	<td>__voice_set</td>
-	<td>現在発音している音色（音色エンベロープ適用後）</td></tr>
+	<td>現在発音している音色（音色エンベロープ適用後）<strong>※移動し廃止予定</strong></td></tr>
 <tr><td>Env_F_Now[<var>n</var>].Frequency</td>
 	<td>__env_freq_now</td>
 	<td>音程エンベロープの現在値</td></tr>

@@ -93,7 +93,7 @@
 	and	#nsd_mode::voice	;音量エンベロープが無効だったら
 	bne	@L2			;ここでKeyOn時の音色にする。
 	lda	__env_voice,x		;
-	jsr	_nsd_snd_voice		;
+	jmp	_nsd_snd_voice		;
 @L2:
 
 exit:	rts
@@ -235,9 +235,9 @@ Volume_End:
 	lda	__chflag,x
 	and	#$01			;●●●　最適化　●●●
 	beq	@VoiceE			;gatemode = 1 だったら、
-	lda	__voice,x		;ここでKeyOff時の音色にする。
+	lda	__gatemode,x		;ここでKeyOff時の音色にする。
 	shr	a, 4			; a = release voice
-	jsr	_nsd_snd_voice		;
+	jmp	_nsd_snd_voice		;
 @VoiceE:
 
 exit:	rts
@@ -256,14 +256,14 @@ exit:	rts
 ;=======================================================================
 .proc	nsd_load_sequence
 .ifdef	DPCMBank
-
 	tya
 	pha
 
-	lda	__Sequence_ptr,x
-	sta	__ptr
-	lda	__Sequence_ptr + 1,x
-	sta	__ptr + 1
+	ldy	__Sequence_ptr,x
+	sty	__ptr
+	ldy	__Sequence_ptr + 1,x
+	sty	__ptr + 1
+
 	jsr	_nsd_ptr_bank
 	ldy	#0
 	lda	(__ptr),y
@@ -274,14 +274,13 @@ exit:	rts
 	lda	__ptr
 
 .else
-	lda	(__Sequence_ptr,x)	;[6]
+	lda	(__Sequence_ptr,x)	;[6]	6*4+2 = 26clock (52clock)
 .endif
 	inc	__Sequence_ptr,x	;[6]
 	bne	exit			;[2]
 	inc	__Sequence_ptr + 1,x
 exit:	rts				;[6]
 .endproc
-
 ;=======================================================================
 ;		nsd_load_ptr;
 ;-----------------------------------------------------------------------
@@ -297,13 +296,32 @@ exit:	rts				;[6]
 ;=======================================================================
 .proc	nsd_load_ptr
 
-.ifdef	DPCMBank
 	lda	__Sequence_ptr,x	;
+.ifdef	DPCMBank
+	pha
+.endif
 	sta	__ptr			;
-	lda	__Sequence_ptr + 1,x	;
-	sta	__ptr + 1		;__ptr = __Sequence_ptr
+	add	#2			;[3]
+	sta	__Sequence_ptr,x	;[4]
 
+.ifdef	DPCMBank
+	lda	__Sequence_ptr + 1,x	;
+	sta	__ptr + 1		;	__ptr = __Sequence_ptr
+	pha
+	bcc	@l			;[2]9
+	tay
+.else
+	ldy	__Sequence_ptr + 1,x	;
+	sty	__ptr + 1		;	__ptr = __Sequence_ptr
+	bcc	@l			;[2]9
+.endif
+	iny				;
+	sty	__Sequence_ptr + 1,x	;
+@l:
+
+.ifdef	DPCMBank
 	jsr	_nsd_ptr_bank
+.endif
 	ldy	#0
 	lda	(__ptr),y
 	sta	__tmp
@@ -311,32 +329,14 @@ exit:	rts				;[6]
 	lda	(__ptr),y
 	sta	__tmp + 1
 
-	lda	__Sequence_ptr,x
-	sta	__ptr
-	add	#2
-	sta	__Sequence_ptr,x
-	lda	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	pla
 	sta	__ptr + 1
-	adc	#0
-	sta	__Sequence_ptr + 1,x
-.else
-	ldy	__Sequence_ptr,x	;
-	sty	__ptr			;
-	ldy	__Sequence_ptr + 1,x	;
-	sty	__ptr + 1		;__ptr = __Sequence_ptr
-
-	lda	(__Sequence_ptr,x)	;[6]
-	inc	__Sequence_ptr,x	;[6]
-	bne	@L1			;[2]
-	inc	__Sequence_ptr + 1,x
-@L1:	sta	__tmp
-
-	lda	(__Sequence_ptr,x)	;[6]
-	inc	__Sequence_ptr,x	;[6]
-	bne	@L2			;[2]
-	inc	__Sequence_ptr + 1,x
-@L2:	sta	__tmp + 1		;__tmp = value
+	pla
+	sta	__ptr
 .endif
+
+@exit:
 
 	rts
 .endproc
@@ -506,40 +506,37 @@ Exit:
 Sequence:
 	jsr	nsd_load_sequence	;[6]
 
-	cmp	#$80			;[2]
+	tay
+	asl	a
 	bcc	Control			;[2]	a >= 80 ?
 
 	;-----------------------
 	;op-code = 0x80 - 0xFF
 Note:
-	tay	;save a to y
 
 	;-------
-	;bit 4 check (Slur)
+	;bit 6 check (Slur)
 Chk_Slur:
-	clc
-	and	#$10
-	beq	@L
-	sec
-@L:	rol	__tai,x
+	asl	a
+	rol	__tai,x
 
 	;-------
 	;bit 5 check (Length )
 Chk_Length:
-	tya
-	and	#$20
-	bne	@L
+	asl	a
+	sta	__tmp
+	bcs	@L
 	lda	__length,x
 	bne	@E			;基本0じゃない。
 @L:	jsr	nsd_load_sequence
 @E:	sta	__Length_ctr,x
 
 	;-------
-	;bit 6 check (Gate Time)
+	;bit 4 check (Gate Time)
 Chk_GateTime:
-	tya
-	and	#$40
-	beq	@L
+	asl	__tmp
+	bcc	@L
+
 	jsr	nsd_load_sequence
 	sta	__tmp
 	lda	__Length_ctr,x
@@ -578,15 +575,29 @@ Calc_Note_Number:
 @Exit:
 	rts
 
+NoteSet:
+	add	__octave,x
+	add	__trans,x
+	add	__trans_one,x
+	sta	__note,x
+	lda	#0
+	sta	__trans_one,x	;0 reset
+	jmp	nsd_keyon
+
+;=======================================================================
+;		Control
+;=======================================================================
 
 	;-----------------------
 	;op-code = 0x00 - 0x7F
 Control:
-	cmp	#$40			;[2]
-	bcs	Short_Control		;[2]
+;	cmp	#$80			;[2]
+;	bcs	Short_Control		;[2]
+	bmi	Short_Control
+
 	;---------------
 	;op-code = 0x00 - 0x3F
-	asl				;[2]
+;	asl				;[2]
 	tay				;[2]	x <- a * 2
 	lda	opaddr,y		;[4]
 	sta	__ptr			;[3]
@@ -597,33 +608,37 @@ Control:
 	;---------------
 	;op-code = 0x40 - 0x7F
 Short_Control:
-
+	asl	a
 	;---------------
 	;op-code = 0x40 - 0x7F
 	;---------------
 	;0x40 - 0x4F
-op40:	cmp	#$50
-	bcs	op50
-	and	#$0F
+op40:	
+	asl	a
+	bcs	op60
+	bmi	op50
 	;Set default length
+	tya
+	and	#$0F
 	tay
 	lda	length,y
 	sta	__length,x		;__length = length[a & 0x0F];
 	jmp	Sequence
 	;---------------
 	;0x50 - 0x5F
-op50:	cmp	#$60
-	bcs	op60
-	and	#$0F
+op50:	
 	;Set gate time (1)
+	tya
+	and	#$0F
 	sta	__gate_q,x		;__gate_q = a & 0x0F;
 	jmp	Sequence
 	;---------------
 	;0x60 - 0x6F
-op60:	cmp	#$70
-	bcs	op70
-	and	#$0F
+op60:	
+	bmi	op70
 	;Set volume
+	tya
+	and	#$0F
 	sta	__tmp
 	lda	__volume,x
 	and	#$F0
@@ -633,25 +648,13 @@ op60:	cmp	#$70
 	;---------------
 	;0x70 - 0x7F
 op70:	;Ser release volume
-	shl	a, 4
+	asl	a
 	sta	__tmp
 	lda	__volume,x
 	and	#$0F
 	ora	__tmp
 	sta	__volume,x		;__volume = (__volume & 0x0F) | (a << 4);
 	jmp	Sequence
-
-
-	;---------------
-NoteSet:
-	add	__octave,x
-	add	__trans,x
-	add	__trans_one,x
-	sta	__note,x
-	lda	#0
-	sta	__trans_one,x	;0 reset
-	jmp	nsd_keyon
-
 
 ;=======================================================================
 ;		opcode	0x00:	End of Track / End of Subroutine
@@ -713,13 +716,31 @@ nsd_op02:
 ;-----------------------------------------------------------------------
 nsd_op01:
 Jump:
-	jsr	nsd_load_ptr
+	lda	__Sequence_ptr,x	;
+	sta	__ptr			;
+	ldy	__Sequence_ptr + 1,x	;
+	sty	__ptr + 1		;	__ptr = __Sequence_ptr
 
-	lda	__ptr
-	add	__tmp
+.ifdef	DPCMBank
+	sta	__tmp
+	sty	__tmp + 1
+	jsr	_nsd_ptr_bank
+.endif
+
+	ldy	#0			;[2]11
+.ifdef	DPCMBank
+	lda	__tmp
+.endif
+	add	(__ptr),y
 	sta	__Sequence_ptr,x
+
+	iny
+.ifdef	DPCMBank
+	lda	__tmp + 1
+.else
 	lda	__ptr + 1
-	adc	__tmp + 1
+.endif
+	adc	(__ptr),y
 	sta	__Sequence_ptr + 1,x	;__Sequence_ptr = __ptr + __tmp
 
 	jmp	Sequence
@@ -739,8 +760,7 @@ nsd_op04:
 	lda	__repeat_ctr,x
 	cmp	#1
 	beq	Jump
-	jsr	nsd_load_sequence
-	jsr	nsd_load_sequence
+	jsr	nsd_load_ptr
 	jmp	Sequence
 
 ;=======================================================================
@@ -749,8 +769,7 @@ nsd_op04:
 nsd_op05:
 	dec	__repeat_ctr,x
 	bne	Jump
-	jsr	nsd_load_sequence
-	jsr	nsd_load_sequence
+	jsr	nsd_load_ptr
 	jmp	Sequence
 
 ;=======================================================================
@@ -1042,27 +1061,47 @@ nsd_op16:
 ;		opcode	0x17:	Portamento (Frequency += n2, every n3 [VBlank]) 
 ;-----------------------------------------------------------------------
 nsd_op17:
-	cpx	#nsd::TR_BGM5
-	beq	@L
 
-	jsr	nsd_load_sequence	;decay
+	lda	__Sequence_ptr,x	;
+	sta	__ptr			;
+	add	#4			;[3]
+	sta	__Sequence_ptr,x	;[4]
+
+	ldy	__Sequence_ptr + 1,x	;
+	sty	__ptr + 1		;	__ptr = __Sequence_ptr
+	bcc	@l			;[2]9
+	iny				;
+	sty	__Sequence_ptr + 1,x	;
+@l:
+
+	cpx	#nsd::TR_BGM5
+	beq	@exit
+
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
+
+	ldy	#0
+	lda	(__ptr),y
 	sta	__por_ctr,x
-	jsr	nsd_load_sequence	;rate
+
+	iny
+	lda	(__ptr),y
 	sta	__por_rate,x
-	jsr	nsd_load_sequence	;depth
+
+	iny
+	lda	(__ptr),y
 	sta	__por_depth,x
-	jsr	nsd_load_sequence	;target
+
+	iny
+	lda	(__ptr),y
 	sta	__por_target,x
 
 	lda	#0
 	sta	__por_now + 0,x
 	sta	__por_now + 1,x		;現在の変位
 
-	jmp	Sequence
-
-@L:
-	jsr	nsd_load_ptr
-	jsr	nsd_load_ptr
+@exit:
 	jmp	Sequence
 
 ;=======================================================================
@@ -1453,10 +1492,10 @@ nsd_op30:
 	lda	#$00
 nsd_Set_Voice:
 	sta	__tmp
-	lda	__voice,x
+	lda	__gatemode,x
 	and	#$0F
 	ora	__tmp
-	sta	__voice,x
+	sta	__gatemode,x
 	jmp	Sequence
 
 nsd_op31:
@@ -1512,35 +1551,35 @@ nsd_op28_Exit:
 ;		opcode	0x38 - 0x3F:	Octave
 ;-----------------------------------------------------------------------
 nsd_op38:
+	lda	#0
+	beq	nsd_Set_Octave
+
+nsd_op39:
 	lda	#12
 	bne	nsd_Set_Octave
 
-nsd_op39:
+nsd_op3A:
 	lda	#24
 	bne	nsd_Set_Octave
 
-nsd_op3A:
+nsd_op3B:
 	lda	#36
 	bne	nsd_Set_Octave
 
-nsd_op3B:
+nsd_op3C:
 	lda	#48
 	bne	nsd_Set_Octave
 
-nsd_op3C:
+nsd_op3D:
 	lda	#60
 	bne	nsd_Set_Octave
 
-nsd_op3D:
+nsd_op3E:
 	lda	#72
 	bne	nsd_Set_Octave
 
-nsd_op3E:
-	lda	#84
-	bne	nsd_Set_Octave
-
 nsd_op3F:
-	lda	#96
+	lda	#84
 	bne	nsd_Set_Octave
 
 .endproc

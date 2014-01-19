@@ -389,8 +389,17 @@ Volume:
 	jmp	Set_Volume
 
 @L3:	lda	__env_volume + 1,x
+.ifdef	DPCMBank
+	ora	__env_volume,x
+	beq	@NOENV2
+	lda	__env_volume + 1,x
+	jmp	@Envelop
+.else
+	bne	@Envelop
+.endif
 	bne	@Envelop
 
+@NOENV2:
 	;Envelope –³Œø‚Ìˆ—
 	lda	__volume,x
 

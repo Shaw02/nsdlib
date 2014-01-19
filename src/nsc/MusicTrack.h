@@ -23,6 +23,11 @@ private:
 				int		count_repeat_a;
 	unsigned	int		DefaultLength;
 
+				int		opt_DefaultLength;
+				int		opt_gatetime_q;			//
+				int		opt_gatetime_u;			//
+				int		opt_volume;
+
 	//調号制御用
 				char	KeySignature[8];	//調号(c,d,e,f,g,a,b,r)
 				char	nowKey;				//現在の調
@@ -36,6 +41,7 @@ private:
 
 				bool	echo_flag;			//疑似エコー フラグ
 				bool	echo_slur;			//疑似エコー スラーでつなげる？
+				int		echo_length;		//疑似エコー 長さ
 	unsigned	char	echo_volume;		//疑似エコー 音量
 	unsigned	char	echo_value;			//疑似エコー 何前？
 				char	oldNote[256];		//疑似エコー用バッファ
@@ -94,6 +100,8 @@ public:
 				void	SetScale(MMLfile* MML);
 				void	SetKeySignature(MMLfile* MML);	//調号の設定
 
+				void	ResetEcho();
+				void	GenerateEcho(int Length, int GateTime, bool	Slur);
 				void	SetNote(MMLfile* MML, int note);
 				void	SetRest(MMLfile* MML, int mode);
 				void	SetTai(MMLfile* MML);
@@ -105,9 +113,20 @@ public:
 				void	IncOctave1(void){octave1++;};
 				void	DecOctave1(void){octave1--;};
 
-				void	SetVolume(char _v){volume = _v;};
-				void	IncVolume(void){	volume++;	if(volume>15){volume = 15;}	};
-				void	DecVolume(void){	volume--;	if(volume<0){volume = 0;}	};
+				void	SetVolume(char _v){volume = _v;	opt_volume = volume;};
+				void	IncVolume(void){	volume++;	if(volume>15){volume = 15;}	opt_volume = volume;	};
+				void	DecVolume(void){	volume--;	if(volume<0){volume = 0;}	opt_volume = volume;	};
 	unsigned	int		GetDefaultLength(void){return(DefaultLength);};
 
+				void	Reset_opt(void){
+					opt_volume			= -1;
+					opt_gatetime_q		= -1;
+					opt_gatetime_u		= -1;
+					opt_DefaultLength	= -1;
+				}
+				int		Get_opt_volume(void){		return(opt_volume);	};
+				int		Get_opt_gatetime_q(void){	return(opt_gatetime_q);	};
+				void	Set_opt_gatetime_q(int i){	opt_gatetime_q = i;	};
+				int		Get_opt_gatetime_u(void){	return(opt_gatetime_u);	};
+				void	Set_opt_gatetime_u(int i){	opt_gatetime_u = i;	};
 };

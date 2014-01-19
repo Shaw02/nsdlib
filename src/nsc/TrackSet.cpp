@@ -62,6 +62,7 @@ enum	Command_ID_mml {
 
 	mml_Echo,
 	mml_Echo_Off,
+	mml_Echo_Reset,
 
 	mml_Envelop_Voice,
 	mml_Envelop_Volume,
@@ -205,6 +206,7 @@ const	static	Command_Info	Command[] = {
 		{	"ゲート",	mml_Gate_q				},
 		{	"u",		mml_Gate_u				},
 
+		{	"EC-",			mml_Echo_Reset			},
 		{	"EC*",			mml_Echo_Off			},
 		{	"EC",			mml_Echo				},
 		{	"エコーオフ",	mml_Echo_Off			},
@@ -478,6 +480,10 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Gate_u):
 				SetGatetime_u(MML);
+				break;
+
+			case(mml_Echo_Reset):
+				nowTrack->ResetEcho();
 				break;
 
 			case(mml_Echo_Off):
@@ -949,13 +955,13 @@ void	TrackSet::SetTempo(MMLfile* MML)
 //==============================================================
 void	TrackSet::SetOctave(MMLfile* MML)
 {
-	unsigned	int	iOctave = MML->GetInt() - 2;
+	unsigned	int	iOctave = MML->GetInt() - 1;
 
 	if( (iOctave <= 7) && (iOctave >=0) ){
 		SetEvent(new mml_general(nsd_Octave + (unsigned char)iOctave, L"Octave"));
 		nowTrack->SetOctave((unsigned char)iOctave);
 	} else {
-		MML->Err(L"オクターブは2～9の範囲で指定してください。o1の領域は相対オクターブをご利用ください。");
+		MML->Err(L"オクターブは1～8の範囲で指定してください。");
 	}
 }
 
@@ -996,8 +1002,10 @@ void	TrackSet::SetVolume(MMLfile* MML)
 	unsigned	int	i = MML->GetInt();
 
 	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Volume + (unsigned char)i, L"Volume"));
-		nowTrack->SetVolume((unsigned char)i);
+		if(nowTrack->Get_opt_volume() != i){
+			SetEvent(new mml_general(nsd_Volume + (unsigned char)i, L"Volume"));
+			nowTrack->SetVolume((unsigned char)i);
+		}
 	} else {
 		MML->Err(L"音量は0～15の範囲で指定してください。");
 	}
@@ -1095,13 +1103,17 @@ void	TrackSet::SetGatetime(MMLfile* MML)
 {
 	unsigned	int	i = MML->GetInt();
 
-	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_GateTime_Byte + (unsigned char)i, L"Gatetime(q) Byte"));
-	} else if( i <= 255) {
-		SetEvent(new mml_general(nsd_GateTime_q, (unsigned char)i, L"Gatetime(q)"));
-	} else {
-		MML->Err(L"ゲートタイムqは0～255の範囲で指定して下さい。");
+	if(nowTrack->Get_opt_gatetime_q() != i){
+		nowTrack->Set_opt_gatetime_q(i);
+		if( (i <= 15) && (i >= 0) ){
+			SetEvent(new mml_general(nsd_GateTime_Byte + (unsigned char)i, L"Gatetime(q) Byte"));
+		} else if( i <= 255) {
+			SetEvent(new mml_general(nsd_GateTime_q, (unsigned char)i, L"Gatetime(q)"));
+		} else {
+			MML->Err(L"ゲートタイムqは0～255の範囲で指定して下さい。");
+		}
 	}
+
 }
 
 //==============================================================
@@ -1114,10 +1126,9 @@ void	TrackSet::SetGatetime(MMLfile* MML)
 //==============================================================
 void	TrackSet::SetGatetime_u(MMLfile* MML)
 {
-	unsigned		int	i;
+	unsigned		int		i;
 	unsigned		char	cData;
 
-	//休符のモード
 	cData = MML->GetChar();
 	if(cData == '0'){
 		i = 0;
@@ -1125,8 +1136,11 @@ void	TrackSet::SetGatetime_u(MMLfile* MML)
 		MML->Back();
 		i = MML->GetLength(nowTrack->GetDefaultLength());
 	}
-	SetEvent(new mml_general(nsd_GateTime_u, (unsigned char)i, L"GateTime(u)"));
-	
+
+	if(nowTrack->Get_opt_gatetime_u() != i){
+		nowTrack->Set_opt_gatetime_u(i);
+		SetEvent(new mml_general(nsd_GateTime_u, (unsigned char)i, L"GateTime(u)"));
+	}	
 }
 
 //==============================================================

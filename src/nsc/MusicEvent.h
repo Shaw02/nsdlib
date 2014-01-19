@@ -75,9 +75,9 @@
 #define	nsd_Release_Volume		0x70
 #define	nsd_Note				0x80
 
-#define	nsd_Note_Slur			0x10
+#define	nsd_Note_Slur			0x40
 #define	nsd_Note_Length			0x20
-#define	nsd_Note_Gate			0x40
+#define	nsd_Note_Gate			0x10
 
 /****************************************************************/
 /*																*/

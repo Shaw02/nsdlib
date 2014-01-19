@@ -743,6 +743,9 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 		iDot	= iLength;
 		//付点
 		while((cData = cRead()) == '.'){
+			if(iLength == -1){
+				Err(L"音長の記述なしに付点を使う場合は、前もってl コマンドを記述して下さい。");
+			}
 			iMod = (iDot & 0x01);
 			iDot >>= 1;
 			if(iMod != 0){

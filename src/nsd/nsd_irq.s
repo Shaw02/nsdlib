@@ -12,6 +12,10 @@
 	.import		_nsd_snd_keyon
 	.import		_nsd_dpcm_calc
 
+.ifdef	DPCMBank
+	.import		_nsd_ptr_bank
+.endif
+
 	.importzp	nsd_work_zp
 	.import		nsd_work
 
@@ -56,6 +60,9 @@ DPCM_IRQ:
 	;next DPCM
 	ldx	#nsd::TR_BGM5
 	jsr	_nsd_dpcm_calc		;現在の構造体から取得
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 
 	;次に発音するノート番号
 	ldy	#5
@@ -63,6 +70,9 @@ DPCM_IRQ:
 	sta	__note,x
 
 	jsr	_nsd_dpcm_calc		;これから発音する構造体から取得
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
 
 	;bank number
 	ldy	#4

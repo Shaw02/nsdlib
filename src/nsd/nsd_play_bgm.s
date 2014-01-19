@@ -185,8 +185,8 @@ Loop_End:
 	sta	__env_voi_ptr,x
 	lda	#$02
 	sta	__env_voice,x
-	lda	#$00
-	sta	__voice,x
+;	lda	#$00
+;	sta	__voice,x	;îpé~
 	lda	#$2F
 	sta	__volume,x
 Step:

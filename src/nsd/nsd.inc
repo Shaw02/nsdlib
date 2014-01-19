@@ -416,7 +416,7 @@ PSG_Envelope_Form	= $0D
 .Endstruct
 
 .Struct		NSD_voice
-	voice		.byte		;`@R' command value (upper 4bit)
+	voice		.byte		;`@R' command value (upper 4bit)	;Å¶îpé~
 	voice_set	.byte		;deveice setting value
 .Endstruct
 
@@ -514,6 +514,7 @@ PSG_Envelope_Form	= $0D
 .endscope
 
 .scope	nsd_mode
+	voiceR		= $F0
 	voice		= $08
 	gatemode	= $03
 .endscope
@@ -548,7 +549,7 @@ PSG_Envelope_Form	= $0D
 .define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
 .define	__repeat_ctr2	nsd_work + NSD_work::Repeat + NSD_Repeat::count2
 .define	__volume	nsd_work + NSD_work::Volume + NSD_volume::volume
-.define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
+;.define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice
 .define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set
 .define	__frequency	nsd_work + NSD_work::Frequency
 .define	__subroutine	nsd_work + NSD_work::SubRoutine
