@@ -54,6 +54,8 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 													　2 … 直前のノートのエンベロープ（音色・音量）を継続します。（Default）<br></td></tr>
 <tr><td>#wait <var>n</var>					</td><td>シーケンス記述ブロック内におけるw コマンドのモードを設定します（Default: <var>n</var> = 0）<br>
 													数値の意味は、#rest コマンドと同じです。</td></tr>
+<tr><td>#QMax <var>n</var>					</td><td>シーケンス記述ブロック内におけるQ コマンドの分母を設定します（Default: <var>n</var> = 8）<br>
+													実際の発音音長は、音長 × Qコマンドの値 ÷ <var>n</var> となります。</td></tr>
 <tr><td>#offsetE@ <var>n</var>				</td><td>シーケンス記述ブロック内にて、E@コマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
 <tr><td>#offsetEv <var>n</var>				</td><td>シーケンス記述ブロック内にて、Evコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>
 <tr><td>#offsetEm <var>n</var>				</td><td>シーケンス記述ブロック内にて、Emコマンドの引数を指定数値だけずらします。（Default: <var>n</var> = 0）</td></tr>

@@ -257,7 +257,7 @@
 					<param name="Local" value="mml_octave.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="q,u：省略時のゲートタイム">
+					<param name="Name" value="Q,q,u：省略時のゲートタイム">
 					<param name="Local" value="mml_gate.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
@@ -323,6 +323,10 @@
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="L：無限ループ">
 					<param name="Local" value="mml_loop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="J：音符・休符の無効化">
+					<param name="Local" value="mml_jump.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="NC:n163チャンネル数設定">

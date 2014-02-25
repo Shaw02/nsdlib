@@ -23,22 +23,6 @@ private:
 				int		count_repeat_a;
 	unsigned	int		DefaultLength;
 
-				int		opt_DefaultLength;
-				int		opt_gatetime_q;			//
-				int		opt_gatetime_u;			//
-				int		opt_volume;
-
-	//調号制御用
-				char	KeySignature[8];	//調号(c,d,e,f,g,a,b,r)
-				char	nowKey;				//現在の調
-				char	nowScale;			//現在のスケール（モード）
-				
-	unsigned	char	pt_oldNote;			//前回の音程
-				char	volume;				//音量
-				char	octave;				//オクターブ
-				char	octave1;			//
-				char	octave1_old;		//
-
 				bool	echo_flag;			//疑似エコー フラグ
 				bool	echo_slur;			//疑似エコー スラーでつなげる？
 				int		echo_length;		//疑似エコー 長さ
@@ -46,6 +30,28 @@ private:
 	unsigned	char	echo_value;			//疑似エコー 何前？
 				char	oldNote[256];		//疑似エコー用バッファ
 
+	unsigned	char	pt_oldNote;			//前回の音程
+				char	volume;				//音量
+				char	octave;				//オクターブ
+				char	octave1;			//
+				char	octave1_old;		//
+
+	unsigned	int		gatetime_q;
+	unsigned	int		gatetime_Q;
+	unsigned	int		QMax;
+
+				int		opt_DefaultLength;
+				int		opt_gatetime_q;			//
+				int		opt_gatetime_u;			//
+				int		opt_volume;
+
+				bool	jump_flag;			//ジャンプフラグ
+
+	//調号制御用
+				char	KeySignature[8];	//調号(c,d,e,f,g,a,b,r)
+				char	nowKey;				//現在の調
+				char	nowScale;			//現在のスケール（モード）
+				
 	mml_note*			_old_note;
 	mml_Address*		_old_repeatA_Branch;
 	mml_repeat*			_old_repeat;
@@ -60,7 +66,7 @@ private:
 
 //メンバー関数
 public:
-			MusicTrack(const wchar_t _strName[] = L"==== [ Music Track ]====");
+			MusicTrack(MMLfile* MML, const wchar_t _strName[] = L"==== [ Music Track ]====");
 			~MusicTrack(void);
 
 				void	Fix_Address(MusicFile* MUS);
@@ -90,6 +96,13 @@ public:
 				void	SetEcho(void);
 				void	SetEcho(MMLfile* MML);
 
+				void	SetJump(MMLfile* MML);
+
+				void	Set_q(int i);
+				void	SetGatetime_Q(MMLfile* MML);
+				void	SetGatetime(MMLfile* MML);
+				void	SetGatetime_u(MMLfile* MML);
+
 				void	SetKeyFlag(char _c, char _d, char _e, char _f, char _g, char _a, char _b);
 				void	SetKey(int _key, int _scale);
 
@@ -107,12 +120,12 @@ public:
 				void	SetTai(MMLfile* MML);
 				void	SetLength(MMLfile* MML);
 
-				void	SetOctave(char _o){octave = _o;};
-				void	IncOctave(void){octave++;};
-				void	DecOctave(void){octave--;};
-				void	IncOctave1(void){octave1++;};
-				void	DecOctave1(void){octave1--;};
-
+				void	SetOctave(MMLfile* MML);
+				void	SetOctaveInc();
+				void	SetOctaveDec();
+				void	SetOctaveOne_Inc();
+				void	SetOctaveOne_Dec();
+		
 				void	SetVolume(char _v){volume = _v;	opt_volume = volume;};
 				void	IncVolume(void){	volume++;	if(volume>15){volume = 15;}	opt_volume = volume;	};
 				void	DecVolume(void){	volume--;	if(volume<0){volume = 0;}	opt_volume = volume;	};
@@ -125,8 +138,4 @@ public:
 					opt_DefaultLength	= -1;
 				}
 				int		Get_opt_volume(void){		return(opt_volume);	};
-				int		Get_opt_gatetime_q(void){	return(opt_gatetime_q);	};
-				void	Set_opt_gatetime_q(int i){	opt_gatetime_q = i;	};
-				int		Get_opt_gatetime_u(void){	return(opt_gatetime_u);	};
-				void	Set_opt_gatetime_u(int i){	opt_gatetime_u = i;	};
 };

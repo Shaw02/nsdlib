@@ -18,6 +18,7 @@ MMLfile::MMLfile(const char*	strFileName):
 	octave_reverse(false),
 	rest(2),
 	wait(0),
+	QMax(8),
 	priority(0),
 //	f_macro(false),
 	p_macro(0),
@@ -865,10 +866,10 @@ int	MMLfile::GetCommandID(const Command_Info _command[], unsigned int _size)
 void	MMLfile::Err(const wchar_t msg[])
 {
 	//現在のファイル名と、行数を表示
-	cout << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
+	cerr << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 
 	//エラー内容を表示
-	wcout << msg << endl;
+	wcerr << msg << endl;
 
 	//異常終了
 	exit(-1);
@@ -885,8 +886,8 @@ void	MMLfile::Err(const wchar_t msg[])
 void	MMLfile::Warning(const wchar_t msg[])
 {
 	//現在のファイル名と、行数を表示
-	cout << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
+	cerr << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 
 	//ワーニング内容を表示
-	wcout << msg << endl;
+	wcerr << msg << endl;
 }

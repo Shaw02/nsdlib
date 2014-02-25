@@ -27,6 +27,7 @@
 <div class='block'>
 <h3>定義（Define）</h3>
 <code><pre>
+        Q<var>gate-quantize</var>
         q<var>gate-time</var>
         u<var>gate-length</var>
 </pre></code>
@@ -36,11 +37,20 @@
 <div class='block'>
 <h3>引数（Inputs）</h3>
 
+<h4>gate-quantize　（`Q'命令の引数）</h4>
+<p>
+発音長を、音長 × <var>gate-quantize</var> ÷ #Qmaxコマンドの数値[tick]にします。<br>
+1～#Qmaxコマンドの範囲で指定してください。<br>
+ＭＭＬコンパイラの疑似命令であり、以下の q コマンドにより機能を実現しています。<br>
+そのため、q コマンドと同時に使用する事はできません。<br>
+</p>
+
 <h4>gate-time　（`q'命令の引数）</h4>
 <p>
 発音長を、<var>gate-time</var>[tick]だけ短くします。<br>
 0～255の範囲で指定してください。（Default: <var>gate-time</var> = 0）<br>
 0で無効です。<br>
+Q コマンドを使っていた場合、このコマンドにより解除されます。<br>
 </p>
 
 <h4>gate-length　（`u'命令の引数）</h4>

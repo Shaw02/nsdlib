@@ -34,18 +34,12 @@ public:
 
 		void	TrackChk(MMLfile* MML);
 		void	TrackProc(MMLfile* MML);
-	MusicTrack*	makeTrack(int _track);
-	MusicTrack*	getTrack(int _track);
+	MusicTrack*	makeTrack(MMLfile* MML, int _track);
+	MusicTrack*	getTrack(MMLfile* MML, int _track);
 
 		void	SetEvent(MusicItem* _item);		//ƒCƒxƒ“ƒg‚Ì’Ç‰Á
 
 		void	SetTempo(MMLfile* MML);
-
-		void	SetOctave(MMLfile* MML);
-		void	SetOctaveInc();
-		void	SetOctaveDec();
-		void	SetOctaveOne_Inc();
-		void	SetOctaveOne_Dec();
 
 		void	SetVolume(MMLfile* MML);
 		void	SetVolumeInc();
@@ -54,9 +48,6 @@ public:
 		void	SetReleaseMode(MMLfile* MML);
 		void	SetReleaseVoice(MMLfile* MML);
 		void	SetReleaseVolume(MMLfile* MML);
-
-		void	SetGatetime(MMLfile* MML);
-		void	SetGatetime_u(MMLfile* MML);
 
 		void	SetProtament(MMLfile* MML);
 		void	SetSweep(MMLfile* MML);

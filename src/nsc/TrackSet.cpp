@@ -57,12 +57,15 @@ enum	Command_ID_mml {
 	mml_Tai,
 
 	mml_Length,
+	mml_Gate_Q,
 	mml_Gate_q,
 	mml_Gate_u,
 
 	mml_Echo,
 	mml_Echo_Off,
 	mml_Echo_Reset,
+
+	mml_Jump,
 
 	mml_Envelop_Voice,
 	mml_Envelop_Volume,
@@ -202,6 +205,7 @@ const	static	Command_Info	Command[] = {
 
 		{	"l",		mml_Length				},
 		{	"音符",		mml_Length				},
+		{	"Q",		mml_Gate_Q				},
 		{	"q",		mml_Gate_q				},
 		{	"ゲート",	mml_Gate_q				},
 		{	"u",		mml_Gate_u				},
@@ -211,6 +215,8 @@ const	static	Command_Info	Command[] = {
 		{	"EC",			mml_Echo				},
 		{	"エコーオフ",	mml_Echo_Off			},
 		{	"エコー",		mml_Echo				},
+
+		{	"J",			mml_Jump				},
 
 		{	"E@*",	mml_Envelop_Off_Voice		},
 		{	"Ev*",	mml_Envelop_Off_Volume		},
@@ -302,7 +308,7 @@ const	static	Command_Info	Command[] = {
 	}
 
 	//まずは、１つだけトラック（0番）のオブジェクトを作る。
-	nowTrack	= makeTrack(iTrack);
+	nowTrack	= makeTrack(MML, iTrack);
 	nowTrack->SetCompileFlag(true);
 
 
@@ -474,12 +480,16 @@ const	static	Command_Info	Command[] = {
 				nowTrack->SetLength(MML);
 				break;
 
+			case(mml_Gate_Q):
+				nowTrack->SetGatetime_Q(MML);
+				break;
+
 			case(mml_Gate_q):
-				SetGatetime(MML);
+				nowTrack->SetGatetime(MML);
 				break;
 
 			case(mml_Gate_u):
-				SetGatetime_u(MML);
+				nowTrack->SetGatetime_u(MML);
 				break;
 
 			case(mml_Echo_Reset):
@@ -492,6 +502,10 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Echo):
 				nowTrack->SetEcho(MML);
+				break;
+
+			case(mml_Jump):
+				nowTrack->SetJump(MML);
 				break;
 
 			case(mml_Envelop_Voice):
@@ -575,31 +589,31 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Octave):
-				SetOctave(MML);
+				nowTrack->SetOctave(MML);
 				break;
 
 			case(mml_Octave_Up):
 				if(MML->octave_reverse == true){
-					SetOctaveDec();
+					nowTrack->SetOctaveDec();
 				} else {
-					SetOctaveInc();
+					nowTrack->SetOctaveInc();
 				}
 				break;
 
 			case(mml_Octave_Down):
 				if(MML->octave_reverse == true){
-					SetOctaveInc();
+					nowTrack->SetOctaveInc();
 				} else {
-					SetOctaveDec();
+					nowTrack->SetOctaveDec();
 				}
 				break;
 
 			case(mml_Octave_Up1):
-				SetOctaveOne_Inc();
+				nowTrack->SetOctaveOne_Inc();
 				break;
 
 			case(mml_Octave_Down1):
-				SetOctaveOne_Dec();
+				nowTrack->SetOctaveOne_Dec();
 				break;
 
 			case(mml_Detune_Cent):
@@ -789,7 +803,7 @@ void	TrackSet::TrackChk(MMLfile* MML)
 		//ポインタと行番号を復帰
 		MML->StreamPointerMove(TrackPt);
 		MML->SetLine(TrackLine);
-		nowTrack = getTrack(iTrack);
+		nowTrack = getTrack(MML, iTrack);
 	} else {
 		nowTrack = NULL;
 	}
@@ -830,7 +844,7 @@ void	TrackSet::TrackProc(MMLfile* MML)
 			if( (iTrack <= -1) ){
 				MML->Err(L"トラック番号で指定できる範囲を超えています。");
 			}
-			nowTrack = getTrack(iTrack);
+			nowTrack = getTrack(MML, iTrack);
 			nowTrack->SetCompileFlag(true);
 			cData = MML->GetChar();
 		} while(cData == ',');
@@ -845,7 +859,7 @@ void	TrackSet::TrackProc(MMLfile* MML)
 		while(i <= maxTrack){
 			if(ptcTrack[i]->GetCompileFlag() == true){
 				iTrack = i;
-				nowTrack = getTrack(iTrack);
+				nowTrack = getTrack(MML, iTrack);
 				break;
 			}
 			i++;
@@ -863,10 +877,10 @@ void	TrackSet::TrackProc(MMLfile* MML)
 //	●返値
 //		MusicTrack*					作ったトラック・オブジェクトのポインタ
 //==============================================================
-MusicTrack*	TrackSet::makeTrack(int _track)
+MusicTrack*	TrackSet::makeTrack(MMLfile* MML, int _track)
 {
 	//トラックのオブジェクトを生成。
-	MusicTrack*	newTrack	= new MusicTrack();
+	MusicTrack*	newTrack	= new MusicTrack(MML);
 
 	//生成したアイテムは保存
 	ptcItem.push_back(newTrack);		//基底クラス"MusicItem"側で開放する。
@@ -888,7 +902,7 @@ MusicTrack*	TrackSet::makeTrack(int _track)
 //		無かった場合は新たにトラックを作って、
 //		トラック番号が最大値を超えていたら最大値を更新する。
 //==============================================================
-MusicTrack*	TrackSet::getTrack(int _track)
+MusicTrack*	TrackSet::getTrack(MMLfile* MML, int _track)
 {
 			int	i			 = maxTrack;	// i = 今ある、最終トラックの番号
 	MusicTrack*	_getTrack;
@@ -898,9 +912,9 @@ MusicTrack*	TrackSet::getTrack(int _track)
 		i++;
 		//トラックが無かったら作る
 		if(ptcTrack.count(i) == 0){
-			_getTrack	= makeTrack(i);
+			_getTrack	= makeTrack(MML, i);
 		} else {
-			wcout << L"MusicTrack* TrackSet::getTrack()関数でエラーが発生しました。" << endl;
+			wcerr << L"MusicTrack* TrackSet::getTrack()関数でエラーが発生しました。" << endl;
 			exit(-1);
 		}
 	}
@@ -943,50 +957,6 @@ void	TrackSet::SetTempo(MMLfile* MML)
 	}
 
 	SetEvent(new mml_general(nsd_Tempo, (unsigned char)iTempo, L"Tempo"));
-}
-
-//==============================================================
-//		オクターブ
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetOctave(MMLfile* MML)
-{
-	unsigned	int	iOctave = MML->GetInt() - 1;
-
-	if( (iOctave <= 7) && (iOctave >=0) ){
-		SetEvent(new mml_general(nsd_Octave + (unsigned char)iOctave, L"Octave"));
-		nowTrack->SetOctave((unsigned char)iOctave);
-	} else {
-		MML->Err(L"オクターブは1～8の範囲で指定してください。");
-	}
-}
-
-void	TrackSet::SetOctaveInc()
-{
-	SetEvent(new mml_general(nsd_Octave_Up, L"Octave Up"));
-	nowTrack->IncOctave();
-}
-
-void	TrackSet::SetOctaveDec()
-{
-	SetEvent(new mml_general(nsd_Octave_Down, L"Octave Down"));
-	nowTrack->DecOctave();
-}
-
-void	TrackSet::SetOctaveOne_Inc()
-{
-	SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
-	nowTrack->IncOctave1();
-}
-
-void	TrackSet::SetOctaveOne_Dec()
-{
-	SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
-	nowTrack->DecOctave1();
 }
 
 //==============================================================
@@ -1089,58 +1059,6 @@ void	TrackSet::SetReleaseVolume(MMLfile* MML)
 	} else {
 		MML->Err(L"音量は0～15の範囲で指定してください。");
 	}
-}
-
-//==============================================================
-//		ゲートタイム(q)
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetGatetime(MMLfile* MML)
-{
-	unsigned	int	i = MML->GetInt();
-
-	if(nowTrack->Get_opt_gatetime_q() != i){
-		nowTrack->Set_opt_gatetime_q(i);
-		if( (i <= 15) && (i >= 0) ){
-			SetEvent(new mml_general(nsd_GateTime_Byte + (unsigned char)i, L"Gatetime(q) Byte"));
-		} else if( i <= 255) {
-			SetEvent(new mml_general(nsd_GateTime_q, (unsigned char)i, L"Gatetime(q)"));
-		} else {
-			MML->Err(L"ゲートタイムqは0～255の範囲で指定して下さい。");
-		}
-	}
-
-}
-
-//==============================================================
-//		ゲートタイム(u)
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetGatetime_u(MMLfile* MML)
-{
-	unsigned		int		i;
-	unsigned		char	cData;
-
-	cData = MML->GetChar();
-	if(cData == '0'){
-		i = 0;
-	} else {
-		MML->Back();
-		i = MML->GetLength(nowTrack->GetDefaultLength());
-	}
-
-	if(nowTrack->Get_opt_gatetime_u() != i){
-		nowTrack->Set_opt_gatetime_u(i);
-		SetEvent(new mml_general(nsd_GateTime_u, (unsigned char)i, L"GateTime(u)"));
-	}	
 }
 
 //==============================================================

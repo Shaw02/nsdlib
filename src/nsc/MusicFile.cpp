@@ -47,6 +47,7 @@ enum	Command_ID_MusicFile {
 	id_offset_Ev,
 	id_offset_En,
 	id_offset_Em,
+	id_QMax,
 	id_rest,
 	id_wait,
 
@@ -125,6 +126,8 @@ const	static	Command_Info	Command[] = {
 		{	"#offsetEn",		id_offset_En	},
 		{	"#Priority",		id_Priority		},
 		{	"#priority",		id_Priority		},
+		{	"#QMax",			id_QMax			},
+		{	"#Qmax",			id_QMax			},
 		{	"#Rest",			id_rest			},
 		{	"#rest",			id_rest			},
 		{	"#Wait",			id_wait			},
@@ -271,6 +274,9 @@ const	static	Command_Info	Command[] = {
 				if((MML->priority<0) || (MML->priority>3)){
 					MML->Err(L"#priorityコマンドは、0～3の範囲で指定してください。");
 				}
+				break;
+			case(id_QMax):
+				MML->QMax = MML->GetInt();
 				break;
 			case(id_rest):
 				MML->rest = MML->GetInt();
@@ -660,8 +666,8 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		make_bin(bin_size, 0x8000);
 
 		if(Header.bank == true){
-			wcout << L"指定の.binファイルは、⊿PCMのバンクに対応していません。" << endl;
-			wcout << L"⊿PCMのバンクに対応した.binファイルを指定してください。" << endl;
+			wcerr << L"指定の.binファイルは、⊿PCMのバンクに対応していません。" << endl;
+			wcerr << L"⊿PCMのバンクに対応した.binファイルを指定してください。" << endl;
 			exit(-1);
 		}
 
@@ -677,7 +683,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		wcout << L"  Size = " << (unsigned int)mus_size << L" [Byte] / " << Header.offsetPCM - 0x8000 << L" [Byte]" << endl;
 
 		if((0x8000 + mus_size) > Header.offsetPCM){
-			wcout << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
+			wcerr << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
 			exit(-1);
 		}
 
@@ -691,8 +697,8 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		iSizeLimit = 0x10000;	//拡張RAMへの転送有り
 
 		if(Header.bank == false){
-			wcout << L"指定の.binファイルは、⊿PCMのバンクに対応しています。" << endl;
-			wcout << L"#Bankコマンドを指定してください。" << endl;
+			wcerr << L"指定の.binファイルは、⊿PCMのバンクに対応しています。" << endl;
+			wcerr << L"#Bankコマンドを指定してください。" << endl;
 			exit(-1);
 		}
 
@@ -713,7 +719,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 		//サイズチェック
 		if(mus_size > iSizeLimit){
-			wcout << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
+			wcerr << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
 			exit(-1);
 		}
 
@@ -735,7 +741,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		wcout << L"  Size = " << (unsigned int)pcm_size << L" [Byte] / " << 0x10000 - Header.offsetPCM << L" [Byte]" << endl;
 
 		if(	(Header.offsetPCM + pcm_size) > 0x10000	){
-			wcout << L"⊿PCMのサイズが許容値を越えました。" << endl;
+			wcerr << L"⊿PCMのサイズが許容値を越えました。" << endl;
 			exit(-1);
 		}
 
@@ -746,8 +752,8 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 		i = mus_bank + pcm_bank + 3;
 		if(i > 255){
-			wcout << L"バンク数が255を越えました。" << endl;
-			wcout << L"　バンク量：" << i << L"[Bank]" << endl;
+			wcerr << L"バンク数が255を越えました。" << endl;
+			wcerr << L"　バンク量：" << i << L"[Bank]" << endl;
 			exit(-1);
 		}
 	}
@@ -912,7 +918,7 @@ void	MusicFile::saveASM(const char*	strFileName)
 //==============================================================
 void	MusicFile::Err(const wchar_t msg[])
 {
-	wcout << L"[ ERROR ] : " << msg << endl;
+	wcerr << L"[ ERROR ] : " << msg << endl;
 
 	//異常終了
 	exit(-1);
@@ -929,5 +935,5 @@ void	MusicFile::Err(const wchar_t msg[])
 void	MusicFile::Warning(const wchar_t msg[])
 {
 	//現在のファイル名と、行数を表示
-	wcout << L"[WARNING] : " << msg << endl;
+	wcerr << L"[WARNING] : " << msg << endl;
 }

@@ -41,6 +41,7 @@ public:
 				bool				octave_reverse;		//Octave Reverse
 				int					rest;				// r コマンドの挙動
 				int					wait;				// w コマンドの挙動
+	unsigned	int					QMax;				// qMax
 				int					priority;
 
 //メンバー関数

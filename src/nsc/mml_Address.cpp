@@ -73,7 +73,7 @@ void	mml_Address::set_Address(unsigned int _addr)
 			code[3] = (unsigned char)((_addr >> 8) & 0xFF);
 			break;
 		default:
-			wcout << L"mml_Address::set_Address()関数でエラーが発生しました。" << endl;
+			wcerr << L"mml_Address::set_Address()関数でエラーが発生しました。" << endl;
 			exit(-1);
 			break;
 	}
