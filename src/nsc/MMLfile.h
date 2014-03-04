@@ -42,7 +42,7 @@ public:
 				int					rest;				// r コマンドの挙動
 				int					wait;				// w コマンドの挙動
 	unsigned	int					QMax;				// qMax
-				int					priority;
+	unsigned	char				priority;
 
 //メンバー関数
 public:

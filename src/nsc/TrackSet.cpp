@@ -14,6 +14,7 @@
 //==============================================================
 TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const wchar_t _strName[]):
 	MusicItem(_strName),
+	iTempo(120),
 	m_id(_id)
 {
 	//----------------------
@@ -100,7 +101,10 @@ enum	Command_ID_mml {
 	mml_Detune_Register,
 	mml_Transpose,
 	mml_Transpose_Relative,
+	mml_KeyShift,
+	mml_KeyShift_Relative,
 	mml_Protament,
+	mml_Protament2,
 	mml_Sweep,
 
 	mml_Volume,
@@ -266,9 +270,12 @@ const	static	Command_Info	Command[] = {
 		{	"ディチューン",	mml_Detune_Cent			},
 		{	"__",			mml_Transpose_Relative	},
 		{	"_",			mml_Transpose			},
+		{	"k_",			mml_KeyShift_Relative	},
+		{	"k",			mml_KeyShift			},
 		{	"TrackKey",		mml_Transpose			},
 		{	"P",			mml_Protament			},
 		{	"ポルタメント",	mml_Protament			},
+		{	"{",			mml_Protament2			},
 		{	"s",			mml_Sweep				},
 
 		{	"v",		mml_Volume				},
@@ -425,15 +432,15 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Tempo_Relative):
-				SetEvent(new mml_general(nsd_Relative_Tempo, MML, L"Relative Tempo"));
+				SetRelativeTempo(MML);
 				break;
 
 			case(mml_Tempo_Up):
-				SetEvent(new mml_general(nsd_Relative_Tempo, 4, L"Relative Tempo"));
+				SetRelativeUp();
 				break;
 
 			case(mml_Tempo_Down):
-				SetEvent(new mml_general(nsd_Relative_Tempo, -4, L"Relative Tempo"));
+				SetRelativeDown();
 				break;
 
 			case(mml_La):
@@ -632,8 +639,20 @@ const	static	Command_Info	Command[] = {
 				SetEvent(new mml_general(nsd_Relative_Transpose, MML, L"Relative Transpose"));
 				break;
 
+			case(mml_KeyShift):
+				nowTrack->SetKeyShift(MML);
+				break;
+
+			case(mml_KeyShift_Relative):
+				nowTrack->SetKeyShift_Relative(MML);
+				break;
+
 			case(mml_Protament):
-				SetProtament(MML);
+				nowTrack->SetProtament(MML);
+				break;
+
+			case(mml_Protament2):
+				nowTrack->SetProtament(MML, iTempo);
 				break;
 
 			case(mml_Sweep):
@@ -645,11 +664,11 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Volume_Up):
-				SetVolumeInc();
+				SetVolumeInc(MML);
 				break;
 
 			case(mml_Volume_Down):
-				SetVolumeDec();
+				SetVolumeDec(MML);
 				break;
 
 			case(mml_VRC7_Write):
@@ -949,14 +968,64 @@ void	TrackSet::SetEvent(MusicItem* _item)
 //==============================================================
 void	TrackSet::SetTempo(MMLfile* MML)
 {
-	int	iTempo	= MML->GetInt();
+	int	iValue	= MML->GetInt();
 
-	iTempo = (iTempo * MML->timebase) / 24;
-	if((iTempo<0) || (iTempo>255)){
+	iTempo = (char)((iValue * MML->timebase) / 24);
+	
+	if((iValue<0) || (iValue>255)){
 		MML->Err(L"テンポが指定可能な範囲を超えました。");
 	}
-
 	SetEvent(new mml_general(nsd_Tempo, (unsigned char)iTempo, L"Tempo"));
+}
+
+//==============================================================
+//		オクターブ
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*			MML			MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	TrackSet::SetRelativeTempo(MMLfile* MML)
+{
+	int	iValue	= MML->GetInt();
+
+	iTempo += iValue;
+
+	SetEvent(new mml_general(nsd_Relative_Tempo, (char)iValue, L"Relative Tempo"));
+
+}
+
+//==============================================================
+//		オクターブ
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*			MML			MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	TrackSet::SetRelativeUp()
+{
+	iTempo += 4;
+
+	SetEvent(new mml_general(nsd_Relative_Tempo, (char)4, L"Relative Tempo"));
+
+}
+
+//==============================================================
+//		オクターブ
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*			MML			MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	TrackSet::SetRelativeDown()
+{
+	iTempo -= 4;
+
+	SetEvent(new mml_general(nsd_Relative_Tempo, (char)-4, L"Relative Tempo"));
+
 }
 
 //==============================================================
@@ -981,16 +1050,46 @@ void	TrackSet::SetVolume(MMLfile* MML)
 	}
 }
 
-void	TrackSet::SetVolumeInc()
+//------
+void	TrackSet::SetVolumeInc(MMLfile* MML)
 {
-	SetEvent(new mml_general(nsd_Volume_Up, L"Volume up"));
-	nowTrack->IncVolume();
+	unsigned	char	cData = MML->GetChar();
+	unsigned	int		iValue;
+
+	if((cData >= '0') && (cData <= '9')){
+		MML->Back();
+		iValue = MML->GetInt();
+	} else {
+		MML->Back();
+		iValue = 1;
+	}
+
+	while(iValue > 0){
+		SetEvent(new mml_general(nsd_Volume_Up, L"Volume up"));
+		nowTrack->IncVolume();
+		iValue--;
+	}
 }
 
-void	TrackSet::SetVolumeDec()
+//------
+void	TrackSet::SetVolumeDec(MMLfile* MML)
 {
-	SetEvent(new mml_general(nsd_Volume_Down, L"Volume down"));
-	nowTrack->DecVolume();
+	unsigned	char	cData = MML->GetChar();
+	unsigned	int		iValue;
+
+	if((cData >= '0') && (cData <= '9')){
+		MML->Back();
+		iValue = MML->GetInt();
+	} else {
+		MML->Back();
+		iValue = 1;
+	}
+
+	while(iValue > 0){
+		SetEvent(new mml_general(nsd_Volume_Down, L"Volume down"));
+		nowTrack->DecVolume();
+		iValue--;
+	}
 }
 
 //==============================================================
@@ -1059,62 +1158,6 @@ void	TrackSet::SetReleaseVolume(MMLfile* MML)
 	} else {
 		MML->Err(L"音量は0～15の範囲で指定してください。");
 	}
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetProtament(MMLfile* MML)
-{
-	unsigned	char	cData;
-
-				int		_Decay;
-				int		_Rate;
-				int		_Depth;
-				int		_Target;
-
-	_Decay = MML->GetInt();
-	if( (_Decay < 0) || (_Decay > 255) ){
-		MML->Err(L"ポルタメントの第1パラメータは0～255の範囲で指定してください。");
-	}
-	_Decay++;
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
-	}
-
-	_Rate = MML->GetInt();
-	if( (_Rate < 1) || (_Rate > 256) ){
-		MML->Err(L"ポルタメントの第2パラメータは1～256の範囲で指定してください。");
-	}
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
-	}
-
-	_Depth = MML->GetInt();
-	if( (_Depth < -128) || (_Depth > 127) ){
-		MML->Err(L"ポルタメントの第3パラメータは-128～127の範囲で指定してください。");
-	}
-	_Decay++;
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
-	}
-
-	_Target = MML->GetInt();
-	if( (_Target < -128) || (_Target > 127) ){
-		MML->Err(L"ポルタメントの第4パラメータは-128～127の範囲で指定してください。");
-	}
-	SetEvent(new mml_general(nsd_Portamento, (unsigned char)_Decay, (unsigned char)_Rate, (unsigned char)_Depth, (unsigned char)_Target, L"Portamento"));
 }
 
 //==============================================================
@@ -1317,7 +1360,7 @@ void	TrackSet::SetPriority(MMLfile* MML)
 		MML->Warning(L"SEブロック以外では優先度指定はできません。無視します。");
 	} else {
 		if( (i <= 3) && (i >=0) ){
-			Priority = i;
+			Priority = (char)i;
 		} else {
 			MML->Err(L"効果音の優先度は、は0～3の範囲で指定して下さい。");
 		}

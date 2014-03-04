@@ -19,6 +19,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	saveNSF(false),
 	saveASM(false),
 	opt(false),
+	fErr(false),
 	cDebug(0)
 {
 
@@ -68,6 +69,12 @@ OPSW::OPSW(int argc, char* argv[]):
 				case 'n' :
 				case 'N' :
 					saveNSF = true;
+					break;
+				//--------
+				//標準エラー出力へ
+				case 'e' :
+				case 'E' :
+					fErr = true;
 					break;
 				//--------
 				//Debugの指定
@@ -253,6 +260,7 @@ void	OPSW::print_help(){
 				L"\n"
 				L"  -a			Compile to assembly langage.\n"
 				L"  -n			Compile to NSF music format.\n"
+				L"  -e			Error/Warning messages out the stadard error.\n"
 				L"  -l[file(.bin)]	Filename of the rom code for NSF.\n"
 				L"  -fa[file(.s  )]	Filename of the output assembly langage file.\n"
 				L"  -fn[file(.nsf)]	Filename of the output NSF music format.\n"
@@ -283,7 +291,11 @@ OPSW::~OPSW(){
 //==============================================================
 void OPSW::opError(const wchar_t *stErrMsg){
 
-	wcerr << L"オプションが不正です。：" << stErrMsg << endl;
+	if(fErr == true){
+		wcerr << L"オプションが不正です。：" << stErrMsg << endl;
+	} else {
+		wcout << L"オプションが不正です。：" << stErrMsg << endl;
+	}
 	exit(EXIT_FAILURE);
 
 };

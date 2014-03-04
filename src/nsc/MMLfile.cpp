@@ -1,6 +1,11 @@
 #include "StdAfx.h"
 #include "MMLfile.h"
 
+/****************************************************************/
+/*					グローバル変数（クラスだけど・・・）		*/
+/****************************************************************/
+extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -145,6 +150,8 @@ void	MMLfile::SetMacro(void)
 	string	macro_name		="";
 	string	macro_contents	="";
 
+	int		iKakko	= 0;
+
 	//------------------
 	//マクロ名の取得
 	while((cData = cRead()) > 0x20){
@@ -169,9 +176,14 @@ void	MMLfile::SetMacro(void)
 		}
 	}
 
-	while('}' != (cData = cRead())){
+	while(('}' != (cData = cRead())) || (iKakko != 0)){
 		if(eof()){
 			Err(L"文字列終了を示す}が見つかりません。");
+		}
+		if(cData == '{'){
+			iKakko++;
+		} else if(cData == '}'){
+			iKakko--;
 		}
 		macro_contents += cData;
 	}
@@ -732,6 +744,9 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 	if(((cData >= '0') && (cData <= '9')) || (cData == '.')){
 		if((cData >= '0') && (cData <= '9')){
 			i = GetInt();
+			if(i==0){
+				Err(L"音長に0は使えません。");
+			}
 			iLength = (timebase * 4) / i;
 			iMod	= (timebase * 4) % i;
 			if(iMod != 0){
@@ -865,11 +880,17 @@ int	MMLfile::GetCommandID(const Command_Info _command[], unsigned int _size)
 //==============================================================
 void	MMLfile::Err(const wchar_t msg[])
 {
-	//現在のファイル名と、行数を表示
-	cerr << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 
 	//エラー内容を表示
-	wcerr << msg << endl;
+	if(cOptionSW->fErr == true){
+		//現在のファイル名と、行数を表示
+		cerr << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
+		wcerr << msg << endl;
+	} else {
+		//現在のファイル名と、行数を表示
+		cout << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
+		wcout << msg << endl;
+	}
 
 	//異常終了
 	exit(-1);
@@ -885,9 +906,15 @@ void	MMLfile::Err(const wchar_t msg[])
 //==============================================================
 void	MMLfile::Warning(const wchar_t msg[])
 {
-	//現在のファイル名と、行数を表示
-	cerr << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 
 	//ワーニング内容を表示
-	wcerr << msg << endl;
+	if(cOptionSW->fErr == true){
+		//現在のファイル名と、行数を表示
+		cerr << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
+		wcerr << msg << endl;
+	} else {
+		//現在のファイル名と、行数を表示
+		cout << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
+		wcout << msg << endl;
+	}
 }

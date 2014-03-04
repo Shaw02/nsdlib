@@ -253,6 +253,10 @@
 					<param name="Local" value="mml_length.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="k, k_:移調">
+					<param name="Local" value="mml_keyshift.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="o：オクターブ">
 					<param name="Local" value="mml_octave.html">
 					</OBJECT>
@@ -313,28 +317,32 @@
 					<param name="Local" value="mml_s5b_envelope.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="K{}：調号">
-					<param name="Local" value="mml_KeySignature.html">
+					<param name="Name" value="J：音符・休符の無効化">
+					<param name="Local" value="mml_jump.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="scale()：スケール">
-					<param name="Local" value="mml_scale.html">
+					<param name="Name" value="K{}：調号">
+					<param name="Local" value="mml_KeySignature.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="L：無限ループ">
 					<param name="Local" value="mml_loop.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="J：音符・休符の無効化">
-					<param name="Local" value="mml_jump.html">
-					</OBJECT>
-				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="NC:n163チャンネル数設定">
 					<param name="Local" value="mml_N163_channel.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="scale()：スケール">
+					<param name="Local" value="mml_scale.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="P：ポルタメント">
 					<param name="Local" value="mml_portamento.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="{}：ポルタメント2">
+					<param name="Local" value="mml_portamento2.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Rm,R@,Rv：リリース処理">

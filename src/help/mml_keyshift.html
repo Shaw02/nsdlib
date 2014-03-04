@@ -5,7 +5,7 @@
 <meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>MML reference: Jump</Title>
+<Title>MML reference: Key Shift</Title>
 </HEAD>
 <BODY>
 
@@ -21,13 +21,14 @@
 
 <!-- contents start -->
 <div id='contents'>
-<h2>MML reference: Jump</h2>
+<h2>MML reference: Key Shift</h2>
 
 <!-- ──────────────── -->
 <div class='block'>
 <h3>定義（Define）</h3>
 <code><pre>
-        J<var>n</var>
+        k<var>shift</var>
+        k_<var>relative</var>
 </pre></code>
 </div>
 
@@ -35,22 +36,23 @@
 <div class='block'>
 <h3>引数（Inputs）</h3>
 
-<h4>n</h4>
+<h4>shift</h4>
 <p>
-<dl>
-<dt>0	</dt><dd>無視を解除します。	</dd>
-<dt>1	</dt><dd>以後の音符、休符、ポルタメント、サブルーチンコール、効果音呼出、次の音符のみの相対オクターブコマンドを無視します。	</dd>
-</dl>
+シフト値です。-128～127の範囲で指定してください。（Default: <var>shift</var> = 0）<br>
 </p>
 
+<h4>relative</h4>
+<p>
+相対移調です。-128～127の範囲で指定してください。<br>
+尚、演算結果におけるオーバーフローのチェックはしていません。<br>
+</p>
 
 </div>
 <!-- ──────────────── -->
 <div class='block'>
 <h3>内容（Contents）</h3>
 <p>
-以後の音符、休符、ポルタメント、サブルーチンコール、効果音呼出、次の音符のみの相対オクターブコマンドを無視することにより、
-その他のコマンドを反映しながら、曲を J1 の地点から、 J0 の地点へ強制的に飛ばすことが可能になります。<br>
+移調の度合いを指定します。<br>
 </p>
 </div>
 
@@ -58,8 +60,10 @@
 <div class='block'>
 <h3>注意（Notes）</h3>
 <p>
-その他のコマンドは反映されますが、サブルーチン内のコマンドは反映されない旨、注意してください。<br>
+ＭＭＬコンパイラの疑似命令です。<br>
+シフト結果がオクターブをまたぐ場合、内部的に<a href="mml_relative_octave.html">次の音符のみの相対オクターブ</a>を用いる為、コンパイル後のオペコードが増えます。<br>
 </p>
+
 </div>
 
 <!-- ──────────────── -->
@@ -67,25 +71,7 @@
 <h3>例（Sample）</h3>
 
 <code><pre>
-bgm(0){
-
-    TR1,2,3     J1          <span style="color:green;">//ここから、演奏を飛ばします。</span>
-
-    t120
-
-    TR1 l4  o5  c1<
-    TR2 l4  o4  e1
-    TR3 l4  o3  c1
-
-    TR1,2,3     J0          <span style="color:green;">//ここから、演奏が開始されますが、コマンドは反映されています。</span>
-
-    TR1     b1	
-    TR2     d1	
-    TR3     g1	
-
-}
-
-
+    k-5 cdefgab>c       <span style="color:green;">/* = "g"a"bcdef+>"g */</span>
 
 </pre></code>
 
@@ -96,3 +82,7 @@ bgm(0){
 
 </BODY>
 </HTML>
+
+
+
+

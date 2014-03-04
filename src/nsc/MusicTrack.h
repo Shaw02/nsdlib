@@ -36,6 +36,8 @@ private:
 				char	octave1;			//
 				char	octave1_old;		//
 
+				int		iKeyShift;
+				
 	unsigned	int		gatetime_q;
 	unsigned	int		gatetime_Q;
 	unsigned	int		QMax;
@@ -115,10 +117,21 @@ public:
 
 				void	ResetEcho();
 				void	GenerateEcho(int Length, int GateTime, bool	Slur);
+				char	calc_note(MMLfile*	MML,int note);
+				int		calc_length(MMLfile* MML);
+				int		calc_gate(MMLfile* MML);
+				bool	calc_slur(MMLfile* MML);
+				void	SetNote(int _key, int Length, int GateTime, bool Slur);
 				void	SetNote(MMLfile* MML, int note);
 				void	SetRest(MMLfile* MML, int mode);
 				void	SetTai(MMLfile* MML);
 				void	SetLength(MMLfile* MML);
+
+				void	SetProtament(MMLfile* MML);
+				void	SetProtament(MMLfile* MML, unsigned char iTempo);
+
+				void	SetKeyShift(MMLfile* MML);
+				void	SetKeyShift_Relative(MMLfile* MML);
 
 				void	SetOctave(MMLfile* MML);
 				void	SetOctaveInc();

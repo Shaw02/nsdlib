@@ -10,6 +10,7 @@ class OPSW {
 //メンバー変数
 public:
 	unsigned	char		cDebug;			//デバッグ用
+				bool		fErr;
 				bool		saveNSF;
 				bool		saveASM;
 				bool		opt;

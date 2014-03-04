@@ -103,6 +103,11 @@
 		<param name="Local" value="mml_relative_octave.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="{}">
+		<param name="Name" value="MML reference: Portamento2">
+		<param name="Local" value="mml_portamento2.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="|:">
 		<param name="Name" value="MML reference: Repeat(B)">
 		<param name="Local" value="mml_repeatB.html">
@@ -203,14 +208,14 @@
 		<param name="Local" value="mml_envelop.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="F">
-		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
-		<param name="Local" value="mml_s5b_envelope.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="f">
 		<param name="Name" value="MML reference: Note">
 		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="F">
+		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
+		<param name="Local" value="mml_s5b_envelope.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="FAQ">
@@ -236,6 +241,16 @@
 		<param name="Name" value="J">
 		<param name="Name" value="MML reference: Jump">
 		<param name="Local" value="mml_jump.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="k">
+		<param name="Name" value="MML reference: Key Shift">
+		<param name="Local" value="mml_keyshift.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="k_">
+		<param name="Name" value="MML reference: Key Shift">
+		<param name="Local" value="mml_keyshift.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="l">
@@ -373,14 +388,14 @@
 		<param name="Local" value="mml_release.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="S">
-		<param name="Name" value="MML reference: Subroutine">
-		<param name="Local" value="mml_sub.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="s">
 		<param name="Name" value="MML reference: Sweep">
 		<param name="Local" value="mml_sweep.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="S">
+		<param name="Name" value="MML reference: Subroutine">
+		<param name="Local" value="mml_sub.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="scale">

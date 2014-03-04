@@ -39,6 +39,7 @@
 <dl>
 <dt>-a</dt><dd>Compile to assembly langage. (*.s) </dd>
 <dt>-n</dt><dd>Compile to NSF music format. (*.nsf) </dd>
+<dt>-e</dt><dd>Error/Warning messages out the Stadard error (stderr).</dd>
 <dt>-l<var>filename</var></dt><dd>Set the filename of the rom code for NSF.</dd>
 <dt>-fa<var>filename</var></dt><dd>Set the filename of the output assembly langage file.</dd>
 <dt>-fn<var>filename</var></dt><dd>Set the filename of the output NSF music format.</dd>
@@ -66,6 +67,12 @@ MMLファイルをアセンブリ言語ソース（ca65.exe用）へ変換します。<br>
 NSF Music formatへ変換します。<br>
 コンパイラで直接ＮＳＦを生成する場合、
 実行コード、曲データ、⊿ＰＣＭデータの合計が32kByteまでとなります。<br>
+</p>
+
+<h4>-e</h4>
+<p>
+エラー／ワーニングを、標準エラー出力に出力します。<br>
+デフォルトでは標準出力に返しますが、ファイルに関するエラーのみは、標準エラー出力固定となります。<br>
 </p>
 
 <h4>-l<var>filename</var></h4>

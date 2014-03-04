@@ -12,6 +12,7 @@ class TrackSet :
 //メンバー変数
 protected:
 	unsigned	int				m_id;		//ID
+	unsigned	char			iTempo;
 
 private:
 //static	const	Command_Info	Command[];	//コマンドの情報
@@ -23,7 +24,7 @@ private:
 				bool			fSE;		//SEかどうかのフラグ
 	unsigned	int				TrackPt;	//
 	unsigned	int				TrackLine;	//
-				int				Priority;	//
+	unsigned	char			Priority;	//
 //メンバー関数
 public:
 				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const wchar_t _strName[] = L"==== [ Track Set ]====");
@@ -40,16 +41,18 @@ public:
 		void	SetEvent(MusicItem* _item);		//イベントの追加
 
 		void	SetTempo(MMLfile* MML);
+		void	SetRelativeTempo(MMLfile* MML);
+		void	SetRelativeUp();
+		void	SetRelativeDown();
 
 		void	SetVolume(MMLfile* MML);
-		void	SetVolumeInc();
-		void	SetVolumeDec();
+		void	SetVolumeInc(MMLfile* MML);
+		void	SetVolumeDec(MMLfile* MML);
 
 		void	SetReleaseMode(MMLfile* MML);
 		void	SetReleaseVoice(MMLfile* MML);
 		void	SetReleaseVolume(MMLfile* MML);
 
-		void	SetProtament(MMLfile* MML);
 		void	SetSweep(MMLfile* MML);
 
 		void	SetPoke(MMLfile* MML);

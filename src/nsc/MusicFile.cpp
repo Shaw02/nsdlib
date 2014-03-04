@@ -1,6 +1,11 @@
 #include "StdAfx.h"
 #include "MusicFile.h"
 
+/****************************************************************/
+/*					グローバル変数（クラスだけど・・・）		*/
+/****************************************************************/
+extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -666,9 +671,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		make_bin(bin_size, 0x8000);
 
 		if(Header.bank == true){
-			wcerr << L"指定の.binファイルは、⊿PCMのバンクに対応していません。" << endl;
-			wcerr << L"⊿PCMのバンクに対応した.binファイルを指定してください。" << endl;
-			exit(-1);
+			Err(L"指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。");
 		}
 
 		mus_size = bin_size - 0x80 + code.size();
@@ -683,8 +686,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		wcout << L"  Size = " << (unsigned int)mus_size << L" [Byte] / " << Header.offsetPCM - 0x8000 << L" [Byte]" << endl;
 
 		if((0x8000 + mus_size) > Header.offsetPCM){
-			wcerr << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
-			exit(-1);
+			Err(L"コード・シーケンスのサイズが許容値を越えました。");
 		}
 
 	} else {
@@ -697,9 +699,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		iSizeLimit = 0x10000;	//拡張RAMへの転送有り
 
 		if(Header.bank == false){
-			wcerr << L"指定の.binファイルは、⊿PCMのバンクに対応しています。" << endl;
-			wcerr << L"#Bankコマンドを指定してください。" << endl;
-			exit(-1);
+			Err(L"指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。");
 		}
 
 		dpcm_bank = true;
@@ -710,8 +710,8 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		}
 
 		wcout << L"[CODE]" << endl;
-		wcout << L"  Bank = 2 + 1" << endl;
-		wcout << L"  Size = 8192 + 4096 [Byte]" << endl;
+		wcout << L"  Bank = 3" << endl;
+		wcout << L"  Size = 12288 [Byte]" << endl;
 
 		wcout << L"[MUSIC]" << endl;
 		wcout << L"  Bank = " << (unsigned int)mus_bank << endl;
@@ -719,8 +719,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 		//サイズチェック
 		if(mus_size > iSizeLimit){
-			wcerr << L"コード・シーケンスのサイズが許容値を越えました。" << endl;
-			exit(-1);
+			Err(L"コード・シーケンスのサイズが許容値を越えました。");
 		}
 
 	}
@@ -741,8 +740,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		wcout << L"  Size = " << (unsigned int)pcm_size << L" [Byte] / " << 0x10000 - Header.offsetPCM << L" [Byte]" << endl;
 
 		if(	(Header.offsetPCM + pcm_size) > 0x10000	){
-			wcerr << L"⊿PCMのサイズが許容値を越えました。" << endl;
-			exit(-1);
+			Err(L"⊿PCMのサイズが許容値を越えました。");
 		}
 
 	} else {
@@ -752,9 +750,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 
 		i = mus_bank + pcm_bank + 3;
 		if(i > 255){
-			wcerr << L"バンク数が255を越えました。" << endl;
-			wcerr << L"　バンク量：" << i << L"[Bank]" << endl;
-			exit(-1);
+			Err(L"バンク数の合計が255を越えました。");
 		}
 	}
 
@@ -918,7 +914,11 @@ void	MusicFile::saveASM(const char*	strFileName)
 //==============================================================
 void	MusicFile::Err(const wchar_t msg[])
 {
-	wcerr << L"[ ERROR ] : " << msg << endl;
+	if(cOptionSW->fErr == true){
+		wcerr << L"[ ERROR ] : " << msg << endl;
+	} else {
+		wcout << L"[ ERROR ] : " << msg << endl;
+	}
 
 	//異常終了
 	exit(-1);
@@ -935,5 +935,9 @@ void	MusicFile::Err(const wchar_t msg[])
 void	MusicFile::Warning(const wchar_t msg[])
 {
 	//現在のファイル名と、行数を表示
-	wcerr << L"[WARNING] : " << msg << endl;
+	if(cOptionSW->fErr == true){
+		wcerr << L"[WARNING] : " << msg << endl;
+	} else {
+		wcout << L"[WARNING] : " << msg << endl;
+	}
 }

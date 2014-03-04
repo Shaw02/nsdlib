@@ -39,6 +39,13 @@
 ;=======================================================================
 .proc	nsd_keyon
 
+	;Portamento
+	lda	__por_depth,x
+	bne	@L		;ポルタメントが終了していたら、無効化する。
+	lda	#0
+	sta	__por_target,x
+@L:
+
 	;tai check
 	lda	__tai,x
 	and	#$02
@@ -62,13 +69,6 @@
 	lda	#$FF
 	sta	__frequency,x
 	sta	__frequency + 1,x
-
-	;Portamento
-	lda	__por_depth,x
-	bne	@L		;ポルタメントが終了していたら、無効化する。
-	lda	#0
-	sta	__por_target,x
-@L:
 
 	;Envelop Key on
 	lda	#$00

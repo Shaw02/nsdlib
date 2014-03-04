@@ -27,8 +27,8 @@
 <div class='block'>
 <h3>定義（Define）</h3>
 <code><pre>
-        (
-        )
+        (<span style="color:blue;">(</span><var>volume</var><span style="color:blue;">)</span>
+        )<span style="color:blue;">(</span><var>volume</var><span style="color:blue;">)</span>
 </pre></code>
 </div>
 
@@ -36,8 +36,10 @@
 <div class='block'>
 <h3>引数（Inputs）</h3>
 
+<h4>volume</h4>
 <p>
-無し
+引数を書いた場合は、指定の値だけ音量を相対変化させます。<br>
+省略した場合のデフォルトは、1です。<br>
 </p>
 
 </div>
@@ -45,14 +47,18 @@
 <div class='block'>
 <h3>内容（Contents）</h3>
 <dl>
-<dt>(</dt><dd>音量を1下げます。</dd>
-<dt>)</dt><dd>音量を1上げます。</dd>
+<dt>(</dt><dd>音量を下げます。</dd>
+<dt>)</dt><dd>音量を上げます。</dd>
 </dl>
 </div>
 
 <!-- ──────────────── -->
 <div class='block'>
 <h3>注意（Notes）</h3>
+<p>
+引数を書いた場合は、その数量だけ相対音量コマンドを出力します。<br>
+リピート中などでない場合は、音量コマンドで書いた方がシーケンスのサイズは小さくなります。<br>
+</p>
 <p>
 2A03の三角波、⊿PCMトラックでは音量指定はできません。<br>
 </p>

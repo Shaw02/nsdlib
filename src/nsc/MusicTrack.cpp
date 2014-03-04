@@ -1,6 +1,11 @@
 #include "StdAfx.h"
 #include "MusicTrack.h"
 
+/****************************************************************/
+/*					グローバル変数（クラスだけど・・・）		*/
+/****************************************************************/
+extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -26,6 +31,7 @@ MusicTrack::MusicTrack(MMLfile* MML, const wchar_t _strName[]):
 	loop_flag(false),
 	compile_flag(false),
 	pt_oldNote(0),
+	iKeyShift(0),
 	jump_flag(false)
 {
 	unsigned	int	i = 0;
@@ -89,7 +95,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_no			= (*itSE)->get_id();		//サブルーチンNo.の取得
 			_com_offset	= (*itSE)->getOffset();
 			if( MUS->ptcSE.count(_no) == 0){
-				wcerr << L"SE" << _no << L"番が存在しません。" << endl;
+				if(cOptionSW->fErr == true){
+					wcerr << L"SE(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"SE(" << _no << L")番が存在しません。" << endl;
+				}
 				exit(-1);
 			}
 			_sub_offset = MUS->ptcSE[_no]->getOffset();	//指定サブルーチンが存在するオフセット
@@ -106,7 +116,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
 			_com_offset	= (*itSub)->getOffset();
 			if( MUS->ptcSub.count(_no) == 0){
-				wcerr << L"サブルーチン" << _no << L"番が存在しません。" << endl;
+				if(cOptionSW->fErr == true){
+					wcerr << L"Sub(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"Sub(" << _no << L")番が存在しません。" << endl;
+				}
 				exit(-1);
 			}
 			_sub_offset = MUS->ptcSub[_no]->getOffset();	//指定サブルーチンが存在するオフセット
@@ -123,7 +137,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itEnv)->getOffset();
 			if( MUS->ptcEnv.count(_no) == 0){
-				wcerr << L"エンベロープ" << _no << L"番が存在しません。" << endl;
+				if(cOptionSW->fErr == true){
+					wcerr << L"Envelope(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"Envelope(" << _no << L")番が存在しません。" << endl;
+				}
 				exit(-1);
 			}
 			_sub_offset = MUS->ptcEnv[_no]->getOffset();	//指定エンベロープが存在するオフセット
@@ -140,7 +158,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_no			= (*itFDSC)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itFDSC)->getOffset();
 			if( MUS->ptcFDSC.count(_no) == 0){
-				wcerr << L"FDSC" << _no << L"番が存在しません。" << endl;
+				if(cOptionSW->fErr == true){
+					wcerr << L"FDSC(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"FDSC(" << _no << L")番が存在しません。" << endl;
+				}
 				exit(-1);
 			}
 			_sub_offset = MUS->ptcFDSC[_no]->getOffset();	//指定エンベロープが存在するオフセット
@@ -157,7 +179,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_no			= (*itFDSM)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itFDSM)->getOffset();
 			if( MUS->ptcFDSM.count(_no) == 0){
-				wcerr << L"FDSM" << _no << L"番が存在しません。" << endl;
+				if(cOptionSW->fErr == true){
+					wcerr << L"FDSM(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"FDSM(" << _no << L")番が存在しません。" << endl;
+				}
 				exit(-1);
 			}
 			_sub_offset = MUS->ptcFDSM[_no]->getOffset();	//指定エンベロープが存在するオフセット
@@ -174,7 +200,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_no			= (*itVRC7)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itVRC7)->getOffset();
 			if( MUS->ptcVRC7.count(_no) == 0){
-				wcerr << L"VRC7" << _no << L"番が存在しません。" << endl;
+				if(cOptionSW->fErr == true){
+					wcerr << L"VRC7(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"VRC7(" << _no << L")番が存在しません。" << endl;
+				}
 				exit(-1);
 			}
 			_sub_offset = MUS->ptcVRC7[_no]->getOffset();	//指定エンベロープが存在するオフセット
@@ -191,7 +221,11 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_no			= (*itN163)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itN163)->getOffset();
 			if( MUS->ptcN163.count(_no) == 0){
-				wcerr << L"N163" << _no << L"番が存在しません。" << endl;
+				if(cOptionSW->fErr == true){
+					wcerr << L"N163(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"N163(" << _no << L")番が存在しません。" << endl;
+				}
 				exit(-1);
 			}
 			_sub_offset = MUS->ptcN163[_no]->getOffset();	//指定エンベロープが存在するオフセット
@@ -975,12 +1009,14 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 	static	const	Command_Info	KS_Command[] = {
 		{	"C-Dur",	ks_0		},	//
 		{	"Ds-Dur",	ks_f5		},	//bbbbb
+		{	"Des-Dur",	ks_f5		},	//bbbbb
 		{	"D-Dur",	ks_s2		},	//##
 		{	"Es-Dur",	ks_f3		},	//bbb
 		{	"E-Dur",	ks_s4		},	//####
 		{	"F-Dur",	ks_f1		},	//b
 		{	"Fis-Dur",	ks_s6		},	//######
 		{	"Gs-Dur",	ks_f6		},	//bbbbbb
+		{	"Ges-Dur",	ks_f6		},	//bbbbbb
 		{	"G-Dur",	ks_s1		},	//#
 		{	"As-Dur",	ks_f4		},	//bbbb
 		{	"A-Dur",	ks_s3		},	//###
@@ -1005,7 +1041,9 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 
 		//音楽理論的に正しくないが過去互換性の為。＃系の調なのに♭では言わない！
 		{	"ds-moll",	ks_mf5		},	//####
+		{	"des-moll",	ks_mf5		},	//####
 		{	"gs-moll",	ks_mf6		},	//###
+		{	"ges-moll",	ks_mf6		},	//###
 		{	"as-moll",	ks_mf4		},	//#####
 
 		{	"+",		ks_Sharp	},
@@ -1305,294 +1343,6 @@ void	MusicTrack::ResetEcho()
 }
 
 //==============================================================
-//		音符のイベント作成
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//		int			note	ノート（0:C 1:D 2:E … 7:B）
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetNote(MMLfile*	MML,int note)
-{
-	unsigned		char	cData;
-	static	const	char	note_code[]={0,2,4,5,7,9,11};
-					int		_key = note_code[note];
-					int		Length = -1;
-					int		GateTime = -1;
-					bool	Slur = false;
-					int		Length_0 = -1;		//実音長
-
-	//臨時記号
-	cData = MML->GetChar();
-	//If Natural then skip
-	if((cData != '=') && (cData != '*')){
-		_key += KeySignature[note];
-		while((cData == '#') || (cData == '+') || (cData == '-')){
-			switch(cData){
-				case('#'):
-				case('+'):
-					_key++;
-					break;
-				case('-'):
-					_key--;
-					break;
-				default:
-					break;
-			}
-			cData = MML->GetChar();	//次の文字
-		}
-		//臨時記号ではなくなったので、ポインタを戻す。
-		MML->Back();
-	}
-
-	cData = MML->GetChar();
-	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.') || (cData == '~')){
-		MML->Back();
-		Length = MML->GetLength(DefaultLength);
-	} else {
-		MML->Back();
-	}
-
-	//実音長の取得
-	Length_0 = Length;
-	if(Length_0 == -1){
-		Length_0 = DefaultLength;
-	}
-
-	cData = MML->GetChar();
-	if(cData == ','){
-		cData = MML->GetChar();
-		if(cData == '0'){
-			GateTime = 0;
-		} else {
-			MML->Back();
-			GateTime = MML->GetLength(DefaultLength);
-		}
-	} else if(cData == '&') {
-		Slur = true;
-	} else {
-		MML->Back();
-	}
-
-	if(jump_flag==false){
-
-		//クオンタイズ
-		if(gatetime_Q != QMax){
-			Set_q((Length_0 * (QMax - gatetime_Q)) / QMax);
-		}
-
-		//指定できる範囲を超えた場合。
-		while(_key < 0){
-			_key += 12;
-			SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
-		}
-
-		while(_key >= 12){
-			_key -= 12;
-			SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
-		}
-
-		//疑似エコーのバッファ書き込み
-		pt_oldNote++;
-		oldNote[pt_oldNote] = ((char)_key + (octave + octave1)*12) & 0xFF;
-		octave1_old = octave1;
-		octave1 = 0;
-
-		if((echo_flag == true) && (oldNote[(pt_oldNote - echo_value) & 0xFF] != -1) && (echo_length != -1) && (Length_0 > echo_length)){
-			//疑似エコー あり
-			Length_0 -= echo_length;
-			if(Length_0 == opt_DefaultLength){
-				Length_0 = -1;
-			}
-			_old_note = new mml_note(_key, Length_0, GateTime, Slur, L"Note");
-
-			//イベントオブジェクトの作成
-			SetEvent(_old_note);
-
-			GenerateEcho(echo_length,GateTime,Slur);
-		} else {
-			if(Length == opt_DefaultLength){
-				Length = -1;
-			}
-			//疑似エコー なし
-			_old_note = new mml_note(_key, Length, GateTime, Slur, L"Note");
-
-			//イベントオブジェクトの作成
-			SetEvent(_old_note);
-
-		}
-	}
-
-}
-
-//==============================================================
-//		休符のイベント作成
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//		int			mode	
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRest(MMLfile*	MML, int mode)
-{
-					char	old_note = oldNote[(pt_oldNote - echo_value) & 0xFF];
-	
-	unsigned		char	cData;
-	unsigned		char	_code = 0x0F;
-					int		Length = -1;
-					int		GateTime = -1;
-					bool	Slur = false;
-
-
-	//休符のモード
-	cData = MML->GetChar();
-	switch(cData){
-		case('-'):
-			_code = 0x0D;
-			break;
-		case('#'):
-		case('+'):
-			_code = 0x0E;
-			break;
-		case('='):
-		case('*'):
-			_code = 0x0F;
-			break;
-		default:
-			MML->Back();
-			if(mode & 0x80){
-				_code = 0x0D + ((char)mode & 0x03);
-			} else {
-				switch(KeySignature[7]){
-					case(-1):
-						_code = 0x0D;
-						break;
-					case(+1):
-						_code = 0x0E;
-						break;
-					default:
-						_code = 0x0D + ((char)mode & 0x03);
-						break;
-				}
-			}
-			break;
-	}
-
-	//長さ
-	cData = MML->GetChar();
-	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.') || (cData == '~')){
-		MML->Back();
-		Length = MML->GetLength(DefaultLength);
-	} else {
-		MML->Back();
-	}
-
-	//ゲートタイム or タイ
-	cData = MML->GetChar();
-	if(cData == ','){
-		cData = MML->GetChar();
-		if(cData == '0'){
-			GateTime = 0;
-		} else {
-			MML->Back();
-			GateTime = MML->GetLength(DefaultLength);
-		}
-	} else if(cData == '&') {
-		Slur = true;
-	} else {
-		MML->Back();
-	}
-
-	if(jump_flag==false){
-		//クオンタイズ
-		if(gatetime_Q != QMax){
-			Set_q((Length * (QMax - gatetime_Q)) / QMax);
-		}
-
-		if((echo_flag == false) || (_code != 0x0F) || (old_note == -1) || (echo_length != -1)){
-			if(Length == opt_DefaultLength){
-				Length = -1;
-			}
-			_old_note = new mml_note(_code, Length, GateTime, Slur, L"Rest");
-			SetEvent(_old_note);
-		} else {
-			GenerateEcho(Length,GateTime,Slur);
-		}
-	}
-}
-
-//==============================================================
-//	
-//--------------------------------------------------------------
-//	●引数
-//		int		Length
-//		int		GateTime
-//		bool	Slur
-//	●返値
-//		
-//==============================================================
-void	MusicTrack::GenerateEcho(int Length, int GateTime, bool	Slur)
-{
-	char	old_note = oldNote[(pt_oldNote - echo_value) & 0xFF];
-	char	now_note = oldNote[pt_oldNote];
-
-	char	now_octave = (now_note / 12) - octave1_old;
-	char	old_octave = (old_note / 12);
-
-//	int		i = 0;
-
-	if(echo_slur == false){
-		//Echo volume
-		SetEvent(new mml_general(nsd_Volume + echo_volume, L"Echo Volume"));
-	} else {
-		_old_note->SetTai();
-	}
-
-	//Echo note
-	if(old_octave < now_octave){
-		while(old_octave < now_octave){
-			old_octave++;
-			SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
-		}
-	} else if(old_octave > now_octave){
-		while(old_octave > now_octave){
-			old_octave--;
-			SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
-		}
-	}
-
-	if(Length == opt_DefaultLength){
-		Length = -1;
-	}
-	_old_note = new mml_note(old_note % 12, Length, GateTime, Slur, L"Echo Note");
-	SetEvent(_old_note);
-
-	if(echo_slur == false){
-		//volume return
-		SetEvent(new mml_general(nsd_Volume + volume, L"Volume"));
-	}
-
-}
-
-//==============================================================
-//		タイのオブジェクト作成（休符で作る）
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	MusicTrack::SetTai(MMLfile* MML)
-{
-	if(jump_flag==false){
-		_old_note->SetTai();
-	}
-	SetRest(MML,2);
-}
-
-//==============================================================
 //		省略時の音長
 //--------------------------------------------------------------
 //	●引数
@@ -1661,6 +1411,678 @@ void	MusicTrack::SetLength(MMLfile* MML)
 	}
 	SetEvent(_event);
 }
+
+//==============================================================
+//		ノートナンバー・臨時記号の解決
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//		int			note	ノート（0:C 1:D 2:E … 7:B）
+//	●返値
+//				無し
+//==============================================================
+char	MusicTrack::calc_note(MMLfile*	MML,int note)
+{
+	unsigned		char	cData = MML->GetChar();
+	static	const	char	note_code[]={0,2,4,5,7,9,11};
+					int		_key = note_code[note];
+
+	//臨時記号
+	//If Natural then skip
+	if((cData != '=') && (cData != '*')){
+		//ナチュラルじゃない場合
+		_key += KeySignature[note];
+		while((cData == '#') || (cData == '+') || (cData == '-')){
+			switch(cData){
+				case('#'):
+				case('+'):
+					_key++;
+					break;
+				case('-'):
+					_key--;
+					break;
+				default:
+					break;
+			}
+			cData = MML->GetChar();	//次の文字
+		}
+		//臨時記号ではなくなったので、ポインタを戻す。
+		MML->Back();
+	}
+	return(_key);
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+int		MusicTrack::calc_length(MMLfile* MML)
+{
+	unsigned	char	cData = MML->GetChar();
+				int		Length;
+
+	MML->Back();
+	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.') || (cData == '~')){
+		Length = MML->GetLength(DefaultLength);
+	} else {
+		Length = -1;
+	}
+	return(Length);
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+int		MusicTrack::calc_gate(MMLfile* MML)
+{
+	unsigned	char	cData = MML->GetChar();
+				int		GateTime;
+
+	//ゲートタイム
+	if(cData == ','){
+		cData = MML->GetChar();
+		if(cData == '0'){
+			GateTime = 0;
+		} else {
+			MML->Back();
+			GateTime = MML->GetLength(DefaultLength);
+		}
+	} else {
+		MML->Back();
+		GateTime = -1;
+	}
+	return(GateTime);
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+bool	MusicTrack::calc_slur(MMLfile* MML)
+{
+	unsigned	char	cData = MML->GetChar();
+				bool	slur;
+
+	if(cData == '&') {
+		slur = true;
+	} else {
+		slur = false;
+		MML->Back();
+	}
+	return(slur);
+}
+
+//==============================================================
+//	
+//--------------------------------------------------------------
+//	●引数
+//		int		Length
+//		int		GateTime
+//		bool	Slur
+//	●返値
+//		
+//==============================================================
+void	MusicTrack::GenerateEcho(int Length, int GateTime, bool	Slur)
+{
+	char	old_note = oldNote[(pt_oldNote - echo_value) & 0xFF];
+	char	now_note = oldNote[pt_oldNote];
+
+	char	now_octave = octave;
+	char	old_octave = (old_note / 12);
+
+//	int		i = 0;
+
+	if(echo_slur == false){
+		//Echo volume
+		SetEvent(new mml_general(nsd_Volume + echo_volume, L"Echo Volume"));
+	} else {
+		_old_note->SetTai();
+	}
+
+	//Echo note
+	if(old_octave < now_octave){
+		while(old_octave < now_octave){
+			old_octave++;
+			SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
+		}
+	} else if(old_octave > now_octave){
+		while(old_octave > now_octave){
+			old_octave--;
+			SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
+		}
+	}
+
+	if(Length == opt_DefaultLength){
+		Length = -1;
+	}
+	_old_note = new mml_note(old_note % 12, Length, GateTime, Slur, L"Echo Note");
+	SetEvent(_old_note);
+
+	if(echo_slur == false){
+		//volume return
+		SetEvent(new mml_general(nsd_Volume + volume, L"Volume"));
+	}
+
+}
+
+//==============================================================
+//		音符のイベント作成
+//--------------------------------------------------------------
+//	●引数
+//		int		_key		ノートナンバー
+//		int		Length		音長
+//		int		GateTime	ゲートタイム
+//		bool	Slur		スラー
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetNote(int _key, int Length, int GateTime, bool Slur)
+{
+	int		Length_0	= Length;		//実音長
+
+	//実音長の取得
+	if(Length_0 == -1){
+		Length_0 = DefaultLength;
+	}
+
+	//クオンタイズ
+	if(gatetime_Q != QMax){
+		Set_q((Length_0 * (QMax - gatetime_Q)) / QMax);
+	}
+
+	//移調
+	_key += iKeyShift;
+
+	//疑似エコーのバッファ書き込み
+	pt_oldNote++;
+	oldNote[pt_oldNote] = ((char)_key + (octave + octave1)*12) & 0xFF;
+	octave1_old = octave1;
+	octave1 = 0;
+
+	//指定できる範囲を超えた場合。
+	while(_key < 0){
+		_key += 12;
+		SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
+	}
+
+	while(_key >= 12){
+		_key -= 12;
+		SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
+	}
+
+	if((echo_flag == true) && (oldNote[(pt_oldNote - echo_value) & 0xFF] != -1) && (echo_length != -1) && (Length_0 > echo_length) && (Slur == false)){
+		//疑似エコー あり
+		Length_0 -= echo_length;
+		if(Length_0 == opt_DefaultLength){
+			Length_0 = -1;
+		}
+		_old_note = new mml_note(_key, Length_0, GateTime, Slur, L"Note");
+
+		//イベントオブジェクトの作成
+		SetEvent(_old_note);
+
+		GenerateEcho(echo_length,GateTime,Slur);
+	} else {
+		if(Length == opt_DefaultLength){
+			Length = -1;
+		}
+		//疑似エコー なし
+		_old_note = new mml_note(_key, Length, GateTime, Slur, L"Note");
+
+		//イベントオブジェクトの作成
+		SetEvent(_old_note);
+
+	}
+}
+
+//==============================================================
+//		音符のイベント作成
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//		int			note	ノート（0:C 1:D 2:E … 7:B）
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetNote(MMLfile*	MML,int note)
+{
+	int		_key		= calc_note(MML, note);
+	int		Length		= calc_length(MML);
+	int		GateTime	= calc_gate(MML);
+	bool	Slur		= calc_slur(MML);
+
+	if(jump_flag==false){
+		SetNote(_key, Length, GateTime, Slur);
+	}
+
+}
+
+//==============================================================
+//		休符のイベント作成
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//		int			mode	
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRest(MMLfile*	MML, int mode)
+{
+					char	old_note = oldNote[(pt_oldNote - echo_value) & 0xFF];
+	
+	unsigned		char	cData;
+	unsigned		char	_code = 0x0F;
+					int		Length = -1;
+					int		GateTime = -1;
+					bool	Slur = false;
+
+
+	//休符のモード
+	cData = MML->GetChar();
+	switch(cData){
+		case('-'):
+			_code = 0x0D;
+			break;
+		case('#'):
+		case('+'):
+			_code = 0x0E;
+			break;
+		case('='):
+		case('*'):
+			_code = 0x0F;
+			break;
+		default:
+			MML->Back();
+			if(mode & 0x80){
+				_code = 0x0D + ((char)mode & 0x03);
+			} else {
+				switch(KeySignature[7]){
+					case(-1):
+						_code = 0x0D;
+						break;
+					case(+1):
+						_code = 0x0E;
+						break;
+					default:
+						_code = 0x0D + ((char)mode & 0x03);
+						break;
+				}
+			}
+			break;
+	}
+
+	Length		= calc_length(MML);		//長さ
+	GateTime	= calc_gate(MML);		//ゲートタイム or タイ
+	Slur		= calc_slur(MML);		//タイ・スラー
+
+	if(jump_flag==false){
+		//クオンタイズ
+		if(gatetime_Q != QMax){
+			Set_q((Length * (QMax - gatetime_Q)) / QMax);
+		}
+
+		if((echo_flag == false) || (_code != 0x0F) || (old_note == -1) || (echo_length != -1)){
+			if(Length == opt_DefaultLength){
+				Length = -1;
+			}
+			_old_note = new mml_note(_code, Length, GateTime, Slur, L"Rest");
+			SetEvent(_old_note);
+		} else {
+			GenerateEcho(Length,GateTime,Slur);
+		}
+	}
+}
+
+//==============================================================
+//		タイのオブジェクト作成（休符で作る）
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetTai(MMLfile* MML)
+{
+	if(jump_flag==false){
+		_old_note->SetTai();
+	}
+	SetRest(MML,2);
+}
+
+//==============================================================
+//			ポルタメント（簡素版）
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//		char		iTempo	テンポ
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
+{
+	unsigned	char	cData;
+
+				int		o_rel	= 0;
+				int		o_rel2	= 0;
+
+				int		iNote_2;	//ノートナンバー
+				int		note_2;		//音名code
+				int		_key_2;		//音名
+				int		Length_2;	//音長
+				int		GateTime_2;	//ゲートタイム
+				bool	Slur_2;		//スラー
+
+				int		iNote;		//ノートナンバー
+				int		note;		//音名code
+				int		_key;		//音名
+				int		Length;		//音長
+				int		GateTime;	//ゲートタイム
+				bool	Slur;		//スラー
+
+	//------
+	//ポルタメント元の音符
+	cData = MML->GetChar();
+	switch(cData){
+		case('c'):
+			note	= 0;
+			break;
+		case('d'):
+			note	= 1;
+			break;
+		case('e'):
+			note	= 2;
+			break;
+		case('f'):
+			note	= 3;
+			break;
+		case('g'):
+			note	= 4;
+			break;
+		case('a'):
+			note	= 5;
+			break;
+		case('b'):
+			note	= 6;
+			break;
+		default:
+			MML->Err(L"a,b,c～gの音名を記述してください。");
+			break;
+	}
+
+	_key		= calc_note(MML, note);
+	Length		= calc_length(MML);
+	GateTime	= calc_gate(MML);
+	Slur		= calc_slur(MML);
+
+	//ノートナンバーの取得
+	iNote=		((char)_key + (octave + octave1)*12) & 0xFF;
+
+	//------
+	//オクターブ処理
+	cData = MML->GetChar();
+	while((cData == '>') || (cData == '<') || (cData == '`') || (cData == '"')){
+		switch(cData){
+			case('<'):
+				o_rel--;
+				break;
+			case('>'):
+				o_rel++;
+				break;
+			case('`'):
+				o_rel2++;
+				break;
+			case('"'):
+				o_rel2--;
+				break;
+			default:
+				break;
+		}
+		cData = MML->GetChar();	//次の文字
+	}
+	//臨時記号ではなくなったので、ポインタを戻す。
+	MML->Back();
+
+	//------
+	//ポルタメント先の音符
+	cData = MML->GetChar();
+	switch(cData){
+		case('c'):
+			note_2	= 0;
+			break;
+		case('d'):
+			note_2	= 1;
+			break;
+		case('e'):
+			note_2	= 2;
+			break;
+		case('f'):
+			note_2	= 3;
+			break;
+		case('g'):
+			note_2	= 4;
+			break;
+		case('a'):
+			note_2	= 5;
+			break;
+		case('b'):
+			note_2	= 6;
+			break;
+		default:
+			MML->Err(L"a,b,c～gの音名を記述してください。");
+			break;
+	}
+
+	_key_2		= calc_note(MML, note_2);
+	iNote_2		= ((char)_key_2 + (octave + octave1 + o_rel + o_rel2)*12) & 0xFF;
+
+	//------
+	//ポルタメント終了
+	cData = MML->GetChar();
+	if(cData != '}'){
+		MML->Err(L"ポルタメントコマンドは、}で閉じて下さい。");
+	}
+
+	Length_2	= calc_length(MML);
+	if(Length_2 != -1){
+		if(Length != -1){
+			MML->Err(L"ポルタメントコマンドで、音長が2箇所に記述されています。");
+		} else {
+			Length = Length_2;
+		}
+	}
+
+	GateTime_2	= calc_gate(MML);
+	if(GateTime_2 != -1){
+		if(GateTime != -1){
+			MML->Err(L"ポルタメントコマンドで、ゲートタイムが2箇所に記述されています。");
+		} else {
+			GateTime = GateTime_2;
+		}
+	}
+
+	Slur_2		= calc_slur(MML);
+	if(Slur_2 == true){
+		Slur = true;
+	}
+
+	//------
+	//ポルタメントの計算
+	int		Length_0	= Length;		//実音長
+
+	int	pol_length;
+	int pol_target;
+	int	pol_rate;
+	int	pol_depth;
+
+	//実音長の取得
+	if(Length_0 == -1){
+		Length_0 = DefaultLength;
+	}
+
+	pol_length	= (Length_0 * 150) / iTempo;
+	pol_target	= iNote_2 - iNote;
+
+	if(abs(pol_target) * 16 >= pol_length){
+		pol_rate	= 1;
+		pol_depth	= (pol_target * 16) / pol_length;
+		if((pol_depth * pol_length) != (pol_target * 16)){
+			if(pol_target>=0){
+				pol_depth++;
+			} else {
+				pol_depth--;
+			}
+		}
+	} else {
+		if(pol_target < 0){
+			pol_rate	= pol_length / (-pol_target * 16);
+			pol_depth	= -1;
+		} else {
+			pol_rate	= pol_length / (+pol_target * 16);
+			pol_depth	= 1;
+		}
+	}
+
+//	printf("length :%d\n", pol_length);
+//	printf("Rate   :%d\n", pol_rate);
+//	printf("Depth  :%d\n", pol_depth);
+//	printf("Target :%d\n", pol_target);
+
+	//------
+	//オブジェクトの書き込み
+	if(jump_flag == false){
+
+		//ポルタメント
+		SetEvent(new mml_general(nsd_Portamento, (unsigned char)1, (unsigned char)pol_rate, (unsigned char)pol_depth, (unsigned char)pol_target, L"Portamento"));
+
+		//ポルタメント元の音符
+		SetNote(_key, Length, GateTime, Slur);
+	}
+
+	//オクターブコマンドの書き出し
+	while( o_rel > 0){
+		if(MML->octave_reverse == true){
+			SetOctaveDec();
+		} else {
+			SetOctaveInc();
+		}
+		o_rel--;
+	}
+	while( o_rel < 0){
+		if(MML->octave_reverse == true){
+			SetOctaveInc();
+		} else {
+			SetOctaveDec();
+		}
+		o_rel++;
+	}
+
+}
+
+//==============================================================
+//			ポルタメント（Pコマンド版）
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetProtament(MMLfile* MML)
+{
+	unsigned	char	cData;
+
+				int		_Decay;
+				int		_Rate;
+				int		_Depth;
+				int		_Target;
+
+	_Decay = MML->GetInt();
+	if( (_Decay < 0) || (_Decay > 255) ){
+		MML->Err(L"ポルタメントの第1パラメータは0～255の範囲で指定してください。");
+	}
+	_Decay++;
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
+	}
+
+	_Rate = MML->GetInt();
+	if( (_Rate < 1) || (_Rate > 256) ){
+		MML->Err(L"ポルタメントの第2パラメータは1～256の範囲で指定してください。");
+	}
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
+	}
+
+	_Depth = MML->GetInt();
+	if( (_Depth < -128) || (_Depth > 127) ){
+		MML->Err(L"ポルタメントの第3パラメータは-128～127の範囲で指定してください。");
+	}
+	_Decay++;
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
+	}
+
+	_Target = MML->GetInt();
+	if( (_Target < -128) || (_Target > 127) ){
+		MML->Err(L"ポルタメントの第4パラメータは-128～127の範囲で指定してください。");
+	}
+
+	if(jump_flag == false){
+        SetEvent(new mml_general(nsd_Portamento, (unsigned char)_Decay, (unsigned char)_Rate, (unsigned char)_Depth, (unsigned char)_Target, L"Portamento"));
+	}
+}
+
+//==============================================================
+//		オクターブ
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetKeyShift(MMLfile* MML)
+{
+	iKeyShift = MML->GetInt();
+	if( (iKeyShift < -128) || (iKeyShift > 127) ){
+		MML->Err(L"キーシフトは-127～128の範囲で指定してください。");
+	}
+}
+
+//==============================================================
+//		オクターブ
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetKeyShift_Relative(MMLfile* MML)
+{
+	iKeyShift += MML->GetInt();
+	if( (iKeyShift < -128) || (iKeyShift > 127) ){
+		MML->Err(L"キーシフトの範囲が-127～128を超えました。");
+	}
+
+}
+
 //==============================================================
 //		オクターブ
 //--------------------------------------------------------------

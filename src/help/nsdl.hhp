@@ -55,6 +55,7 @@ mml_note.html
 mml_octave.html
 mml_poke.html
 mml_portamento.html
+mml_portamento2.html
 mml_relative_octave.html
 mml_relative_volume.html
 mml_release.html
@@ -67,6 +68,7 @@ mml_sweep.html
 mml_tempo.html
 mml_tie.html
 mml_transpose.html
+mml_keyshift.html
 mml_TR.html
 mml_volume.html
 mml_voice.html
