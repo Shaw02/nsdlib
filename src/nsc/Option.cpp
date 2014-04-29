@@ -20,6 +20,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	saveASM(false),
 	opt(false),
 	fErr(false),
+	flag_TickCount(true),
 	cDebug(0)
 {
 
@@ -75,6 +76,12 @@ OPSW::OPSW(int argc, char* argv[]):
 				case 'e' :
 				case 'E' :
 					fErr = true;
+					break;
+				//--------
+				//Tick Count
+				case 't' :
+				case 'T' :
+					flag_TickCount = false;
 					break;
 				//--------
 				//Debug‚ÌŽw’è
@@ -261,6 +268,7 @@ void	OPSW::print_help(){
 				L"  -a			Compile to assembly langage.\n"
 				L"  -n			Compile to NSF music format.\n"
 				L"  -e			Error/Warning messages out the stadard error.\n"
+				L"  -t			Disable tick counting.\n"
 				L"  -l[file(.bin)]	Filename of the rom code for NSF.\n"
 				L"  -fa[file(.s  )]	Filename of the output assembly langage file.\n"
 				L"  -fn[file(.nsf)]	Filename of the output NSF music format.\n"

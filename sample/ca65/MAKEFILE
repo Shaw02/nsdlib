@@ -4,50 +4,100 @@
 #				A.Waranabe (S.W.)
 #==============================================================================
 
-.SUFFIXES :
-.SUFFIXES : .s .c .mml
+TOOL_PASS =	
+INC_PASS =	..\..\include\\
+LIB_PASS =	..\..\lib\\
 
-ASM = ca65
-AFLAG = -t none
+include	$(INC_PASS)makefile.mk
 
-CC = cl65
-CFLAG = -t none -Oi -Os -Or -c -o
+########################################
+#;	Siurce files
+########################################
+#;
+#;	ソース追加時は、ファイル名を追加してください。
+#;	それだけで、プロジェクトに追加されます。
+#;
 
-MC = ..\..\bin\nsc
-MFLAG = -a
+#---------------
+#; プロジェクト名
+MAIN_PROJ  =	test.nes
 
-LINKER = ld65
-LFLAG = -C nesa.cfg -v -o
+#---------------
+#; リンカーの設定
+CFG_FILE   =	nesa.cfg
+MAP_FILE   =	test.map
 
-LIBER = ar65
-LIBFLAG = a
+#---------------
+#; ソースファイル
+MAIN_FILES =	crt0.o			\
+		main.o			\
 
-PROJ = test
+CHR_FILRS  =	neschar.o
 
-LIB_FILES = ../../lib/nsd.lib
-
-INC_FILES = 
-
-FILES = crt0.o main.o testmus.o
-
-
-clean: $(PROJ).nes
-	@del *.bak
-	@del *.o
-
-all: $(PROJ).nes
-
-$(PROJ).nes : $(FILES) $(INC_FILES) $(LIB_FILES)
-	@$(LINKER) $(LFLAG) $(PROJ).nes $(FILES)  $(LIB_FILES)
-
-.mml.o :
-	@$(MC) $(MFLAG) $<
-	@$(ASM) $(AFLAG) $*.s
-
-.c.o :
-	@$(ASM) $(CFLAG) $*.o $<
-
-.s.o :
-	@$(ASM) $(AFLAG) $<
+MML_FILES  =	testmus.o
 
 
+
+#---------------------------------------
+#;	Header files
+#---------------------------------------
+#;
+#;	ビルドに依存するヘッダーファイルは、ここに書いてください。
+#;
+
+#---------------
+#; アセンブリ言語用ヘッダー
+INC_FILES =	nsd.inc
+
+#---------------
+#; Ｃ言語用ヘッダー
+H_FILES  =	nsd.h
+
+#---------------
+#; ⊿ＰＣＭファイル
+DMC_FILES =	
+
+
+
+
+#---------------------------------------
+#;	Library files
+#---------------------------------------
+#;
+#;	ビルドに依存するライブラリファイルは、ここに書いてください。
+#;
+
+LIB_FILES =	$(LIB_PASS)nsd.lib
+
+
+
+########################################
+#;	Build process
+########################################
+
+.PHONY: all clean
+
+#---------------
+#; Default Target（ここに、ビルドするプロジェクトの一覧を記述する。）
+all: $(MAIN_PROJ)
+
+
+#---------------
+#; build of main program
+$(MAIN_PROJ) : $(MAIN_FILES) $(CHR_FILES) $(MML_FILES) $(LIB_FILES)
+	@echo [Link] : $@ >>$(ERRLOG_FILE)
+	$(LINKER) $(LDFLAGS) $@ $^ 1>>$(LOG_FILE) 2>>$(ERRLOG_FILE)
+
+
+#---------------
+#; Crean up
+clean:
+#	@$(RM) *.nes		#NESファイルは、消さないでおく。
+	@$(RM) *.bak
+	@$(RM) *.map
+	@$(RM) *.lst
+	@$(RM) *.o
+
+	@$(RM) $(LOG_FILE)
+	@$(RM) $(ERRLOG_FILE)
+	@$(RM) $(BLDLOG_FILE)

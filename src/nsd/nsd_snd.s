@@ -30,7 +30,9 @@
 .endif
 
 	.include	"nes.inc"
-	.include	"nsd.inc"
+	.include	"nsddef.inc"
+	.include	"macro.inc"
+
 
 
 .ifdef	DPCMBank
@@ -628,8 +630,8 @@ _nsd_OPLL_keyoff_exit:
 ;=======================================================================
 .proc	_nsd_snd_voice
 .rodata
-JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
-	.addr	_nsd_nes_voice		;BGM ch2 Pulse
+JMPTBL:	.addr	_nsd_ch1_voice		;BGM ch1 Pulse
+	.addr	_nsd_ch2_voice		;BGM ch2 Pulse
 	.addr	Exit			;BGM ch3 Triangle	-- no process --
 	.addr	_nsd_noise_voice	;BGM ch4 Noize
 	.addr	Exit			;BGM ch5 DPCM
@@ -637,8 +639,8 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	_nsd_fds_GainMod
 .endif
 .ifdef	VRC6
-	.addr	_nes_vrc6_voice
-	.addr	_nes_vrc6_voice
+	.addr	_nes_vrc6_ch1_voice
+	.addr	_nes_vrc6_ch2_voice
 	.addr	Exit			;Saw
 .endif
 .ifdef	VRC7
@@ -666,8 +668,8 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	.addr	Exit
 .endif
 .ifdef	MMC5
-	.addr	_nsd_nes_voice		;仕組みは同じ
-	.addr	_nsd_nes_voice		;
+	.addr	_nsd_mmc5_ch1_voice		;仕組みは同じ
+	.addr	_nsd_mmc5_ch2_voice		;
 .endif
 .ifdef	N163
 	.addr	_nsd_n163_ch1_voice
@@ -687,7 +689,7 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 .ifdef	NULL
 	.addr	Exit
 .endif
-	.addr	_nsd_nes_voice		;SE  ch1 Pulse
+	.addr	_nsd_noise_voice_se1	;SE  ch1 Pulse
 	.addr	_nsd_noise_voice_se2	;SE  ch2 Noize
 
 ;---------------------------------------
@@ -699,7 +701,7 @@ JMPTBL:	.addr	_nsd_nes_voice		;BGM ch1 Pulse
 	jmp	(__ptr)
 
 ;---------------------------------------
-_nsd_nes_voice:
+_nsd_ch1_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
@@ -708,11 +710,39 @@ _nsd_nes_voice:
 
 	;-------------------------------
 	; *** Set the voice to work
-	sta	__voice_set,x
+	sta	__apu_voice_set1
 
 	;-------------------------------
 	; *** Exit
 Exit:
+	rts
+
+;---------------------------------------
+_nsd_ch2_voice:
+
+	;-------------------------------
+	; *** Calculate the voice
+	shl	a, 6	;a <<= 6
+	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__apu_voice_set2
+
+	rts
+
+;---------------------------------------
+_nsd_noise_voice_se1:
+
+	;-------------------------------
+	; *** Calculate the voice
+	shl	a, 6	;a <<= 6
+	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__se_voice_set1
+
 	rts
 
 ;---------------------------------------
@@ -725,7 +755,7 @@ _nsd_noise_voice:
 
 	;-------------------------------
 	; *** Set the voice to work
-	sta	__voice_set,x
+	sta	__apu_voice_set4
 
 	;-------------------------------
 	; *** Exit
@@ -745,7 +775,7 @@ _nsd_noise_voice_se2:
 
 	;-------------------------------
 	; *** Set the voice to work
-	sta	__voice_set,x
+	sta	__se_voice_set2
 
 	;-------------------------------
 	; *** Exit
@@ -755,6 +785,40 @@ _nsd_noise_voice_se2:
 
 ;	rts
 
+
+;---------------------------------------
+.ifdef	MMC5
+_nsd_mmc5_ch1_voice:
+
+	;-------------------------------
+	; *** Calculate the voice
+	shl	a, 6	;a <<= 6
+	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__mmc5_voice_set1
+
+	;-------------------------------
+	; *** Exit
+	rts
+
+;---------------------------------------
+_nsd_mmc5_ch2_voice:
+
+	;-------------------------------
+	; *** Calculate the voice
+	shl	a, 6	;a <<= 6
+	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__mmc5_voice_set2
+
+	;-------------------------------
+	; *** Exit
+	rts
+.endif
 
 ;---------------------------------------
 .ifdef	FDS
@@ -775,7 +839,7 @@ _nsd_fds_GainMod:
 
 ;---------------------------------------
 .ifdef	VRC6
-_nes_vrc6_voice:
+_nes_vrc6_ch1_voice:
 	;-------------------------------
 	; *** Calculate the voice
 	shl	a, 4	;a <<= 6
@@ -783,7 +847,22 @@ _nes_vrc6_voice:
 
 	;-------------------------------
 	; *** Set the voice to work
-	sta	__voice_set,x
+	sta	__vrc6_voice_set1
+
+	;-------------------------------
+	; *** Exit
+	rts
+
+;---------------------------------------
+_nes_vrc6_ch2_voice:
+	;-------------------------------
+	; *** Calculate the voice
+	shl	a, 4	;a <<= 6
+	and	#$70	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__vrc6_voice_set2
 
 	;-------------------------------
 	; *** Exit
@@ -859,14 +938,23 @@ _nes_vrc7_voice:
 	sta	VRC7_Data
 	jmp	@Exit
 
-	;-------------------------------
-	; *** Calculate the voice
-@Voice:	shl	a, 2	;a <<= 4
-	and	#$F0	;a &= 0xF0	;for OR to volume(lower 4bit)
-
+@Voice:	
 	;-------------------------------
 	; *** Set the voice to work
-	sta	__voice_set,x
+	;チャンネルの計算
+	sta	__tmp
+	txa				;[2]9
+	sub	#nsd::TR_VRC7		;[3]12
+	shr	a, 1			;[2]14
+	tay				;[2]16
+
+	;-------------------------------
+	; *** Calculate the voice
+	lda	__tmp
+	shl	a, 2	;a <<= 4
+	and	#$F0	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	sta	__vrc7_voice_set,y
 
 	;-------------------------------
 	; *** Exit
@@ -941,14 +1029,23 @@ _nes_opll_voice:
 	sta	OPLL_Data
 	jmp	@Exit
 
-	;-------------------------------
-	; *** Calculate the voice
-@Voice:	shl	a, 2	;a <<= 4
-	and	#$F0	;a &= 0xF0	;for OR to volume(lower 4bit)
-
+@Voice:	
 	;-------------------------------
 	; *** Set the voice to work
-	sta	__voice_set,x
+	;チャンネルの計算
+	sta	__tmp
+	txa				;[2]9
+	sub	#nsd::TR_OPLL		;[3]12
+	shr	a, 1			;[2]14
+	tay				;[2]16
+
+	;-------------------------------
+	; *** Calculate the voice
+	lda	__tmp
+	shl	a, 2	;a <<= 4
+	and	#$F0	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	sta	__opll_voice_set,y
 
 	;-------------------------------
 	; *** Exit
@@ -1218,8 +1315,7 @@ _nsd_ch1_volume:
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
 	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-;	ora	__voice_set,x
-	ora	__voice_set + nsd::TR_BGM1
+	ora	__apu_voice_set1
 
 	;-------------------------------
 	; *** Output to NES sound device
@@ -1238,6 +1334,23 @@ _nsd_ch2_volume:
 	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
 	bne	Exit
 
+	;-------------------------------
+	; *** Mix voice and volume
+	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+	and	#$0F
+	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+	ora	__apu_voice_set2
+
+	;-------------------------------
+	; *** Output to NES sound device
+	;y = x << 1
+	sta	APU_PULSE2CTRL
+
+	;-------------------------------
+	; *** Exit
+	rts
+
+;---------------------------------------
 _nsd_se1_volume:
 
 	;-------------------------------
@@ -1245,7 +1358,7 @@ _nsd_se1_volume:
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
 	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-	ora	__voice_set,x
+	ora	__se_voice_set1
 
 	;-------------------------------
 	; *** Output to NES sound device
@@ -1305,7 +1418,7 @@ _nsd_vrc6_ch1_volume:
 	; *** Mix voice and volume
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
-	ora	__voice_set,x
+	ora	__vrc6_voice_set1
 
 	;-------------------------------
 	; *** Output to NES sound device
@@ -1323,7 +1436,7 @@ _nsd_vrc6_ch2_volume:
 	; *** Mix voice and volume
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
-	ora	__voice_set,x
+	ora	__vrc6_voice_set2
 
 	;-------------------------------
 	; *** Output to NES sound device
@@ -1360,7 +1473,7 @@ _nsd_vrc7_volume:
 	add	#VRC7_Volume		;[4]20
 	sta	VRC7_Resister		;●Resister Write
 	lda	__tmp			;[3]
-	ora	__voice_set,x		;[4]
+	ora	__vrc7_voice_set,y	;[4]
 	sta	VRC7_Data		;●Data Write
 
 	;周波数 下位byte 書き込み
@@ -1415,7 +1528,7 @@ _nsd_OPLL_volume:
 	add	#OPLL_Volume		;[4]20
 	sta	OPLL_Resister		;●Resister Write
 	lda	__tmp			;[3]
-	ora	__voice_set,x		;[4]
+	ora	__opll_voice_set,y	;[4]
 	sta	OPLL_Data		;●Data Write
 
 	;周波数 下位byte 書き込み
@@ -1498,7 +1611,7 @@ _nsd_mmc5_ch1_volume:
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
 	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-	ora	__voice_set,x
+	ora	__mmc5_voice_set1
 
 	;-------------------------------
 	; *** Output to NES sound device
@@ -1517,7 +1630,7 @@ _nsd_mmc5_ch2_volume:
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
 	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-	ora	__voice_set,x
+	ora	__mmc5_voice_set2
 
 	;-------------------------------
 	; *** Output to NES sound device
@@ -2677,11 +2790,7 @@ Exit:
 	;-------------------------------
 	;SE check
 	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
-	beq	_nsd_nes_se2_frequency
-	rts
-.endproc
-
-.proc	_nsd_nes_se2_frequency
+	bne	Exit
 
 	;-------------------------------
 	; *** Get the note number lower 4bit
@@ -2694,7 +2803,37 @@ Exit:
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	ldx	__channel
 	and	#$0F
-	ora	__voice_set,x
+	ora	__apu_voice_set4
+	
+	;-------------------------------
+	; *** Output to NES sound device
+	sta	APU_NOISEFREQ1
+	; to do note on?
+	lda	#$08
+	sta	APU_NOISEFREQ2		;Length counter load (L) 
+
+	;-------------------------------
+	; *** Exit
+Exit:
+	rts
+
+.endproc
+
+.proc	_nsd_nes_se2_frequency
+;---------------------------------------
+
+	;-------------------------------
+	; *** Get the note number lower 4bit
+	;a >>= 4
+	eor	#$FF
+	shr	a,4
+
+	;-------------------------------
+	; *** Mix voice and frequency
+	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+	ldx	__channel
+	and	#$0F
+	ora	__se_voice_set2
 	
 	;-------------------------------
 	; *** Output to NES sound device

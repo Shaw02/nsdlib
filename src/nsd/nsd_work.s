@@ -5,7 +5,9 @@
 ;=======================================================================
 
 	.include	"nes.inc"
-	.include	"nsd.inc"
+	.include	"nsddef.inc"
+	.include	"macro.inc"
+
 
 	.exportzp	nsd_work_zp
 	.export		nsd_work

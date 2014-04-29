@@ -13,7 +13,9 @@
 	.import		nsd_work
 
 	.include	"nes.inc"
-	.include	"nsd.inc"
+	.include	"nsddef.inc"
+	.include	"macro.inc"
+
 
 ;=======================================================================
 ;	void	__fastcall__	_nsd_div192(unsigned int ax);

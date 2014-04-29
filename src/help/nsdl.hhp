@@ -19,6 +19,8 @@ faq.html
 format_music.html
 func_nsd_init.html
 func_nsd_main.html
+func_nsd_main_bgm.html
+func_nsd_main_se.html
 func_nsd_set_dpcm.html
 func_nsd_play_bgm.html
 func_nsd_play_se.html
@@ -26,6 +28,8 @@ func_nsd_pause_bgm.html
 func_nsd_resume_bgm.html
 func_nsd_stop_bgm.html
 func_nsd_stop_se.html
+func_nsd_save.html
+func_nsd_load.html
 index.html
 n163.html
 nsc_option.html

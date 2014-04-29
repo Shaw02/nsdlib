@@ -25,7 +25,9 @@
 .endif
 
 	.include	"nes.inc"
-	.include	"nsd.inc"
+	.include	"nsddef.inc"
+	.include	"macro.inc"
+
 
 ;=======================================================================
 ;		nsd_keyon

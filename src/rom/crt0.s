@@ -16,16 +16,14 @@
 	.import		__CODE_LOAD__,__CODE_RUN__, __CODE_SIZE__
 	.import		__RODATA_LOAD__,__RODATA_RUN__, __RODATA_SIZE__
 
-	.include	"..\..\include\nsd.inc"
 	.include	"nes.inc"
+	.include	"nsd.inc"
+	.include	"macro.inc"
 
 .ifdef	DPCMBank
 	.import		_nsd_irq
 	.import		_nsd_ptr_bank
 .endif
-
-.MACPACK generic
-.MACPACK longbranch 
 
 ; ------------------------------------------------------------------------
 ; 	ïœêî

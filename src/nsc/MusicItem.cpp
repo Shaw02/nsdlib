@@ -113,6 +113,27 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 //		コードの取得
 //--------------------------------------------------------------
 //	●引数
+//		unsigned	int	n	添え字
+//	●返値
+//		unsigned	char	内容
+//==============================================================
+unsigned	char	MusicItem::getCode(int n)
+{
+	unsigned	char	iCode;
+	
+	if((n<0) || (n>iSize)){
+		iCode = -1;
+	} else {
+		iCode = code[n];
+	}
+
+	return(iCode);
+}
+
+//==============================================================
+//		コードの取得
+//--------------------------------------------------------------
+//	●引数
 //		string*		_str
 //	●返値
 //				無し

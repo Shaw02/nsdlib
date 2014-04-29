@@ -468,6 +468,14 @@
 				<param name="Local" value="func_nsd_main.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_main_bgm()">
+				<param name="Local" value="func_nsd_main_bgm.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_main_se()">
+				<param name="Local" value="func_nsd_main_se.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="nsd_set_dpcm()">
 				<param name="Local" value="func_nsd_set_dpcm.html">
 				</OBJECT>
@@ -480,6 +488,14 @@
 				<param name="Local" value="func_nsd_stop_bgm.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_play_se()">
+				<param name="Local" value="func_nsd_play_se.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="nsd_stop_se()">
+				<param name="Local" value="func_nsd_stop_se.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="nsd_pause_bgm()">
 				<param name="Local" value="func_nsd_pause_bgm.html">
 				</OBJECT>
@@ -488,12 +504,12 @@
 				<param name="Local" value="func_nsd_resume_bgm.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="nsd_play_se()">
-				<param name="Local" value="func_nsd_play_se.html">
+				<param name="Name" value="nsd_save()">
+				<param name="Local" value="func_nsd_save.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="nsd_stop_se()">
-				<param name="Local" value="func_nsd_stop_se.html">
+				<param name="Name" value="nsd_load()">
+				<param name="Local" value="func_nsd_load.html">
 				</OBJECT>
 		</UL>
 	</UL>

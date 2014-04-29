@@ -1,7 +1,7 @@
 
 rem --- nsd.lib ---
 cd nsd
-nmake
+call _make
 copy *.lib ..\..\lib\
 cd..
 
@@ -14,7 +14,7 @@ cd..
 
 rem --- rom.bin ---
 cd rom
-nmake
+call _make
 copy *.bin ..\..\bin\
 cd..
 

@@ -65,6 +65,186 @@ MusicTrack::~MusicTrack(void)
 }
 
 //==============================================================
+//		カウント
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//			int	Tick数
+//==============================================================
+unsigned int	MusicTrack::TickCount(MusicFile* MUS, unsigned int iLength)
+{
+	//----------------------
+	//Local変数
+	vector<	MusicItem*>::iterator	itItem;
+	unsigned	char				iCode;
+
+	vector<	MusicItem*>::iterator	itRepeatA_start;
+	vector<	MusicItem*>::iterator	itRepeatA_end;
+				int					iRepeatA_count	= 0;
+				bool				f_RepeatA	=	false;
+
+	vector<	MusicItem*>::iterator	itRepeatB_start;
+	vector<	MusicItem*>::iterator	itRepeatB_end;
+				int					iRepeatB_count	= 0;
+				bool				f_RepeatB	=	false;
+
+	DefaultLength	=	iLength;
+
+	offset_now	=	0;		//バイナリー上のオフセット
+	iTickTotal	=	0;		//
+	iTickLoop	=	0;
+
+	//----------------------
+	//プリ演奏
+
+	//シーケンスデータは存在しているか？
+	if(!ptcItem.empty()){
+		//存在していたら、プリ演奏
+		itItem = ptcItem.begin();
+		while(itItem != ptcItem.end()){
+			if(offset_loop == offset_now){
+				iTickLoop = iTickTotal;
+			}
+			iCode		=	(*itItem)->getCode(0);
+			if((f_RepeatA == false) && (f_RepeatB == false)){
+				offset_now	+=	(*itItem)->getSize();
+			}
+			if(iCode < 0x80){
+				//command
+				switch(iCode){
+					case(nsd_Call):
+						{
+							mml_Address*	ptAdd	= (mml_Address*)(*itItem);
+							Sub*			cSub	= MUS->ptcSub[ptAdd->get_id()];
+
+							iTickTotal		+= cSub->TickCount(MUS, DefaultLength);
+							DefaultLength	=  cSub->GetDefaultLength();
+						}
+						break;
+
+					//----------
+					//Repeat A
+					case(nsd_Repeat_A_Start):
+						itRepeatA_start	= itItem;	//覚えるのは現時点で良い
+						iRepeatA_count	= (*itItem)->getCode(1);
+						break;
+
+					case(nsd_Repeat_A_Branch):
+						if(iRepeatA_count == 1){
+							itItem = itRepeatA_end;	//終了点に行く
+							f_RepeatA = false;
+						}
+						break;
+
+					case(nsd_Repeat_A_End):
+						itRepeatA_end = itItem;		//終了点を記憶
+						iRepeatA_count--;
+						if(iRepeatA_count != 0){
+							itItem = itRepeatA_start;
+							f_RepeatA = true;
+						} else {
+							f_RepeatA = false;
+						}
+						break;
+
+					//----------
+					//Repeat B
+					case(nsd_Repeat_B_Start):
+						itRepeatB_start = itItem;	//覚えるのは現時点で良い
+						iRepeatB_count	= 0;
+						break;
+
+					case(nsd_Repeat_B_Branch):
+						if(iRepeatB_count != 0){
+							itItem = itRepeatB_end;	//分岐先へ
+						}
+						f_RepeatB = false;
+						break;
+
+					case(nsd_Repeat_B_End):
+						itRepeatB_end = itItem;		//分岐先を記憶
+						itItem = itRepeatB_start;
+						iRepeatB_count++;
+						f_RepeatB = true;
+						break;
+
+					//----------
+					//Length
+					case(nsd_Length):
+						DefaultLength = (*itItem)->getCode(1);
+						break;
+					case(nsd_Length_96):
+						DefaultLength = 96;
+						break;
+					case(nsd_Length_72):
+						DefaultLength = 72;
+						break;
+					case(nsd_Length_48):
+						DefaultLength = 48;
+						break;
+					case(nsd_Length_36):
+						DefaultLength = 36;
+						break;
+					case(nsd_Length_32):
+						DefaultLength = 32;
+						break;
+					case(nsd_Length_24):
+						DefaultLength = 24;
+						break;
+					case(nsd_Length_18):
+						DefaultLength = 18;
+						break;
+					case(nsd_Length_16):
+						DefaultLength = 16;
+						break;
+					case(nsd_Length_12):
+						DefaultLength = 12;
+						break;
+					case(nsd_Length_9):
+						DefaultLength = 9;
+						break;
+					case(nsd_Length_8):
+						DefaultLength = 8;
+						break;
+					case(nsd_Length_6):
+						DefaultLength = 6;
+						break;
+					case(nsd_Length_4):
+						DefaultLength = 4;
+						break;
+					case(nsd_Length_3):
+						DefaultLength = 3;
+						break;
+					case(nsd_Length_2):
+						DefaultLength = 2;
+						break;
+					case(nsd_Length_1):
+						DefaultLength = 1;
+						break;
+					default:
+						break;
+				}
+			} else {
+				//note
+				iCode &= 0x7F;
+				if(iCode & nsd_Note_Length){
+					iTickTotal += (int)(*itItem)->getCode(1);
+				} else {
+					iTickTotal += DefaultLength;
+				}
+			}
+			itItem++;
+		}
+	}
+
+	if(loop_flag == false){
+		iTickLoop = -1;
+	}
+	return(iTickTotal);
+}
+
+//==============================================================
 //		アドレス情報を決定する。
 //--------------------------------------------------------------
 //	●引数

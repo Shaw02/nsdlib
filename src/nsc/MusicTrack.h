@@ -10,6 +10,8 @@ class MusicTrack :
 {
 //メンバー変数
 private:
+				int		iTickTotal;
+				int		iTickLoop;
 
 				bool	compile_flag;		//現在コンパイル中？
 	unsigned	int		offset_now;			//現在のオフセット
@@ -71,6 +73,11 @@ public:
 			MusicTrack(MMLfile* MML, const wchar_t _strName[] = L"==== [ Music Track ]====");
 			~MusicTrack(void);
 
+	unsigned	int		TickCount(MusicFile* MUS, unsigned int iLength);
+	unsigned	int		GetTickTotal(void){	return(iTickTotal);};
+	unsigned	int		GetTickLoop(void){	return(iTickLoop);};
+
+			
 				void	Fix_Address(MusicFile* MUS);
 				void	SetEvent(MusicItem* _item);		//イベントの追加
 

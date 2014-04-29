@@ -14,7 +14,7 @@ protected:
 	unsigned	int				m_id;		//ID
 	unsigned	char			iTempo;
 
-private:
+protected:
 //static	const	Command_Info	Command[];	//コマンドの情報
 	map<int,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
 				MusicTrack*		nowTrack;	//コンパイル中のトラック
@@ -30,6 +30,7 @@ public:
 				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const wchar_t _strName[] = L"==== [ Track Set ]====");
 				~TrackSet(void);
 
+		void	TickCount(MusicFile* MUS);
 		void	getAsm(MusicFile* MUS);
 		void	Fix_Address(MusicFile* MUS);
 

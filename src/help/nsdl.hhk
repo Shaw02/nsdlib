@@ -143,19 +143,24 @@
 		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="D">
-		<param name="Name" value="MML reference: Detune">
-		<param name="Local" value="mml_detune.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="d">
 		<param name="Name" value="MML reference: Note">
 		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="D">
+		<param name="Name" value="MML reference: Detune">
+		<param name="Local" value="mml_detune.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="D%">
 		<param name="Name" value="MML reference: Detune">
 		<param name="Local" value="mml_detune.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="DPCM">
+		<param name="Name" value="MML reference: Delta PCM define block">
+		<param name="Local" value="mml_dpcm.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="e">
@@ -238,6 +243,11 @@
 		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="HMinor">
+		<param name="Name" value="MML reference: Scale">
+		<param name="Local" value="mml_scale.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="J">
 		<param name="Name" value="MML reference: Jump">
 		<param name="Local" value="mml_jump.html">
@@ -263,6 +273,11 @@
 		<param name="Local" value="mml_loop.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="MMinor">
+		<param name="Name" value="MML reference: Scale">
+		<param name="Local" value="mml_scale.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="MMLコンパイラ&quot;nsc.exe&quot;の使い方">
 		<param name="Name" value="MMLコンパイラ（nsc.exe）">
 		<param name="Local" value="usage_nsc.html">
@@ -281,6 +296,11 @@
 		<param name="Name" value="MML文法">
 		<param name="Name" value="ＭＭＬ文法">
 		<param name="Local" value="mml.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Mode">
+		<param name="Name" value="MML reference: Scale">
+		<param name="Local" value="mml_scale.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="N163">
@@ -313,9 +333,24 @@
 		<param name="Local" value="func_nsd_init.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_load()">
+		<param name="Name" value="nsd_load()">
+		<param name="Local" value="func_nsd_load.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="nsd_main()">
 		<param name="Name" value="nsd_main()">
 		<param name="Local" value="func_nsd_main.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_main_bgm()">
+		<param name="Name" value="nsd_main_bgm()">
+		<param name="Local" value="func_nsd_main_bgm.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_main_se()">
+		<param name="Name" value="nsd_main_se()">
+		<param name="Local" value="func_nsd_main_se.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="nsd_pause_bgm()">
@@ -336,6 +371,11 @@
 		<param name="Name" value="nsd_resume_bgm()">
 		<param name="Name" value="nsd_resume_bgm()">
 		<param name="Local" value="func_nsd_resume_bgm.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_save()">
+		<param name="Name" value="nsd_save()">
+		<param name="Local" value="func_nsd_save.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="nsd_set_dpcm()">
@@ -398,7 +438,7 @@
 		<param name="Local" value="mml_sub.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="scale">
+		<param name="Name" value="Scale">
 		<param name="Name" value="MML reference: Scale">
 		<param name="Local" value="mml_scale.html">
 		</OBJECT>
@@ -510,6 +550,8 @@
 		<param name="Name" value="ポルタメント">
 		<param name="Name" value="MML reference: Portamento">
 		<param name="Local" value="mml_portamento.html">
+		<param name="Name" value="MML reference: Portamento2">
+		<param name="Local" value="mml_portamento2.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="メモリ書き込み">
@@ -537,6 +579,8 @@
 		<param name="Name" value="移調">
 		<param name="Name" value="MML reference: Transpose">
 		<param name="Local" value="mml_transpose.html">
+		<param name="Name" value="MML reference: Key Shift">
+		<param name="Local" value="mml_keyshift.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="音色">

@@ -1,0 +1,6 @@
+[Assemble] : crt0.s 		
+[Assemble] : main.s 		
+[Compile] : testmus.mml 		
+[Link] : test.nes 		
+ld65.exe: Warning: nesa.cfg(60): Segment `CHARS' does not exist
+ld65.exe: Warning: Segment `PCMDATA' in module `testmus.o' requires larger alignment

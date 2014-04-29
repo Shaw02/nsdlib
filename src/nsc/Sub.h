@@ -18,7 +18,11 @@ public:
 
 	Sub(MMLfile* MML, unsigned int _id, wchar_t _strName[] = L"==== [ Sub ]====");
 	~Sub();
-	void	getAsm(MusicFile* MUS);
+
+	void				getAsm(MusicFile* MUS);
+
+	unsigned	int		TickCount(MusicFile* MUS, unsigned int iLength);
+	unsigned	int		GetDefaultLength(void);
 
 };// END CLASS DEFINITION Sub
 

@@ -22,6 +22,8 @@
 	Useage :	Call by 60[Hz].  e.g. V-Blank
 ----------------------------------------------*/
 void	__fastcall__	nsd_main(void);
+void	__fastcall__	nsd_main_bgm(void);
+void	__fastcall__	nsd_main_se(void);
 
 
 /*----------------------------------------------
@@ -71,6 +73,22 @@ void	__fastcall__	nsd_pause_bgm(void);
 	Return :	None
 ----------------------------------------------*/
 void	__fastcall__	nsd_resume_bgm(void);
+
+
+/*----------------------------------------------
+	Summary :	Pause ans Save
+	Arguments :	None
+	Return :	None
+----------------------------------------------*/
+void	__fastcall__	nsd_save(void* buff);
+
+
+/*----------------------------------------------
+	Summary :	Pause ans Load
+	Arguments :	None
+	Return :	None
+----------------------------------------------*/
+void	__fastcall__	nsd_load(void* buff);
 
 
 /*----------------------------------------------

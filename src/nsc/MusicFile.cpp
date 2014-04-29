@@ -465,6 +465,34 @@ MusicFile::~MusicFile(void)
 }
 
 //==============================================================
+//		デストラクタ
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	MusicFile::TickCount(void)
+{
+	unsigned	int			iBGM	= 0;
+	unsigned	int			iSE		= 0;
+
+	while(iBGM < Header.iBGM){
+		cout << "---- BGM(" << iBGM << ") ----" <<endl;
+		ptcBGM[iBGM]->TickCount(this);
+		iBGM++;
+	}
+
+	while(iSE < Header.iSE){
+		cout << "---- SE(" << iSE << ") ----" <<endl;
+		ptcSE[iSE]->TickCount(this);
+		iSE++;
+	}
+
+
+}
+
+//==============================================================
 //		ΔPCMのオフセットアドレスを計算
 //--------------------------------------------------------------
 //	●引数
@@ -658,7 +686,7 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		nsf->External	= (unsigned char)Header.iExternal;
 	}
 
-	wcout << L"--------------------" << endl;
+	wcout << L"----------------------------------------" << endl;
 	wcout << L"*NSF build process" << endl;
 
 

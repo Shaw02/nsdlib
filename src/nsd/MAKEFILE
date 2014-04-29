@@ -4,9 +4,88 @@
 #				A.Waranabe (S.W.)
 #==============================================================================
 
-ASM = ca65
-#--listing --list-bytes 255
-AFLAG = -t none
+export
+
+TOOL_PASS =	
+INC_PASS =	..\..\include\\
+LIB_PASS =	..\..\lib\\
+
+include	$(INC_PASS)makefile.mk
+
+########################################
+#;	Source files list
+########################################
+
+FILES =		nsd_init.s		\
+		nsd_set_dpcm.s		\
+		nsd_main.s		\
+		nsd_main_bgm.s		\
+		nsd_main_se.s		\
+		nsd_play_bgm.s		\
+		nsd_stop_bgm.s		\
+		nsd_pause_bgm.s		\
+		nsd_resume_bgm.s	\
+		nsd_save.s		\
+		nsd_load.s		\
+		nsd_play_se.s		\
+		nsd_stop_se.s		\
+		nsd_sequence.s		\
+		nsd_envelope.s		\
+		nsd_snd.s		\
+		nsd_math.s		\
+		nsd_work.s		\
+		nsd_irq.s		
+
+OFILES =	$(FILES:.s=.o)
+
+
+
+#---------------------------------------
+#;	Header files
+#---------------------------------------
+
+INC_FILES =	nsd.inc
+
+
+
+########################################
+#;	Project list
+########################################
+
+PROJ      =	NSD
+PROJ_FDS  =	NSD_FDS
+PROJ_VRC6 =	NSD_VRC6
+PROJ_VRC7 =	NSD_VRC7
+PROJ_OPLL =	NSD_OPLL
+PROJ_MMC5 =	NSD_MMC5
+PROJ_N163 =	NSD_N163
+PROJ_PSG  =	NSD_s5b
+PROJ_ALL  =	NSD_ALL
+PROJ_ALL2 =	NSD_ALL2
+PROJ_OALL =	NSD_OALL
+PROJ_HFE4 =	NSD_HFE4
+PROJ_HFX4 =	NSD_HFX4
+
+PROJ_LIST =	$(PROJ).lib		\
+		$(PROJ_FDS).lib		\
+		$(PROJ_VRC6).lib	\
+		$(PROJ_VRC7).lib	\
+		$(PROJ_OPLL).lib	\
+		$(PROJ_MMC5).lib	\
+		$(PROJ_N163).lib	\
+		$(PROJ_PSG).lib		\
+		$(PROJ_ALL).lib		\
+		$(PROJ_ALL2).lib	\
+		$(PROJ_OALL).lib	\
+		$(PROJ_HFX4).lib	\
+		$(PROJ_HFE4).lib
+
+
+
+#---------------------------------------
+#;	Define option
+#---------------------------------------
+
 AFDS  = -D FDS
 AVRC6 = -D VRC6
 AVRC7 = -D VRC7
@@ -21,268 +100,42 @@ AOALL =         -D VRC6 -D OPLL         -D MMC5 -D N163 -D PSG -D NULL -D DPCMBa
 AALL2 = -D FDS  -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank
 AHFX4 = -D FDS  -D VRC6 -D OPLL -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank -D HFX4
 
-CC = cc65
-CFLAG = -t none
 
-LIBER = ar65
-LIBFLAG = a
-
-PROJ      = NSD
-PROJ_FDS  = NSD_FDS
-PROJ_VRC6 = NSD_VRC6
-PROJ_VRC7 = NSD_VRC7
-PROJ_OPLL = NSD_OPLL
-PROJ_MMC5 = NSD_MMC5
-PROJ_N163 = NSD_N163
-PROJ_PSG  = NSD_s5b
-PROJ_ALL  = NSD_ALL
-PROJ_ALL2 = NSD_ALL2
-PROJ_OALL = NSD_OALL
-PROJ_HFE4 = NSD_HFE4
-PROJ_HFX4 = NSD_HFX4
-
-INC_FILES = nsd.inc
-
-FILES = nsd_init.s nsd_set_dpcm.s nsd_main.s nsd_play_bgm.s nsd_stop_bgm.s nsd_pause_bgm.s nsd_resume_bgm.s nsd_play_se.s nsd_stop_se.s nsd_sequence.s nsd_envelope.s nsd_snd.s nsd_math.s nsd_work.s nsd_irq.s
-OFILES = $(FILES:.s=.o)
-
-clean: $(PROJ).lib $(PROJ_FDS).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_ALL2).lib $(PROJ_OALL).lib $(PROJ_HFX4).lib $(PROJ_HFE4).lib
-	@del *.bak
-	@del *.o
-
-all:   $(PROJ).lib $(PROJ_FDS).lib $(PROJ_VRC6).lib $(PROJ_VRC7).lib $(PROJ_OPLL).lib $(PROJ_MMC5).lib $(PROJ_N163).lib $(PROJ_PSG).lib $(PROJ_ALL).lib $(PROJ_ALL2).lib $(PROJ_OALL).lib $(PROJ_HFX4).lib $(PROJ_HFE4).lib
-
-$(PROJ).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) nsd_init.s
-	@$(ASM) $(AFLAG) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) nsd_main.s
-	@$(ASM) $(AFLAG) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) nsd_play_se.s
-	@$(ASM) $(AFLAG) nsd_stop_se.s
-	@$(ASM) $(AFLAG) nsd_sequence.s
-	@$(ASM) $(AFLAG) nsd_envelope.s
-	@$(ASM) $(AFLAG) nsd_snd.s
-	@$(ASM) $(AFLAG) nsd_math.s
-	@$(ASM) $(AFLAG) nsd_work.s
-	@$(ASM) $(AFLAG) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_FDS).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AFDS) nsd_init.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_main.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_math.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_work.s
-	@$(ASM) $(AFLAG) $(AFDS) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_VRC6).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_init.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_main.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_math.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_work.s
-	@$(ASM) $(AFLAG) $(AVRC6) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_VRC7).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_init.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_main.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_math.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_work.s
-	@$(ASM) $(AFLAG) $(AVRC7) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_OPLL).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_init.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_main.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_math.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_work.s
-	@$(ASM) $(AFLAG) $(AOPLL) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_MMC5).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_init.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_main.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_math.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_work.s
-	@$(ASM) $(AFLAG) $(AMMC5) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_N163).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AN163) nsd_init.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_main.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_math.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_work.s
-	@$(ASM) $(AFLAG) $(AN163) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_PSG).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(APSG) nsd_init.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_main.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_snd.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_math.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_work.s
-	@$(ASM) $(AFLAG) $(APSG) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_ALL).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AALL) nsd_init.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_main.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_math.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_work.s
-	@$(ASM) $(AFLAG) $(AALL) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_ALL2).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AALL2) nsd_init.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_main.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_math.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_work.s
-	@$(ASM) $(AFLAG) $(AALL2) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_OALL).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AOALL) nsd_init.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_main.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_math.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_work.s
-	@$(ASM) $(AFLAG) $(AOALL) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
-
-$(PROJ_HFX4).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_init.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_main.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_math.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_work.s
-	@$(ASM) $(AFLAG) $(AHFX4) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
+$(PROJ_FDS).lib :	ASFLAGS += $(AFDS)
+$(PROJ_VRC6).lib :	ASFLAGS += $(AVRC6)
+$(PROJ_VRC7).lib :	ASFLAGS += $(AVRC7)
+$(PROJ_OPLL).lib :	ASFLAGS += $(AOPLL)
+$(PROJ_MMC5).lib :	ASFLAGS += $(AMMC5)
+$(PROJ_N163).lib :	ASFLAGS += $(AN163)
+$(PROJ_PSG).lib :	ASFLAGS += $(APSG)
+$(PROJ_ALL).lib :	ASFLAGS += $(AALL)
+$(PROJ_ALL2).lib :	ASFLAGS += $(AALL2)
+$(PROJ_OALL).lib :	ASFLAGS += $(AOALL)
+$(PROJ_HFX4).lib :	ASFLAGS += $(AHFX4)
+$(PROJ_HFE4).lib :	ASFLAGS += $(AHFE4)
 
 
-$(PROJ_HFE4).lib : $(FILES) $(INC_FILES)
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_init.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_set_dpcm.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_main.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_play_bgm.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_stop_bgm.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_pause_bgm.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_resume_bgm.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_play_se.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_stop_se.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_sequence.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_envelope.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_snd.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_math.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_work.s
-	@$(ASM) $(AFLAG) $(AHFE4) nsd_irq.s
-	@$(LIBER) $(LIBFLAG) $*.lib $(OFILES)
+
+########################################
+#;	Build process
+########################################
+
+.PHONY: all clean
+
+
+all:	$(PROJ_LIST)
+
+
+%.lib :	$(FILES)
+	$(MAKE) -f MAKEFILE.inc $@
+
+
+clean:
+	@$(RM) *.bak
+	@$(RM) *.o
+	@$(RM) *.lst
+	@$(RM) *.lib
+
+	@$(RM) $(LOG_FILE)
+	@$(RM) $(ERRLOG_FILE)
+	@$(RM) $(BLDLOG_FILE)

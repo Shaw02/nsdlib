@@ -732,6 +732,47 @@ TrackSet::~TrackSet(void)
 }
 
 //==============================================================
+//		カウント
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::TickCount(MusicFile* MUS)
+{
+	int		i		= 0;
+	int		iTick;
+
+	cout	<< "Track ";
+	while(i<=maxTrack){
+		i++;
+		cout << "| TR(" << setfill(' ')  << setw(2) << i << ") ";
+	}
+	cout << endl <<	"Loop  ";
+
+	i=0;
+	while(i<=maxTrack){
+		ptcTrack[i]->TickCount(MUS, 24);
+		iTick = ptcTrack[i]->GetTickLoop();
+		if(iTick == -1){
+			cout << "| no-loop";
+		} else {
+			cout << "|" << setw(8) << setfill(' ') << iTick;
+		}
+		i++;
+	}
+	cout << endl <<	"Total ";;
+
+	i=0;
+	while(i<=maxTrack){
+		cout << "|" << setw(8) << setfill(' ') << ptcTrack[i]->GetTickTotal();
+		i++;
+	}
+	cout << endl;
+}
+
+//==============================================================
 //		コードの取得
 //--------------------------------------------------------------
 //	●引数

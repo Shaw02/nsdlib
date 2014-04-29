@@ -12,7 +12,9 @@
 	.importzp	nsd_work_zp
 
 	.include	"nes.inc"
-	.include	"nsd.inc"
+	.include	"nsddef.inc"
+	.include	"macro.inc"
+
 
 ;=======================================================================
 ;	void	__fastcall__	nsd_resume_bgm(void );

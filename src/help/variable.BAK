@@ -1,0 +1,604 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>音源ドライバーの制御用変数</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+仕様＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>音源ドライバーの制御用変数</h2>
+
+<div id='block'>
+<p>
+音源ドライバーの制御用変数です。<br>
+本音源ドライバーを用いたアプリケーションを開発する際に、
+音源ドライバーの制御状態を知りたい時にご参照ください。<br>
+尚、音源ドライバーの制御用変数にアクセスするには、アセンブリ言語中にて以下の通り外部宣言することで可能です。<br>
+</p>
+
+<code><pre>
+        .include        "nsd.inc"
+</pre></code>
+
+<p>
+配列変数で記載されるメンバー変数は、構造体定義内容の通り2Byte毎に配置しています。<br>
+xレジスタ等に、（トラック番号－１）×２の値を書くと、アクセスに便利です。<br>
+</p>
+
+<p>
+尚、ヴァージョンアップにより、制御変数の構造体の構成が変わる場合がある旨、ご理解の程、宜しくお願い致します。<br>
+又、拡張音源用のメンバー変数は割愛します（拡張音源を使用しない場合は、拡張音源用のメンバー変数は構造体のメンバーに入りません）。<br>
+</p>
+
+
+</div>
+
+<div id='block'>
+<h3>Segment "zeropage" に配置される変数</h3>
+
+<div id='block'>
+<h4>nsd_work_zp</h4>
+<p>
+Zeropageに置かれる制御用変数（構造体）です。<br>
+頻度に（1tick中で何度も）使用するため、アクセス速度の速いZeropage領域に配置しています。<br>
+</p>
+
+<table>
+<caption>変数の内容</caption>
+<tr><th>変数名</th><th>内容</th></tr>
+<tr><td>__ptr</td>
+	<td>汎用変数（ポインター用）<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
+<tr><td>__tmp</td>
+	<td>汎用変数（計算用）<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
+<tr><td>channel</td>
+	<td>現在制御中のチャンネル<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
+<tr><td>__flag</td>
+	<td>音源ドライバ全体のフラグ</td></tr>
+<tr><td>__Tempo</td>
+	<td>テンポ（tコマンドの数値）</td></tr>
+<tr><td>__Tempo_ctr</td>
+	<td>テンポカウンタ</td></tr>
+<tr><td>__Sequence_ptr</td>
+	<td>演奏ポインタ</td></tr>
+<tr><td>__Length_ctr</td>
+	<td>音長カウンタ</td></tr>
+<tr><td>__Gate</td>
+	<td>現在の音符のゲートタイム</td></tr>
+<tr><td>__Envelop_V</td>
+	<td>音色・音量エンベロープのホールドタイム用のカウンタ</td></tr>
+<tr><td>__Envelop_F</td>
+	<td>音程・ノートエンベロープのホールドタイム用のカウンタ</td></tr>
+</table>
+
+<p>
+以下は、実際の構造体定義です。
+</p>
+<code><pre>
+typedef struct NSD_work_zp {
+    int     _ptr;
+    int     _tmp;
+    char    channel;
+    int     Sequence_ptr[<var>n</var>];
+    struct  NSD_Length_Cnt {
+                char    counter;
+                char    gate;
+            } Length[<var>n</var>];
+    struct  NSD_Envelop {
+                char    V;
+                char    F;
+            } Envelop[<var>n</var>];
+} nsd_work_zp;
+</pre></code>
+
+<p>
+メモリ節約のため、一部の変数（__flag, __Tempo, __Tempo_ctr）は、
+三角波トラック、⊿ＰＣＭのトラックでは使われない領域を使用します。
+</p>
+
+<table>
+<caption>構造体メンバーと、変数名の関係</caption>
+<tr><th>メンバー名</th><th>変数名</th><th>ch1</th><th>ch2</th><th>ch3</th><th>ch4</th><th>ch5</th></tr>
+<tr><td>_ptr	</td><td>__ptr	</td	><td colspan='5'>	</td></tr>
+<tr><td>_tmp	</td><td>__tmp		</td><td colspan='5'>	</td></tr>
+<tr><td>channel	</td><td>__channel	</td><td colspan='5'>	</td></tr>
+
+<tr><td>Sequence_ptr[<var>n</var>]	</td>
+	<td>__Sequence_ptr	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+</tr>
+<tr><td>NSD_Length[<var>n</var>]_Cnt.counter	</td>
+	<td>__Length_ctr	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+</tr>
+<tr><td>NSD_Length[<var>n</var>]_Cnt.gate	</td>
+	<td>__Gate	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+</tr>
+<tr><td>NSD_Envelop[<var>n</var>].V	</td>
+	<td>__Envelop_V	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__flag	</td>
+	<td>	</td>
+	<td>__Tempo_ctr	</td>
+</tr>
+<tr><td>NSD_Envelop[<var>n</var>].F	</td>
+	<td>__Envelop_F	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__Tempo	</td>
+</tr>
+</table>
+<br>
+
+
+</div>
+
+</div>
+
+<div id='block'>
+<h3>Segment "bss" に配置される変数</h3>
+
+<div id='block'>
+<h4>nsd_work</h4>
+<p>
+通常のRAM領域に置かれる制御用変数（構造体）です。<br>
+音源ドライバーだけでzeropageを占有できないので、通常のRAM領域に配置します。<br>
+</p>
+
+<table>
+<caption>変数の内容</caption>
+<tr><th>変数名</th><th>内容</th></tr>
+<tr><td>__chflag</td>
+	<td>チャンネル毎のフラグ</td></tr>
+<tr><td>__gatemode</td>
+	<td>.... ..rr :	ゲートモード（Rmコマンドの設定値）<br>
+		.... e... :	音色エンベロープのスイッチ<br>
+		vvvv .... :	リリース時の音色（R@コマンドの数値）</td></tr>
+<tr><td>__length</td>
+	<td>音長省略時の音長（lコマンドの設定値）</td></tr>
+<tr><td>__tai</td>
+	<td>スラー・タイ制御</td></tr>
+<tr><td>__gate_q</td>
+	<td>ゲートタイム（qコマンドの設定値）</td></tr>
+<tr><td>__gate_u</td>
+	<td>ゲートタイム（uコマンドの設定値）</td></tr>
+<tr><td>__note</td>
+	<td>現在発音しているノートナンバー</td></tr>
+<tr><td>__octave</td>
+	<td>現在のオクターブ（oコマンドの数値×12）</td></tr>
+<tr><td>__detune_cent</td>
+	<td>cent単位のディチューン（Dコマンドの数値）</td></tr>
+<tr><td>__detune_fine</td>
+	<td>レジスタ単位のディチューン（D%コマンドの数値）</td></tr>
+<tr><td>__por_target</td>
+	<td>ポルタメント制御用（目標値）</td></tr>
+<tr><td>__por_depth</td>
+	<td>ポルタメント制御用（一回の変化量）</td></tr>
+<tr><td>__por_ctr</td>
+	<td>ポルタメント制御用（カウンター）</td></tr>
+<tr><td>__por_rate</td>
+	<td>ポルタメント制御用（何フレームで変化するか？）</td></tr>
+<tr><td>__por_now</td>
+	<td>ポルタメント制御用（現在の変位）</td></tr>
+<tr><td>__trans</td>
+	<td>移調（_コマンドの数値）</td></tr>
+<tr><td>__trans_one</td>
+	<td>一回限りの移調（', "コマンド制御用）</td></tr>
+<tr><td>__repeat_ctr</td>
+	<td>リピートＡのカウンタ</td></tr>
+<tr><td>__repeat_ctr2</td>
+	<td>リピートＢのカウンタ</td></tr>
+<tr><td>__volume</td>
+	<td>音量（v, Rvコマンドの数値）</td></tr>
+<tr><td>__env_vol_now</td>
+	<td>音量エンベロープの現在値</td></tr>
+<tr><td>__env_freq_now</td>
+	<td>音程エンベロープの現在値</td></tr>
+<tr><td>__env_note_now</td>
+	<td>ノートエンベロープの現在値</td></tr>
+<tr><td>__env_vol_ptr</td>
+	<td>音量エンベロープの推移制御用のポインタ</td></tr>
+<tr><td>__env_voi_ptr</td>
+	<td>音色エンベロープの推移制御用のポインタ</td></tr>
+<tr><td>__env_freq_ptr</td>
+	<td>音程エンベロープの推移制御用のポインタ</td></tr>
+<tr><td>__env_note_ptr</td>
+	<td>ノートエンベロープの推移制御用のポインタ</td></tr>
+<tr><td>__env_volume</td>
+	<td>音量エンベロープ・テーブルのポインタ</td></tr>
+<tr><td>__env_voice</td>
+	<td>音色エンベロープ・テーブルのポインタ</td></tr>
+<tr><td>__env_frequency</td>
+	<td>周波数エンベロープ・テーブルのポインタ</td></tr>
+<tr><td>__env_note</td>
+	<td>ノートエンベロープ・テーブルのポインタ</td></tr>
+<tr><td>__frequency</td>
+	<td>現在発音している音程（音程・ノートエンベロープ適用後）</td></tr>
+<tr><td>__subroutine</td>
+	<td>サブルーチンの戻りアドレス</td></tr>
+<tr><td>__repeat2</td>
+	<td>リピートＢでの次のジャンプ先アドレス</td></tr>
+<tr><td>__dpcm_info</td>
+	<td>⊿PCM制御構造体のポインタとして使用する。</td></tr>
+<tr><td>__apu_voice_set1</td>
+	<td>APU ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_voice_set2</td>
+	<td>APU ch2の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_voice_set4</td>
+	<td>APU ch4の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_voice_set1</td>
+	<td>SE ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_voice_set2</td>
+	<td>SE ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_frequency1</td>
+	<td>APU ch1の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
+<tr><td>__apu_frequency2</td>
+	<td>APU ch2の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
+<tr><td>__apu_frequency3</td>
+	<td>APU ch3の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
+<tr><td>__se_frequency</td>
+	<td>SE ch1の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
+<tr><td>__sweep_ch1</td>
+	<td>APU ch1のsweepレジスタの現在値</td></tr>
+<tr><td>__sweep_ch2</td>
+	<td>APU ch2のsweepレジスタの現在値</td></tr>
+</table>
+
+
+<code><pre>
+typedef struct NSD_work {
+    struct  NSD_Flag {
+                char    flag;
+                char    gatemode;
+            } Flag[<var>n</var>];
+    struct  NSD_length {
+                char    length;
+                char    tai;
+            } Length[<var>n</var>];
+    struct  NSD_gatetime {
+                char    q;
+                char    u;
+            } Gatetime[<var>n</var>];
+    struct  NSD_note {
+                char    note;
+                char    octave;
+            } Note[<var>n</var>];
+    struct  NSD_Detune {
+                char    cent;
+                char    fine;
+            } Detune[<var>n</var>];
+    struct  NSD_Por_Lv {
+                char    target;
+                char    depth;
+            } Por_Lv[<var>n</var>];
+    struct  NSD_Por_Co {
+                char    count;
+                char    rate;
+            } Por_Co[<var>n</var>];
+    int     Por_now[<var>n</var>];
+    struct   NSD_Trans{
+                char    trans;
+                char    onetime;
+            } Trans[<var>n</var>];
+    struct   NSD_Repeat{
+                char    count1;
+                char    count2;
+            } Repeat[<var>n</var>];
+    struct   NSD_volume{
+                char    volume;
+                char    volume_env;
+            } Volume[<var>n</var>];
+    struct   NSD_Env_F_Now{
+                char    Frequency;
+                char    Note;
+            } Env_F_Now[<var>n</var>];
+    struct   NSD_Env_V_Ptr{
+                char    Volume;
+                char    Voice;
+            } Env_V_Ptr[<var>n</var>];
+    struct   NSD_Env_F_Ptr{
+                char    Frequency;
+                char    Note;
+            } Env_F_Ptr[<var>n</var>];
+    int     Envelop_Volume[<var>n</var>];
+    int     Envelop_Voice[<var>n</var>];
+    int     Envelop_Freq[<var>n</var>];
+    int     Envelop_Note[<var>n</var>];
+    int     Frequency[<var>n</var>];
+    int     SubRoutine[<var>n</var>];
+    int     Repeat2[<var>n</var>];
+} nsd_work;
+</pre></code>
+
+<p>
+メモリ節約のため、一部の変数は、三角波トラック、⊿ＰＣＭのトラックでは使われない領域を使用します。
+</p>
+
+<table>
+<caption>構造体メンバーと、変数名の関係</caption>
+<tr><th>メンバー名</th><th>変数名</th><th>ch1</th><th>ch2</th><th>ch3</th><th>ch4</th><th>ch5</th></tr>
+<tr><td>Flag[<var>n</var>].flag</td>
+	<td>__chflag</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Flag[<var>n</var>].gatemode</td>
+	<td>__gatemode</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Length[<var>n</var>].length</td>
+	<td>__length</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Length[<var>n</var>].tai</td>
+	<td>__tai</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Gatetime[<var>n</var>].q</td>
+	<td>__gate_q</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Gatetime[<var>n</var>].u</td>
+	<td>__gate_u</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Note[<var>n</var>].note</td>
+	<td>__note</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Note[<var>n</var>].octave</td>
+	<td>__octave</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Detune[<var>n</var>].cent</td>
+	<td>__detune_cent</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Detune[<var>n</var>].fine</td>
+	<td>__detune_fine</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Por_Lv[<var>n</var>].target</td>
+	<td>__por_target</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__apu_frequency1	</td>
+<tr><td>Por_Lv[<var>n</var>].depth</td>
+	<td>__por_depth</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__apu_frequency2	</td>
+<tr><td>Por_Co[<var>n</var>].count</td>
+	<td>__por_ctr</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__apu_frequency3	</td>
+<tr><td>Por_Co[<var>n</var>].rate</td>
+	<td>__por_rate</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__se_frequency	</td>
+<tr><td>Por_now[<var>n</var>]</td>
+	<td>__por_now</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__mmc5_frequency1<br>__mmc5_frequency2	</td>
+<tr><td>Trans[<var>n</var>].trans</td>
+	<td>__trans</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Trans[<var>n</var>].onetime</td>
+	<td>__trans_one</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Repeat[<var>n</var>].count1</td>
+	<td>__repeat_ctr</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Repeat[<var>n</var>].count2</td>
+	<td>__repeat_ctr2</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Volume[<var>n</var>].volume</td>
+	<td>__volume</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__sweep_ch1	</td>
+<tr><td>Volume[<var>n</var>].volume_env</td>
+	<td>__env_vol_now</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__sweep_ch2	</td>
+<tr><td>Env_F_Now[<var>n</var>].Frequency</td>
+	<td>__env_freq_now</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Env_F_Now[<var>n</var>].Note</td>
+	<td>__env_note_now</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Env_V_Ptr[<var>n</var>].Volume</td>
+	<td>__env_vol_ptr</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__dpcm_info (LSB)	</td>
+<tr><td>Env_V_Ptr[<var>n</var>].Voice</td>
+	<td>__env_voi_ptr</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__dpcm_info (MSB)	</td>
+<tr><td>Env_F_Ptr[<var>n</var>].Frequency</td>
+	<td>__env_freq_ptr</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__se_voice_set1	</td>
+<tr><td>Env_F_Ptr[<var>n</var>].Note</td>
+	<td>__env_note_ptr</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__se_voice_set2	</td>
+<tr><td>Envelop_Volume[<var>n</var>]</td>
+	<td>__env_volume</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__apu_voice_set1<br>__apu_voice_set2	</td>
+<tr><td>Envelop_Voice[<var>n</var>]</td>
+	<td>__env_voice</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__apu_voice_set4	</td>
+<tr><td>Envelop_Freq[<var>n</var>]</td>
+	<td>__env_frequency</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__mmc5_voice_set1<br>__mmc5_voice_set2	</td>
+<tr><td>Envelop_Note[<var>n</var>]</td>
+	<td>__env_note</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>__vrc6_voice_set1<br>__vrc6_voice_set2	</td>
+<tr><td>Frequency[<var>n</var>]</td>
+	<td>__frequency</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>SubRoutine[<var>n</var>]</td>
+	<td>__subroutine</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+<tr><td>Repeat2[<var>n</var>]</td>
+	<td>__repeat2</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+	<td>	</td>
+</table>
+<p></p>
+
+</div>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

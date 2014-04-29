@@ -93,15 +93,19 @@ cc65に付属のドキュメント及び、"nes.inc"及び、"nes.lib"のソースファイルを良く参照
 <h4>ライブラリ関数一覧</h4>
 <table>
 <tr><th>return value	</th><th>Function name		</th><th>Contents		</th></tr>
-<tr><td>void	</td><td><a href="func_nsd_main.html">nsd_main(void)</a>		</td><td>Driver main routine. Please call by one V-blank.</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_init.html">nsd_init(void)</a>		</td><td>Initraize the driver.	</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_set_dpcm.html">nsd_set_dpcm(void* dpcm)</a>	</td><td>Set the dpcm information.	</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_play_bgm.html">nsd_play_bgm(void *bgm)</a>	</td><td>Start the BGM.		</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_stop_bgm.html">nsd_stop_bgm(void)</a>	</td><td>Stop the BGM.		</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_pause_bgm.html">nsd_pause_bgm(void *bgm)</a>	</td><td>Pause the BGM.		</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_resume_bgm.html">nsd_resume_bgm(void)</a>	</td><td>Resume the BGM.		</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_play_se.html">nsd_play_se(void *se)</a>	</td><td>Start the SE.	</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_stop_se.html">nsd_stop_se(void)</a>		</td><td>Stop the SE.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_init.html">nsd_init(void)</a>							</td><td>Initraize the driver.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_set_dpcm.html">nsd_set_dpcm(<var>void* dpcm</var>)</a>	</td><td>Set the dpcm information.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_main.html">nsd_main(void)</a>							</td><td>Driver main routine. Please call by one V-blank.</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_main_bgm.html">nsd_main_bgm(void)</a>					</td><td>Driver main routine(BGM). Please call by one V-blank.</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_main_se.html">nsd_main_se(void)</a>						</td><td>Driver main routine(SE). Please call by one V-blank.</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_play_bgm.html">nsd_play_bgm(<var>void *bgm</var>)</a>	</td><td>Start the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_stop_bgm.html">nsd_stop_bgm(void)</a>					</td><td>Stop the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_play_se.html">nsd_play_se(<var>void *se</var>)</a>		</td><td>Start the SE.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_stop_se.html">nsd_stop_se(void)</a>						</td><td>Stop the SE.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_pause_bgm.html">nsd_pause_bgm(void)</a>					</td><td>Pause the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_resume_bgm.html">nsd_resume_bgm(void)</a>				</td><td>Resume the BGM.		</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_save.html">nsd_save(<var>void *buff</var>)</a>			</td><td>Save the control work.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_load.html">nsd_load(<var>void *buff</var>)</a>			</td><td>Load the control work.	</td></tr>
 </table>
 
 <h3>関数呼出規約 __fastcall__ について（About the calling conversion __fastcall__ ）</h3>

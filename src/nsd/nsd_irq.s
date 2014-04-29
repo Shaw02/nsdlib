@@ -20,7 +20,9 @@
 	.import		nsd_work
 
 	.include	"nes.inc"
-	.include	"nsd.inc"
+	.include	"nsddef.inc"
+	.include	"macro.inc"
+
 
 .code
 
