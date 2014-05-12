@@ -16,7 +16,7 @@ class MusicItem
 //メンバー変数
 protected:
 	const		wchar_t*	strName;		//オブジェクトの名称
-	vector<MusicItem*>		ptcItem;		//構造化
+	list<MusicItem*>		ptcItem;		//構造化
 				string		code;
 				size_t		iSize;
 	unsigned	int			iOffset;		//SNDファイルポインタ
@@ -33,5 +33,6 @@ public:
 
 	unsigned	char	getCode(int n);
 	virtual		void	getCode(string* _str);
+	virtual		void	setCode(string* _str);
 	virtual		void	getAsm(MusicFile* MUS);
 };

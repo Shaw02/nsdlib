@@ -22,6 +22,7 @@ MusicTrack::MusicTrack(MMLfile* MML, const wchar_t _strName[]):
 	offset_repeat_a_b(0),		//リピートＡ
 	offset_repeat_b_s(0),		//リピートＢ
 	offset_repeat_b_b(0),		//リピートＢ
+	sp_repeat_c(0),
 	DefaultLength(-1),
 	volume(15),
 	octave(5),
@@ -76,16 +77,16 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS, unsigned int iLength)
 {
 	//----------------------
 	//Local変数
-	vector<	MusicItem*>::iterator	itItem;
+	list<	MusicItem*>::iterator	itItem;
 	unsigned	char				iCode;
 
-	vector<	MusicItem*>::iterator	itRepeatA_start;
-	vector<	MusicItem*>::iterator	itRepeatA_end;
+	list<	MusicItem*>::iterator	itRepeatA_start;
+	list<	MusicItem*>::iterator	itRepeatA_end;
 				int					iRepeatA_count	= 0;
 				bool				f_RepeatA	=	false;
 
-	vector<	MusicItem*>::iterator	itRepeatB_start;
-	vector<	MusicItem*>::iterator	itRepeatB_end;
+	list<	MusicItem*>::iterator	itRepeatB_start;
+	list<	MusicItem*>::iterator	itRepeatB_end;
 				int					iRepeatB_count	= 0;
 				bool				f_RepeatB	=	false;
 
@@ -441,10 +442,19 @@ void	MusicTrack::SetEvent(MusicItem* _item)
 //	●返値
 //		size_t
 //==============================================================
-size_t	MusicTrack::SetEnd(void)
+size_t	MusicTrack::SetEnd(MMLfile* MML)
 {
 	mml_Address*	_event;
 
+	//リピートのチェック
+	if(offset_repeat_a_s != 0){
+		MML->Err(L"リピート(A)が終わっていません。");
+	}
+	if(sp_repeat_c != 0){
+		MML->Err(L"リピート(C)が終わっていません。");
+	}
+
+	//オブジェクトの作成
 	if(loop_flag == false){
 		SetEvent(new mml_general(nsd_EndOfTrack,L"End of Track"));
 	} else {
@@ -471,112 +481,6 @@ void	MusicTrack::SetLoop()
 	loop_flag	= true;
 
 	Reset_opt();
-}
-
-//==============================================================
-//		[	リピート(A)	開始
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_A_Start(MMLfile* MML)
-{
-	unsigned	char	cData	= MML->GetChar();
-//				int		times	= MML->GetInt();
-
-	MML->Back();
-
-	if((cData < '0') || (cData > '9')){
-		count_repeat_a = -1;
-	} else {
-		count_repeat_a = MML->GetInt();
-		if( (count_repeat_a > 255) || (count_repeat_a < 1) ){
-			MML->Err(L"リピート回数は1～255の範囲で指定して下さい。");
-		}
-	}
-	_old_repeat = new mml_repeat();
-
-	SetEvent(_old_repeat);
-	offset_repeat_a_s = offset_now;	// ] コマンドでは、次のコマンドに戻る。
-	offset_repeat_a_b = 0;
-
-	Reset_opt();
-}
-
-//==============================================================
-//		:	リピート(A)	分岐
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_A_Branch(MMLfile* MML)
-{
-	if(offset_repeat_a_s != 0){
-		if(offset_repeat_a_b == 0){
-			offset_repeat_a_b = offset_now + 1;	//引数の位置
-			_old_repeatA_Branch = new mml_Address(nsd_Repeat_A_Branch, L"Repeat(A) Branch");
-			SetEvent(_old_repeatA_Branch);
-		} else {
-			MML->Err(L"リピート(A)内で : コマンドが重複しています。");
-		}
-	} else {
-		MML->Err(L"リピート(A)の開始 [ コマンドがありません。");
-	}
-}
-
-//==============================================================
-//		]	リピート(A)	終了
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
-{
-
-	mml_Address*		_event;
-	unsigned	char	cData	= MML->GetChar();
-//				int		times	= MML->GetInt();
-
-	MML->Back();
-
-	if((cData < '0') || (cData > '9')){
-		//引数が無い場合
-		if(count_repeat_a == -1){
-			MML->Err(L"リピート回数の記述がありません。");
-		}
-	} else {
-		//引数がある場合
-		if(count_repeat_a != -1){
-			MML->Err(L"リピート回数が両方に記述されています。");
-		}
-		count_repeat_a = MML->GetInt();
-		if( (count_repeat_a > 255) || (count_repeat_a < 1) ){
-			MML->Err(L"リピート回数は1～255の範囲で指定して下さい。");
-		}
-	}
-
-	_old_repeat->set_count((unsigned char)count_repeat_a);
-
-	if(offset_repeat_a_s != 0){
-		_event = new mml_Address(nsd_Repeat_A_End, L"Repeat(A) End");
-		_event->set_Address(offset_repeat_a_s - offset_now - 1);
-		SetEvent(_event);
-		//条件分岐があったら。
-		if(offset_repeat_a_b != 0){
-			_old_repeatA_Branch->set_Address(offset_now - offset_repeat_a_b);
-		}
-		offset_repeat_a_s = 0;
-	} else {
-		MML->Err(L"リピート(A)の開始 [ コマンドがありません。");
-	}
-	Reset_opt();
-
 }
 
 //==============================================================
@@ -646,6 +550,386 @@ void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 	}
 
 	Reset_opt();
+}
+
+//==============================================================
+//		:	リピート (A) (C)	開始
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_Start(MMLfile* MML)
+{
+	if(offset_repeat_a_s == 0){
+		SetRepeat_A_Start(MML);
+	} else {
+		SetRepeat_C_Start(MML);
+	}
+}
+
+//==============================================================
+//		[	リピート(A)	開始
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_A_Start(MMLfile* MML)
+{
+	unsigned	char	cData	= MML->GetChar();
+
+	MML->Back();
+
+	if((cData < '0') || (cData > '9')){
+		count_repeat_a = -1;
+	} else {
+		count_repeat_a = MML->GetInt();
+		if( (count_repeat_a > 255) || (count_repeat_a < 2) ){
+			MML->Err(L"リピート回数は2～255の範囲で指定して下さい。");
+		}
+	}
+
+	if(offset_repeat_a_s != 0){
+		MML->Err(L"リピート(A)のネストはできません。");
+	} else {
+		_old_repeat = new mml_repeat();
+
+		SetEvent(_old_repeat);
+		offset_repeat_a_s = offset_now;	// ] コマンドでは、次のコマンドに戻る。
+		offset_repeat_a_b = 0;
+
+		Reset_opt();
+	}
+		
+	//リピートタイプの記憶
+	repeat_type.push_back(1);
+	it_repeat_type	=	repeat_type.end();
+	it_repeat_type--;
+}
+
+//==============================================================
+//		[:	リピート(C)	開始
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_C_Start(MMLfile* MML)
+{
+
+	list<MusicItem*>::iterator	pt_itMusic	=	ptcItem.end();
+	unsigned	char	cData	= MML->GetChar();
+				int		repeat_cnt;
+
+	MML->Back();
+
+	if((cData < '0') || (cData > '9')){
+		repeat_cnt = -1;
+	} else {
+		repeat_cnt = MML->GetInt();
+		if( (repeat_cnt > 255) || (repeat_cnt < 2) ){
+			MML->Err(L"リピート回数は2～255の範囲で指定して下さい。");
+		}
+	}
+
+	//スタックの作成
+	pt_itMusic--;
+	st_ct_repeat_c.push_back(repeat_cnt);
+	st_it_repeat_c_s.push_back(pt_itMusic);
+	st_it_repeat_c_b.push_back(pt_itMusic);
+	st_it_repeat_c_e.push_back(pt_itMusic);
+	sp_repeat_c++;
+
+	//最後尾のイテレータを取得
+	it_ct_repeat_c		= st_ct_repeat_c.end();
+	it_it_repeat_c_s	= st_it_repeat_c_s.end();
+	it_it_repeat_c_b	= st_it_repeat_c_b.end();
+	it_it_repeat_c_e	= st_it_repeat_c_e.end();
+
+	it_ct_repeat_c--;
+	it_it_repeat_c_s--;
+	it_it_repeat_c_b--;
+	it_it_repeat_c_e--;
+
+	//リピートタイプの記憶
+	repeat_type.push_back(3);
+	it_repeat_type	=	repeat_type.end();
+	it_repeat_type--;
+		
+}
+
+//==============================================================
+//		:	リピート (A) (C)	分岐
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_Branch(MMLfile* MML)
+{
+	list<MusicItem*>::iterator	pt_itMusic	=	ptcItem.end();
+
+	switch(*it_repeat_type){
+		case(1):
+			if(offset_repeat_a_s != 0){
+				if(offset_repeat_a_b == 0){
+					offset_repeat_a_b = offset_now + 1;	//引数の位置
+					_old_repeatA_Branch = new mml_Address(nsd_Repeat_A_Branch, L"Repeat(A) Branch");
+					SetEvent(_old_repeatA_Branch);
+				} else {
+					MML->Err(L"リピート(A)内で : コマンドが重複しています。");
+				}
+			} else {
+				MML->Err(L"リピート(A)の開始 [ コマンドがありません。");
+			}
+			break;
+		case(3):
+			if(sp_repeat_c > 0){
+				if((*it_it_repeat_c_b) == (*it_it_repeat_c_s)){
+					pt_itMusic--;
+					(*it_it_repeat_c_b) = pt_itMusic;
+				} else {
+					MML->Err(L"リピート(C)内で : コマンドが重複しています。");
+				}
+			} else {
+				MML->Err(L"リピート(C)の開始 [: コマンドがありません。");
+			}
+			break;
+		default:
+			MML->Err(L"リピート開始コマンドがありません。");
+			break;
+	}
+
+}
+
+//==============================================================
+//		:	リピート (A) (C)	終了
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_End(MMLfile* MML)
+{
+	switch(*it_repeat_type){
+		case(1):
+			SetRepeat_A_End(MML);
+			break;
+		case(3):
+			SetRepeat_C_End(MML);
+			break;
+		default:
+			MML->Err(L"リピート開始コマンドがありません。");
+			break;
+	}
+}
+
+//==============================================================
+//		]	リピート(A)	終了
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
+{
+
+	if((offset_repeat_a_s == 0) || ((*it_repeat_type) != 1)){
+		MML->Err(L"リピート(A)の開始 [ コマンドがありません。");
+
+	} else {
+		
+		mml_Address*		_event;
+		unsigned	char	cData	= MML->GetChar();
+
+		MML->Back();
+
+		if((cData < '0') || (cData > '9')){
+			//引数が無い場合
+			if(count_repeat_a == -1){
+				MML->Err(L"リピート回数の記述がありません。");
+			}
+		} else {
+			//引数がある場合
+			if(count_repeat_a != -1){
+				MML->Err(L"リピート回数が両方に記述されています。");
+			}
+			count_repeat_a = MML->GetInt();
+			if( (count_repeat_a > 255) || (count_repeat_a < 2) ){
+				MML->Err(L"リピート回数は2～255の範囲で指定して下さい。");
+			}
+		}
+
+		_old_repeat->set_count((unsigned char)count_repeat_a);
+
+		_event = new mml_Address(nsd_Repeat_A_End, L"Repeat(A) End");
+		_event->set_Address(offset_repeat_a_s - offset_now - 1);
+		SetEvent(_event);
+		//条件分岐があったら。
+		if(offset_repeat_a_b != 0){
+			_old_repeatA_Branch->set_Address(offset_now - offset_repeat_a_b);
+		}
+		offset_repeat_a_s = 0;
+
+		Reset_opt();
+
+		//リピートタイプの復帰
+		it_repeat_type--;
+		repeat_type.pop_back();
+	}
+
+}
+
+//==============================================================
+//		:]	リピート(C)	終了
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
+{
+
+	if((sp_repeat_c == 0) || ((*it_repeat_type) != 3)){
+		MML->Err(L"リピート(C)の開始 [: コマンドがありません。");
+	} else {
+
+		list<MusicItem*>::iterator	pt_itMusic = ptcItem.end();
+		unsigned	char	cData		= MML->GetChar();
+					int		repeat_cnt	= (*it_ct_repeat_c);
+
+		MML->Back();
+
+		if((cData < '0') || (cData > '9')){
+			//引数が無い場合
+			if(repeat_cnt == -1){
+				MML->Err(L"リピート回数の記述がありません。");
+			}
+		} else {
+			//引数がある場合
+			if(repeat_cnt != -1){
+				MML->Err(L"リピート回数が両方に記述されています。");
+			}
+			repeat_cnt = MML->GetInt();
+			if( (repeat_cnt > 255) || (repeat_cnt < 2) ){
+				MML->Err(L"リピート回数は2～255の範囲で指定して下さい。");
+			} else {
+				(*it_ct_repeat_c)	= repeat_cnt;
+			}
+		}
+
+		pt_itMusic--;
+		(*it_it_repeat_c_e) = pt_itMusic;
+
+		//--------------------------
+		//リピートの展開
+		{
+			unsigned	int				iRepeatCount = (*it_ct_repeat_c) - 1;
+			unsigned	char			cOpCode;
+			string						sOpCode;
+
+			while(iRepeatCount>0){
+				pt_itMusic	=	(*it_it_repeat_c_s);
+				if(pt_itMusic != *it_it_repeat_c_e){
+					do{
+						pt_itMusic++;
+						cOpCode		=	(*pt_itMusic)->getCode(0);
+						sOpCode.clear();
+										(*pt_itMusic)->getCode(&sOpCode);
+						switch(cOpCode){
+							case(nsd_Call):
+								ptcSub.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								break;
+							case(nsd_Call_SE):
+								ptcSE.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								break;
+							case(nsd_Envelop_Voice):
+							case(nsd_Envelop_Volume):
+							case(nsd_Envelop_Frequency):
+							case(nsd_Envelop_Note):
+								CopyEnvEvent(cOpCode, &sOpCode, pt_itMusic);
+								break;
+							case(nsc_VRC7):
+								ptcOPLL.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								break;
+							case(nsc_N163):
+								ptcWave.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								break;
+							case(nsd_FDS_Career):
+								ptcFDSC.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								break;
+							case(nsd_FDS_Modlator):
+								ptcFDSM.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								break;
+							default:
+								{
+									mml_general*	_event	=	new	mml_general(cOpCode);
+									_event->setCode(&sOpCode);
+									SetEvent(_event);
+								}
+								break;
+						}
+
+						if((iRepeatCount == 1) && (pt_itMusic == *it_it_repeat_c_b)){
+							pt_itMusic = *it_it_repeat_c_e;
+						}
+					} while(pt_itMusic != *it_it_repeat_c_e);
+				}
+				iRepeatCount--;
+			}
+
+		}
+
+		//--------------------------
+		//最後尾のイテレータを取得
+		it_ct_repeat_c--;
+		it_it_repeat_c_s--;
+		it_it_repeat_c_b--;
+		it_it_repeat_c_e--;
+
+		//スタックの破棄
+		st_ct_repeat_c.pop_back();
+		st_it_repeat_c_s.pop_back();
+		st_it_repeat_c_b.pop_back();
+		st_it_repeat_c_e.pop_back();
+		sp_repeat_c--;
+
+		//リピートタイプの復帰
+		it_repeat_type--;
+		repeat_type.pop_back();
+
+	}
+
+}
+
+mml_Address*	MusicTrack::CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
+{
+	mml_Address*	_event		=	new mml_Address(cOpCode);
+	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
+	_event->setCode(sOpCode);
+	_event->set_id(ptAdrItem->get_id());
+	SetEvent(_event);
+	return(_event);
+}
+
+void	MusicTrack::CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
+{
+	mml_Address*	_event		=	new mml_Address(cOpCode);
+	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
+	_event->setCode(sOpCode);
+	if(ptAdrItem->get_flag() == true){
+		_event->set_id(ptAdrItem->get_id());
+		ptcEnv.push_back(_event);
+	}
+	SetEvent(_event);
 }
 
 //==============================================================

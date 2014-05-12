@@ -40,6 +40,9 @@ enum	Command_ID_mml {
 	mml_Repeat_B_Start,
 	mml_Repeat_B_Branch,
 	mml_Repeat_B_End,
+	mml_Repeat_C_Start,
+//	mml_Repeat_C_Branch,
+	mml_Repeat_C_End,
 
 	mml_Tempo,
 	mml_Tempo_Relative,
@@ -143,6 +146,9 @@ const	static	Command_Info	Command[] = {
 		{	"$",		mml_Macro				},
 
 		{	"L",		mml_Loop				},
+		{	"[:",		mml_Repeat_C_Start		},
+	//	{	":",		mml_Repeat_C_Branch		},
+		{	":]",		mml_Repeat_C_End		},
 		{	"|:",		mml_Repeat_B_Start		},
 		{	"\\",		mml_Repeat_B_Branch		},
 		{	":|",		mml_Repeat_B_End		},
@@ -403,18 +409,6 @@ const	static	Command_Info	Command[] = {
 				}
 				break;
 
-			case(mml_Repeat_A_Start):
-				nowTrack->SetRepeat_A_Start(MML);
-				break;
-
-			case(mml_Repeat_A_Branch):
-				nowTrack->SetRepeat_A_Branch(MML);
-				break;
-
-			case(mml_Repeat_A_End):
-				nowTrack->SetRepeat_A_End(MML);
-				break;
-
 			case(mml_Repeat_B_Start):
 				nowTrack->SetRepeat_B_Start();
 				break;
@@ -426,6 +420,50 @@ const	static	Command_Info	Command[] = {
 			case(mml_Repeat_B_End):
 				nowTrack->SetRepeat_B_End(MML);
 				break;
+
+			case(mml_Repeat_A_Branch):
+				nowTrack->SetRepeat_Branch(MML);
+				break;
+
+			case(mml_Repeat_A_Start):
+				if((MML->iRepeatMode == 0) && (fSub == false)){
+					nowTrack->SetRepeat_Start(MML);		//0 && main
+				} else if(MML->iRepeatMode == 1){
+					nowTrack->SetRepeat_A_Start(MML);	//1
+				} else {
+					nowTrack->SetRepeat_C_Start(MML);	//2 || (0 && sub)
+				}
+				break;
+
+			case(mml_Repeat_A_End):
+				if((MML->iRepeatMode == 0) && (fSub == false)){
+					nowTrack->SetRepeat_End(MML);		//0 && main
+				} else if(MML->iRepeatMode == 1){
+					nowTrack->SetRepeat_A_End(MML);	//1
+				} else {
+					nowTrack->SetRepeat_C_End(MML);	//2 || (0 && sub)
+				}
+				break;
+
+			case(mml_Repeat_C_Start):
+				if((MML->iRepeatMode == 2) || ((MML->iRepeatMode == 0) && (fSub == true))){
+					nowTrack->SetRepeat_A_Start(MML);	//2 || (0 && sub)
+				} else {
+					nowTrack->SetRepeat_C_Start(MML);	//1 || (0 && main)
+				}
+				break;
+
+			case(mml_Repeat_C_End):
+				if((MML->iRepeatMode == 2) || ((MML->iRepeatMode == 0) && (fSub == true))){
+					nowTrack->SetRepeat_A_End(MML);
+				} else {
+					nowTrack->SetRepeat_C_End(MML);
+				}
+				break;
+
+		//	case(mml_Repeat_C_Branch):
+		//		nowTrack->SetRepeat_C_Branch(MML);
+		//		break;
 
 			case(mml_Tempo):
 				SetTempo(MML);
@@ -696,7 +734,7 @@ const	static	Command_Info	Command[] = {
 	if(fSub == true){
 		//サブルーチンブロックの場合
 		code.resize(0);
-		i = (int)ptcTrack[iTrack]->SetEnd();
+		i = (int)ptcTrack[iTrack]->SetEnd(MML);
 
 	} else {
 		//それ以外の場合
@@ -711,7 +749,7 @@ const	static	Command_Info	Command[] = {
 		while(iTrack <= maxTrack){
 			code[iTrack *2 + 2]	= (unsigned char)((i   ) & 0xFF);
 			code[iTrack *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
-			i += (int)ptcTrack[iTrack]->SetEnd();
+			i += (int)ptcTrack[iTrack]->SetEnd(MML);
 			iTrack++;
 		}
 	}
@@ -785,7 +823,7 @@ void	TrackSet::getAsm(MusicFile* MUS)
 	//----------------------
 	//Local変数
 	int	i = 0;
-	vector<	MusicItem*>::iterator	itItem;
+	list<	MusicItem*>::iterator	itItem;
 
 	if(fSub == false){
 		*MUS << "	.byte	$" << hex << setw(2) << setfill('0') << (int)(code[0] & 0xFF) << ", $" << (int)(code[1] & 0xFF) << endl;
@@ -945,6 +983,10 @@ MusicTrack*	TrackSet::makeTrack(MMLfile* MML, int _track)
 	//生成したアイテムは保存
 	ptcItem.push_back(newTrack);		//基底クラス"MusicItem"側で開放する。
 	ptcTrack[_track] = newTrack;
+
+	if(MML->iReleaseVolume != 2){		//ドライバー側のデフォルトは２
+		newTrack->SetEvent(new mml_general(nsd_Release_Volume + (unsigned char)MML->iReleaseVolume, L"Release Volume"));
+	}
 
 	//ポインタを渡す
 	return(newTrack);

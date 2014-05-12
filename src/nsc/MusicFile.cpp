@@ -48,6 +48,8 @@ enum	Command_ID_MusicFile {
 	id_OctaveReverse,
 	id_bgm_num,
 	id_se_num,
+	id_releaseVolume,
+	id_repeatMode,
 	id_offset_Ei,
 	id_offset_Ev,
 	id_offset_En,
@@ -121,6 +123,10 @@ const	static	Command_Info	Command[] = {
 		{	"#SE",				id_se_num		},
 		{	"#se",				id_se_num		},
 		{	"効果音数",			id_se_num		},
+		{	"#releaseVolume",	id_releaseVolume},
+		{	"#ReleaseVolume",	id_releaseVolume},
+		{	"#repeatMode",		id_repeatMode	},
+		{	"#RepeatMode",		id_repeatMode	},
 		{	"#OffsetE@",		id_offset_Ei	},
 		{	"#offsetE@",		id_offset_Ei	},
 		{	"#OffsetEv",		id_offset_Ev	},
@@ -261,6 +267,18 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(id_OctaveReverse):
 				MML->octave_reverse = true;		//これは、MMLファイルの属性。
+				break;
+			case(id_releaseVolume):
+				MML->iReleaseVolume	=  MML->GetInt();
+				if((MML->iReleaseVolume<0) || (MML->iReleaseVolume>15)){
+					MML->Err(L"#ReleaseVolumeコマンドは、0～15の範囲で指定してください。");
+				}
+				break;
+			case(id_repeatMode):
+				MML->iRepeatMode	=  MML->GetInt();
+				if((MML->iRepeatMode<0) || (MML->iRepeatMode>2)){
+					MML->Err(L"#RepeatModeコマンドは、0～2の範囲で指定してください。");
+				}
 				break;
 			case(id_offset_Ei):
 				MML->offset_Ei = MML->GetInt();

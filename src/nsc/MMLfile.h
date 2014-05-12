@@ -37,6 +37,8 @@ public:
 				int					offset_Ev;			//
 				int					offset_En;			//
 				int					offset_Em;			//
+				int					iReleaseVolume;		//
+				int					iRepeatMode;		//
 				int					timebase;			//
 				bool				octave_reverse;		//Octave Reverse
 				int					rest;				// r ƒRƒ}ƒ“ƒh‚Ì‹““®

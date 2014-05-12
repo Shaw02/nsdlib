@@ -11,8 +11,10 @@
 //				–³‚µ
 //==============================================================
 mml_Address::mml_Address(unsigned char _code, const wchar_t _strName[]):
+	f_id(false),
 	MusicEvent(_strName)
 {
+
 	iSize = 3;
 	code.resize(iSize);
 	code[0] = _code;
@@ -31,6 +33,7 @@ mml_Address::mml_Address(unsigned char _code, const wchar_t _strName[]):
 //				–³‚µ
 //==============================================================
 mml_Address::mml_Address(unsigned char _code, unsigned char _data, const wchar_t _strName[]):
+	f_id(false),
 	MusicEvent(_strName)
 {
 	iSize = 4;
@@ -106,6 +109,7 @@ unsigned	int	mml_Address::get_Address(void)
 //==============================================================
 void	mml_Address::set_id(unsigned int _id)
 {
+	f_id = true;
 	m_id = _id;
 }
 
@@ -120,5 +124,17 @@ void	mml_Address::set_id(unsigned int _id)
 unsigned int	mml_Address::get_id(void)
 {
 	return(m_id);
+}
+//==============================================================
+//		id‚Ìæ“¾
+//--------------------------------------------------------------
+//	œˆø”
+//				–³‚µ
+//	œ•Ô’l
+//		unsigned	int		”Ô†
+//==============================================================
+bool	mml_Address::get_flag(void)
+{
+	return(f_id);
 }
 

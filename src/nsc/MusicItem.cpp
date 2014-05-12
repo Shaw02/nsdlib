@@ -36,7 +36,7 @@ MusicItem::~MusicItem(void)
 {
 	//----------------------
 	//Local変数
-	vector<	MusicItem*>::iterator	itItem;
+	list<	MusicItem*>::iterator	itItem;
 
 	//----------------------
 	//Delete Class
@@ -88,7 +88,7 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 {
 	//----------------------
 	//Local変数
-	vector<	MusicItem*>::iterator	itItem;
+	list<	MusicItem*>::iterator	itItem;
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x02){
@@ -142,7 +142,7 @@ void	MusicItem::getCode(string* _str)
 {
 	//----------------------
 	//Local変数
-	vector<	MusicItem*>::iterator	itItem;
+	list<	MusicItem*>::iterator	itItem;
 
 	_str->append(code);
 
@@ -153,6 +153,21 @@ void	MusicItem::getCode(string* _str)
 			itItem++;
 		}
 	}
+}
+
+//==============================================================
+//		コードの設定
+//--------------------------------------------------------------
+//	●引数
+//		string*		_str
+//	●返値
+//				無し
+//==============================================================
+void	MusicItem::setCode(string* _str)
+{
+	code.clear();
+	code.assign(*_str);
+	iSize = code.size();
 }
 
 //==============================================================
@@ -168,7 +183,7 @@ void	MusicItem::getAsm(MusicFile* MUS)
 	//----------------------
 	//Local変数
 	unsigned	int	i = 0;
-	vector<	MusicItem*>::iterator	itItem;
+	list<	MusicItem*>::iterator	itItem;
 
 	if(code.size() > 0){
 		while(i < code.size()){

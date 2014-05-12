@@ -10,7 +10,8 @@ class mml_Address :
 	public MusicEvent
 {
 //メンバー変数
-	unsigned	int	m_id;
+	unsigned	int		m_id;
+				bool	f_id;		
 //メンバー関数
 public:
 	mml_Address(unsigned char _code, const wchar_t _strName[]=L"Address");
@@ -21,4 +22,5 @@ public:
 //	unsigned	int		get_Address(void);
 				void	set_id(unsigned int _id);
 	unsigned	int		get_id(void);
+				bool	get_flag(void);
 };

@@ -19,6 +19,8 @@ MMLfile::MMLfile(const char*	strFileName):
 	offset_Ev(0),
 	offset_En(0),
 	offset_Em(0),
+	iReleaseVolume(2),
+	iRepeatMode(0),
 	timebase(24),
 	octave_reverse(false),
 	rest(2),

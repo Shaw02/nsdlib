@@ -13,16 +13,36 @@ private:
 				int		iTickTotal;
 				int		iTickLoop;
 
+				bool	jump_flag;			//ジャンプフラグ
+
 				bool	compile_flag;		//現在コンパイル中？
 	unsigned	int		offset_now;			//現在のオフセット
 
 				bool	loop_flag;
 	unsigned	int		offset_loop;		// L コマンドのオフセット
+
 	unsigned	int		offset_repeat_a_s;	//前回の [  コマンドのオフセット
 	unsigned	int		offset_repeat_a_b;	//前回の :  コマンドのオフセット
 	unsigned	int		offset_repeat_b_s;	//前回の |: コマンドのオフセット
 	unsigned	int		offset_repeat_b_b;	//前回の \  コマンドのオフセット
 				int		count_repeat_a;
+
+			vector<	int			>			repeat_type;
+			vector<	int			>::iterator	it_repeat_type;
+
+			unsigned	int					sp_repeat_c;		//リピート(C)のスタックポインタ
+//			vector<	MusicItem*>::iterator	it_repeat_c_s;
+//			vector<	MusicItem*>::iterator	it_repeat_c_b;
+//			vector<	MusicItem*>::iterator	it_repeat_c_e;
+	list<	unsigned	int				>	st_ct_repeat_c;
+	list<	list<	MusicItem*>::iterator>	st_it_repeat_c_s;
+	list<	list<	MusicItem*>::iterator>	st_it_repeat_c_b;
+	list<	list<	MusicItem*>::iterator>	st_it_repeat_c_e;
+	list<	unsigned	int				>::iterator		it_ct_repeat_c;
+	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_s;
+	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_b;
+	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_e;
+
 	unsigned	int		DefaultLength;
 
 				bool	echo_flag;			//疑似エコー フラグ
@@ -48,8 +68,6 @@ private:
 				int		opt_gatetime_q;			//
 				int		opt_gatetime_u;			//
 				int		opt_volume;
-
-				bool	jump_flag;			//ジャンプフラグ
 
 	//調号制御用
 				char	KeySignature[8];	//調号(c,d,e,f,g,a,b,r)
@@ -84,15 +102,23 @@ public:
 				bool	GetCompileFlag(void){return(compile_flag);};
 				void	SetCompileFlag(bool _flag){compile_flag = _flag;};
 
-				size_t	SetEnd(void);
+				size_t	SetEnd(MMLfile* MML);
 				void	SetLoop();
 
+				void	SetRepeat_Start(MMLfile* MML);
+				void	SetRepeat_End(MMLfile* MML);
+				void	SetRepeat_Branch(MMLfile* MML);
+
 				void	SetRepeat_A_Start(MMLfile* MML);
-				void	SetRepeat_A_Branch(MMLfile* MML);
 				void	SetRepeat_A_End(MMLfile* MML);
+				void	SetRepeat_C_Start(MMLfile* MML);
+				void	SetRepeat_C_End(MMLfile* MML);
+
 				void	SetRepeat_B_Start();
 				void	SetRepeat_B_Branch(MMLfile* MML);
 				void	SetRepeat_B_End(MMLfile* MML);
+		mml_Address*	CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
+				void	CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 
 				void	SetSE(MMLfile* MML);
 				void	SetSubroutine(MMLfile* MML);
