@@ -50,8 +50,8 @@ public:
 
 private:
 //static	const	Command_Info	Command[];
-					string		dpcm_code;
-	unsigned	int				nsf_size;
+					string			dpcm_code;
+		unsigned	int				nsf_size;
 
 //メンバー関数
 public:
@@ -61,6 +61,7 @@ public:
 	void				TickCount(void);
 	unsigned	int		SetDPCMOffset(unsigned int iMusSize);
 
+	void	Optimize(void);
 	void	Fix_Address(void);
 
 	//バイナリーを作る

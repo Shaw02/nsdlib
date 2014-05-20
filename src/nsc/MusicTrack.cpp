@@ -51,6 +51,20 @@ MusicTrack::MusicTrack(MMLfile* MML, const wchar_t _strName[]):
 	nowKey		=0;
 	nowScale	=0;
 	SetKey(nowKey, nowScale);
+
+	//保護外のメモリアクセスによる例外発生対策
+	{
+		list<MusicItem*>::iterator	pt_itMusic	=	ptcItem.end();
+
+		//リピートタイプ
+		repeat_type.push_back(0);
+
+		//リピート(C)
+		st_ct_repeat_c.push_back(0);
+		st_it_repeat_c_s.push_back(pt_itMusic);
+		st_it_repeat_c_b.push_back(pt_itMusic);
+		st_it_repeat_c_e.push_back(pt_itMusic);
+	}
 }
 
 //==============================================================
@@ -246,6 +260,143 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS, unsigned int iLength)
 }
 
 //==============================================================
+//		使う（使わない）オブジェクトの検索
+//--------------------------------------------------------------
+//	●引数
+//		MusicFile*	MUS		曲データファイル・オブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::Optimize(MusicFile* MUS)
+{
+	//----------------------
+	//Local変数
+	vector<	mml_Address*	>::iterator	itSub;
+	vector<	mml_Address*	>::iterator	itEnv;
+	vector<	mml_Address*	>::iterator	itFDSC;
+	vector<	mml_Address*	>::iterator	itFDSM;
+	vector<	mml_Address*	>::iterator	itVRC7;
+	vector<	mml_Address*	>::iterator	itN163;
+	unsigned	int	_no;
+
+	//----------------------
+	//Surbortine
+
+	if(!ptcSub.empty()){
+		itSub = ptcSub.begin();
+		while(itSub != ptcSub.end()){
+			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
+			if( MUS->ptcSub.count(_no) == 0){
+				if(cOptionSW->fErr == true){
+					wcerr << L"Sub(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"Sub(" << _no << L")番が存在しません。" << endl;
+				}
+				exit(-1);
+			}
+			MUS->ptcSub[_no]->setUse();	//使うフラグを立てる
+			itSub++;
+		}
+	}
+
+	//----------------------
+	//Envelope
+	if(!ptcEnv.empty()){
+		itEnv = ptcEnv.begin();
+		while(itEnv != ptcEnv.end()){
+			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
+			if( MUS->ptcEnv.count(_no) == 0){
+				if(cOptionSW->fErr == true){
+					wcerr << L"Envelope(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"Envelope(" << _no << L")番が存在しません。" << endl;
+				}
+				exit(-1);
+			}
+			MUS->ptcEnv[_no]->setUse();	//使うフラグを立てる
+			itEnv++;
+		}
+	}
+
+	//----------------------
+	//FDSC
+	if(!ptcFDSC.empty()){
+		itFDSC = ptcFDSC.begin();
+		while(itFDSC != ptcFDSC.end()){
+			_no			= (*itFDSC)->get_id();		//エンベロープNo.の取得
+			if( MUS->ptcFDSC.count(_no) == 0){
+				if(cOptionSW->fErr == true){
+					wcerr << L"FDSC(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"FDSC(" << _no << L")番が存在しません。" << endl;
+				}
+				exit(-1);
+			}
+			MUS->ptcFDSC[_no]->setUse();	//使うフラグを立てる
+			itFDSC++;
+		}
+	}
+
+	//----------------------
+	//FDSM
+	if(!ptcFDSM.empty()){
+		itFDSM = ptcFDSM.begin();
+		while(itFDSM != ptcFDSM.end()){
+			_no			= (*itFDSM)->get_id();		//エンベロープNo.の取得
+			if( MUS->ptcFDSM.count(_no) == 0){
+				if(cOptionSW->fErr == true){
+					wcerr << L"FDSM(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"FDSM(" << _no << L")番が存在しません。" << endl;
+				}
+				exit(-1);
+			}
+			MUS->ptcFDSM[_no]->setUse();	//使うフラグを立てる
+			itFDSM++;
+		}
+	}
+
+	//----------------------
+	//OPLL
+	if(!ptcOPLL.empty()){
+		itVRC7 = ptcOPLL.begin();
+		while(itVRC7 != ptcOPLL.end()){
+			_no			= (*itVRC7)->get_id();		//エンベロープNo.の取得
+			if( MUS->ptcVRC7.count(_no) == 0){
+				if(cOptionSW->fErr == true){
+					wcerr << L"VRC7(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"VRC7(" << _no << L")番が存在しません。" << endl;
+				}
+				exit(-1);
+			}
+			MUS->ptcVRC7[_no]->setUse();	//使うフラグを立てる
+			itVRC7++;
+		}
+	}
+
+	//----------------------
+	//N163
+	if(!ptcWave.empty()){
+		itN163 = ptcWave.begin();
+		while(itN163 != ptcWave.end()){
+			_no			= (*itN163)->get_id();		//エンベロープNo.の取得
+			if( MUS->ptcN163.count(_no) == 0){
+				if(cOptionSW->fErr == true){
+					wcerr << L"N163(" << _no << L")番が存在しません。" << endl;
+				} else {
+					wcout << L"N163(" << _no << L")番が存在しません。" << endl;
+				}
+				exit(-1);
+			}
+			MUS->ptcN163[_no]->setUse();	//使うフラグを立てる
+			itN163++;
+		}
+	}
+	
+}
+
+//==============================================================
 //		アドレス情報を決定する。
 //--------------------------------------------------------------
 //	●引数
@@ -267,6 +418,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 	unsigned	int	_no;
 	unsigned	int	_sub_offset;
 	unsigned	int	_com_offset;
+
 
 	//----------------------
 	//SE
@@ -672,6 +824,7 @@ void	MusicTrack::SetRepeat_C_Start(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetRepeat_Branch(MMLfile* MML)
 {
+
 	list<MusicItem*>::iterator	pt_itMusic	=	ptcItem.end();
 
 	switch(*it_repeat_type){

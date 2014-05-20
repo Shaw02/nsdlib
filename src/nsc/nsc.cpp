@@ -39,6 +39,8 @@ int	main(int argc, char* argv[])
 	MMLfile*	cMML		= new MMLfile(cOptionSW->strMMLname.c_str());
 	MusicFile*	cSND		= new MusicFile(cMML, cOptionSW->strCodeName);
 
+
+
 	//==================================
 	//アドレスの解決
 	if(cOptionSW->cDebug & 0x02){
@@ -47,12 +49,19 @@ int	main(int argc, char* argv[])
 	wcout << L"----------------------------------------" << endl;
 	wcout << L"*Address settlement process" << endl;
 
+	//ＭＭＬから呼ばれるオブジェクトの検索 ＆ 呼ばれないオブジェクトの削除
+	cSND->Optimize();
+
+	//アドレスの計算
 	i = cSND->SetOffset(0);
 	cout << "  Music Size = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
 	i = cSND->SetDPCMOffset(i);
 	cout << "  DPCM Size  = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
 
+	//アドレスを引数にもつオペコードのアドレス解決
 	cSND->Fix_Address();
+
+
 
 	//==================================
 	//保存
@@ -67,6 +76,8 @@ int	main(int argc, char* argv[])
 	if(cOptionSW->saveASM == true){
 		cSND->saveASM(cOptionSW->strASMname.c_str());
 	}
+
+
 
 	//==================================
 	//Tick Count

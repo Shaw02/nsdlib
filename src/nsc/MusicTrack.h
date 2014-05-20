@@ -95,8 +95,9 @@ public:
 	unsigned	int		GetTickTotal(void){	return(iTickTotal);};
 	unsigned	int		GetTickLoop(void){	return(iTickLoop);};
 
-			
+				void	Optimize(MusicFile* MUS);
 				void	Fix_Address(MusicFile* MUS);
+
 				void	SetEvent(MusicItem* _item);		//ƒCƒxƒ“ƒg‚Ì’Ç‰Á
 
 				bool	GetCompileFlag(void){return(compile_flag);};

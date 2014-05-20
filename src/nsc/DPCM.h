@@ -13,6 +13,7 @@ class DPCM :
 private:
 	unsigned	int		m_id;
 	unsigned	char	_DPCM_size;
+
 //static	const	Command_Info	Command[];	//コマンドの情報
 
 //メンバー関数

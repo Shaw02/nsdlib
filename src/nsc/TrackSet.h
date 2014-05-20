@@ -25,6 +25,7 @@ protected:
 	unsigned	int				TrackPt;	//
 	unsigned	int				TrackLine;	//
 	unsigned	char			Priority;	//
+
 //ÉÅÉìÉoÅ[ä÷êî
 public:
 				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const wchar_t _strName[] = L"==== [ Track Set ]====");
@@ -32,6 +33,8 @@ public:
 
 		void	TickCount(MusicFile* MUS);
 		void	getAsm(MusicFile* MUS);
+
+		void	Optimize(MusicFile* MUS);
 		void	Fix_Address(MusicFile* MUS);
 
 		void	TrackChk(MMLfile* MML);

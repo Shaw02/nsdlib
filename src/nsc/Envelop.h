@@ -11,11 +11,13 @@ class Envelop :
 {
 //メンバー変数
 private:
-	unsigned	int		m_id;
-				int		Loop_Normal;
-				int		Loop_Release;
-				bool	Release;
-				int		ptEnvelop;
+	unsigned	int		m_id;				//エンベロープ番号
+				int		Loop_Normal;		//ループ位置（発音中）
+				int		Loop_Release;		//ループ位置（リリース中）
+				bool	Release;			//リリースパターンがあるかどうか
+				int		ptEnvelop;			//処理ポインタ
+
+				bool	f_Use;				//MML中で使われるか？
 
 //static	const	Command_Info	Command[];	//コマンドの情報
 
@@ -26,4 +28,6 @@ public:
 		void	setHold(int length);
 		void	sweep(MMLfile* MML);
 		void	getAsm(MusicFile* MUS);
+		void	setUse(void){f_Use = true;};
+		bool	chkUse(void){return(f_Use);};
 };

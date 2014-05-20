@@ -539,6 +539,118 @@ unsigned	int		MusicFile::SetDPCMOffset(unsigned int iMusSize)
 }
 
 //==============================================================
+//		使用しないオブジェクトの検索＆削除
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	MusicFile::Optimize(void)
+{
+	map<	int, FDSC*		>::iterator	itFDSC;		//FDS  wave table (career)
+	map<	int, FDSM*		>::iterator	itFDSM;		//FDS  wave table (modulator)
+	map<	int, VRC7*		>::iterator	itVRC7;		//VRC7 User Instrument
+	map<	int, N163*		>::iterator	itN163;		//N163 wave table
+	map<	int, Envelop*	>::iterator	itEnv;		//Envelop
+	map<	int, Sub*		>::iterator	itSub;		//Subroutine
+
+	unsigned	int			iBGM	= 0;
+	unsigned	int			iSE		= 0;
+
+	//----------------------
+	//使う（使わない）オブジェクトの検索
+	while(iBGM < Header.iBGM){
+		ptcBGM[iBGM]->Optimize(this);
+		iBGM++;
+	}
+
+	while(iSE < Header.iSE){
+		ptcSE[iSE]->Optimize(this);
+		iSE++;
+	}
+
+	//----------------------
+	//使わないオブジェクトの削除
+
+	//サブルーチン
+	if(!ptcSub.empty()){
+		itSub = ptcSub.begin();
+		while(itSub != ptcSub.end()){
+			if(itSub->second->chkUse() == true){
+				//使うサブルーチンであれば、その中で使ってるオブジェクトをチェック
+				itSub->second->Optimize(this);
+			} else {
+				//使わないサブルーチンであれば、オブジェクト削除。
+				itSub->second->clear();
+			}
+			itSub++;
+		}
+	}
+
+	//エンベロープ
+	if(!ptcEnv.empty()){
+		itEnv = ptcEnv.begin();
+		while(itEnv != ptcEnv.end()){
+			if(itEnv->second->chkUse() == false){
+				//使わないサブルーチンであれば、オブジェクト削除。
+				itEnv->second->clear();
+			}
+			itEnv++;
+		}
+	}
+
+	//FDSC
+	if(!ptcFDSC.empty()){
+		itFDSC = ptcFDSC.begin();
+		while(itFDSC != ptcFDSC.end()){
+			if(itFDSC->second->chkUse() == false){
+				//使わないサブルーチンであれば、オブジェクト削除。
+				itFDSC->second->clear();
+			}
+			itFDSC++;
+		}
+	}
+
+	//FDSM
+	if(!ptcFDSM.empty()){
+		itFDSM = ptcFDSM.begin();
+		while(itFDSM != ptcFDSM.end()){
+			if(itFDSM->second->chkUse() == false){
+				//使わないサブルーチンであれば、オブジェクト削除。
+				itFDSM->second->clear();
+			}
+			itFDSM++;
+		}
+	}
+
+	//VRC7
+	if(!ptcVRC7.empty()){
+		itVRC7 = ptcVRC7.begin();
+		while(itVRC7 != ptcVRC7.end()){
+			if(itVRC7->second->chkUse() == false){
+				//使わないサブルーチンであれば、オブジェクト削除。
+				itVRC7->second->clear();
+			}
+			itVRC7++;
+		}
+	}
+
+	//N163
+	if(!ptcN163.empty()){
+		itN163 = ptcN163.begin();
+		while(itN163 != ptcN163.end()){
+			if(itN163->second->chkUse() == false){
+				//使わないサブルーチンであれば、オブジェクト削除。
+				itN163->second->clear();
+			}
+			itN163++;
+		}
+	}
+
+}
+
+//==============================================================
 //		アドレス情報を決定する。
 //--------------------------------------------------------------
 //	●引数
@@ -553,11 +665,18 @@ void	MusicFile::Fix_Address(void)
 	unsigned	int			iBGM	= 0;
 	unsigned	int			iSE		= 0;
 
+
 	while(iBGM < Header.iBGM){
+		if(cOptionSW->cDebug & 0x04){
+			wcout << L"Fix_Address [BGM(" << iBGM << ")] : " << strName << endl;
+		}
 		ptcBGM[iBGM]->Fix_Address(this);
 		iBGM++;
 	}
 	while(iSE < Header.iSE){
+		if(cOptionSW->cDebug & 0x04){
+			wcout << L"Fix_Address [SE(" << iSE << ")] : " << strName << endl;
+		}
 		ptcSE[iSE]->Fix_Address(this);
 		iSE++;
 	}
@@ -565,7 +684,13 @@ void	MusicFile::Fix_Address(void)
 	if(!ptcSub.empty()){
 		itSub = ptcSub.begin();
 		while(itSub != ptcSub.end()){
-			itSub->second->Fix_Address(this);
+			//サブルーチンを使っている場合に、Fixする
+			if(itSub->second->chkUse() == true){
+				if(cOptionSW->cDebug & 0x04){
+					wcout << L"Fix_Address [Sub(" << itSub->first << ")] : " << strName << endl;
+				}
+				itSub->second->Fix_Address(this);
+			}
 			itSub++;
 		}
 	}

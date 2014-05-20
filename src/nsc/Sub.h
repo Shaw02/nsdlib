@@ -14,6 +14,11 @@
 class Sub : public TrackSet
 {
 
+//メンバー変数
+private:
+	bool	f_Use;				//MML中で使われるか？
+
+//メンバー関数
 public:
 
 	Sub(MMLfile* MML, unsigned int _id, wchar_t _strName[] = L"==== [ Sub ]====");
@@ -23,6 +28,8 @@ public:
 
 	unsigned	int		TickCount(MusicFile* MUS, unsigned int iLength);
 	unsigned	int		GetDefaultLength(void);
+				void	setUse(void){f_Use = true;};
+				bool	chkUse(void){return(f_Use);};
 
 };// END CLASS DEFINITION Sub
 
