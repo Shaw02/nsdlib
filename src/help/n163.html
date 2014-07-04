@@ -5,7 +5,7 @@
 <meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>n106 / n163 の使い方</Title>
+<Title>n16x (n160, n161, n162, n163) の使い方</Title>
 </HEAD>
 <BODY>
 
@@ -20,57 +20,73 @@
 
 <!-- contents start -->
 <div id='contents'>
-<h2>n106 / n163 の使い方</h2>
+<h2>n16x (n160, n161, n162, n163) の使い方</h2>
 
 <div class='block'>
 <h3>アドレス空間について</h3>
 <p>
-n106 / n163のアドレス表を以下に示します。<br>
-<a href="mml_n163.html">n163音色波形定義ブロック</a>で定義した音色波形は、
-<a href="mml_N163voice.html">@N</a>コマンドで任意のアドレスに転送して用います。<br>
+n16xのアドレス表を以下に示します。<br>
+<a href="mml_n163.html">n16x音色波形定義ブロック</a>で定義した音色波形は、
+<a href="mml_N163voice.html">@Nコマンド、@NLコマンド</a>で任意のアドレスに転送して用います。<br>
 </p>
 
 <p>
 $00～$3Fの64byte（128サンプル分）の領域は、常に音色波形テーブルとして使用する事ができます。<br>
-<a href="mml_N163_channel.html">有効チャンネル数</a>に応じて、ch1～ch7の制御レジスタの領域を、音色波形テーブルとして使うことができます。<br>
-例えば、<a href="mml_N163_channel.html">有効チャンネル数</a>が3の場合はch6～ch8がチャンネル制御レジスタとして用いられ、ch1～ch5の領域は音色波形テーブルの領域として使用可能です。<br>
+$40～$77の56byte（112サンプル分）の領域は、ch2～ch8の制御レジスタの領域と共用であり、
+<a href="mml_N163_channel.html">有効チャンネル数</a>に応じて、音色波形テーブルとして使うことができます。<br>
+例えば、<a href="mml_N163_channel.html">有効チャンネル数</a>が3の場合はch1～ch3がチャンネル制御レジスタとして用いられ、
+ch4～ch8の領域（アドレス$40～$67）の40Byte（80サンプル分）は音色波形テーブルの領域として使用可能です。<br>
 </p>
 <p>
 サンプルの量子化は4bit（0～15の範囲）であり、1byteの領域に2サンプルをリトルエンディアンで格納します。<br>
 </p>
 
 <table>
-<caption>n106 / n163 address (register) table</caption>
+<caption>n16x address (register) table</caption>
 <tr><th></th><th>$00</th><th>$01</th><th>$02</th><th>$03</th><th>$04</th><th>$05</th><th>$06</th><th>$07</th><th>$08</th><th>$09</th><th>$0A</th><th>$0B</th><th>$0C</th><th>$0D</th><th>$0E</th><th>$0F</th></tr>
-<tr><th>$00</th><td colspan="16" rowspan="4">Voice wave table (64 byte)</td></tr>
+<tr><th>$00</th><td colspan="16" rowspan="4">Voice wave table (64 byte / 128 sample)</td></tr>
 <tr><th>$10</th></tr>
 <tr><th>$20</th></tr>
 <tr><th>$30</th></tr>
-<tr><th>$40</th><td colspan="8">ch1 control register (8 byte)</td><td colspan="8">ch2 control register (8 byte)</td></tr>
-<tr><th>$50</th><td colspan="8">ch3 control register (8 byte)</td><td colspan="8">ch4 control register (8 byte)</td></tr>
-<tr><th>$60</th><td colspan="8">ch5 control register (8 byte)</td><td colspan="8">ch6 control register (8 byte)</td></tr>
-<tr><th>$70</th><td colspan="8">ch7 control register (8 byte)</td><td colspan="8">ch8 control register (8 byte)</td></tr>
+<tr><th>$40</th><td colspan="8">ch8 control register (8 byte / 16 sample)</td><td colspan="8">ch7 control register (8 byte / 16 sample)</td></tr>
+<tr><th>$50</th><td colspan="8">ch6 control register (8 byte / 16 sample)</td><td colspan="8">ch5 control register (8 byte / 16 sample)</td></tr>
+<tr><th>$60</th><td colspan="8">ch4 control register (8 byte / 16 sample)</td><td colspan="8">ch3 control register (8 byte / 16 sample)</td></tr>
+<tr><th>$70</th><td colspan="8">ch2 control register (8 byte / 16 sample)</td><td colspan="8">ch1 control register (8 byte)</td></tr>
 </table>
 </div>
 
 <div class='block'>
 <h3>音色設定方法</h3>
 <p>
-n106 / n163の音色関連のコマンドは、以下の３つのコマンドがあります。<br>
-この３つのコマンドにて音色を設定して、始めてその音色を奏でることができます（順は問いません）。<br>
+n16xの音色関連のコマンドは、以下のコマンドがあります。<br>
+これらのコマンドにて音色を設定して、始めてその音色を奏でることができます（ロードと選択の順は問いません）。<br>
 何れのコマンドにおいても、上述のアドレス表が大きく関係します。<br>
 </p>
+
+<h4>波形テーブルのロード</h4>
+<p>
+音色波形を、n16xに転送（ロード）するコマンドです。<br>
+</p>
 <dl>
-<dt><a href="mml_N163voice.html">@N</a><var>n</var>	</dt><dd>… <var>n</var>×２のアドレスを先頭に、<a href="mml_n163.html">N163(){}ブロック</a>で定義した音色波形をロードします。</dd>
-<dt><a href="mml_voice.html">@</a><var>n</var>		</dt><dd>… トラックに適用する音色波形データのある先頭アドレスを、<var>n</var>×２に設定します。</dd>
-<dt><a href="mml_sweep.html">s</a><var>n</var>		</dt><dd>… トラックに適用する音色のサンプル長を、（64－<var>n</var>）×４サンプルに設定します。</dd>
+<dt><a href="mml_N163voice.html">@NL</a><var>a</var>,<var>n</var>	</dt><dd>… <var>a</var>÷２のアドレス（要素数単位指定）を先頭に、<a href="mml_n163.html">N163(<var>n</var>){}ブロック</a>で定義した音色波形をロードします。</dd>
+<dt><a href="mml_N163voice.html">@N</a><var>a</var>,<var>n</var>	</dt><dd>… <var>a</var>×２のアドレス（レジスタ単位指定）を先頭に、<a href="mml_n163.html">N163(<var>n</var>){}ブロック</a>で定義した音色波形をロードします。</dd>
+</dl>
+<h4>波形テーブル・サンプル長の選択</h4>
+<p>
+ロードされている音色波形を選択するコマンドです。<br>
+</p>
+<dl>
+<dt><a href="mml_N163set.html">@NS</a><var>a</var>(,<var>s</var>)	</dt><dd>… トラックに適用する音色波形データのある先頭アドレスを<var>a</var>÷２に設定し、<br>
+																			同時に、トラックに適用する音色のサンプル長を、<var>s</var>サンプルに設定します。</dd>
+<dt><a href="mml_voice.html">@</a><var>a</var>						</dt><dd>… トラックに適用する音色波形データのある先頭アドレスを<var>a</var>×２に設定します。</dd>
+<dt><a href="mml_sweep.html">s</a><var>s</var>						</dt><dd>… トラックに適用する音色のサンプル長を、（64－<var>s</var>）×４サンプルに設定します。</dd>
 </dl>
 </div>
 
 <div class='block'>
 <h3>音程の変動量について</h3>
 <p>
-n106 / n163は、設定された<a href="mml_N163_channel.html">有効チャンネル数</a>及び<a href="mml_sweep.html">サンプル長</a>により、発音される音程が変動します。<br>
+n16xは、設定された<a href="mml_N163_channel.html">有効チャンネル数</a>及び<a href="mml_sweep.html">サンプル長</a>により、発音される音程が変動します。<br>
 有効チャンネル数とサンプル長による、音程の変動量を以下表に示します。<br>
 数値は、半音単位です。100倍すればcent単位になります。<br>
 </p>
@@ -85,13 +101,13 @@ n106 / n163は、設定された<a href="mml_N163_channel.html">有効チャンネル数</a>及�
 </ul>
 
 <p>
-n106 / n163が発音可能な音程（実音）は o8a から、以下表の変動量を加算した値です。<br>
+n16xが発音可能な音程（実音）は o8a から、以下表の変動量を加算した値です。<br>
 （MMLの指定上で、音階、移調、ディチューン、エンベロープの分を含めて、o8aまでです）。<br>
 例えば、使用チャンネル数が８、サンプル長が128（64byte）の場合は、-48半音、つまり4オクターブ下のo4aまでとなります。<br>
 </p>
 
 <table>
-<caption>n106 / n163 sample length and pitch shift value by a numbers of enable channels.</caption>
+<caption>n16x sample length and pitch shift value by a numbers of enable channels.</caption>
 <tr><th rowspan="2">s	</th><th colspan="2">Sample		</th><th colspan="8">A number of enable channels	</th></tr>
 <tr>			<th>lengths</th><th>bytes</th><th>1</th><th>2		</th><th>3		</th><th>4		</th><th>5		</th><th>6		</th><th>7		</th><th>8		</th></tr>
 <tr><th>63	</th><td>4	</td><td>2	</td><td>48.00	</td><td>36.00	</td><td>28.98	</td><td>24.00	</td><td>20.14	</td><td>16.98	</td><td>14.31	</td><td>12.00</td></tr>

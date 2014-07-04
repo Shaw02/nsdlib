@@ -49,6 +49,7 @@ int	main(int argc, char* argv[])
 	wcout << L"----------------------------------------" << endl;
 	wcout << L"*Address settlement process" << endl;
 
+
 	//ＭＭＬから呼ばれるオブジェクトの検索 ＆ 呼ばれないオブジェクトの削除
 	cSND->Optimize();
 
@@ -60,8 +61,6 @@ int	main(int argc, char* argv[])
 
 	//アドレスを引数にもつオペコードのアドレス解決
 	cSND->Fix_Address();
-
-
 
 	//==================================
 	//保存

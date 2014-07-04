@@ -38,6 +38,7 @@ class MusicFile :
 //メンバー変数
 public:
 			MusicHeader			Header;		//Header
+
 	map<	int, FDSC*		>	ptcFDSC;	//FDS  wave table (career)
 	map<	int, FDSM*		>	ptcFDSM;	//FDS  wave table (modulator)
 	map<	int, VRC7*		>	ptcVRC7;	//VRC7 User Instrument
@@ -50,8 +51,8 @@ public:
 
 private:
 //static	const	Command_Info	Command[];
-					string			dpcm_code;
-		unsigned	int				nsf_size;
+					string		dpcm_code;
+	unsigned	int				nsf_size;
 
 //メンバー関数
 public:

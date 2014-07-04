@@ -184,6 +184,9 @@
 					RelativePath=".\N163.cpp">
 				</File>
 				<File
+					RelativePath=".\Patch.cpp">
+				</File>
+				<File
 					RelativePath=".\VRC7.cpp">
 				</File>
 				<Filter
@@ -312,6 +315,9 @@
 			</File>
 			<File
 				RelativePath=".\Option.h">
+			</File>
+			<File
+				RelativePath=".\Patch.h">
 			</File>
 			<File
 				RelativePath=".\resource.h">

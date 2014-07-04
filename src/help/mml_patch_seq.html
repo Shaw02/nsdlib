@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Patch</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Patch</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        @P<var>number</var>
+        @P*
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>number</h4>
+<p>
+<a href="mml_patch.html">パッチ定義</a>の番号を指定します。<br>
+</p>
+<p>
+また、引数の替わりに`*'を指定することで、パッチ機能を無効化できます。（Default: Disable）<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+音域毎に、音色やエンベロープを定義することで、音域毎に音の変化を持たせることができます。
+</p>
+<p>
+例えば、ピアノでは、低音域では倍音成分が多く、音量は遅い減衰を持ち、
+高音域では倍音成分が少なく、音量は早い減衰を持ちます。
+このような音域毎の音の変化を、自動で処理するための機能です。
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+パッチ機能は、ＭＭＬコンパイラの疑似命令となります。<br>
+ＭＭＬコンパイラ側で展開するため、コンパイル後のシーケンスサイズが大きくなる可能性があります。
+</p>
+<p>
+リピートや無限ループする場合は、オクターブを１回目のオクターブに戻してください。<br>
+リピートコマンドや、無限ループコマンドによってオクターブが変わってリピート、ループする場合、
+２回目以降のリピートも、１回目のリピート、ループ時のオクターブの音域としてパッチが処理されます。<br>
+</p>
+<p>
+<a href="mml_sub.html">サブルーチン</a>を使用する場合、<a href="mml_sub.html">サブルーチン</a>側でもパッチを設定してください。<br>
+<a href="mml_sub.html">サブルーチン</a>先では、<a href="mml_sub.html">サブルーチン</a>元のパッチは適用されません。<br>
+又、<a href="mml_sub.html">サブルーチン</a>にてパッチ機能を使う場合は、<a href="mml_patch.html">パッチ定義</a>に<a href="mml_sub.html">サブルーチン</a>呼出しを記述することはできません。<br>
+（サブルーチンのネスティングはできません）<br>
+</p>
+<p>
+<a href="mml_sub.html">サブルーチン</a>でパッチ機能を使用する場合、
+<a href="mml_sub.html">サブルーチン</a>コマンドが定義された<a href="mml_patch.html">パッチ定義</a>を使う事はできません。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<p>
+<a href="mml_patch.html">パッチ定義</a>を参照願います。
+</p>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

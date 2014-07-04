@@ -12,6 +12,7 @@ class DPCM :
 //メンバー変数
 private:
 	unsigned	int		m_id;
+				bool	f_Use;				//MML中で使われるか？
 	unsigned	char	_DPCM_size;
 
 //static	const	Command_Info	Command[];	//コマンドの情報

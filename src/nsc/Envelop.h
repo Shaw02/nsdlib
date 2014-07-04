@@ -23,11 +23,11 @@ private:
 
 //ÉÅÉìÉoÅ[ä÷êî
 public:
-				Envelop(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"==== [ Envelop ]====");
+				Envelop(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"Envelope");
 				~Envelop(void);
 		void	setHold(int length);
 		void	sweep(MMLfile* MML);
-		void	getAsm(MusicFile* MUS);
 		void	setUse(void){f_Use = true;};
 		bool	chkUse(void){return(f_Use);};
+		void	getAsm(MusicFile* MUS);
 };

@@ -13,7 +13,7 @@
 //					無し
 //==============================================================
 TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const wchar_t _strName[]):
-	MusicItem(_strName),
+	MusicItem(_id, _strName),
 	iTempo(120),
 	m_id(_id)
 {
@@ -81,17 +81,22 @@ enum	Command_ID_mml {
 	mml_Envelop_Off_Frequency,
 	mml_Envelop_Off_Note,
 
+	mml_Patch,
+	mml_Patch_Off,
+
 	mml_Release_mdoe,
 	mml_Release_Voice,
 	mml_Release_Volume,
 
+	mml_Voice,
 	mml_FDSC,
 	mml_FDSM,
 	mml_FDSF,
 	mml_FDSV,
 	mml_VRC7,
 	mml_N163,
-	mml_Voice,
+	mml_N163_Set,
+	mml_N163_Load,
 	mml_N163_Channel,
 	mml_FME7_frequency,
 
@@ -247,11 +252,16 @@ const	static	Command_Info	Command[] = {
 		{	"R@",	mml_Release_Voice		},
 		{	"Rv",	mml_Release_Volume		},
 
+		{	"@P*",	mml_Patch_Off			},
+		{	"@P",	mml_Patch				},
+
 		{	"@FC",	mml_FDSC				},
 		{	"@FM",	mml_FDSM				},
 		{	"@FF",	mml_FDSF				},
 		{	"@FV",	mml_FDSV				},
 		{	"@V",	mml_VRC7				},
+		{	"@NS",	mml_N163_Set			},
+		{	"@NL",	mml_N163_Load			},
 		{	"@N",	mml_N163				},
 		{	"@",	mml_Voice				},
 		{	"音色",	mml_Voice				},
@@ -398,7 +408,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Subroutine):
-				nowTrack->SetSubroutine(MML);
+				nowTrack->SetSubroutine(MML->GetInt());
 				break;
 
 			case(mml_Loop):
@@ -554,19 +564,23 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Envelop_Voice):
-				nowTrack->SetEnvelop(nsd_Envelop_Voice, MML, MML->offset_Ei);
+				nowTrack->SetEnvelop_Evoi(MML->GetInt() + MML->offset_Ei);
+			//	nowTrack->SetEnvelop(nsd_Envelop_Voice, MML, MML->offset_Ei);
 				break;
 
 			case(mml_Envelop_Volume):
-				nowTrack->SetEnvelop(nsd_Envelop_Volume, MML, MML->offset_Ev);
+				nowTrack->SetEnvelop_Evol(MML->GetInt() + MML->offset_Ev);
+			//	nowTrack->SetEnvelop(nsd_Envelop_Volume, MML, MML->offset_Ev);
 				break;
 
 			case(mml_Envelop_Frequency):
-				nowTrack->SetEnvelop(nsd_Envelop_Frequency, MML, MML->offset_Em);
+				nowTrack->SetEnvelop_Em(MML->GetInt() + MML->offset_Em);
+			//	nowTrack->SetEnvelop(nsd_Envelop_Frequency, MML, MML->offset_Em);
 				break;
 
 			case(mml_Envelop_Note):
-				nowTrack->SetEnvelop(nsd_Envelop_Note, MML, MML->offset_En);
+				nowTrack->SetEnvelop_En(MML->GetInt() + MML->offset_En);
+			//	nowTrack->SetEnvelop(nsd_Envelop_Note, MML, MML->offset_En);
 				break;
 
 			case(mml_Envelop_Off_Voice):
@@ -574,15 +588,26 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Envelop_Off_Volume):
-				SetEvent(new mml_Address(nsd_Envelop_Volume));
+				nowTrack->SetEnvelop_Evol();
+			//	SetEvent(new mml_Address(nsd_Envelop_Volume));
 				break;
 
 			case(mml_Envelop_Off_Frequency):
-				SetEvent(new mml_Address(nsd_Envelop_Frequency));
+				nowTrack->SetEnvelop_Em();
+			//	SetEvent(new mml_Address(nsd_Envelop_Frequency));
 				break;
 
 			case(mml_Envelop_Off_Note):
-				SetEvent(new mml_Address(nsd_Envelop_Note));
+				nowTrack->SetEnvelop_En();
+			//	SetEvent(new mml_Address(nsd_Envelop_Note));
+				break;
+
+			case(mml_Patch):
+				nowTrack->SetPatch(MML);
+				break;
+
+			case(mml_Patch_Off):
+				nowTrack->SetPatch();
 				break;
 
 			case(mml_Release_mdoe):
@@ -598,7 +623,8 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Voice):
-				SetEvent(new mml_general(nsd_Voice, MML, L"Voice"));
+				nowTrack->SetVoice(MML->GetInt());
+			//	SetEvent(new mml_general(nsd_Voice, MML, L"Voice"));
 				break;
 
 			case(mml_FDSC):
@@ -623,6 +649,14 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_N163):
 				nowTrack->SetN163(MML);
+				break;
+
+			case(mml_N163_Set):
+				nowTrack->SetN163_Set(MML);
+				break;
+
+			case(mml_N163_Load):
+				nowTrack->SetN163_Load(MML);
 				break;
 
 			case(mml_N163_Channel):
@@ -670,11 +704,17 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Transpose):
-				SetEvent(new mml_general(nsd_Transpose, MML, L"Transpose"));
+				i = MML->GetInt();
+				if( (i < -128) || (i > 127) ){
+					MML->Err(L"移調は-127～128の範囲で指定してください。");
+				}
+				nowTrack->SetTranspose(i);
+				//SetEvent(new mml_general(nsd_Transpose, MML, L"Transpose"));
 				break;
 
 			case(mml_Transpose_Relative):
-				SetEvent(new mml_general(nsd_Relative_Transpose, MML, L"Relative Transpose"));
+				nowTrack->SetTranspose_Relative(MML->GetInt());
+				//SetEvent(new mml_general(nsd_Relative_Transpose, MML, L"Relative Transpose"));
 				break;
 
 			case(mml_KeyShift):
@@ -767,6 +807,20 @@ const	static	Command_Info	Command[] = {
 //==============================================================
 TrackSet::~TrackSet(void)
 {
+}
+
+//==============================================================
+//		クリア
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::clear(int _id)
+{
+	maxTrack = -1;
+	MusicItem::clear(_id);
 }
 
 //==============================================================
@@ -1295,8 +1349,7 @@ void	TrackSet::SetSweep(MMLfile* MML)
 		}
 		_data = (unsigned char)(((iSpeed & 0x0F) << 4) | (iDepth & 0x0F));
 	}
-
-	SetEvent(new mml_general(nsd_Sweep, _data, L"Sweep"));
+	nowTrack->SetSweep(_data);
 }
 
 //==============================================================

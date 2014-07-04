@@ -12,7 +12,7 @@
 //					–³‚µ
 //==============================================================
 FDSC::FDSC(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
-	MusicItem(_strName),
+	MusicItem(_id, _strName),
 	f_Use(false),
 	m_id(_id)
 {

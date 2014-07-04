@@ -50,6 +50,8 @@ typedef struct {
 
 #include "MusicItem.h"
 
+#include "Patch.h"
+
 #include "FDSC.h"
 #include "FDSM.h"
 #include "VRC7.h"

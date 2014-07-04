@@ -159,9 +159,9 @@ $SeapunkLead_sub { $SeapunkLead r16 v10 D-1 }
 $melody_1 {
 
 g1
-rrr c > c4 < P14,1,-8,-4 b4&b1
-rrr c > c4 < P14,1,-8,-4 b4&b1
-rrr c   f4   P14,1,-8,-4 e4&e1
+rrr c > c4 < P14,1,-8,-4 b4+1
+rrr c > c4 < P14,1,-8,-4 b4+1
+rrr c   f4   P14,1,-8,-4 e4+1
 r1
 
 }
@@ -169,9 +169,9 @@ r1
 $melody_2 {
 
 g1
-rrr c > c4 < P14,1,-8,-4 b4. > c2 g P14,1,8,2 d4&d4. <
-    c > c4 < P14,1,-8,-4 b4&b1
-rrr c   f4   P14,1,-8,-4 e4&e1
+rrr c > c4 < P14,1,-8,-4 b4. > c2 g P14,1,8,2 d4+4. <
+    c > c4 < P14,1,-8,-4 b4+1
+rrr c   f4   P14,1,-8,-4 e4+1
 r1
 
 }
@@ -323,7 +323,7 @@ $arp..main1 { [ $rest_8m ]2 $arps1 $arps1 }
 
 $arp..break2 { $arps2 $arps2 }
 
-$arp..main2 { [ $arps2 $arps2 $arps1 $arps1 }
+$arp..main2 { $arps2 $arps2 $arps1 $arps1 }
 
 
 

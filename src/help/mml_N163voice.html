@@ -5,7 +5,7 @@
 <meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>MML reference: N163 Setting wave table</Title>
+<Title>MML reference: n16x (n160, n161, n162, n163) Setting wave table</Title>
 </HEAD>
 <BODY>
 
@@ -21,13 +21,14 @@
 
 <!-- contents start -->
 <div id='contents'>
-<h2>MML reference: N163 Setting wave table</h2>
+<h2>MML reference: n16x (n160, n161, n162, n163)  Setting wave table</h2>
 
 <!-- ──────────────── -->
 <div class='block'>
 <h3>定義（Define）</h3>
 <code><pre>
         @N<var>address</var>, <var>n</var>
+        @NL<var>sample</var>, <var>n</var>
 </pre></code>
 </div>
 
@@ -37,13 +38,21 @@
 
 <h4>address</h4>
 <p>
-音色波形を転送するn163のアドレスに対して、２で割った値を指定します。<br>
-（つまり、2Byte (4サンプル) 毎です）<br>
+レジスタ単位で、n16xへの転送先を指定します。<br>
+0～63の範囲で指定してください。<br>
+n16xへの転送先アドレスは、指定値の２倍の値となります。<br>
+</p>
+
+<h4>sample</h4>
+<p>
+サンプルの要素単位で、n16xへの転送先を指定します。<br>
+0～252の範囲で、４の倍数を指定してください。<br>
+n16xへの転送先アドレスは、指定値の半分の値となります。<br>
 </p>
 
 <h4>n</h4>
 <p>
-<a href="mml_n163.html">N163音色波形記述ブロック</a>の番号を指定します。<br>
+n16xへ転送する<a href="mml_n163.html">n16x音色波形記述ブロック</a>の番号を指定します。<br>
 </p>
 
 
@@ -52,10 +61,11 @@
 <div class='block'>
 <h3>内容（Contents）</h3>
 <p>
-n163音源の、<var>address</var>×2番地に、<a href="mml_n163.html">N163音色波形記述ブロック</a> <var>n</var>番の音色波形を転送します。<br>
+n16x音源の、<var>address</var>×2番地、もしくは、<var>sample</var>÷2番地に、
+<a href="mml_n163.html">n16x音色波形記述ブロック</a> <var>n</var>番の音色波形を転送します。<br>
 </p>
 <p>
-n106/n163の使い方は、別途、<a href="n163.html">n106 / n163 の使い方</a>をご参照ください。<br>
+n16xの使い方は、別途、<a href="n163.html">n16x (n160, n161, n162, n163) の使い方</a>をご参照ください。<br>
 </p>
 
 </div>
@@ -64,9 +74,9 @@ n106/n163の使い方は、別途、<a href="n163.html">n106 / n163 の使い方</a>をご参照�
 <div class='block'>
 <h3>注意（Notes）</h3>
 <p>
-このコマンドは、n163のアドレス空間に音色データを転送するだけで、チャンネルの音色としての設定はしません。<br>
-音色の適用は、<a href="mml_voice.html">@コマンド</a>でアドレスを指定する事で初めて適用されます。<br>
-また、音色のサンプル長についても、別途に<a href="mml_sweep.html">sコマンド</a>で設定する必要があります。<br>
+このコマンドは、n16xのアドレス空間に音色データを転送するだけで、チャンネルの音色としての設定はしません。<br>
+音色の適用は、<a href="mml_N163set.html">@NSコマンド</a>で、開始位置とサンプル長を指定する必要があります。<br>
+また、<a href="mml_voice.html">@コマンド</a>及び、<a href="mml_sweep.html">sコマンド</a>でも可能です。<br>
 なお、これらの設定順番は問いません。<br>
 </p>
 <p>
@@ -79,14 +89,13 @@ n106/n163の使い方は、別途、<a href="n163.html">n106 / n163 の使い方</a>をご参照�
 <h3>例（Sample）</h3>
 
 <code><pre>
-
 N163(0){	<span style="color:green;">//Pipe organ</span>
-	8, 5, 4, 3, 8,11, 5, 8, 7, 8,11, 8, 8,12, 6,10,
-	4, 1, 0, 1, 4,10, 5, 7, 7, 9,14,11,10,15, 9,13
+    8, 5, 4, 3, 8,11, 5, 8, 7, 8,11, 8, 8,12, 6,10,
+    4, 1, 0, 1, 4,10, 5, 7, 7, 9,14,11,10,15, 9,13
 }
 
 bgm(0){
-	TR6	l4	o4	v15	@N16,0	@16	t120	cdefgab> c1
+    TR6 l4  o4  v15 @NL64,0 <span style="color:green;">/* = @N16,0 */</span> @NS64,32 <span style="color:green;">/* = @16 s56 */</span> t120 cdefgab> c1
 }
 </pre></code>
 

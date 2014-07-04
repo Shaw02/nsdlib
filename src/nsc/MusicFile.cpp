@@ -70,6 +70,7 @@ enum	Command_ID_MusicFile {
 	id_Sub,
 	id_BGM,
 	id_SE,
+	id_Patch,
 
 	id_Null
 };
@@ -163,6 +164,7 @@ const	static	Command_Info	Command[] = {
 		{	"SE",				id_SE			},
 		{	"se",				id_SE			},
 		{	"効果音",			id_SE			},
+		{	"Patch",			id_Patch		},
 
 		//for 1 command
 		{	"D",				id_DPCM			},
@@ -313,6 +315,12 @@ const	static	Command_Info	Command[] = {
 					MML->Err(L"#Waitコマンドは、0～2の範囲で指定してください。");
 				}
 				break;
+			case(id_Macro):
+				MML->SetMacro();
+				break;
+			case(id_Patch):
+				MML->SetPatch();
+				break;
 			//MML
 			case(id_DPCM):
 				if(cDPCMinfo != NULL){
@@ -392,9 +400,6 @@ const	static	Command_Info	Command[] = {
 				ptcItem.push_back(_env);
 				ptcEnv[i] = _env;
 				iSize += _env->getSize();	//BGMのサイズを更新
-				break;
-			case(id_Macro):
-				MML->SetMacro();
 				break;
 			case(id_Sub):
 				i = MML->GetNum();
@@ -582,7 +587,7 @@ void	MusicFile::Optimize(void)
 				itSub->second->Optimize(this);
 			} else {
 				//使わないサブルーチンであれば、オブジェクト削除。
-				itSub->second->clear();
+				itSub->second->clear(itSub->first);
 			}
 			itSub++;
 		}
@@ -594,7 +599,7 @@ void	MusicFile::Optimize(void)
 		while(itEnv != ptcEnv.end()){
 			if(itEnv->second->chkUse() == false){
 				//使わないサブルーチンであれば、オブジェクト削除。
-				itEnv->second->clear();
+				itEnv->second->clear(itEnv->first);
 			}
 			itEnv++;
 		}
@@ -606,7 +611,7 @@ void	MusicFile::Optimize(void)
 		while(itFDSC != ptcFDSC.end()){
 			if(itFDSC->second->chkUse() == false){
 				//使わないサブルーチンであれば、オブジェクト削除。
-				itFDSC->second->clear();
+				itFDSC->second->clear(itFDSC->first);
 			}
 			itFDSC++;
 		}
@@ -618,7 +623,7 @@ void	MusicFile::Optimize(void)
 		while(itFDSM != ptcFDSM.end()){
 			if(itFDSM->second->chkUse() == false){
 				//使わないサブルーチンであれば、オブジェクト削除。
-				itFDSM->second->clear();
+				itFDSM->second->clear(itFDSM->first);
 			}
 			itFDSM++;
 		}
@@ -630,7 +635,7 @@ void	MusicFile::Optimize(void)
 		while(itVRC7 != ptcVRC7.end()){
 			if(itVRC7->second->chkUse() == false){
 				//使わないサブルーチンであれば、オブジェクト削除。
-				itVRC7->second->clear();
+				itVRC7->second->clear(itVRC7->first);
 			}
 			itVRC7++;
 		}
@@ -642,7 +647,7 @@ void	MusicFile::Optimize(void)
 		while(itN163 != ptcN163.end()){
 			if(itN163->second->chkUse() == false){
 				//使わないサブルーチンであれば、オブジェクト削除。
-				itN163->second->clear();
+				itN163->second->clear(itN163->first);
 			}
 			itN163++;
 		}
@@ -667,16 +672,11 @@ void	MusicFile::Fix_Address(void)
 
 
 	while(iBGM < Header.iBGM){
-		if(cOptionSW->cDebug & 0x04){
-			wcout << L"Fix_Address [BGM(" << iBGM << ")] : " << strName << endl;
-		}
 		ptcBGM[iBGM]->Fix_Address(this);
 		iBGM++;
 	}
+
 	while(iSE < Header.iSE){
-		if(cOptionSW->cDebug & 0x04){
-			wcout << L"Fix_Address [SE(" << iSE << ")] : " << strName << endl;
-		}
 		ptcSE[iSE]->Fix_Address(this);
 		iSE++;
 	}
@@ -684,13 +684,7 @@ void	MusicFile::Fix_Address(void)
 	if(!ptcSub.empty()){
 		itSub = ptcSub.begin();
 		while(itSub != ptcSub.end()){
-			//サブルーチンを使っている場合に、Fixする
-			if(itSub->second->chkUse() == true){
-				if(cOptionSW->cDebug & 0x04){
-					wcout << L"Fix_Address [Sub(" << itSub->first << ")] : " << strName << endl;
-				}
-				itSub->second->Fix_Address(this);
-			}
+			itSub->second->Fix_Address(this);
 			itSub++;
 		}
 	}

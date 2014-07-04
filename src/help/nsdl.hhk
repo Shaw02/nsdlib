@@ -69,8 +69,23 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="@N">
-		<param name="Name" value="MML reference: N163 Setting wave table">
+		<param name="Name" value="MML reference: N16x Setting wave table">
 		<param name="Local" value="mml_N163voice.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@NL">
+		<param name="Name" value="MML reference: n16x (n160, n161, n162, n163) Setting wave table">
+		<param name="Local" value="mml_N163voice.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@NS">
+		<param name="Name" value="MML reference: n16x (n160, n161, n162, n163)  voice">
+		<param name="Local" value="mml_N163set.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="@P">
+		<param name="Name" value="MML reference: Patch">
+		<param name="Local" value="mml_patch_seq.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="@V">
@@ -143,14 +158,14 @@
 		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="d">
-		<param name="Name" value="MML reference: Note">
-		<param name="Local" value="mml_note.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="D">
 		<param name="Name" value="MML reference: Detune">
 		<param name="Local" value="mml_detune.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="d">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="D%">
@@ -213,14 +228,14 @@
 		<param name="Local" value="mml_envelop.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="f">
-		<param name="Name" value="MML reference: Note">
-		<param name="Local" value="mml_note.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="F">
 		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
 		<param name="Local" value="mml_s5b_envelope.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="f">
+		<param name="Name" value="MML reference: Note">
+		<param name="Local" value="mml_note.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="FAQ">
@@ -263,14 +278,14 @@
 		<param name="Local" value="mml_keyshift.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="l">
-		<param name="Name" value="MML reference: Length">
-		<param name="Local" value="mml_length.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="L">
 		<param name="Name" value="MML reference: Loop">
 		<param name="Local" value="mml_loop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="l">
+		<param name="Name" value="MML reference: Length">
+		<param name="Local" value="mml_length.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="MMinor">
@@ -303,18 +318,23 @@
 		<param name="Local" value="mml_scale.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="n163">
+		<param name="Name" value="n16x(n160,n161,n162,n163) の使い方">
+		<param name="Local" value="n163.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="N163">
-		<param name="Name" value="MML reference: N163 sample wave block">
+		<param name="Name" value="MML reference: N16x sample wave block">
 		<param name="Local" value="mml_N163.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="n163">
-		<param name="Name" value="n106 / n163 の使い方">
+		<param name="Name" value="n16x">
+		<param name="Name" value="n16x (n160, n161, n162, n163) の使い方">
 		<param name="Local" value="n163.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="NC">
-		<param name="Name" value="MML reference: N163 channel ">
+		<param name="Name" value="MML reference: N16x channel ">
 		<param name="Local" value="mml_N163_channel.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
@@ -398,12 +418,19 @@
 		<param name="Local" value="mml_octave.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="q">
+		<param name="Name" value="Patch">
+		<param name="Name" value="MML reference: Patch">
+		<param name="Local" value="mml_patch_seq.html">
+		<param name="Name" value="MML reference: Patch define block">
+		<param name="Local" value="mml_patch.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Q">
 		<param name="Name" value="MML reference: Gate time">
 		<param name="Local" value="mml_gate.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Q">
+		<param name="Name" value="q">
 		<param name="Name" value="MML reference: Gate time">
 		<param name="Local" value="mml_gate.html">
 		</OBJECT>
@@ -428,14 +455,14 @@
 		<param name="Local" value="mml_release.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="s">
-		<param name="Name" value="MML reference: Sweep">
-		<param name="Local" value="mml_sweep.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="S">
 		<param name="Name" value="MML reference: Subroutine">
 		<param name="Local" value="mml_sub.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="s">
+		<param name="Name" value="MML reference: Sweep">
+		<param name="Local" value="mml_sweep.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Scale">
@@ -545,6 +572,13 @@
 		<param name="Name" value="トラック">
 		<param name="Name" value="MML reference: TR">
 		<param name="Local" value="mml_TR.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="パッチ">
+		<param name="Name" value="MML reference: Patch">
+		<param name="Local" value="mml_patch_seq.html">
+		<param name="Name" value="MML reference: Patch define block">
+		<param name="Local" value="mml_patch.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="ポルタメント">

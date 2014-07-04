@@ -88,7 +88,7 @@ SE(<var>n</var>){
 <tr><td><a href="mml_sweep.html">s</a></td><td>	APU  : スイープ<br>
 												FDS  : Sweep (Modulator) bias<br>
 												VRC7 : サスティン<br>
-												n163 : 波形長設定<br>
+												n16x : 波形長設定<br>
 												Sunsoft 5B : Envelop Switch & Type</td></tr>
 <tr><td><a href="mml_tempo.html">t</a></td><td>テンポ</td></tr>
 <tr><td><a href="mml_tempo.html">t_</a></td><td>相対テンポ</td></tr>
@@ -108,7 +108,7 @@ SE(<var>n</var>){
 <tr><td><a href="mml_KeySignature.html">K{}</a></td><td>調号の指定（自動臨時記号）</td></tr>
 <tr><td><a href="mml_scale.html">Scale()<br>Mode()<br>Major<br>Minor<br>MMinor<br>HMinor</a></td><td>旋法・スケールの指定（自動臨時記号）</td></tr>
 <tr><td><a href="mml_loop.html">L</a></td><td>無限ループ（サブルーチンの記述ブロック内では無効）</td></tr>
-<tr><td><a href="mml_N163_channel.html">NC</a></td><td>n163 チャンネル数設定</td></tr>
+<tr><td><a href="mml_N163_channel.html">NC</a></td><td>n16x(n160,n161,n162,n163) チャンネル数設定</td></tr>
 <tr><td><a href="mml_portamento.html">P</a></td><td>ポルタメント</td></tr>
 <tr><td><a href="mml_portamento2.html">{}</a></td><td>ポルタメント２</td></tr>
 <tr><td><a href="mml_release.html">R@</a></td><td>Key off時の音色</td></tr>
@@ -118,12 +118,14 @@ SE(<var>n</var>){
 <tr><td><a href="mml_se.html">SE</a></td><td>効果音呼び出し</td></tr>
 <tr><td><a href="mml_TR.html">TR</a></td><td>トラック（サブルーチンの記述ブロック内では無効です）</td></tr>
 <tr><td><a href="mml_voice.html">@</a></td><td>音色（音色エンベロープ無効）</td></tr>
+<tr><td><a href="mml_patch_seq.html">@P</a></td><td>音色パッチ</td></tr>
 <tr><td><a href="mml_FDS_career.html">@FC</a></td><td>FDS キャリア波形設定</td></tr>
 <tr><td><a href="mml_FDS_modulator.html">@FM</a></td><td>FDS モジュレータ波形設定</td></tr>
 <tr><td><a href="mml_FDS_frequency.html">@FF</a></td><td>FDS モジュレータ周波数設定</td></tr>
 <tr><td><a href="mml_FDS_volume.html">@FV</a></td><td>FDS マスター音量設定</td></tr>
 <tr><td><a href="mml_VRC7voice.html">@V</a></td><td>VRC7ユーザー音色設定</td></tr>
-<tr><td><a href="mml_N163voice.html">@N</a></td><td>n163 波形設定</td></tr>
+<tr><td><a href="mml_N163voice.html">@N<br>@NL</a></td><td>n16x(n160,n161,n162,n163) 波形転送（ロード）</td></tr>
+<tr><td><a href="mml_N163set.html">@NS</a></td><td>n16x(n160,n161,n162,n163) 波形設定＆サンプル長指定</td></tr>
 <tr><td><a href="mml_repeatA.html">[  :  ]</a></td><td>リピート(Ａ)</td></tr>
 <tr><td><a href="mml_repeatB.html">|:  \  :|</a></td><td>リピート(Ｂ)</td></tr>
 <tr><td><a href="mml_relative_octave.html">&lt;</a></td><td>オクターブ－１</td></tr>

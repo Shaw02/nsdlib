@@ -117,7 +117,7 @@ This is developed as object library, and user application can control it.<br>
 		</dl>	</td></tr>
 <tr><td rowspan='2'>voice\		</td>
 	<td>n163.mml				</td>
-	<td>n163音色データ・サンプル</td></tr>
+	<td>n16x(n160,n161,n162,n163)音色データ・サンプル</td></tr>
 <tr><td>vrc7.mml				</td>
 	<td>vrc7音色データ・サンプル</td></tr>
 <tr><td>その他\					</td>
@@ -202,11 +202,12 @@ This is developed as object library, and user application can control it.<br>
 	<li><a href="mml.html">MML(Music Macro Language)文法</a>
 		<ul>
 		<li><a href="mml_envelope.html">エンベロープ記述ブロック</a></li>
+		<li><a href="mml_patch.html">パッチ定義記述ブロック</a></li>
 		<li><a href="mml_dpcm.html">⊿PCM記述ブロック</a></li>
 		<li><a href="mml_FDSC.html">FDSキャリア波形定義</a></li>
 		<li><a href="mml_FDSM.html">FDSモジュレータ波形定義</a></li>
 		<li><a href="mml_vrc7.html">VRC7音色波形記述ブロック</a></li>
-		<li><a href="mml_n163.html">n163音色波形記述ブロック</a></li>
+		<li><a href="mml_n163.html">n16x(n160,n161,n162,n163)音色波形記述ブロック</a></li>
 		<li><a href="mml_sequence.html">シーケンス記述ブロック</a>
 			<ul>
 			<li><a href="mml_note.html">a,b,c,d,e,f,g：音符</a></li>
@@ -217,7 +218,7 @@ This is developed as object library, and user application can control it.<br>
 			<li><a href="mml_rest.html">r：休符</a></li>
 			<li><a href="mml_sweep.html">s：スイープ(APU)</a></li>
 			<li><a href="mml_sweep.html">s：サスティン(VRC7)</a></li>
-			<li><a href="mml_sweep.html">s：サンプル長設定(n163)</a></li>
+			<li><a href="mml_sweep.html">s：サンプル長設定(n16x)</a></li>
 			<li><a href="mml_sweep.html">s：ハードウェアエンベロープ（Sunsoft 5B）</a></li>
 			<li><a href="mml_tempo.html">t：テンポ</a></li>
 			<li><a href="mml_volume.html">v：音量</a></li>
@@ -231,7 +232,7 @@ This is developed as object library, and user application can control it.<br>
 			<li><a href="mml_scale.html">scale()：スケール</a></li>
 			<li><a href="mml_jump.html">J：音符・休符の無効化</a></li>
 			<li><a href="mml_loop.html">L：無限ループ</a></li>
-			<li><a href="mml_N163_channel.html">NC:n163チャンネル数設定</a></li>
+			<li><a href="mml_N163_channel.html">NC:n16x(n160,n161,n162,n163)チャンネル数設定</a></li>
 			<li><a href="mml_portamento.html">P：ポルタメント</a></li>
 			<li><a href="mml_portamento2.html">{}：ポルタメント２</a></li>
 			<li><a href="mml_release.html">Rm,R@,Rv：リリース処理</a></li>
@@ -240,12 +241,15 @@ This is developed as object library, and user application can control it.<br>
 			<li><a href="mml_TR.html">TR：トラック</a></li>
 			<li><a href="mml_macro.html">$：マクロ</a></li>
 			<li><a href="mml_voice.html">@：音色</a></li>
+			<li><a href="mml_patch_seq.html">@P：パッチ</a>
 			<li><a href="mml_VRC7voice.html">@V：VRC7ユーザ定義音色</a></li>
 			<li><a href="mml_FDS_career.html">@FC：FDSキャリア波形設定</a></li>
 			<li><a href="mml_FDS_modulator.html">@FM：FDSモジュレータ波形定義</a></li>
 			<li><a href="mml_FDS_frequency.html">@FF：FDSモジュレータ周波数設定</a></li>
 			<li><a href="mml_FDS_volume.html">@FV：FDSマスター音量</a></li>
-			<li><a href="mml_N163voice.html">@N：n163音色波形設定</a></li>
+			<li><a href="mml_N163voice.html">@N：n16x(n160,n161,n162,n163)音色波形転送（ロード）</a></li>
+			<li><a href="mml_N163voice.html">@NL：n16x(n160,n161,n162,n163)音色波形転送（ロード）</a></li>
+			<li><a href="mml_N163set.html">@NS：n16x(n160,n161,n162,n163)音色波形設定＆サンプル長指定</a></li>
 			<li><a href="mml_relative_volume.html">(,)：相対ボリューム</a></li>
 			<li><a href="mml_relative_octave.html">&lt;,&gt;,&quot;,'：相対オクターブ</a></li>
 			<li><a href="mml_repeatA.html">[ : ]：リピート(A)</a></li>
@@ -257,7 +261,7 @@ This is developed as object library, and user application can control it.<br>
 		<li>Tips<br>
 			<ul>
 			<li><a href="mml_tips.html">最適化のためのヒント</a></li>
-			<li><a href="n163.html">n163の使い方</a></li>
+			<li><a href="n163.html">n16x(n160,n161,n162,n163)の使い方</a></li>
 			<li><a href="scale.html">スケールとコード</a></li>
 			</ul>
 		</ul>

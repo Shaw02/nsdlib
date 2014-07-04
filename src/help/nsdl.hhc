@@ -216,6 +216,10 @@
 				<param name="Local" value="mml_envelope.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="パッチ定義記述ブロック">
+				<param name="Local" value="mml_patch.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="⊿PCM記述ブロック">
 				<param name="Local" value="mml_dpcm.html">
 				</OBJECT>
@@ -232,7 +236,7 @@
 				<param name="Local" value="mml_vrc7.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="n163音色波形記述ブロック">
+				<param name="Name" value="n16x音色波形記述ブロック">
 				<param name="Local" value="mml_N163.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
@@ -277,7 +281,7 @@
 					<param name="Local" value="mml_sweep.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="s：サンプル長設定(n163)">
+					<param name="Name" value="s：サンプル長設定(n16x)">
 					<param name="Local" value="mml_sweep.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
@@ -329,7 +333,7 @@
 					<param name="Local" value="mml_loop.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="NC:n163チャンネル数設定">
+					<param name="Name" value="NC:n16xチャンネル数設定">
 					<param name="Local" value="mml_N163_channel.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
@@ -369,6 +373,10 @@
 					<param name="Local" value="mml_voice.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@P：パッチ">
+					<param name="Local" value="mml_patch_seq.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="@V：VRC7ユーザ定義音色">
 					<param name="Local" value="mml_VRC7voice.html">
 					</OBJECT>
@@ -389,8 +397,12 @@
 					<param name="Local" value="mml_FDS_volume.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="@N：n163音色波形設定">
+					<param name="Name" value="@N,@NL：n16x音色波形転送（ロード）">
 					<param name="Local" value="mml_N163voice.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="@NS：n16x音色波形＆サンプル長設定">
+					<param name="Local" value="mml_N163set.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="(,)：相対ボリューム">
@@ -428,7 +440,7 @@
 					<param name="ImageNumber" value="37">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="n106/n163の使い方">
+					<param name="Name" value="n16x(n160,n161,n162,n163)の使い方">
 					<param name="Local" value="n163.html">
 					<param name="ImageNumber" value="37">
 					</OBJECT>

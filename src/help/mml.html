@@ -70,6 +70,25 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 														NSF music formatを出力する場合は、このアドレスよりΔPCMの実体が配置されます。<br>
 														アセンブリ言語ソースを出力する場合は、リンカー"ld65.exe"のコンフィグファイルにて、
 														"#segmentPCM"コマンドで指定したセグメントの配置アドレスと、同じアドレスに設定して下さい。</td></tr>
+<tr><td>BGM(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
+	<td><var>n</var>番目のBGMのシーケンスの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
+		番号は0からカウントします。</td></tr>
+<tr><td>SE(<var>n</var>){<br> <var>Sequence data</var><br>}		</td>
+	<td><var>n</var>番目のSE のシーケンスの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
+		番号は0からカウントします。</td></tr>
+<tr><td>Sub(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
+	<td><var>n</var>番のサブルーチンの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。</td></tr>
+<tr><td>$<var>name</var>{<br> <var>Sequence data</var><br>}
+	</td><td>シーケンス用のマクロ定義です。<br><var>name</var>は、`$'から、キャラクターコード0x00～0x20の文字か`{'が来るまでをマクロ名として認識します。</td></tr>
+<tr><td>Envelope(<var>n</var>){<br> <var>Envelope data</var><br>}	</td>
+	<td><var>n</var>番のエンベロープパターン定義の記述ブロックです。<br>
+		エンベロープパターンの記述は、<a href="mml_envelope.html">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>
+<tr><td>Patch(<var>n</var>){<br> <var>Patch data</var><br>}	</td>
+	<td><var>n</var>番のパッチ定義の記述ブロックです。<br>
+		パッチ定義の記述は、<a href="mml_patch.html">パッチ定義（Patch define）</a>の項を参照ください。</td></tr>
 <tr><td>DPCM{<br> <var>Delta PCM define</var><br>}	</td>
 	<td>⊿PCM定義の記述ブロックです。<br>
 		⊿PCM定義の記述は、<a href="mml_dpcm.html">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
@@ -83,24 +102,8 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 	<td>VRC7ユーザー音色定義の記述ブロックです。<br>
 		VRC7ユーザー音色定義の記述は、<a href="mml_vrc7.html">VRC7 ユーザー音色定義（VRC7 User Instrument define）</a>の項を参照ください。</td></tr>
 <tr><td>N163(<var>n</var>){<br> <var>wave table</var><br>}	</td>
-	<td>n163の音色波形定義の記述ブロックです。<br>
-		n163音色波形定義の記述は、<a href="mml_n163.html">n163音色波形定義（N163 sample wave block）</a>の項を参照ください。</td></tr>
-<tr><td>Envelop(<var>n</var>){<br> <var>Envelop data</var><br>}	</td>
-	<td><var>n</var>番のエンベロープパターン定義の記述ブロックです。<br>
-		エンベロープパターンの記述は、<a href="mml_envelope.html">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>
-<tr><td>Sub(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
-	<td><var>n</var>番のサブルーチンの記述ブロックです。<br>
-		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。</td></tr>
-<tr><td>BGM(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
-	<td><var>n</var>番目のBGMのシーケンスの記述ブロックです。<br>
-		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
-		番号は0からカウントします。</td></tr>
-<tr><td>SE(<var>n</var>){<br> <var>Sequence data</var><br>}		</td>
-	<td><var>n</var>番目のSE のシーケンスの記述ブロックです。<br>
-		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
-		番号は0からカウントします。</td></tr>
-<tr><td>$<var>name</var>{<br> <var>Sequence data</var><br>}
-	</td><td>シーケンス用のマクロ定義です。<br><var>name</var>は、`$'から、キャラクターコード0x00～0x20の文字か`{'が来るまでをマクロ名として認識します。</td></tr>
+	<td>n16x(n160,n161,n162,n163)の音色波形定義の記述ブロックです。<br>
+		n16x音色波形定義の記述は、<a href="mml_n163.html">n16x音色波形定義（N16x sample wave block）</a>の項を参照ください。</td></tr>
 <tr><td>;<span style="color:green;">comments</span>		</td><td>１行コメントです。改行までの記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
 <tr><td>//<span style="color:green;">comments</span>	</td><td>１行コメントです。改行までの記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
 <tr><td>/*<span style="color:green;">comments</span>*/	</td><td>範囲コメントです。 /* と */ の間の記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>

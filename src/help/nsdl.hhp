@@ -58,6 +58,8 @@ mml_loop.html
 mml_note.html
 mml_octave.html
 mml_poke.html
+mml_patch.html
+mml_patch_seq.html
 mml_portamento.html
 mml_portamento2.html
 mml_relative_octave.html
@@ -80,6 +82,7 @@ mml_VRC7voice.html
 mml_VRC7write.html
 mml_N163.html
 mml_N163voice.html
+mml_N163set.html
 mml_N163_channel.html
 mml_s5b_envelope.html
 mml_macro.html

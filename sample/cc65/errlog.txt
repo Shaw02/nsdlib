@@ -1,4 +1,0 @@
-[Compile] : test.c 		
-[Compile] : testmus.mml 		
-[Link] : test.nes 		
-ld65.exe: Warning: Segment `PCMDATA' in module `testmus.o' requires larger alignment

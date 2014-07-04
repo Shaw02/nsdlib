@@ -18,10 +18,9 @@ class Sub : public TrackSet
 private:
 	bool	f_Use;				//MML中で使われるか？
 
-//メンバー関数
 public:
 
-	Sub(MMLfile* MML, unsigned int _id, wchar_t _strName[] = L"==== [ Sub ]====");
+	Sub(MMLfile* MML, unsigned int _id, wchar_t _strName[] = L"Sub");
 	~Sub();
 
 	void				getAsm(MusicFile* MUS);

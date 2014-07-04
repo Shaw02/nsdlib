@@ -106,12 +106,12 @@ _play:	.byte	0
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	1
-		.byte	18
+		.byte	19
 
 .segment	"STARTUP"
 DRV_Name2:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version2:	.byte	1
-		.byte	18
+		.byte	19
 
 ; ------------------------------------------------------------------------
 ; 	ŽÀ‹@ROM—p	IRQ	(DPCM)

@@ -27,9 +27,8 @@ MMLfile::MMLfile(const char*	strFileName):
 	wait(0),
 	QMax(8),
 	priority(0),
-//	f_macro(false),
 	p_macro(0),
-	f_macro2(false),
+	f_macro(false),
 	f_2to1(false)
 	{
 	//File open
@@ -54,10 +53,14 @@ MMLfile::~MMLfile(void)
 
 	//----------------------
 	//Local変数
-	vector	<FileInput*>::iterator	itFiles;
+	vector	<FileInput*				>::iterator	itFiles;
+	map		<string,		string	>::iterator	itMac;
+	map		<unsigned int,	Patch*	>::iterator	itPatch;
 
 	//----------------------
 	//Delete Class
+
+	//開いたファイルを全部閉じる
 	itFiles = ptcFiles.begin();
 	while(itFiles != ptcFiles.end()){
 		(*itFiles)->close();
@@ -65,6 +68,26 @@ MMLfile::~MMLfile(void)
 		itFiles++;
 	}
 	ptcFiles.clear();
+
+	//マクロを全部解放する。
+	if(!ptcMac.empty()){
+		itMac = ptcMac.begin();
+		while(itMac != ptcMac.end()){
+			itMac->second.clear();
+			itMac++;
+		}
+		ptcMac.clear();
+	}
+
+	//パッチを全部解放する。
+	if(!ptcPatch.empty()){
+		itPatch = ptcPatch.begin();
+		while(itPatch != ptcPatch.end()){
+			delete	itPatch->second;
+			itPatch++;
+		}
+		ptcPatch.clear();
+	}
 
 }
 
@@ -277,6 +300,52 @@ void	MMLfile::CallMacro(void)
 }
 
 //==============================================================
+//		パッチの設定
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//	●処理
+//			現在のファイルポインタに書いてあるマクロを定義する。
+//==============================================================
+void	MMLfile::SetPatch(void)
+{
+
+	int			i		= GetNum();
+
+	//重複チェック
+	if(ptcPatch.count(i) != 0){
+		Err(L"Patch()ブロックで同じ番号が指定されました。");
+	}
+
+	ptcPatch[i] =  new Patch(this, i);
+
+}
+
+//==============================================================
+//		パッチの有無チェック
+//--------------------------------------------------------------
+//	●引数
+//			unsigned int _no	パッチ番号
+//	●返値
+//			bool				あるかどうか
+//	●処理
+//			
+//==============================================================
+bool	MMLfile::ChkPatch(unsigned int _no)
+{
+	bool	result;
+
+	if(ptcPatch.count(_no) == 0){
+		result = false;
+	} else {
+		result = true;
+	}
+	return(result);
+}
+
+//==============================================================
 //			現在コンパイル処理中のファイルポインタの取得
 //--------------------------------------------------------------
 //	●引数
@@ -324,8 +393,8 @@ void	MMLfile::StreamPointerMove(long iSize)
 //==============================================================
 void	MMLfile::Back_one(void)
 {
-	if(f_macro2 == true){
-		f_macro2 = false;
+	if(f_macro == true){
+		f_macro = false;
 		if(p_macro > 0){
 			s_macro[p_macro-1].name = nowMacro.name;
 			s_macro[p_macro-1].line = nowMacro.line;
@@ -342,11 +411,12 @@ void	MMLfile::Back_one(void)
 		}
 	}
 }
+
 void	MMLfile::Back(void)
 {
 	if(f_2to1==true){
 		Back_one();
-		Back_one();
+		Back_one();		//前回の読み込みがマルチバイト文字だったら、２つ戻す。
 	} else {
 		Back_one();
 	}
@@ -365,8 +435,8 @@ char	MMLfile::read_char(void)
 {
 	char	cData;
 
-	if(f_macro2 == true){
-		f_macro2	= false;
+	if(f_macro == true){
+		f_macro	= false;
 		s_macro.pop_back();
 	}
 	if(p_macro > 0){
@@ -376,7 +446,7 @@ char	MMLfile::read_char(void)
 			s_macro[p_macro-1].name = nowMacro.name;
 			s_macro[p_macro-1].line = nowMacro.line;
 			p_macro--;
-			f_macro2	= true;
+			f_macro	= true;
 			if(p_macro > 0){
 				nowMacro.name = s_macro[p_macro-1].name;
 				nowMacro.line = s_macro[p_macro-1].line;

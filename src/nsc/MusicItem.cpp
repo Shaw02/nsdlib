@@ -16,11 +16,25 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //==============================================================
 MusicItem::MusicItem(const wchar_t _strName[]):
 	iOffset(0),
+	iSize(0),
 	strName(_strName)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){
 		wcout << L"Create Music Object : " << strName << endl;
+	}
+}
+
+MusicItem::MusicItem(int _id, const wchar_t _strName[]):
+	iOffset(0),
+	iSize(0),
+	strName(_strName)
+{
+	//Debug message　（うざい程出力するので注意。）
+	if(cOptionSW->cDebug & 0x01){
+		wcout << L"Create Music Object : ====[ " << strName << L"(";
+		cout << _id;
+		wcout << L") ]====" << endl;
 	}
 }
 
@@ -35,6 +49,11 @@ MusicItem::MusicItem(const wchar_t _strName[]):
 MusicItem::~MusicItem(void)
 {
 	clear();
+
+	//Debug message　（うざい程出力するので注意。）
+	if(cOptionSW->cDebug & 0x80){
+		wcout << L"Delete Music Object : " << strName << endl;
+	}
 }
 
 //==============================================================
@@ -66,6 +85,18 @@ void	MusicItem::clear(void)
 		ptcItem.clear();
 	}
 }
+
+void	MusicItem::clear(int _id)
+{
+
+	//Debug message　（うざい程出力するので注意。）
+	if(cOptionSW->cDebug & 0x40){
+		wcout << L"Clear Music Object : ====[ " << strName << L"(" << _id << L") ]====" << endl;
+	}
+
+	clear();
+}
+
 //==============================================================
 //		コードサイズの取得
 //--------------------------------------------------------------
@@ -105,10 +136,16 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 	//----------------------
 	//Local変数
 	list<	MusicItem*>::iterator	itItem;
+	int		i	=	0;
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x02){
-		wcout << L"Object Address [0x" << hex << _offset << dec << L"]: " << strName << endl;
+		wcout << L"Object Address [0x" << hex << setw(4) << setfill(L'0') << _offset << L"]: ";
+		while(i < code.size()){
+			wcout	<<	hex	<<	setw(2)	<<	setfill(L'0')	<<	(unsigned int)(code[i] & 0xFF)	<<	L" ";
+			i++;
+		}
+		wcout  << dec	<< L": " << strName << endl;
 	}
 
 	iOffset = _offset;

@@ -5,7 +5,7 @@
 <meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>MML reference: n16x (n160, n161, n162, n163)  channel </Title>
+<Title>MML reference: n16x (n160, n161, n162, n163)  voice</Title>
 </HEAD>
 <BODY>
 
@@ -21,13 +21,13 @@
 
 <!-- contents start -->
 <div id='contents'>
-<h2>MML reference: n16x (n160, n161, n162, n163)  channel</h2>
+<h2>MML reference: n16x (n160, n161, n162, n163)  voice</h2>
 
 <!-- ──────────────── -->
 <div class='block'>
 <h3>定義（Define）</h3>
 <code><pre>
-        NC<var>channel</var>
+        @NS<var>address</var><span style="color:blue;">(</span>,<var>sample</var><span style="color:blue;">)</span>
 </pre></code>
 </div>
 
@@ -35,9 +35,18 @@
 <div class='block'>
 <h3>引数（Inputs）</h3>
 
-<h4>channel</h4>
+<h4>address</h4>
 <p>
-使用するチャンネル数です。1～8の範囲で指定してください。（Default: 不定）<br>
+音色波形データの先頭位置を要素数単位で指定します。<br>
+0～252の範囲で、４の倍数を指定してください。<br>
+開始アドレスを、<var>address</var>÷2に設定します。<br>
+</p>
+
+<h4>sample</h4>
+<p>
+音色波形データのサンプル長を要素数単位で指定します。<br>
+4～256の範囲で、４の倍数を指定してください。<br>
+指定の無い場合は、サンプル長を変更しません。<br>
 </p>
 
 
@@ -46,19 +55,24 @@
 <div class='block'>
 <h3>内容（Contents）</h3>
 <p>
-使用するチャンネル数を指定します。<br>
+n16xの波形テーブルの開始位置および、サンプル長を設定します。<br>
 </p>
 <p>
 n16xの使い方は、別途、<a href="n163.html">n16x (n160, n161, n162, n163) の使い方</a>をご参照ください。<br>
 </p>
+
 </div>
 
 <!-- ──────────────── -->
 <div class='block'>
 <h3>注意（Notes）</h3>
 <p>
-また、サンプル長と、使用するチャンネル数によって音程が変動しますので、注意して下さい。<br>
-サンプル長、使用するチャンネル数共に、２の累乗の値に設定すれば、オクターブの変化にとどまります。<br>
+尚、エミュレータによっては、以下表の4,8,12,16,24,28,32にしか対応していませんので、注意して下さい。<br>
+又、サンプル長と、使用するチャンネル数によって音程が変動しますので、注意して下さい。<br>
+</p>
+<p>
+本コマンドは、<var>address</var>を<a href="mml_voice.html">@コマンド</a>、
+<var>sample</var>を<a href="mml_sweep.html">sコマンド</a>にコンパイルします。<br>
 </p>
 </div>
 
@@ -67,12 +81,17 @@ n16xの使い方は、別途、<a href="n163.html">n16x (n160, n161, n162, n163) の使い方
 <h3>例（Sample）</h3>
 
 <code><pre>
-    NC4     <span style="color:green;">/* using 4 channel */</span>
+N163(0){	<span style="color:green;">//Pipe organ</span>
+    8, 5, 4, 3, 8,11, 5, 8, 7, 8,11, 8, 8,12, 6,10,
+    4, 1, 0, 1, 4,10, 5, 7, 7, 9,14,11,10,15, 9,13
+}
 
+bgm(0){
+    TR6 l4  o4  v15 @NL64,0 <span style="color:green;">/* = @N16,0 */</span> @NS64,32 <span style="color:green;">/* = @16 s56 */</span> t120 cdefgab> c1
+}
 </pre></code>
 
 </div>
-
 
 </div>
 

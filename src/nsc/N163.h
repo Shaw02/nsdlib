@@ -18,9 +18,9 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-				N163(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"==== [ N163 ]====");
+				N163(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"N163");
 				~N163(void);
-		void	getAsm(MusicFile* MUS);
 		void	setUse(void){f_Use = true;};
 		bool	chkUse(void){return(f_Use);};
+		void	getAsm(MusicFile* MUS);
 };

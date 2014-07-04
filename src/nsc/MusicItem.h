@@ -20,13 +20,16 @@ protected:
 				string		code;
 				size_t		iSize;
 	unsigned	int			iOffset;		//SNDファイルポインタ
+	
 
 //メンバー関数
 public:
 	MusicItem(const wchar_t _strName[]=L"");
+	MusicItem(int _id, const wchar_t _strName[]=L"");
 	~MusicItem(void);
 
 				void	clear(void);
+				void	clear(int _id);
 				size_t	getSize();
 	unsigned	int		getOffset();
 	unsigned	int		SetOffset(unsigned	int	_offset);

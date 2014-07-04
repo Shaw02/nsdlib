@@ -24,15 +24,17 @@ private:
 				FileInput*			nowFile;			//現在のファイル
 	unsigned	int					iFiles;				//現在のファイルNo.
 
-	map		< string, string>		ptcMac;				//Macro文字列の保存
+	map		< string,		string>	ptcMac;				//Macro文字列の保存
 
 	vector	<	Macro_Stack	>		s_macro;			//ネスト中のマクロ名スタック
 				Macro_Stack			nowMacro;
 				int					p_macro;			//何ネスト目？
 
-				bool				f_macro2;			//マクロ展開中？
-				bool				f_2to1;				//変換した？
+				bool				f_macro;			//マクロ処理を終えた時に立つフラグ
+				bool				f_2to1;				//マルチバイト文字を変換した？
 public:
+	map		<unsigned int,	Patch*>	ptcPatch;			//Patch
+
 				int					offset_Ei;			//
 				int					offset_Ev;			//
 				int					offset_En;			//
@@ -59,6 +61,9 @@ public:
 				void	SetMacro(void);
 				void	CallMacro(void);
 				int		GetMacroNest(void){return(p_macro);};
+
+				void	SetPatch(void);
+				bool	ChkPatch(unsigned int _no);
 
 				int		tellg(void);					//現在のファイルのポインタ取得
 				void	StreamPointerMove(long iSize);	//現在のファイルのポインタ移動
