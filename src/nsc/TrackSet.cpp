@@ -70,6 +70,7 @@ enum	Command_ID_mml {
 	mml_Echo_Reset,
 
 	mml_Jump,
+	mml_Jump_drv,
 
 	mml_Envelop_Voice,
 	mml_Envelop_Volume,
@@ -232,6 +233,7 @@ const	static	Command_Info	Command[] = {
 		{	"エコー",		mml_Echo				},
 
 		{	"J",			mml_Jump				},
+		{	"j",			mml_Jump_drv			},
 
 		{	"E@*",	mml_Envelop_Off_Voice		},
 		{	"Ev*",	mml_Envelop_Off_Volume		},
@@ -561,6 +563,10 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Jump):
 				nowTrack->SetJump(MML);
+				break;
+
+			case(mml_Jump_drv):
+				SetJumpDrv(MML);
 				break;
 
 			case(mml_Envelop_Voice):
@@ -1101,7 +1107,7 @@ MusicTrack*	TrackSet::getTrack(MMLfile* MML, int _track)
 }
 
 //==============================================================
-//		オクターブ
+//		イベント
 //--------------------------------------------------------------
 //	●引数
 //		MusicItem* _item
@@ -1111,6 +1117,31 @@ MusicTrack*	TrackSet::getTrack(MMLfile* MML, int _track)
 void	TrackSet::SetEvent(MusicItem* _item)
 {
 	nowTrack->SetEvent(_item);
+}
+
+//==============================================================
+//		ジャンプ
+//--------------------------------------------------------------
+//	●引数
+//		MusicItem* _item
+//	●返値
+//		無し
+//==============================================================
+void	TrackSet::SetJumpDrv(MMLfile* MML)
+{
+	int	i	= MML->GetInt();
+
+	switch(i){
+		case(0):
+			SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Jump_off, L"Jump Off"));
+			break;
+		case(1):
+			SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Jump_on, L"Jump On"));
+			break;
+		default:
+			MML->Err(L"jコマンドが指定可能な範囲を超えました。");
+	}
+
 }
 
 //==============================================================

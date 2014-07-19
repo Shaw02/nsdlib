@@ -278,6 +278,7 @@ PSG_Envelope_Form	= $0D
 .scope	nsd_flag
 	BGM		= $01
 	SE		= $02
+	Jump		= $04
 	Priority	= $0C
 	Disable		= $80
 .endscope
@@ -630,6 +631,10 @@ BGM_Begin:
 		ldx	#I*2 + nsd::TR_BGM1
 		jsr	nsd_sequence
 	.endrepeat
+
+	lda	#nsd_flag::Jump
+	bit	__flag
+	jne	BGM_Begin
 
 	lda	__Tempo_ctr
 	sub	#150

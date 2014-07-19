@@ -28,6 +28,13 @@ int	main(int argc, char* argv[])
 #endif
 
 	//==================================
+
+	wcout	<<	L"MML Compiler for NES Sound Driver & Library (NSD.Lib)\n"
+				L"    Version 1.20 β01\n"
+				L"        Copyright (c) 2012-2014 S.W.\n"	<<	endl;
+
+
+	//==================================
 	//クラスの作成
 	cOptionSW	= new OPSW(argc,argv);							//オプション処理
 	if(cOptionSW->cDebug & 0x01){
@@ -90,6 +97,8 @@ int	main(int argc, char* argv[])
 
 		cSND->TickCount();
 
+	} else {
+		wcout	<<	L"tickのカウントは無効化されました。"	<<	endl;
 	}
 
 	//==================================

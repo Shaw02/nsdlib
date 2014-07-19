@@ -44,6 +44,7 @@ public:
 
 		void	SetEvent(MusicItem* _item);		//ƒCƒxƒ“ƒg‚Ì’Ç‰Á
 
+		void	SetJumpDrv(MMLfile* MML);
 		void	SetTempo(MMLfile* MML);
 		void	SetRelativeTempo(MMLfile* MML);
 		void	SetRelativeUp();

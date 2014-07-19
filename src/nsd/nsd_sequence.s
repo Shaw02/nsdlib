@@ -1484,7 +1484,48 @@ nsd_op2E:
 nsd_Set_Trans_One:
 	add	__trans_one,x
 	sta	__trans_one,x
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x2F:	Sub opcode
+;-----------------------------------------------------------------------
+.rodata
+_sub_op_adr:
+	.addr	nsd_op2F_00
+	.addr	nsd_op2F_01
+
+.code
 nsd_op2F:
+	jsr	nsd_load_sequence
+	cmp	#2
+	bcc	nsd_op2F_done
+	jmp	Sequence
+
+nsd_op2F_done:
+	asl	a
+	tay				;[2]	x <- a * 2
+	lda	_sub_op_adr,y		;[4]
+	sta	__ptr			;[3]
+	lda	_sub_op_adr + 1,y	;[4]
+	sta	__ptr + 1		;[3]
+	jmp	(__ptr)			;[5]	jump for each op-code
+
+;=======================================================================
+;		opcode	0x2F 00:	Jump Flag On
+;-----------------------------------------------------------------------
+nsd_op2F_00:
+	lda	#nsd_flag::Jump
+	ora	__flag
+	sta	__flag
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x2F 01:	Jump Flag Off
+;-----------------------------------------------------------------------
+nsd_op2F_01:
+	lda	#~nsd_flag::Jump
+	and	__flag
+	sta	__flag
 	jmp	Sequence
 
 ;=======================================================================

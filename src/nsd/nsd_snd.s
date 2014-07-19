@@ -291,6 +291,10 @@ _nsd_se_keyon:
 ;---------------------------------------
 _nsd_dpcm_keyon:
 
+	lda	#nsd_flag::Jump
+	bit	__flag
+	bne	@E
+
 	lda	#$0F
 	sta	APU_CHANCTRL
 
@@ -328,7 +332,7 @@ _nsd_dpcm_keyon:
 
 	lda	#$1F
 	sta	APU_CHANCTRL
-
+@E:
 	rts
 
 ;---------------------------------------
@@ -705,7 +709,10 @@ _nsd_ch1_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
-	shl	a, 6	;a <<= 6
+;	shl	a, 6	;a <<= 6
+	ror	a
+	ror	a
+	ror	a
 	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
 
 	;-------------------------------
@@ -722,7 +729,10 @@ _nsd_ch2_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
-	shl	a, 6	;a <<= 6
+;	shl	a, 6	;a <<= 6
+	ror	a
+	ror	a
+	ror	a
 	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
 
 	;-------------------------------
@@ -736,7 +746,10 @@ _nsd_noise_voice_se1:
 
 	;-------------------------------
 	; *** Calculate the voice
-	shl	a, 6	;a <<= 6
+;	shl	a, 6	;a <<= 6
+	ror	a
+	ror	a
+	ror	a
 	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
 
 	;-------------------------------
@@ -750,7 +763,9 @@ _nsd_noise_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
-	shl	a, 7	;a <<= 7
+;	shl	a, 7	;a <<= 7
+	ror	a
+	ror	a
 	and	#$80	;a &= 0x80	;for OR to frequency(lower 4bit)
 
 	;-------------------------------
@@ -770,7 +785,9 @@ _nsd_noise_voice_se2:
 
 	;-------------------------------
 	; *** Calculate the voice
-	shl	a, 7	;a <<= 7
+;	shl	a, 7	;a <<= 7
+	ror	a
+	ror	a
 	and	#$80	;a &= 0x80	;for OR to frequency(lower 4bit)
 
 	;-------------------------------
@@ -792,7 +809,10 @@ _nsd_mmc5_ch1_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
-	shl	a, 6	;a <<= 6
+;	shl	a, 6	;a <<= 6
+	ror	a
+	ror	a
+	ror	a
 	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
 
 	;-------------------------------
@@ -808,7 +828,10 @@ _nsd_mmc5_ch2_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
-	shl	a, 6	;a <<= 6
+;	shl	a, 6	;a <<= 6
+	ror	a
+	ror	a
+	ror	a
 	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
 
 	;-------------------------------

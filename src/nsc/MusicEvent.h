@@ -52,6 +52,7 @@
 #define	nsd_Octave_Down_1		0x2C
 #define	nsd_Octave_Up_1			0x2D
 #define	nsd_Transpose_1			0x2E
+#define	nsd_SubCommand			0x2F
 #define	nsd_Release_Voice		0x30	// - 0x37
 #define	nsd_Octave				0x38	// - 0x3F
 #define	nsd_Length_96			0x40
@@ -78,6 +79,10 @@
 #define	nsd_Note_Slur			0x40
 #define	nsd_Note_Length			0x20
 #define	nsd_Note_Gate			0x10
+
+#define	nsd_sub_Jump_on			0x00
+#define	nsd_sub_Jump_off		0x01
+
 
 /****************************************************************/
 /*																*/

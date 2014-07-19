@@ -228,14 +228,14 @@
 		<param name="Local" value="mml_envelop.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="F">
-		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
-		<param name="Local" value="mml_s5b_envelope.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="f">
 		<param name="Name" value="MML reference: Note">
 		<param name="Local" value="mml_note.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="F">
+		<param name="Name" value="MML reference: Sunsoft 5B Envelope frequency">
+		<param name="Local" value="mml_s5b_envelope.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="FAQ">
@@ -261,6 +261,11 @@
 		<param name="Name" value="HMinor">
 		<param name="Name" value="MML reference: Scale">
 		<param name="Local" value="mml_scale.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="j">
+		<param name="Name" value="MML reference: Jump">
+		<param name="Local" value="mml_jump2.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="J">
@@ -318,14 +323,14 @@
 		<param name="Local" value="mml_scale.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="n163">
-		<param name="Name" value="n16x(n160,n161,n162,n163) の使い方">
-		<param name="Local" value="n163.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="N163">
 		<param name="Name" value="MML reference: N16x sample wave block">
 		<param name="Local" value="mml_N163.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="n163">
+		<param name="Name" value="n16x(n160,n161,n162,n163) の使い方">
+		<param name="Local" value="n163.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="n16x">
@@ -425,12 +430,12 @@
 		<param name="Local" value="mml_patch.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Q">
+		<param name="Name" value="q">
 		<param name="Name" value="MML reference: Gate time">
 		<param name="Local" value="mml_gate.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="q">
+		<param name="Name" value="Q">
 		<param name="Name" value="MML reference: Gate time">
 		<param name="Local" value="mml_gate.html">
 		</OBJECT>
@@ -455,14 +460,14 @@
 		<param name="Local" value="mml_release.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="S">
-		<param name="Name" value="MML reference: Subroutine">
-		<param name="Local" value="mml_sub.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="s">
 		<param name="Name" value="MML reference: Sweep">
 		<param name="Local" value="mml_sweep.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="S">
+		<param name="Name" value="MML reference: Subroutine">
+		<param name="Local" value="mml_sub.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Scale">
@@ -581,6 +586,13 @@
 		<param name="Local" value="mml_patch.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ビブラート">
+		<param name="Name" value="ストトン表記：ビブラート">
+		<param name="Local" value="jmml_vibrato.html">
+		<param name="Name" value="ストトン表記：エンベロープ">
+		<param name="Local" value="jmml_envelop.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="ポルタメント">
 		<param name="Name" value="MML reference: Portamento">
 		<param name="Local" value="mml_portamento.html">
@@ -667,6 +679,11 @@
 		<param name="Name" value="曲データ最適化のためのヒント">
 		<param name="Name" value="最適化のためのヒント">
 		<param name="Local" value="mml_tips.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="早送り">
+		<param name="Name" value="MML reference: Jump">
+		<param name="Local" value="mml_jump2.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="相対オクターブ">

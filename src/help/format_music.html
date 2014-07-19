@@ -123,8 +123,11 @@
 <tr><td>0x2C		</td><td>			</td><td>Octave down (only next note)		</td></tr>
 <tr><td>0x2D		</td><td>			</td><td>Octave up   (only next note)		</td></tr>
 <tr><td>0x2E		</td><td>n1			</td><td>One time transpose	(a relative value)</td></tr>
-<tr><td>0x2F		</td><td>n1 ...		</td><td>Expansion (2 byte) op-code.	<strong>今後の拡張用（未実装）</strong>	<br>
-												n1 = Sub op-code.	<strong>all reserved	</strong>				</td></tr>
+<tr><td>0x2F 0x00</td><td>				</td><td>Jump flag on	</td></tr>
+<tr><td>0x2F 0x01</td><td>				</td><td>Jump flag off	</td></tr>
+<tr><td>0x2F 0x02<br>～<br>
+		0x2F 0xFF	</td><td> ...	</td><td>Expansion (2 byte) op-code.	<strong>今後の拡張用（未実装）</strong>	<br>
+												<strong>all reserved	</strong>				</td></tr>
 <tr><td>0x30-0x37	</td><td>n1			</td><td>Voice of release (after key-off)	</td></tr>
 <tr><td>0x38-0x3F	</td><td>			</td><td>Octave			(op-code lower 4bit is value)	</td></tr>
 <tr><td>0x40-0x4F	</td><td>			</td><td>Note length of 省略時	(op-code lower 4bit is value)	<br>

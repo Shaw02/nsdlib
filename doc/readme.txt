@@ -6,7 +6,7 @@
 |前提ソフト| cc65 (Complete cross development package for 65(C)02 systems.)
 |          | Windows 2000 SP4, Windows XP, Windows Vista, Windows Server 2003
 | 圧縮方式 | zip
-|転載の可否| 修正ＢＳＤライセンス（例外有り。詳細は取扱説明書を参照願います。）
+|転載の可否| 修正ＢＳＤライセンス（licence.txt参照）
 |  備  考  | 
 +-----------------------------------------------------------------------------
 

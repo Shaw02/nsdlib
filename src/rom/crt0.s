@@ -83,11 +83,7 @@ _play:	.byte	0
 	.byte	1			;07	Start Music number
 	.addr	$8000			;08	Load address
 	.addr	_nsf_init		;0A	Init routine address
-;.ifdef	DPCMBank
 	.addr	_nmi_main
-;.else
-;	.addr	_nsd_main		;0C	Sound driver main routine address
-;.endif
 	.res	32,	$0
 	.res	32,	$0
 	.res	32,	$0
@@ -108,10 +104,12 @@ DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	1
 		.byte	19
 
+.ifdef	DPCMBank
 .segment	"STARTUP"
 DRV_Name2:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version2:	.byte	1
 		.byte	19
+.endif
 
 ; ------------------------------------------------------------------------
 ; 	ŽÀ‹@ROM—p	IRQ	(DPCM)
@@ -445,16 +443,12 @@ Loop:
 .ifdef	DPCMBank
 
 .segment	"VECTORS"
-;	.word	_nmi_main	; $fffa vblank nmi
 	.word	$0100		
-;	.word	_nsf_init	; $fffc reset
 	.word	_nsf_init2	
 	.word	_irq_main	; $fffe irq / brk
 
 .segment	"VECTORS2"
-;	.word	_nmi_main	; $fffa vblank nmi
 	.word	$0100		
-;	.word	_nsf_init	; $fffc reset
 	.word	_nsf_init2	
 	.word	_irq_main	; $fffe irq / brk
 
