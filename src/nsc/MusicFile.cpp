@@ -316,7 +316,7 @@ const	static	Command_Info	Command[] = {
 				}
 				break;
 			case(id_Macro):
-				MML->SetMacro();
+				MML->SetMacro(0);
 				break;
 			case(id_Patch):
 				MML->SetPatch();

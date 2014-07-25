@@ -23,6 +23,11 @@
 		<param name="Local" value="mml_macro.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="$$">
+		<param name="Name" value="MML reference: Local Macro Define">
+		<param name="Local" value="mml_local_macro.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="(">
 		<param name="Name" value="MML reference: Relative Volume">
 		<param name="Local" value="mml_relative_volume.html">
@@ -598,6 +603,13 @@
 		<param name="Local" value="mml_portamento.html">
 		<param name="Name" value="MML reference: Portamento2">
 		<param name="Local" value="mml_portamento2.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ƒ}ƒNƒ">
+		<param name="Name" value="MML reference: Macro">
+		<param name="Local" value="mml_macro.html">
+		<param name="Name" value="MML reference: Local Macro Define">
+		<param name="Local" value="mml_local_macro.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="ƒƒ‚ƒŠ‘‚«ž‚Ý">

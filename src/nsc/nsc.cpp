@@ -30,7 +30,7 @@ int	main(int argc, char* argv[])
 	//==================================
 
 	wcout	<<	L"MML Compiler for NES Sound Driver & Library (NSD.Lib)\n"
-				L"    Version 1.20 ƒÀ01\n"
+				L"    Version 1.20\n"
 				L"        Copyright (c) 2012-2014 S.W.\n"	<<	endl;
 
 

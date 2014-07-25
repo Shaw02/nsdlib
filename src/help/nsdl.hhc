@@ -329,6 +329,10 @@
 					<param name="Local" value="mml_jump.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="j：早送り">
+					<param name="Local" value="mml_jump2.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="K{}：調号">
 					<param name="Local" value="mml_KeySignature.html">
 					</OBJECT>
@@ -369,8 +373,12 @@
 					<param name="Local" value="mml_TR.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="$：マクロ">
+					<param name="Name" value="$：マクロ呼び出し">
 					<param name="Local" value="mml_macro.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="$$：ローカルマクロ定義">
+					<param name="Local" value="mml_local_macro.html">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="@：音色">

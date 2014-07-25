@@ -78,6 +78,7 @@ MMLfile::~MMLfile(void)
 		}
 		ptcMac.clear();
 	}
+	lv_Mac.clear();
 
 	//パッチを全部解放する。
 	if(!ptcPatch.empty()){
@@ -163,13 +164,13 @@ void	MMLfile::include()
 //		マクロの設定
 //--------------------------------------------------------------
 //	●引数
-//				無し
+//		int		i_Lv	設定するレベル
 //	●返値
 //				無し
 //	●処理
 //			現在のファイルポインタに書いてあるマクロを定義する。
 //==============================================================
-void	MMLfile::SetMacro(void)
+void	MMLfile::SetMacro(int i_Lv)
 {
 	char	cData;
 	string	macro_name		="";
@@ -217,6 +218,44 @@ void	MMLfile::SetMacro(void)
 	//------------------
 	//マクロ内容の設定
 	ptcMac[macro_name] = macro_contents;
+	lv_Mac[macro_name] = i_Lv;
+
+}
+
+//==============================================================
+//		マクロの設定
+//--------------------------------------------------------------
+//	●引数
+//		int		i_Lv	削除するレベル
+//	●返値
+//				無し
+//	●処理
+//			現在のファイルポインタに書いてあるマクロを定義する。
+//==============================================================
+void	MMLfile::DeleteMacro(int i_Lv)
+{
+
+	//----------------------
+	//Local変数
+	map		<string,		string	>::iterator	itMac;
+	string	macro_name;
+	int		macro_lv;
+
+	//----------------------
+	//当該Lvのマクロを解放する。
+	if(!ptcMac.empty()){
+		itMac = ptcMac.begin();
+		while(itMac != ptcMac.end()){
+			macro_name	= itMac->first;
+			macro_lv	= lv_Mac[macro_name];
+			itMac++;
+			if(i_Lv == macro_lv){
+				ptcMac.erase(macro_name);
+				lv_Mac.erase(macro_name);
+			}
+		}
+	}
+
 }
 
 //==============================================================
@@ -435,13 +474,17 @@ char	MMLfile::read_char(void)
 {
 	char	cData;
 
+	//直前の読み込みで、マクロの終端に行った。
 	if(f_macro == true){
-		f_macro	= false;
-		s_macro.pop_back();
+		f_macro	= false;		
+		s_macro.pop_back();		//マクロスタックを１つ戻す。
 	}
+
 	if(p_macro > 0){
+		//マクロから読み込む場合
 		cData = ptcMac[nowMacro.name][nowMacro.line];
 		nowMacro.line++;
+		//マクロ終端？
 		if(ptcMac[nowMacro.name].size() == nowMacro.line){
 			s_macro[p_macro-1].name = nowMacro.name;
 			s_macro[p_macro-1].line = nowMacro.line;
@@ -453,6 +496,7 @@ char	MMLfile::read_char(void)
 			}
 		}
 	} else {
+		//ファイルから読み込む場合
 		cData		= nowFile->cRead();
 	}
 

@@ -82,7 +82,8 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 	<td><var>n</var>番のサブルーチンの記述ブロックです。<br>
 		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。</td></tr>
 <tr><td>$<var>name</var>{<br> <var>Sequence data</var><br>}
-	</td><td>シーケンス用のマクロ定義です。<br><var>name</var>は、`$'から、キャラクターコード0x00～0x20の文字か`{'が来るまでをマクロ名として認識します。</td></tr>
+	</td><td>シーケンス用のマクロ定義です。どのシーケンス記述ブロックでも使用可能な、グローバルマクロです。<br>
+			<var>name</var>は、`$'から、キャラクターコード0x00～0x20の文字か`{'が来るまでをマクロ名として認識します。</td></tr>
 <tr><td>Envelope(<var>n</var>){<br> <var>Envelope data</var><br>}	</td>
 	<td><var>n</var>番のエンベロープパターン定義の記述ブロックです。<br>
 		エンベロープパターンの記述は、<a href="mml_envelope.html">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>

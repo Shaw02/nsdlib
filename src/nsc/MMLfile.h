@@ -25,6 +25,7 @@ private:
 	unsigned	int					iFiles;				//現在のファイルNo.
 
 	map		< string,		string>	ptcMac;				//Macro文字列の保存
+	map		< string,		int>	lv_Mac;				//Macroの階層
 
 	vector	<	Macro_Stack	>		s_macro;			//ネスト中のマクロ名スタック
 				Macro_Stack			nowMacro;
@@ -58,7 +59,8 @@ public:
 
 				void	include();				//現ポインタにあるファイルを#includeする
 	
-				void	SetMacro(void);
+				void	SetMacro(int i_Lv);
+				void	DeleteMacro(int i_Lv);
 				void	CallMacro(void);
 				int		GetMacroNest(void){return(p_macro);};
 

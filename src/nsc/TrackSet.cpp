@@ -30,6 +30,7 @@ enum	Command_ID_mml {
 	mml_MMinor,
 	mml_KeySignature,
 	mml_Macro,
+	mml_MacroSet,
 	mml_CallSE,
 	mml_Subroutine,
 
@@ -149,6 +150,7 @@ const	static	Command_Info	Command[] = {
 		{	"調",		mml_KeySignature		},
 		{	"SE",		mml_CallSE				},
 		{	"S",		mml_Subroutine			},
+		{	"$$",		mml_MacroSet			},
 		{	"$",		mml_Macro				},
 
 		{	"L",		mml_Loop				},
@@ -403,6 +405,10 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Macro):
 				MML->CallMacro();
+				break;
+
+			case(mml_MacroSet):
+				MML->SetMacro(1);
 				break;
 
 			case(mml_CallSE):
@@ -776,6 +782,9 @@ const	static	Command_Info	Command[] = {
 				break;
 		}
 	}
+
+	//Local Macroの解放
+	MML->DeleteMacro(1);
 
 	if(fSub == true){
 		//サブルーチンブロックの場合
