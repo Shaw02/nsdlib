@@ -37,7 +37,7 @@ void	FileOutput::fileopen(const char*	strFileName){
 	open(strFileName,ios_base::out | ios_base::binary);
 	if(good()==false){
 		perror(strFileName);
-		exit(EXIT_FAILURE);
+		nsc_exit(EXIT_FAILURE);
 	};
 };
 

@@ -32,6 +32,8 @@
 /*			プロトタイプ										*/
 /****************************************************************/
 
+void nsc_exit(int no);
+
 using namespace std;
 
 class	MusicFile;

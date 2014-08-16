@@ -280,11 +280,13 @@ void	MMLfile::CallMacro(void)
 
 	//------------------
 	//全マクロ名の取得
-	do{
-		strMac[i] = itMac->first;
-		i++;
-		itMac++;
-	}while(itMac != ptcMac.end());
+	if(!ptcMac.empty()){
+		do{
+			strMac[i] = itMac->first;
+			i++;
+			itMac++;
+		}while(itMac != ptcMac.end());
+	}
 
 	//------------------
 	//マクロ名の照合
@@ -869,7 +871,12 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 				Warning(L"音長の計算で割り切れませんでした。小数点は切捨てします。");
 			}
 		} else {
-			iLength = DefaultLength;
+			//付点だけ記述される場合。
+			if(DefaultLength == -1){
+				Err(L"音長を記述して下さい。");
+			} else {
+				iLength = DefaultLength;
+			}
 		}
 
 		iDot	= iLength;
@@ -895,7 +902,12 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 		iLength = GetInt();
 
 	} else {
-		iLength = -1;		//引数を書かない場合
+		//引数を書かない場合
+		if(DefaultLength == -1){
+			Err(L"音長を記述して下さい。");
+		} else {
+			iLength = -1;
+		}
 	}
 
 	return(iLength);
@@ -1009,7 +1021,7 @@ void	MMLfile::Err(const wchar_t msg[])
 	}
 
 	//異常終了
-	exit(-1);
+	nsc_exit(EXIT_FAILURE);
 }
 
 //==============================================================

@@ -299,7 +299,7 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 				} else {
 					wcout << L"Sub(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			MUS->ptcSub[_no]->setUse();	//使うフラグを立てる
 			itSub++;
@@ -318,7 +318,7 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 				} else {
 					wcout << L"Envelope(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			MUS->ptcEnv[_no]->setUse();	//使うフラグを立てる
 			itEnv++;
@@ -337,7 +337,7 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 				} else {
 					wcout << L"FDSC(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			MUS->ptcFDSC[_no]->setUse();	//使うフラグを立てる
 			itFDSC++;
@@ -356,7 +356,7 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 				} else {
 					wcout << L"FDSM(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			MUS->ptcFDSM[_no]->setUse();	//使うフラグを立てる
 			itFDSM++;
@@ -375,7 +375,7 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 				} else {
 					wcout << L"VRC7(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			MUS->ptcVRC7[_no]->setUse();	//使うフラグを立てる
 			itVRC7++;
@@ -394,7 +394,7 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 				} else {
 					wcout << L"N163(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			MUS->ptcN163[_no]->setUse();	//使うフラグを立てる
 			itN163++;
@@ -439,7 +439,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 				} else {
 					wcout << L"SE(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			_sub_offset = MUS->ptcSE[_no]->getOffset();	//指定サブルーチンが存在するオフセット
 			(*itSE)->set_Address(_sub_offset - _com_offset - 1);
@@ -460,7 +460,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 				} else {
 					wcout << L"Sub(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			_sub_offset = MUS->ptcSub[_no]->getOffset();	//指定サブルーチンが存在するオフセット
 			(*itSub)->set_Address(_sub_offset - _com_offset - 1);
@@ -481,7 +481,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 				} else {
 					wcout << L"Envelope(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			_sub_offset = MUS->ptcEnv[_no]->getOffset();	//指定エンベロープが存在するオフセット
 			(*itEnv)->set_Address(_sub_offset - _com_offset - 1);
@@ -502,7 +502,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 				} else {
 					wcout << L"FDSC(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			_sub_offset = MUS->ptcFDSC[_no]->getOffset();	//指定エンベロープが存在するオフセット
 			(*itFDSC)->set_Address(_sub_offset - _com_offset - 1);
@@ -523,7 +523,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 				} else {
 					wcout << L"FDSM(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			_sub_offset = MUS->ptcFDSM[_no]->getOffset();	//指定エンベロープが存在するオフセット
 			(*itFDSM)->set_Address(_sub_offset - _com_offset - 1);
@@ -544,7 +544,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 				} else {
 					wcout << L"VRC7(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			_sub_offset = MUS->ptcVRC7[_no]->getOffset();	//指定エンベロープが存在するオフセット
 			(*itVRC7)->set_Address(_sub_offset - _com_offset - 1);
@@ -565,7 +565,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 				} else {
 					wcout << L"N163(" << _no << L")番が存在しません。" << endl;
 				}
-				exit(-1);
+				nsc_exit(EXIT_FAILURE);
 			}
 			_sub_offset = MUS->ptcN163[_no]->getOffset();	//指定エンベロープが存在するオフセット
 			(*itN163)->set_Address(_sub_offset - _com_offset - 2);
@@ -1334,6 +1334,14 @@ void	MusicTrack::CallPatch(MMLfile* MML, char _note)
 			SetSubWuthParch(MML->ptcPatch[i_Patch]->get_iSub());
 		}
 
+		if(	MML->ptcPatch[i_Patch]->get_fGate_q() == true){
+			Set_q(MML->ptcPatch[i_Patch]->get_iGate_q());
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fGate_u() == true){
+			Set_u(MML->ptcPatch[i_Patch]->get_iGate_u());
+		}
+
 		if(	MML->ptcPatch[i_Patch]->get_fSweep() == true){
 			SetSweep(MML->ptcPatch[i_Patch]->get_iSweep());
 		}
@@ -1348,13 +1356,13 @@ void	MusicTrack::CallPatch(MMLfile* MML, char _note)
 
 		if(	MML->ptcPatch[i_Patch]->get_fEvoi() == true){
 			if(MML->ptcPatch[i_Patch]->get_sw_Evoi() == true){
-				SetEnvelop_Evoi(MML->ptcPatch[i_Patch]->get_iEvoi());
+				SetEnvelop_Evoi(MML->ptcPatch[i_Patch]->get_iEvoi() + MML->offset_Ei);
 			}
 		}
 
 		if(	MML->ptcPatch[i_Patch]->get_fEvol() == true){
 			if(MML->ptcPatch[i_Patch]->get_sw_Evol() == true){
-				SetEnvelop_Evol(MML->ptcPatch[i_Patch]->get_iEvol());
+				SetEnvelop_Evol(MML->ptcPatch[i_Patch]->get_iEvol() + MML->offset_Ev);
 			} else {
 				SetEnvelop_Evol();
 			}
@@ -1362,7 +1370,7 @@ void	MusicTrack::CallPatch(MMLfile* MML, char _note)
 
 		if(	MML->ptcPatch[i_Patch]->get_fEm() == true){
 			if(MML->ptcPatch[i_Patch]->get_sw_Em() == true){
-				SetEnvelop_Em(MML->ptcPatch[i_Patch]->get_iEm());
+				SetEnvelop_Em(MML->ptcPatch[i_Patch]->get_iEm() + MML->offset_Em);
 			} else {
 				SetEnvelop_Em();
 			}
@@ -1370,7 +1378,7 @@ void	MusicTrack::CallPatch(MMLfile* MML, char _note)
 
 		if(	MML->ptcPatch[i_Patch]->get_fEn() == true){
 			if(MML->ptcPatch[i_Patch]->get_sw_En() == true){
-				SetEnvelop_En(MML->ptcPatch[i_Patch]->get_iEn());
+				SetEnvelop_En(MML->ptcPatch[i_Patch]->get_iEn() + MML->offset_En);
 			} else {
 				SetEnvelop_En();
 			}
@@ -1565,6 +1573,22 @@ void	MusicTrack::Set_q(int i)
 }
 
 //==============================================================
+//		ゲートタイム(u)
+//--------------------------------------------------------------
+//	●引数
+//		int		u		クオンタイズ
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::Set_u(int i)
+{
+	if(opt_gatetime_u != i){
+		opt_gatetime_u = i;
+		SetEvent(new mml_general(nsd_GateTime_u, (unsigned char)i, L"GateTime(u)"));
+	}	
+}
+
+//==============================================================
 //		ゲートタイム(Q)
 //--------------------------------------------------------------
 //	●引数
@@ -1625,13 +1649,9 @@ void	MusicTrack::SetGatetime_u(MMLfile* MML)
 		i = 0;
 	} else {
 		MML->Back();
-		i = MML->GetLength(GetDefaultLength());
+		i = MML->GetLength(-1);
 	}
-
-	if(opt_gatetime_u != i){
-		opt_gatetime_u = i;
-		SetEvent(new mml_general(nsd_GateTime_u, (unsigned char)i, L"GateTime(u)"));
-	}	
+	Set_u(i);
 }
 
 //==============================================================

@@ -35,7 +35,7 @@ void	FileInput::fileopen(const char*	_strFileName){
 	open(_strFileName,ios_base::in | ios_base::binary);
 	if(good()==false){
 		perror(_strFileName);
-		exit(-1);
+		nsc_exit(EXIT_FAILURE);
 	};
 	strFilename = _strFileName;
 };

@@ -1,6 +1,13 @@
 #include "stdafx.h"
 #include "Option.h"
 
+#ifdef _WIN32
+#define OPTCHK (argv[iCount][0]=='/')||(argv[iCount][0]=='-')
+#else
+// unix系ではスラッシュはディレクトリの区切りに使われる為、失敗する事がある
+#define OPTCHK (argv[iCount][0]=='-')
+#endif
+
 //==============================================================
 //		オプション処理
 //--------------------------------------------------------------
@@ -40,8 +47,8 @@ OPSW::OPSW(int argc, char* argv[]):
 	while(iCount!=argc)
 	{
 		//--------------
-		//オプションスイッチにスラッシュがあるか確認
-		if((argv[iCount][0]=='/')||(argv[iCount][0]=='-')){
+		//オプションスイッチにハイフン(orスラッシュ)があるか確認
+		if(OPTCHK){
 
 			//--------------
 			//◆Option Switch	（スラッシュがあった場合の処理）
@@ -274,7 +281,7 @@ void	OPSW::print_help(){
 				L"  -fn[file(.nsf)]	Filename of the output NSF music format.\n"
 				L"  -h			Print the this help."	<<	endl;
 
-	exit(EXIT_SUCCESS);
+	nsc_exit(EXIT_SUCCESS);
 
 };
 //==============================================================
@@ -304,6 +311,6 @@ void OPSW::opError(const wchar_t *stErrMsg){
 	} else {
 		wcout << L"オプションが不正です。：" << stErrMsg << endl;
 	}
-	exit(EXIT_FAILURE);
+	nsc_exit(EXIT_FAILURE);
 
 };

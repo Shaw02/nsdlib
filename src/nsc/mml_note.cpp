@@ -21,7 +21,7 @@ mml_note::mml_note(int _code, int length, int gatetime, bool slur, const wchar_t
 
 	if((_code<0) || (_code>15) || (_code==12)){
 		wcerr << L"mml_note::mml_note()関数で、エラーが発生しました。" << endl;
-		exit(-1);
+		nsc_exit(EXIT_FAILURE);
 	}
 
 	iSize = 1;

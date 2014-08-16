@@ -130,6 +130,12 @@ enum	Command_ID_mml {
 };
 
 //	これらは、MML構文で使えるコマンド。
+
+const	static	char	RS_UTF8[]	=	{0x5c, 0x00};				//REVERSE SOLIDUS
+const	static	char	RS_UTF8W[]	=	{0xEF, 0xBC, 0xBC, 0x00};	//REVERSE SOLIDUS
+const	static	char	Yen_UTF8[]	=	{0xC2, 0xA5, 0x00};			//Yen
+const	static	char	Yen_UTF8W[]	=	{0xEF, 0xBF, 0xA5, 0x00};	//Yen
+
 const	static	Command_Info	Command[] = {
 		{	"TR",		mml_Track				},
 		{	"トラック",	mml_Track				},
@@ -158,7 +164,10 @@ const	static	Command_Info	Command[] = {
 	//	{	":",		mml_Repeat_C_Branch		},
 		{	":]",		mml_Repeat_C_End		},
 		{	"|:",		mml_Repeat_B_Start		},
-		{	"\\",		mml_Repeat_B_Branch		},
+		{	(char*)RS_UTF8,		mml_Repeat_B_Branch		},
+		{	(char*)Yen_UTF8,	mml_Repeat_B_Branch		},
+		{	(char*)RS_UTF8W,	mml_Repeat_B_Branch		},
+		{	(char*)Yen_UTF8W,	mml_Repeat_B_Branch		},
 		{	":|",		mml_Repeat_B_End		},
 		{	"[",		mml_Repeat_A_Start		},
 		{	":",		mml_Repeat_A_Branch		},
@@ -167,6 +176,7 @@ const	static	Command_Info	Command[] = {
 		{	"∞",		mml_Loop				},
 		{	"｜：",		mml_Repeat_B_Start		},
 		{	"￥",		mml_Repeat_B_Branch		},
+		{	"＼",		mml_Repeat_B_Branch		},
 		{	"：｜",		mml_Repeat_B_End		},
 		{	"【",		mml_Repeat_A_Start		},
 		{	"：",		mml_Repeat_A_Branch		},
@@ -1104,7 +1114,7 @@ MusicTrack*	TrackSet::getTrack(MMLfile* MML, int _track)
 			_getTrack	= makeTrack(MML, i);
 		} else {
 			wcerr << L"MusicTrack* TrackSet::getTrack()関数でエラーが発生しました。" << endl;
-			exit(-1);
+			nsc_exit(EXIT_FAILURE);
 		}
 	}
 	maxTrack = i;	//トラックの最大値を記憶。

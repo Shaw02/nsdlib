@@ -175,6 +175,7 @@ const	static	Command_Info	Command[] = {
 		{	"N",				id_N163			},
 		{	"E",				id_Envelop		},
 		{	"S",				id_Sub			},
+		{	"P",				id_Patch		},
 		{	"$",				id_Macro		},
 
 		//for mck/ppmck
@@ -1086,7 +1087,7 @@ void	MusicFile::Err(const wchar_t msg[])
 	}
 
 	//àŸèÌèIóπ
-	exit(-1);
+	nsc_exit(EXIT_FAILURE);
 }
 
 //==============================================================

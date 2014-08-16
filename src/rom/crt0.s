@@ -102,73 +102,15 @@ _play:	.byte	0
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	1
-		.byte	19
+		.byte	21
+		.byte	0,0,0,0,0,0,0,0
 
 .ifdef	DPCMBank
 .segment	"STARTUP"
 DRV_Name2:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version2:	.byte	1
-		.byte	19
+		.byte	21
 .endif
-
-; ------------------------------------------------------------------------
-; 	実機ROM用	IRQ	(DPCM)
-; ------------------------------------------------------------------------
-.ifdef	DPCMBank
-.segment	"STARTUP"
-.proc	_irq_main
-
-	pha			;register push
-	tya
-	pha
-	txa
-	pha
-
-	jsr	_nsd_irq
-
-	pla			;register pop
-	tax
-	pla
-	tay
-	pla
-
-	rti
-.endproc
-.endif
-
-; ------------------------------------------------------------------------
-; 	実機ROM用	NMI	(Vblank)
-; ------------------------------------------------------------------------
-.segment	"STARTUP"
-.proc	_nmi_main
-
-	pha			;register push
-
-	inc	_play
-	lda	_play
-	cmp	#1
-	bne	@exit		;演奏中だったら終わり。
-
-	tya
-	pha
-	txa
-	pha
-@loop:
-	jsr	_nsd_main
-	dec	_play
-	bne	@loop		;frame over?
-
-	pla
-	tax
-	pla
-	tay
-
-@exit:
-
-	pla			;register pop
-
-	rts
-.endproc
 
 ; ------------------------------------------------------------------------
 ; 	Init for TNS-HFC Series
@@ -180,6 +122,7 @@ DRV_Version2:	.byte	1
 	;リセット連打によるハング防止
 
 	sei
+	cld
 
 @wait1:	lda	$2002
 	bpl	@wait1
@@ -201,6 +144,8 @@ DRV_Version2:	.byte	1
 .proc	_nsf_init
 
 	sei
+	cld
+
 	pha
 
 	lda	#nsd_flag::BGM + nsd_flag::SE
@@ -332,6 +277,7 @@ Loop:
 
 .endif
 
+	;Memory clear
 	lda	#0
 	ldx	#0
 @L:
@@ -345,30 +291,17 @@ Loop:
 	inx
 	bne	@L
 
+	;変数設定
 	sta	_play		;フレームオーバー防止用変数
 
-	jsr	_init
-
-.ifdef	DPCMBank
-
-	cli
-
-.endif
-
-	pla
-	jmp	_play_music
-
-;	rts
-.endproc
-
-; ------------------------------------------------------------------------
-; 	Init
-; ------------------------------------------------------------------------
-.segment	"STARTUP"
-.proc	_init
-
+	;nsd.lib初期化
 	jsr	_nsd_init
 
+ 	lda	#$40
+	sta	APU_PAD2
+
+_Play:
+	;⊿PCMデータの設定
 .ifdef	DPCMBank
 	lda	#$00
 	sta	__ptr
@@ -392,19 +325,11 @@ Loop:
 	lda	(__ptr),y
 	tax			;ax = Pointer of ⊿PCM infomation Struct
 	lda	__tmp
-	jmp	_nsd_set_dpcm
-;
-;	rts
-.endproc
+	jsr	_nsd_set_dpcm
 
-; ------------------------------------------------------------------------
-; 	Play music
-; ------------------------------------------------------------------------
-.segment	"STARTUP"
-.proc	_play_music
-
-	pha
+	;曲データの設定
 .ifdef	DPCMBank
+	cli
 	lda	#$00
 	sta	__ptr
 	sta	__ptr+1		;__ptr = __ROM0_START__
@@ -432,8 +357,73 @@ Loop:
 	plp
 
 	bcs	@L
-	jmp	_nsd_play_bgm
-@L:	jmp	_nsd_play_se
+	jsr	_nsd_play_bgm
+	jmp	@E
+@L:	jsr	_nsd_play_se
+@E:	rts
+.endproc
+
+; ------------------------------------------------------------------------
+; 	実機ROM用	IRQ	(DPCM)
+; ------------------------------------------------------------------------
+.ifdef	DPCMBank
+
+.zeropage
+
+_IRQ_SVA:	.byte	0
+_IRQ_SVX:	.byte	0
+_IRQ_SVY:	.byte	0
+
+.code
+.proc	_irq_main
+
+	sta	_IRQ_SVA	;save register
+	stx	_IRQ_SVX
+	sty	_IRQ_SVY
+
+	jsr	_nsd_irq
+
+	ldy	_IRQ_SVY
+	ldx	_IRQ_SVX
+	lda	_IRQ_SVA	;save register
+
+	rti
+.endproc
+.endif
+
+; ------------------------------------------------------------------------
+; 	実機ROM用	NMI	(Vblank)
+; ------------------------------------------------------------------------
+.zeropage
+
+_NMI_SVA:	.byte	0
+_NMI_SVX:	.byte	0
+_NMI_SVY:	.byte	0
+
+.code
+.proc	_nmi_main
+
+	pha			;register push
+
+	inc	_play
+	lda	_play
+	cmp	#1
+	bne	@exit		;演奏中だったら終わり。
+
+	stx	_NMI_SVX
+	sty	_NMI_SVY
+@loop:
+	jsr	_nsd_main
+	dec	_play
+	bne	@loop		;frame over?
+
+	ldy	_NMI_SVY
+	ldx	_NMI_SVX
+
+@exit:
+	pla			;register pop
+
+	rts
 .endproc
 
 ; ------------------------------------------------------------------------

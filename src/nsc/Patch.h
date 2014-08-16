@@ -16,6 +16,8 @@ typedef	struct{
 	unsigned	int		iKey;		//KeyShift
 	unsigned	char	iSweep;		//
 	unsigned	int		iSub;		//
+	unsigned	int		iGate_q;	//
+	unsigned	int		iGate_u;	//
 
 	//設定するかどうか（defailt = false）
 				bool	fVoi;		//
@@ -26,6 +28,8 @@ typedef	struct{
 				bool	fKey;		//
 				bool	fSweep;		//
 				bool	fSub;		//
+				bool	fGate_q;	//
+				bool	fGate_u;	//
 
 	//エンベロープのsw（有る場合 true）
 				bool	sw_Evoi;	//
@@ -75,6 +79,8 @@ public:
 	unsigned	int		get_iKey(void){		return(m_now_Patch->iKey);};
 	unsigned	char	get_iSweep(void){	return(m_now_Patch->iSweep);};
 	unsigned	int		get_iSub(void){		return(m_now_Patch->iSub);};
+	unsigned	int		get_iGate_q(void){	return(m_now_Patch->iGate_q);};
+	unsigned	int		get_iGate_u(void){	return(m_now_Patch->iGate_u);};
 
 				bool	get_fVoi(void){		return(m_now_Patch->fVoi);};
 				bool	get_fEvoi(void){	return(m_now_Patch->fEvoi);};
@@ -84,6 +90,8 @@ public:
 				bool	get_fKey(void){		return(m_now_Patch->fKey);};
 				bool	get_fSweep(void){	return(m_now_Patch->fSweep);};
 				bool	get_fSub(void){		return(m_now_Patch->fSub);};
+				bool	get_fGate_q(void){	return(m_now_Patch->fGate_q);};
+				bool	get_fGate_u(void){	return(m_now_Patch->fGate_u);};
 
 				bool	get_sw_Evoi(void){	return(m_now_Patch->sw_Evoi);};
 				bool	get_sw_Evol(void){	return(m_now_Patch->sw_Evol);};

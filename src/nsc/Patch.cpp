@@ -48,6 +48,9 @@ enum	Command_ID_mml {
 	Patch_Em,
 	Patch_En,
 
+	Patch_Gate_q,
+	Patch_Gate_u,
+
 	Patch_Voice,
 	Patch_KeyShift,
 	Patch_n163set,
@@ -140,6 +143,9 @@ const	static	Command_Info	Command[] = {
 		{	"Ev",	Patch_Evol		},
 		{	"Em",	Patch_Em		},
 		{	"En",	Patch_En		},
+
+		{	"q",	Patch_Gate_q	},
+		{	"u",	Patch_Gate_u	},
 
 		{	"s",	Patch_Sweep		},
 		{	"@NS",	Patch_n163set	},
@@ -317,6 +323,29 @@ const	static	Command_Info	Command[] = {
 				m_now_Patch->sw_En		= true;
 				break;
 
+			case(Patch_Gate_q):
+				if(m_now_Patch->fGate_q == true){
+					MML->Err(L"qコマンドの２重定義です。");
+				}
+				m_now_Patch->iGate_q	= MML->GetInt();
+				m_now_Patch->fGate_q	= true;
+				break;
+
+			case(Patch_Gate_u):
+				if(m_now_Patch->fGate_u == true){
+					MML->Err(L"uコマンドの２重定義です。");
+				}
+				cData = MML->GetChar();
+				if(cData == '0'){
+					i = 0;
+				} else {
+					MML->Back();
+					i = MML->GetLength(-1);
+				}
+				m_now_Patch->iGate_u	= i;
+				m_now_Patch->fGate_u	= true;
+				break;
+
 			case(Patch_KeyShift):
 				if(m_now_Patch->fKey == true){
 					MML->Err(L"移調の２重定義です。");
@@ -463,6 +492,8 @@ void	Patch::DebugMsg(void)
 			m_now_Patch = itPatch->second;
 
 			cout	<<	"  n" << itPatch->first;
+			if(get_fGate_q()){ cout	<<	"  q"	<<	get_iGate_q();	};
+			if(get_fGate_u()){ cout	<<	"  u"	<<	get_iGate_u();	};
 			if(get_fSub()){	cout	<<	"  S"	<<	get_iSub();		};
 			if(get_fKey()){	cout	<<	"  _"	<<	get_iKey();		};
 			if(get_fSweep()){cout	<<	"  s"	<<	(int)get_iSweep();	};
@@ -546,6 +577,8 @@ void	Patch::setN(MMLfile* MML, int note)
 		m_now_Patch->fEm	= false;
 		m_now_Patch->fEn	= false;
 		m_now_Patch->fSub	= false;
+		m_now_Patch->fGate_q = false;
+		m_now_Patch->fGate_u = false;
 
 		m_now_Patch->sw_Evoi= false;
 		m_now_Patch->sw_Evol= false;

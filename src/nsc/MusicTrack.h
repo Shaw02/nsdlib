@@ -206,6 +206,7 @@ public:
 				void	SetN163_Set(MMLfile* MML);
 
 				void	Set_q(int i);
+				void	Set_u(int i);
 				void	SetGatetime_Q(MMLfile* MML);
 				void	SetGatetime(MMLfile* MML);
 				void	SetGatetime_u(MMLfile* MML);

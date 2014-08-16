@@ -1,3 +1,6 @@
+#//	gcc用のmakefileです。
+#//	その他のコンパイラを使用する場合は、それに合わせて書き換えてください。
+
 CC			= gcc
 CXX			= g++
 CFLAGS		= -finput-charset=cp932 -fexec-charset=cp932 -O4 -Wall -I/usr/local/include

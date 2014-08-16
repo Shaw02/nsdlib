@@ -25,9 +25,12 @@
 <div class='block'>
 <h3><a name="construction">全体の構文（MML Construction）</a></h3>
 <p>
-MMLの全体的な構文は、`#'で始まる定義＆疑似命令及び、
-データ（エンベロープパターン、シーケンスデータ）を記述する記述ブロックで構成されます。<br>
+MMLの全体的な構文は、`#'で始まる定義、疑似命令及び、
+データ（音色データ、エンベロープパターン、シーケンスデータ等）を記述する記述ブロックで構成されます。<br>
 MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。<br>
+</p>
+<p>
+MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<br>
 </p>
 
 <div class='block'>
@@ -44,17 +47,18 @@ MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。
 <tr><td>#se <var>n</var>					</td><td>SE の曲数を設定します。（Default: <var>n</var> = 0）</td></tr>
 <tr><td>#priority <var>n</var>				</td><td>以降のSE の優先度を設定します。（Default: <var>n</var> = 0）<br>
 													　（0 : 優先度高 ～ 3:優先度低）</td></tr>
-<tr><td>#timebase <var>n</var>				</td><td>以降のBGM, SE, Subブロックの四分音符の分割数を設定します。（Default: <var>n</var> = 24）<br>
-													何度でも指定可能であり、各BGM, SE, サブルーチン毎に設定することもできます。<br>
-													MMLコンパイラの疑似命令です。</td></tr>
+<tr><td>#timebase <var>n</var>				</td><td>以降のシーケンス記述ブロック（BGM, SE, Sub）の４分音符の分解能を設定します。（Default: <var>n</var> = 24）<br>
+													何度でも指定可能であり、各シーケンス記述ブロック毎に設定することもできます。</td></tr>
 <tr><td>#octaveReverse						</td><td>本コマンドを記述することで、シーケンス記述ブロック内における相対オクターブコマンド
 													`<a href="mml_relative_octave.html">&lt;</a>'と`<a href="mml_relative_octave.html">&gt;</a>'を入れ替えます。</td></tr>
-<tr><td>#rest <var>n</var>					</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">r コマンド</a>のモードを設定します（Default: <var>n</var> = 2）<br>
+<tr><td>#rest <var>n</var>					</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">r コマンド</a>による休符のモードを設定します（Default: <var>n</var> = 2）<br>
 													　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。<br>
-													　1 … 直前のノートを、R@, Rvコマンドの値で鳴らします。<br>
-													　2 … 直前のノートのエンベロープ（音色・音量）を継続します。（Default）<br></td></tr>
-<tr><td>#wait <var>n</var>					</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">w コマンド</a>のモードを設定します（Default: <var>n</var> = 0）<br>
-													数値の意味は、#rest コマンドと同じです。</td></tr>
+													　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
+													　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。（Default）<br></td></tr>
+<tr><td>#wait <var>n</var>					</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">w コマンド</a>による休符のモードを設定します（Default: <var>n</var> = 0）<br>
+													　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。（Default）<br>
+													　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
+													　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br></td></tr>
 <tr><td>#QMax <var>n</var>					</td><td>シーケンス記述ブロック内における<a href="mml_gate.html">Q コマンド</a>の分母を設定します（Default: <var>n</var> = 8）<br>
 													実際の発音音長は、音長 × <a href="mml_gate.html">Q コマンド</a>の値 ÷ <var>n</var> となります。</td></tr>
 <tr><td>#RepeatMode <var>n</var>			</td><td>シーケンス記述ブロック内における<a href="mml_repeatA.html">リピート(A)コマンド</a>のコンパイル方法を設定します。（Default: <var>n</var> = 0）<br>

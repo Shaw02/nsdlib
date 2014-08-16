@@ -77,7 +77,7 @@ void	mml_Address::set_Address(unsigned int _addr)
 			break;
 		default:
 			wcerr << L"mml_Address::set_Address()ŠÖ”‚ÅƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B" << endl;
-			exit(-1);
+			nsc_exit(EXIT_FAILURE);
 			break;
 	}
 	
