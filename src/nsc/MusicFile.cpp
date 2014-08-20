@@ -50,6 +50,7 @@ enum	Command_ID_MusicFile {
 	id_se_num,
 	id_releaseVolume,
 	id_repeatMode,
+	id_TieMode,
 	id_offset_Ei,
 	id_offset_Ev,
 	id_offset_En,
@@ -128,6 +129,8 @@ const	static	Command_Info	Command[] = {
 		{	"#ReleaseVolume",	id_releaseVolume},
 		{	"#repeatMode",		id_repeatMode	},
 		{	"#RepeatMode",		id_repeatMode	},
+		{	"#TieMode",			id_TieMode		},
+		{	"#tieMode",			id_TieMode		},	
 		{	"#OffsetE@",		id_offset_Ei	},
 		{	"#offsetE@",		id_offset_Ei	},
 		{	"#OffsetEv",		id_offset_Ev	},
@@ -281,6 +284,12 @@ const	static	Command_Info	Command[] = {
 				MML->iRepeatMode	=  MML->GetInt();
 				if((MML->iRepeatMode<0) || (MML->iRepeatMode>2)){
 					MML->Err(L"#RepeatModeコマンドは、0～2の範囲で指定してください。");
+				}
+				break;
+			case(id_TieMode):
+				MML->iTieMode	=  MML->GetInt();
+				if((MML->iTieMode<0) || (MML->iTieMode>1)){
+					MML->Err(L"#TieModeコマンドは、0～1の範囲で指定してください。");
 				}
 				break;
 			case(id_offset_Ei):

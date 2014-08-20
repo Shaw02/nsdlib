@@ -28,6 +28,8 @@ MusicTrack::MusicTrack(MMLfile* MML, const wchar_t _strName[]):
 	octave(5),
 	octave1(0),
 	echo_length(-1),
+	echo_already(false),
+	echo_vol_ret(false),
 	echo_flag(false),
 	loop_flag(false),
 	compile_flag(false),
@@ -1240,7 +1242,7 @@ void	MusicTrack::SetVoice(unsigned int _no)
 		iVoi = _no;
 		sw_Evoi		= false;
 		f_opt_Evoi	= true;		//最適化フラグ
-		SetEvent(new mml_general(nsd_Voice, _no, L"Voice"));
+		SetEvent(new mml_general(nsd_Voice, (unsigned char)_no, L"Voice"));
 	}
 }
 
@@ -1598,7 +1600,7 @@ void	MusicTrack::Set_u(int i)
 //==============================================================
 void	MusicTrack::SetGatetime_Q(MMLfile* MML)
 {
-	unsigned	int	i = MML->GetInt();
+	int	i = MML->GetInt();
 	if((i<1) || (i>QMax)){
 		MML->Err(L"ゲートタイムQは1～#QMaxの範囲で指定して下さい。");
 	} else {
@@ -1641,7 +1643,7 @@ void	MusicTrack::SetGatetime(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetGatetime_u(MMLfile* MML)
 {
-	unsigned		int		i;
+					int		i;
 	unsigned		char	cData;
 
 	cData = MML->GetChar();
@@ -2274,13 +2276,13 @@ void	MusicTrack::SetLength(MMLfile* MML)
 //		MMLfile*	MML		MMLファイルのオブジェクト
 //		int			note	ノート（0:C 1:D 2:E … 7:B）
 //	●返値
-//				無し
+//		char		
 //==============================================================
 char	MusicTrack::calc_note(MMLfile*	MML,int note)
 {
 	unsigned		char	cData = MML->GetChar();
 	static	const	char	note_code[]={0,2,4,5,7,9,11};
-					int		_key = note_code[note];
+					char	_key = note_code[note];
 
 	//臨時記号
 	//If Natural then skip
@@ -2321,7 +2323,7 @@ int		MusicTrack::calc_length(MMLfile* MML)
 				int		Length;
 
 	MML->Back();
-	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.') || (cData == '~')){
+	if(((cData >= '0') && (cData <= '9')) || (cData == '%') || (cData == '.') || (cData == '~') || ((MML->iTieMode == 1) && (cData == '^'))){
 		Length = MML->GetLength(DefaultLength);
 	} else {
 		Length = -1;
@@ -2390,6 +2392,9 @@ bool	MusicTrack::calc_slur(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetEcho(void)
 {
+	//ここで音量を戻す。
+	EchoVolRet();
+
 	echo_flag = false;
 }
 
@@ -2406,6 +2411,9 @@ void	MusicTrack::SetEcho(MMLfile* MML)
 	unsigned	char	cData;
 				int		_value;
 				int		_volume;
+
+	//ここで音量を戻す。
+	EchoVolRet();
 
 	_value = MML->GetInt();
 	if((_value<0) || (_value>255)){
@@ -2485,8 +2493,12 @@ void	MusicTrack::GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur)
 	if(echo_slur == false){
 		//Echo volume
 		SetEvent(new mml_general(nsd_Volume + echo_volume, L"Echo Volume"));
+		echo_vol_ret = true;
 	} else {
-		_old_note->SetTai();
+		//前のノートが、音符の場合のみ
+		if(echo_already == false){
+			_old_note->SetTai();
+		}
 	}
 
 	//Echo note
@@ -2508,12 +2520,30 @@ void	MusicTrack::GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur)
 	_old_note = new mml_note(old_note % 12, Length, GateTime, Slur, L"Echo Note");
 	SetEvent(_old_note);
 
-	if(echo_slur == false){
-		//volume return
-		SetEvent(new mml_general(nsd_Volume + volume, L"Volume"));
-	}
+//	EchoVolRet();
+
+	echo_already	= true;
 
 }
+
+//==============================================================
+//		疑似エコーの音量復帰
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::EchoVolRet()
+{
+	//ここで音量を戻す。
+	if(echo_vol_ret == true){
+		//volume return
+		SetEvent(new mml_general(nsd_Volume + volume, L"Volume"));
+		echo_vol_ret = false;
+	}
+}
+
 
 //==============================================================
 //		音符のイベント作成
@@ -2551,6 +2581,13 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 	octave1_old			= octave1;
 	octave1				= 0;
 
+	echo_already		= false;
+
+	//ここで音量を戻す。
+	if(echo_flag == true){
+		EchoVolRet();
+	}
+
 	//指定できる範囲を超えた場合。
 	while(_key < 0){
 		_key += 12;
@@ -2566,10 +2603,12 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 
 	if((echo_flag == true) && (oldNote[(pt_oldNote - echo_value) & 0xFF] != -1) && (echo_length != -1) && (Length_0 > echo_length) && (Slur == false)){
 		//疑似エコー あり
+
 		Length_0 -= echo_length;
 		if(Length_0 == opt_DefaultLength){
 			Length_0 = -1;
 		}
+
 		_old_note = new mml_note(_key, Length_0, GateTime, Slur, L"Note");
 
 		//イベントオブジェクトの作成

@@ -21,6 +21,7 @@ MMLfile::MMLfile(const char*	strFileName):
 	offset_Em(0),
 	iReleaseVolume(2),
 	iRepeatMode(0),
+	iTieMode(0),
 	timebase(24),
 	octave_reverse(false),
 	rest(2),
@@ -844,7 +845,7 @@ int		MMLfile::GetInt(void)
 //	●処理
 //		音長を読み込む（付点付き）
 //==============================================================
-int	MMLfile::readLength(unsigned int DefaultLength){
+int	MMLfile::readLength(int DefaultLength){
 
 	char	cData;				//読み込み用
 	int		iLength;			//音長 [tick]
@@ -922,7 +923,7 @@ int	MMLfile::readLength(unsigned int DefaultLength){
 //			int		読み込んだ数値
 //					音長がかかれてない場合は、 -1 を返す。
 //==============================================================
-int		MMLfile::GetLength(unsigned int DefaultLength)	//
+int		MMLfile::GetLength(int DefaultLength)	//
 {
 	char	cData;				//読み込み用
 	int		iLength;			//音長 [tick]
@@ -934,21 +935,24 @@ int		MMLfile::GetLength(unsigned int DefaultLength)	//
 
 	//音長の加減算
 	cData = cRead();
-	while((cData == '+') || (cData == '-') || (cData == '~')){
+	while((cData == '-') || (cData == '~') || (cData == '+') || ((iTieMode == 1) && (cData == '^'))){
 		if(iLength == -1){
 			iLength = DefaultLength;
 		}
 
 		//後で計算する符号のチェック
-		if(cData == '+'){
+		if((cData == '+') || (cData == '^')){
 			add = true;
 		} else {
 			add = false;
 		}
 		iCalc = readLength(DefaultLength);
+
 		if(iCalc == -1){
-			Err(L"音長の加減算値に数値以外が指定されています。");
+		//	Warning(L"音長の加減算値に数値以外が指定されています。");
+			iCalc = DefaultLength;
 		}
+
 		if(add == true){
 			iLength += iCalc;
 		} else {

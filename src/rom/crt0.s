@@ -102,14 +102,14 @@ _play:	.byte	0
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	1
-		.byte	21
+		.byte	22
 		.byte	0,0,0,0,0,0,0,0
 
 .ifdef	DPCMBank
 .segment	"STARTUP"
 DRV_Name2:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version2:	.byte	1
-		.byte	21
+		.byte	22
 .endif
 
 ; ------------------------------------------------------------------------

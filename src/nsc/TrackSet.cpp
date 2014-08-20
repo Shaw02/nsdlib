@@ -131,10 +131,10 @@ enum	Command_ID_mml {
 
 //	これらは、MML構文で使えるコマンド。
 
-const	static	char	RS_UTF8[]	=	{0x5c, 0x00};				//REVERSE SOLIDUS
-const	static	char	RS_UTF8W[]	=	{0xEF, 0xBC, 0xBC, 0x00};	//REVERSE SOLIDUS
-const	static	char	Yen_UTF8[]	=	{0xC2, 0xA5, 0x00};			//Yen
-const	static	char	Yen_UTF8W[]	=	{0xEF, 0xBF, 0xA5, 0x00};	//Yen
+const	static	unsigned	char	RS_UTF8[]	=	{0x5c, 0x00};				//REVERSE SOLIDUS
+const	static	unsigned	char	RS_UTF8W[]	=	{0xEF, 0xBC, 0xBC, 0x00};	//REVERSE SOLIDUS
+const	static	unsigned	char	Yen_UTF8[]	=	{0xC2, 0xA5, 0x00};			//Yen
+const	static	unsigned	char	Yen_UTF8W[]	=	{0xEF, 0xBF, 0xA5, 0x00};	//Yen
 
 const	static	Command_Info	Command[] = {
 		{	"TR",		mml_Track				},
@@ -1195,7 +1195,7 @@ void	TrackSet::SetRelativeTempo(MMLfile* MML)
 {
 	int	iValue	= MML->GetInt();
 
-	iTempo += iValue;
+	iTempo += (unsigned char)iValue;
 
 	SetEvent(new mml_general(nsd_Relative_Tempo, (char)iValue, L"Relative Tempo"));
 
@@ -1243,7 +1243,7 @@ void	TrackSet::SetRelativeDown()
 //==============================================================
 void	TrackSet::SetVolume(MMLfile* MML)
 {
-	unsigned	int	i = MML->GetInt();
+	int	i = MML->GetInt();
 
 	if( (i <= 15) && (i >= 0) ){
 		if(nowTrack->Get_opt_volume() != i){
@@ -1259,7 +1259,7 @@ void	TrackSet::SetVolume(MMLfile* MML)
 void	TrackSet::SetVolumeInc(MMLfile* MML)
 {
 	unsigned	char	cData = MML->GetChar();
-	unsigned	int		iValue;
+				int		iValue;
 
 	if((cData >= '0') && (cData <= '9')){
 		MML->Back();
@@ -1268,6 +1268,8 @@ void	TrackSet::SetVolumeInc(MMLfile* MML)
 		MML->Back();
 		iValue = 1;
 	}
+
+	nowTrack->EchoVolRet();
 
 	while(iValue > 0){
 		SetEvent(new mml_general(nsd_Volume_Up, L"Volume up"));
@@ -1280,7 +1282,7 @@ void	TrackSet::SetVolumeInc(MMLfile* MML)
 void	TrackSet::SetVolumeDec(MMLfile* MML)
 {
 	unsigned	char	cData = MML->GetChar();
-	unsigned	int		iValue;
+				int		iValue;
 
 	if((cData >= '0') && (cData <= '9')){
 		MML->Back();
@@ -1289,6 +1291,8 @@ void	TrackSet::SetVolumeDec(MMLfile* MML)
 		MML->Back();
 		iValue = 1;
 	}
+
+	nowTrack->EchoVolRet();
 
 	while(iValue > 0){
 		SetEvent(new mml_general(nsd_Volume_Down, L"Volume down"));
@@ -1308,7 +1312,7 @@ void	TrackSet::SetVolumeDec(MMLfile* MML)
 void	TrackSet::SetReleaseMode(MMLfile* MML)
 {
 	mml_general*	_event;
-	unsigned	int	i = MML->GetInt();
+				int	i = MML->GetInt();
 
 	switch(i){
 		case(0):
@@ -1337,7 +1341,7 @@ void	TrackSet::SetReleaseMode(MMLfile* MML)
 //==============================================================
 void	TrackSet::SetReleaseVoice(MMLfile* MML)
 {
-	unsigned	int	i = MML->GetInt();
+	int	i = MML->GetInt();
 
 	if( (i <= 7) && (i >= 0) ){
 		SetEvent(new mml_general(nsd_Release_Voice + (unsigned char)i, L"Release Voice"));
@@ -1356,7 +1360,7 @@ void	TrackSet::SetReleaseVoice(MMLfile* MML)
 //==============================================================
 void	TrackSet::SetReleaseVolume(MMLfile* MML)
 {
-	unsigned	int	i = MML->GetInt();
+	int	i = MML->GetInt();
 
 	if( (i <= 15) && (i >= 0) ){
 		SetEvent(new mml_general(nsd_Release_Volume + (unsigned char)i, L"Release Volume"));

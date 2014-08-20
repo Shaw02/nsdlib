@@ -67,6 +67,9 @@ private:
 
 	//----------------------------------
 	//疑似エコー
+				bool	echo_already;			//既に生成したか？
+				bool	echo_vol_ret;			//エコーの音量を元に戻したか？
+
 				bool	echo_flag;				//疑似エコー フラグ
 				bool	echo_slur;				//疑似エコー スラーでつなげる？
 				int		echo_length;			//疑似エコー 長さ
@@ -224,6 +227,7 @@ public:
 				void	SetEcho(void);
 				void	SetEcho(MMLfile* MML);
 				void	ResetEcho();
+				void	EchoVolRet();
 				void	GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur);
 				char	calc_note(MMLfile*	MML,int note);
 				int		calc_length(MMLfile* MML);
@@ -250,7 +254,7 @@ public:
 				void	SetOctaveOne_Inc();
 				void	SetOctaveOne_Dec();
 		
-				void	SetVolume(char _v){volume = _v;	opt_volume = volume;};
+				void	SetVolume(char _v){volume = _v;	opt_volume = volume; echo_vol_ret=false;};
 				void	IncVolume(void){	volume++;	if(volume>15){volume = 15;}	if(opt_volume != -1){opt_volume = volume;}	};
 				void	DecVolume(void){	volume--;	if(volume<0){volume = 0;}	if(opt_volume != -1){opt_volume = volume;}	};
 				int		Get_opt_volume(void){		return(opt_volume);	};
@@ -271,5 +275,8 @@ public:
 					f_opt_Key			= false;	//
 					f_opt_Sweep			= false;	//
 					f_opt_Sub			= false;	//
+					if((echo_flag == true) && (echo_slur == false)){
+						echo_vol_ret	= true;		//
+					}
 				}
 };

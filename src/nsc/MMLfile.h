@@ -42,6 +42,7 @@ public:
 				int					offset_Em;			//
 				int					iReleaseVolume;		//
 				int					iRepeatMode;		//
+				int					iTieMode;			//
 				int					timebase;			//
 				bool				octave_reverse;		//Octave Reverse
 				int					rest;				// r コマンドの挙動
@@ -78,8 +79,8 @@ public:
 				string	GetString(void);	//""付 文字列 読み込み
 				int		GetNum(void);		//()付  数値  読み込み
 				int		GetInt(void);		//数値読み込み
-				int		GetLength(unsigned int DefaultLength);	//音長読み込み（演算付き）
-				int		readLength(unsigned int DefaultLength);	//音長読み込み
+				int		GetLength(int DefaultLength);	//音長読み込み（演算付き）
+				int		readLength(int DefaultLength);	//音長読み込み
 
 				int		GetCommandID(const Command_Info _command[], unsigned int _size);	//コマンドIDを取得
 
