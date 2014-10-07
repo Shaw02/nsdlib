@@ -85,7 +85,7 @@ Loop:
 	jmp	@E
 
 @L:
-	lda	#0
+	lda	#$01
 	jsr	_nsd_play
 	iny
 
@@ -109,6 +109,12 @@ Loop_End:
 
 	lda	#$FF
 	sta	__Tempo_ctr
+	sta	__apu_tri_time		;ŽOŠp”g ŽžŠÔ
+
+.ifdef	FDS
+	lda	#$00
+	sta	__fds_sweepbias
+.endif
 
 .ifdef	OPLL
 	lda	#OPLL_RHYTHM

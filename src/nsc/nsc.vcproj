@@ -139,6 +139,9 @@
 				RelativePath=".\Option.cpp">
 			</File>
 			<File
+				RelativePath=".\SearchPass.cpp">
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -324,6 +327,9 @@
 			</File>
 			<File
 				RelativePath=".\SE.h">
+			</File>
+			<File
+				RelativePath=".\SearchPass.h">
 			</File>
 			<File
 				RelativePath=".\stdafx.h">

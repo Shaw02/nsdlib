@@ -1,6 +1,11 @@
 #include "StdAfx.h"
 #include "DPCM.h"
 
+/****************************************************************/
+/*					グローバル変数（クラスだけど・・・）		*/
+/****************************************************************/
+extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -11,16 +16,21 @@
 //	●返値
 //					無し
 //==============================================================
-DPCM::DPCM(FileInput* DPCMfile, unsigned int _id, const wchar_t _strName[]):
+DPCM::DPCM(MMLfile* MML, const char* dmcfile, unsigned int _id, const wchar_t _strName[]):
 	MusicItem(_strName),
 	f_Use(false),
 	m_id(_id)
 {
 	//----------------------
 	//Local変数
-	unsigned	int		_size		= DPCMfile->GetSize();
+	unsigned	int		_size;
 	unsigned	int		i = 0;
-	unsigned	char	cData;
+
+	fileopen(dmcfile, &cOptionSW->m_pass_dmc);
+	_size = GetSize();
+	if(_size > 4081){
+		MML->Err(L"⊿PCMは4081Byte以下にしてください。");
+	}
 
 	if((_size & 0x000F) != 0x01){
 		iSize = (_size & 0x0FF0) + 0x0011;
@@ -33,8 +43,7 @@ DPCM::DPCM(FileInput* DPCMfile, unsigned int _id, const wchar_t _strName[]):
 
 	//⊿PCM実体を転送
 	while(i < _size){
-		cData = DPCMfile->cRead();
-		code[i] = cData;
+		code[i] = cRead();
 		i++;
 	}
 	//Padding
@@ -42,6 +51,8 @@ DPCM::DPCM(FileInput* DPCMfile, unsigned int _id, const wchar_t _strName[]):
 		code[i] = (unsigned char)0xAA;
 		i++;
 	}
+
+	close();
 }
 
 //==============================================================

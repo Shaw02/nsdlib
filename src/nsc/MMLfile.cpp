@@ -155,7 +155,7 @@ void	MMLfile::include()
 	//File open
 	nowFile	= new FileInput();
 
-	nowFile->fileopen(_name.c_str());
+	nowFile->fileopen(_name.c_str(), &cOptionSW->m_pass_inc);
 	ptcFiles.push_back(nowFile);
 
 	iFiles++; 

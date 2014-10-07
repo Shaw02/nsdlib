@@ -97,7 +97,7 @@ SE1:	ldx	#nsd::TR_SE1
 	jmp	SE2
 @L:
 
-	lda	#nsd_chflag::SE1
+	lda	#nsd_chflag::SE1 + $01
 	jsr	_nsd_play
 	iny
 

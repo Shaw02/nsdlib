@@ -92,7 +92,7 @@ int	main(int argc, char* argv[])
 		}
 
 			if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveASM == false))){
-			cSND->saveNSF(cOptionSW->strNSFname.c_str(), cOptionSW->opt);
+			cSND->saveNSF(cOptionSW->strNSFname.c_str());
 		}
 
 		if(cOptionSW->saveASM == true){

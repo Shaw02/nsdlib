@@ -269,7 +269,6 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 				int		start_volume	= 0x40;
 				int		next;
 	DPCM*		_DPCM;
-	FileInput	_DPCM_file;
 
 	if((note<0) || (note>255)){
 		MML->Err(L"音階の範囲を超えています。");
@@ -288,14 +287,9 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	infoDPCM[note].file = MML->GetString();
 	if(ptcDPCM.count(infoDPCM[note].file) == 0){
 		//新しいファイルだったら、DPCMオブジェクトを生成する。
-		_DPCM_file.fileopen(infoDPCM[note].file.c_str());
-		if(_DPCM_file.GetSize() > 4081){
-			MML->Err(L"⊿PCMは4081Byte以下にしてください。");
-		}
-		_DPCM = new DPCM(&_DPCM_file, m_id);
-		m_id++;
-		_DPCM_file.close();
+		_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);
 		ptcDPCM[infoDPCM[note].file] = _DPCM;
+		m_id++;
 	} else {
 		_DPCM = ptcDPCM[infoDPCM[note].file];
 	}

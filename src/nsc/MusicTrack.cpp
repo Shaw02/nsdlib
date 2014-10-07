@@ -619,6 +619,7 @@ size_t	MusicTrack::SetEnd(MMLfile* MML)
 	if(loop_flag == false){
 		SetEvent(new mml_general(nsd_EndOfTrack,L"End of Track"));
 	} else {
+		EchoVolRet();	//疑似エコーの復帰
 		_event = new mml_Address(nsd_Jump, L"End of Track with LOOP");
 		_event->set_Address(offset_loop - offset_now - 1);
 		SetEvent(_event);
@@ -833,6 +834,7 @@ void	MusicTrack::SetRepeat_C_Start(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetRepeat_Branch(MMLfile* MML)
 {
+	EchoVolRet();	//疑似エコーの復帰
 
 	list<MusicItem*>::iterator	pt_itMusic	=	ptcItem.end();
 
@@ -904,6 +906,7 @@ void	MusicTrack::SetRepeat_End(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 {
+	EchoVolRet();	//疑似エコーの復帰
 
 	if((offset_repeat_a_s == 0) || ((*it_repeat_type) != 1)){
 		MML->Err(L"リピート(A)の開始 [ コマンドがありません。");
@@ -961,6 +964,7 @@ void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 {
+	EchoVolRet();	//疑似エコーの復帰
 
 	if((sp_repeat_c == 0) || ((*it_repeat_type) != 3)){
 		MML->Err(L"リピート(C)の開始 [: コマンドがありません。");
@@ -2447,7 +2451,6 @@ void	MusicTrack::SetEcho(MMLfile* MML)
 		echo_length	= MML->GetLength(DefaultLength);
 	}
 }
-
 //==============================================================
 //		疑似エコーのリセット
 //--------------------------------------------------------------
@@ -2543,7 +2546,6 @@ void	MusicTrack::EchoVolRet()
 		echo_vol_ret = false;
 	}
 }
-
 
 //==============================================================
 //		音符のイベント作成
@@ -3120,9 +3122,11 @@ void	MusicTrack::SetOctave(MMLfile* MML)
 void	MusicTrack::SetOctaveInc()
 {
 	SetEvent(new mml_general(nsd_Octave_Up, L"Octave Up"));
-	octave++;
-	if(opt_octave != -1){
-		opt_octave = octave;
+	if(octave<10){
+		octave++;
+		if(opt_octave != -1){
+			opt_octave = octave;
+		}
 	}
 }
 
@@ -3130,9 +3134,11 @@ void	MusicTrack::SetOctaveInc()
 void	MusicTrack::SetOctaveDec()
 {
 	SetEvent(new mml_general(nsd_Octave_Down, L"Octave Down"));
-	octave--;
-	if(opt_octave != -1){
-		opt_octave = octave;
+	if(octave>0){
+		octave--;
+		if(opt_octave != -1){
+			opt_octave = octave;
+		}
 	}
 }
 

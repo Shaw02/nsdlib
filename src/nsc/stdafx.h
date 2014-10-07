@@ -6,12 +6,20 @@
 #pragma once
 
 #include <stdlib.h>
+#include <errno.h>
+
 #include <string.h>
 
 #ifdef	_WIN32
 	#include <locale>
 #else
 	#include <locale.h>
+#endif
+
+#ifdef _WIN32
+	#define _PATH_SPLIT	';'	// MS系は ;
+#else
+	#define _PATH_SPLIT	':'	// UNIX系は :
 #endif
 
 
@@ -45,10 +53,12 @@ typedef struct {
 	int		id;
 } Command_Info;
 
-#include "FileInput.h"		//ファイル入力用
-#include "FileOutput.h"		//ファイル出力用
+#include "SearchPass.h"			//検索パス
 
-#include "Option.h"			//オプション
+#include "FileInput.h"			//ファイル入力用
+#include "FileOutput.h"			//ファイル出力用
+
+#include "Option.h"				//オプション
 
 #include "MusicItem.h"
 
@@ -66,7 +76,7 @@ typedef struct {
 
 #include "MusicEvent.h"			//各イベント
 #include "mml_general.h"		//汎用
-#include "mml_repeat.h"		//汎用
+#include "mml_repeat.h"			//汎用
 #include "mml_poke.h"			//メモリ書き込み
 #include "mml_note.h"			//音符・休符
 #include "mml_Address.h"
@@ -87,8 +97,6 @@ typedef struct {
 /*
 
 	■	to do
-
-	・#BGM, #SE	で指定した範囲で、無い番号があったらエラー
 	・NSFヘッダーの文字列　32文字以下の時の処理
 
 */

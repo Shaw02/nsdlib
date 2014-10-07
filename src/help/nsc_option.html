@@ -41,9 +41,13 @@
 <dt>-n</dt><dd>Compile to NSF music format. (*.nsf) </dd>
 <dt>-e</dt><dd>Error/Warning messages out the Stadard error (stderr).</dd>
 <dt>-t</dt><dd>Disable tick counting.</dd>
+<dt>-s</dt><dd>Enable outout the search pass result.</dd>
 <dt>-l<var>filename</var></dt><dd>Set the filename of the rom code for NSF.</dd>
 <dt>-fa<var>filename</var></dt><dd>Set the filename of the output assembly langage file.</dd>
 <dt>-fn<var>filename</var></dt><dd>Set the filename of the output NSF music format.</dd>
+<dt>-c<var>dir</var></dt><dd>Set the search pass of the rom code for NSF. (*.bin)</dd>
+<dt>-p<var>dir</var></dt><dd>Set the search pass of the delta-pcm file. (*.dmc)</dd>
+<dt>-i<var>dir</var></dt><dd>Set the search pass of the include file.</dd>
 <dt>-o</dt><dd>Optimize.</dd>
 <dt>-h</dt><dd>Print the this help.</dd>
 </dl>
@@ -84,6 +88,11 @@ Tick数のカウントを無効化します。<br>
 指定しない場合は、Lコマンドまでのtick数及び、トータルのTick数をカウントします。<br>
 </p>
 
+<h4>-s</h4>
+<p>
+検索パスの検索結果を出力します。<br>
+</p>
+
 <h4>-l<var>filename</var></h4>
 <p>
 NSF Music formatへ変換する際の実行コードファイルを指定します。<br>
@@ -104,6 +113,47 @@ NSF Music formatのファイル名を指定できます。<br>
 指定がない場合は、入力されたmmlのファイル名で、拡張子を`.nsf'にして出力します。<br>
 ファイル名は、スペースを開けずに記述してください。<br>
 </p>
+
+<h4>-c<var>dir</var></h4>
+<p>
+NSF Music formatへ変換する際の実行コードファイルの検索パスを設定します。<br>
+;で区切ることにより、複数の検索パスを指定可能です。<br>
+パス名は、スペースを開けずに記述してください。<br>
+検索優先順位は、以下の通りです。<br>
+</p>
+<ol>
+<li>カレントディレクトリ</li>
+<li>指定のMMLファイルにディレクトリ名を含んでいた場合、そのディレクトリ</li>
+<li>環境変数`PATH'にて指定されたディレクトリ</li>
+<li>このオプションで指定されたディレクトリ</li>
+</ol>
+
+<h4>-p<var>dir</var></h4>
+<p>
+⊿ＰＣＭファイル（*.dmc）の検索パスを設定します。<br>
+;で区切ることにより、複数の検索パスを指定可能です。<br>
+パス名は、スペースを開けずに記述してください。<br>
+検索優先順位は、以下の通りです。<br>
+</p>
+<ol>
+<li>カレントディレクトリ</li>
+<li>指定のMMLファイルにディレクトリ名を含んでいた場合、そのディレクトリ</li>
+<li>環境変数`DMC_INCLUDE'にて指定されたディレクトリ</li>
+<li>このオプションで指定されたディレクトリ</li>
+</ol>
+
+<h4>-i<var>dir</var></h4>
+<p>
+ＭＭＬ中の#includeディレクティブで指定されたインクルードファイルの検索パスを設定します。<br>
+;で区切ることにより、複数の検索パスを指定可能です。<br>
+パス名は、スペースを開けずに記述してください。<br>
+検索優先順位は、以下の通りです。<br>
+</p>
+<ol>
+<li>カレントディレクトリ</li>
+<li>指定のMMLファイルにディレクトリ名を含んでいた場合、そのディレクトリ</li>
+<li>このオプションで指定されたディレクトリ</li>
+</ol>
 
 <h4>-o</h4>
 <p>

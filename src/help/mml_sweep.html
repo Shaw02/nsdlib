@@ -27,9 +27,14 @@
 <div class='block'>
 <h3>定義（Define）</h3>
 
-<h4>APU</h4>
+<h4>APU（パルス波）</h4>
 <code><pre>
         s<var>speed</var>,<var>depth</var>
+</pre></code>
+
+<h4>APU（三角波）</h4>
+<code><pre>
+        s<var>time</var>
 </pre></code>
 
 <h4>FDS</h4>
@@ -60,7 +65,7 @@
 <div class='block'>
 <h3>引数（Inputs）</h3>
 
-<h4>speed (APU)</h4>
+<h4>speed (APUパルス波)</h4>
 <p>
 レジスタ書き込み値の上位4bitです。<br>
 </p>
@@ -78,7 +83,7 @@
 </table>
 
 
-<h4>depth (APU)</h4>
+<h4>depth (APUパルス波)</h4>
 <p>
 レジスタ書き込み値の下位4bitです。<br>
 </p>
@@ -100,6 +105,18 @@
 <tr><td>13		</td><td>3	(5)	</td></tr>
 <tr><td>14		</td><td>2	(6)	</td></tr>
 <tr><td>15		</td><td>1	(7)	</td></tr>
+</table>
+
+<h4>time (APU三角波)</h4>
+<p>
+発音時のリニアカウンタ値（$4008番地に書く値）を指定します。（Default: <var>time</var> = 255）<br>
+この値を指定することで、240[Hz]単位で、ハードウェアによる自動的なKeyOffが行えます。<br>
+</p>
+<table>
+<tr><th>value		</th><th>Depth	(Shift value)	</th></tr>
+<tr><td>0 ～ 127	</td><td>リニアカウンタ設定	（0[msec]～529[msec]）	</td></tr>
+<tr><td>128			</td><td>発音しない。			</td></tr>
+<tr><td>129～255	</td><td>リニアカウンタoff<br>（指定の音長、ゲートにより、ソフトウェアでKeyOffします。）	</td></tr>
 </table>
 
 <h4>bias (FDS)</h4>

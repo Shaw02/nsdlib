@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Option.h"
 
+
 #ifdef _WIN32
+// WINDOWSのみ、'/'に対応する。
 #define OPTCHK (argv[iCount][0]=='/')||(argv[iCount][0]=='-')
 #else
 // unix系ではスラッシュはディレクトリの区切りに使われる為、失敗する事がある
@@ -15,8 +17,7 @@
 //			int		argc	オプション文字列の数
 //			_TCHAR*	argv[]	オプション文字列
 //	●返値
-//			SND.name[]		変換元のSNDファイル
-//			MML.name[]		変換先のMMLファイル
+//			無し
 //	●備考
 //			オプションにファイル名が指定されない場合は、ヘルプ表示して終了
 //==============================================================
@@ -28,6 +29,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	opt(false),
 	fErr(false),
 	flag_TickCount(true),
+	flag_SearchPass(false),
 	cDebug(0)
 {
 
@@ -40,6 +42,11 @@ OPSW::OPSW(int argc, char* argv[]):
 	int		iOptionChk;			//オプションチェック用　ポインタ
 	char	cOption;			//オプションチェック用　文字
 	char	iFlagFilnameExt;	//拡張子あったかのフラグ
+
+	//検索パス
+	string	str_code	= "";
+	string	str_dmc		= "";
+	string	str_inc		= "";
 
 	//----------------------------------
 	//■オプション処理
@@ -91,9 +98,20 @@ OPSW::OPSW(int argc, char* argv[]):
 					flag_TickCount = false;
 					break;
 				//--------
+				//Search Pass
+				case 's' :
+				case 'S' :
+					flag_SearchPass = true;
+					break;
+				//--------
 				//Debugの指定
 				case 'D' :
-					iResult=sscanf(argv[iCount],"/D%d",&cDebug);
+					//0x01:	Class Object Creat
+					//0x02:	Address settlement
+					//0x04:	Music File Outputing
+					//0x40:	Class Object Clear	
+					//0x80:	Class Object Delete
+					iResult=sscanf(argv[iCount],"-D%d",&cDebug);
 					if((iResult==NULL)||(iResult==EOF)){
 						opError(L"-D");
 						break;
@@ -120,6 +138,27 @@ OPSW::OPSW(int argc, char* argv[]):
 						opError(L"-l Code ファイルが2回以上指定されました。");
 						break;
 					};
+					break;
+				//--------
+				//ROMコードの検索パス
+				case 'c' :
+				case 'C' :
+					str_code += &argv[iCount][2];
+					str_code.append(1, _PATH_SPLIT);
+					break;
+				//--------
+				//⊿PCMの検索パス
+				case 'p' :
+				case 'P' :
+					str_dmc += &argv[iCount][2];
+					str_dmc.append(1, _PATH_SPLIT);
+					break;
+				//--------
+				//インクルードファイルの検索パス
+				case 'i' :
+				case 'I' :
+					str_inc += &argv[iCount][2];
+					str_inc.append(1, _PATH_SPLIT);
 					break;
 				//--------
 				//ファイルの指定
@@ -242,9 +281,46 @@ OPSW::OPSW(int argc, char* argv[]):
 		strNSFname+=".nsf";
 	};
 
+	//----------------------------------
+	//◆検索パスの設定
 
-	//--------------
-	//
+	//MMLのディレクトリを取得
+	iCount	= 0;
+	iResult	= 0;
+	while(iCount < strMMLname.size()){
+		if((strMMLname[iCount] == '\\') || (strMMLname[iCount] == '/')){
+			iResult = iCount;
+		}
+		iCount++;
+	}
+
+	//優先順位１　カレントパス
+	//優先順位２　MMLファイルが存在するパス
+	if(iResult > 0){
+		string	str_mmldir = "";
+		iCount	= 0;
+		while(iCount < iResult){
+			str_mmldir += strMMLname[iCount];
+			iCount++;
+		}
+		m_pass_code.add(&str_mmldir);
+		m_pass_dmc.add(&str_mmldir);
+		m_pass_inc.add(&str_mmldir);
+	}
+
+	//優先順位３　環境変数で指定のパス
+	m_pass_code.add(getenv("PATH"));
+	m_pass_dmc.add(getenv("DMC_INCLUDE"));
+
+	//優先順位４　オプションで指定のパス
+	m_pass_code.add(&str_code);
+	m_pass_dmc.add(&str_dmc);
+	m_pass_inc.add(&str_inc);
+
+
+
+	//----------------------------------
+	//◆
 
 	//	to do	その他のオプションを追加したときは、この辺に追記する。
 
@@ -256,6 +332,16 @@ OPSW::OPSW(int argc, char* argv[]):
 //	cout << "ASM = " << strASMname << endl;
 //	cout << "C   = " << strCname << endl;
 
+/*
+	cout << "code:" << endl;
+	m_pass_code.debug();
+
+	cout << "dmc:" << endl;
+	m_pass_dmc.debug();
+
+	cout << "inc:" << endl;
+	m_pass_inc.debug();
+*/
 
 };
 //==============================================================
@@ -272,14 +358,18 @@ void	OPSW::print_help(){
 				L"\n"
 				L"  Usage : nsc [ -options ] [file(.mml)]\n"
 				L"\n"
-				L"  -a			Compile to assembly langage.\n"
-				L"  -n			Compile to NSF music format.\n"
-				L"  -e			Error/Warning messages out the stadard error.\n"
-				L"  -t			Disable tick counting.\n"
-				L"  -l[file(.bin)]	Filename of the rom code for NSF.\n"
-				L"  -fa[file(.s  )]	Filename of the output assembly langage file.\n"
-				L"  -fn[file(.nsf)]	Filename of the output NSF music format.\n"
-				L"  -h			Print the this help."	<<	endl;
+				L"  -A			Compile to assembly langage.\n"
+				L"  -N			Compile to NSF music format.\n"
+				L"  -E			Error/Warning messages out the stadard error.\n"
+				L"  -T			Disable tick counting.\n"
+				L"  -S			Enable outout the search pass result.\n"
+				L"  -L[file(.bin)]	Filename of the rom code for NSF.\n"
+				L"  -FA[file(.s  )]	Filename of the output assembly langage file.\n"
+				L"  -FN[file(.nsf)]	Filename of the output NSF music format.\n"
+				L"  -C[dir]		Search pass of the rom code for NSF.\n"
+				L"  -P[dir]		Search pass of the delta-pcm.\n"
+				L"  -I[dir]		Search pass of the include file.\n"
+				L"  -H			Print the this help."	<<	endl;
 
 	nsc_exit(EXIT_SUCCESS);
 

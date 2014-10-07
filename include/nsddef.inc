@@ -520,6 +520,7 @@ PSG_Envelope_Form	= $0D
 ;Voice
 .define	__apu_voice_set1	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5
 .define	__apu_voice_set2	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5 + 1
+.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
 .define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
 .define	__se_voice_set1		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency  + nsd::TR_BGM5
 .define	__se_voice_set2		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note       + nsd::TR_BGM5

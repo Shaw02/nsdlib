@@ -69,7 +69,7 @@ public:
 	void	make_bin(size_t rom_size, int ptOffset);
 
 	//保存フェーズ
-	void	saveNSF(const char*	strFileName, bool opt);
+	void	saveNSF(const char*	strFileName);
 	void	saveASM(const char*	strFileName);
 
 	void	Err(const wchar_t msg[]);

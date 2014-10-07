@@ -576,8 +576,6 @@ void	Patch::setN(MMLfile* MML, int note)
 		m_now_Patch->fEvol	= false;
 		m_now_Patch->fEm	= false;
 		m_now_Patch->fEn	= false;
-		m_now_Patch->fKey	= false;
-		m_now_Patch->fSweep	= false;
 		m_now_Patch->fSub	= false;
 		m_now_Patch->fGate_q = false;
 		m_now_Patch->fGate_u = false;

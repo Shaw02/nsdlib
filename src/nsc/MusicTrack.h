@@ -275,8 +275,8 @@ public:
 					f_opt_Key			= false;	//
 					f_opt_Sweep			= false;	//
 					f_opt_Sub			= false;	//
-					if((echo_flag == true) && (echo_slur == false)){
-						echo_vol_ret	= true;		//
-					}
+			//		if((echo_flag == true) && (echo_slur == false)){
+			//			echo_vol_ret	= true;		//
+			//		}
 				}
 };

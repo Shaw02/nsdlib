@@ -14,6 +14,7 @@ public:
 					FileInput(void);
 					~FileInput(void);
 			void	fileopen(const char*	_strFileName);
+			void	fileopen(const char*	_strFileName,SearchPass* _pass);
 			void	StreamPointerAdd(long iSize);
 			void	StreamPointerMove(long iSize);
 			void	Back(void);

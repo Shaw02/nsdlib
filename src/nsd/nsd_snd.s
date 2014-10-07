@@ -275,7 +275,7 @@ _nsd_ch2_keyon:
 
 _nsd_ch3_keyon:
 	;Hardware key off for ch3
-	lda	#$FF
+	lda	__apu_tri_time
 	sta	APU_TRICTRL1
 
 	lda	#$00
@@ -1785,7 +1785,7 @@ _nsd_psg_ch3_volume:
 .rodata
 JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	.addr	_nsd_ch2_sweep		;BGM ch2 Pulse
-	.addr	Exit			;BGM ch3 Triangle	-- no process --
+	.addr	_nsd_ch3_time		;BGM ch3 Triangle	-- no process --
 	.addr	Exit			;BGM ch4 Noize		-- no process --
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
 .ifdef	FDS
@@ -1874,15 +1874,19 @@ _nsd_se2_sweep:
 	sta	APU_PULSE2RAMP
 	rts
 
+;---------------------------------------
+_nsd_ch3_time:
+	sta	__apu_tri_time
+	rts
 .endproc
-
 ;---------------------------------------
 .ifdef	FDS
-_nsd_fds_sweep_bias:
+.proc	_nsd_fds_sweep_bias
 	and	#$7F
 	sta	FDS_Sweep_Bias
 	sta	__fds_sweepbias
 	rts
+.endproc
 .endif
 
 ;---------------------------------------

@@ -39,7 +39,9 @@
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.proc	nsd_keyon
+.macro	_NSD_keyon
+
+	.local	exit
 
 	;Portamento
 	lda	__por_depth,x
@@ -95,11 +97,13 @@
 	and	#nsd_mode::voice	;音量エンベロープが無効だったら
 	bne	@L2			;ここでKeyOn時の音色にする。
 	lda	__env_voice,x		;
-	jmp	_nsd_snd_voice		;
+	jmp	_nsd_snd_voice		;	ここは、 JMP で良い。
+					;	macroの呼び出し後、"rts"がある。
 @L2:
 
-exit:	rts
-.endproc
+exit:
+
+.endmacro
 
 ;=======================================================================
 ;		nsd_keyoff
@@ -111,19 +115,23 @@ exit:	rts
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.proc	nsd_keyoff
+.macro	_NSD_keyoff
+
+	.local	Freq_End
+	.local	Note_End
+	.local	Voice_End
+	.local	Volume_End
+	.local	exit
 
 	; to do	tai check
 	lda	__tai,x
 	and	#$01
-	bne	exit0			;今回の音符がタイ・スラーだった終了
+	jne	exit			;今回の音符がタイ・スラーだった終了
 	lda	__chflag,x
 	and	#nsd_chflag::KeyOff
 	cmp	#nsd_chflag::KeyOff
-	beq	done			;Key On(=3)の時のみ、処理。
-exit0:
-	rts
-done:
+	jne	exit			;Key On(=3)の時のみ、処理。
+
 	;Software key Off
 	lda	__gatemode,x
 	and	#nsd_mode::gatemode
@@ -139,7 +147,7 @@ done:
 	;-----------------------
 	;以降は、⊿PCMでは不要
 	cpx	#nsd::TR_BGM5
-	beq	exit0
+	jeq	exit
 
 	;Portamento
 	lda	#$00
@@ -239,11 +247,12 @@ Volume_End:
 	beq	@VoiceE			;gatemode = 1 だったら、
 	lda	__gatemode,x		;ここでKeyOff時の音色にする。
 	shr	a, 4			; a = release voice
-	jmp	_nsd_snd_voice		;
+	jsr	_nsd_snd_voice		;
 @VoiceE:
 
-exit:	rts
-.endproc
+exit:
+
+.endmacro
 
 ;=======================================================================
 ;		nsd_load_sequence;
@@ -484,8 +493,10 @@ opaddr:	.addr	nsd_op00
 .ifdef	DPCMBank
 	ora	__Sequence_ptr,x
 .endif
-	beq	Exit
+	bne	Done
+	rts
 
+Done:
 	stx	__channel		;channel <- x
 
 	;-------------------------------
@@ -495,22 +506,101 @@ opaddr:	.addr	nsd_op00
 	dec	__Length_ctr,x		;length--
 	lda	__Length_ctr,x
 	cmp	__Gate,x
-	bne	GateTime_Exit		; if(__Length_ctr == __Gate){
-	jsr	nsd_keyoff		; 	nsd_keyoff();
+	jne	GateTime_Exit		; if(__Length_ctr == __Gate){
+	_NSD_keyoff			; 	nsd_keyoff();
 GateTime_Exit:				; }
 	lda	__Length_ctr,x
 	beq	Sequence		; if(__Length_ctr != 0){ return(); };
 Exit:
 	rts
 
-	;-------------------------------
-	;Sequence		(length == 0)
+
+;=======================================================================
+;		Sequence
+;=======================================================================
+
 Sequence:
 	jsr	nsd_load_sequence	;[6]
 
 	tay
 	asl	a
-	bcc	Control			;[2]	a >= 80 ?
+	bcs	Note			;[2]	a >= 80 ?
+
+;=======================================================================
+;		Control
+;=======================================================================
+
+	;-----------------------
+	;op-code = 0x00 - 0x7F
+Control:
+;	cmp	#$80			;[2]
+;	bcs	Short_Control		;[2]
+	bmi	Short_Control
+
+	;---------------
+	;op-code = 0x00 - 0x3F
+;	asl				;[2]
+	tay				;[2]	x <- a * 2
+	lda	opaddr,y		;[4]
+	sta	__ptr			;[3]
+	lda	opaddr + 1,y		;[4]
+	sta	__ptr + 1		;[3]
+	jmp	(__ptr)			;[5]	jump for each op-code
+
+	;---------------
+	;op-code = 0x40 - 0x7F
+Short_Control:
+	asl	a
+	;---------------
+	;op-code = 0x40 - 0x7F
+	;---------------
+	;0x40 - 0x4F
+op40:	
+	asl	a
+	bcs	op60
+	bmi	op50
+	;Set default length
+	tya
+	and	#$0F
+	tay
+	lda	length,y
+	sta	__length,x		;__length = length[a & 0x0F];
+	jmp	Sequence
+	;---------------
+	;0x50 - 0x5F
+op50:	
+	;Set gate time (1)
+	tya
+	and	#$0F
+	sta	__gate_q,x		;__gate_q = a & 0x0F;
+	jmp	Sequence
+	;---------------
+	;0x60 - 0x6F
+op60:	
+	bmi	op70
+	;Set volume
+	tya
+	and	#$0F
+	sta	__tmp
+	lda	__volume,x
+	and	#$F0
+	ora	__tmp
+	sta	__volume,x		;__volume = (__volume & 0xF0) | (a & 0x0F);
+	jmp	Sequence
+	;---------------
+	;0x70 - 0x7F
+op70:	;Ser release volume
+	asl	a
+	sta	__tmp
+	lda	__volume,x
+	and	#$0F
+	ora	__tmp
+	sta	__volume,x		;__volume = (__volume & 0x0F) | (a << 4);
+	jmp	Sequence
+
+;=======================================================================
+;		Note
+;=======================================================================
 
 	;-----------------------
 	;op-code = 0x80 - 0xFF
@@ -584,79 +674,8 @@ NoteSet:
 	sta	__note,x
 	lda	#0
 	sta	__trans_one,x	;0 reset
-	jmp	nsd_keyon
-
-;=======================================================================
-;		Control
-;=======================================================================
-
-	;-----------------------
-	;op-code = 0x00 - 0x7F
-Control:
-;	cmp	#$80			;[2]
-;	bcs	Short_Control		;[2]
-	bmi	Short_Control
-
-	;---------------
-	;op-code = 0x00 - 0x3F
-;	asl				;[2]
-	tay				;[2]	x <- a * 2
-	lda	opaddr,y		;[4]
-	sta	__ptr			;[3]
-	lda	opaddr + 1,y		;[4]
-	sta	__ptr + 1		;[3]
-	jmp	(__ptr)			;[5]	jump for each op-code
-
-	;---------------
-	;op-code = 0x40 - 0x7F
-Short_Control:
-	asl	a
-	;---------------
-	;op-code = 0x40 - 0x7F
-	;---------------
-	;0x40 - 0x4F
-op40:	
-	asl	a
-	bcs	op60
-	bmi	op50
-	;Set default length
-	tya
-	and	#$0F
-	tay
-	lda	length,y
-	sta	__length,x		;__length = length[a & 0x0F];
-	jmp	Sequence
-	;---------------
-	;0x50 - 0x5F
-op50:	
-	;Set gate time (1)
-	tya
-	and	#$0F
-	sta	__gate_q,x		;__gate_q = a & 0x0F;
-	jmp	Sequence
-	;---------------
-	;0x60 - 0x6F
-op60:	
-	bmi	op70
-	;Set volume
-	tya
-	and	#$0F
-	sta	__tmp
-	lda	__volume,x
-	and	#$F0
-	ora	__tmp
-	sta	__volume,x		;__volume = (__volume & 0xF0) | (a & 0x0F);
-	jmp	Sequence
-	;---------------
-	;0x70 - 0x7F
-op70:	;Ser release volume
-	asl	a
-	sta	__tmp
-	lda	__volume,x
-	and	#$0F
-	ora	__tmp
-	sta	__volume,x		;__volume = (__volume & 0x0F) | (a << 4);
-	jmp	Sequence
+	_NSD_keyon
+	rts
 
 ;=======================================================================
 ;		opcode	0x00:	End of Track / End of Subroutine

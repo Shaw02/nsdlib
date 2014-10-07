@@ -802,7 +802,7 @@ void	MusicFile::make_bin(size_t rom_size, int ptOffset)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::saveNSF(const char*	strFileName,bool opt)
+void	MusicFile::saveNSF(const char*	strFileName)
 {
 
 	unsigned	int		i,j;
@@ -815,10 +815,10 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 	NSF_Header*			nsf			= (NSF_Header*)romimg;
 	FileInput*			_romcode	= new FileInput();
 				bool	dpcm_bank	= false;
-				int		iSizeLimit;
+				bool	opt			= cOptionSW->opt;
 
 	//NSF用コードの転送
-	_romcode->fileopen(Header.romcode.c_str());
+	_romcode->fileopen(Header.romcode.c_str(), &(cOptionSW->m_pass_code));
 	bin_size = _romcode->GetSize();
 	_romcode->read(romimg, bin_size);
 	_romcode->close();
@@ -869,9 +869,10 @@ void	MusicFile::saveNSF(const char*	strFileName,bool opt)
 		//------------------------------
 		//Bank対応bin？
 
+		unsigned	int	iSizeLimit = 0x10000;	//拡張RAMへの転送有り
+
 		//シーケンスのバイナリを生成
 		make_bin(bin_size, 0x0000);
-		iSizeLimit = 0x10000;	//拡張RAMへの転送有り
 
 		if(Header.bank == false){
 			Err(L"指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。");
