@@ -56,7 +56,7 @@ private:
 
 //ÉÅÉìÉoÅ[ä÷êî
 public:
-	MusicFile(MMLfile* MML, string _code, const wchar_t _strName[]=L"==== [ Music ] ====");
+	MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]=_T("==== [ Music ] ===="));
 	~MusicFile(void);
 
 	void				TickCount(void);
@@ -72,7 +72,7 @@ public:
 	void	saveNSF(const char*	strFileName);
 	void	saveASM(const char*	strFileName);
 
-	void	Err(const wchar_t msg[]);
-	void	Warning(const wchar_t msg[]);
+	void	Err(const _CHAR msg[]);
+	void	Warning(const _CHAR msg[]);
 
 };

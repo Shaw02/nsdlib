@@ -181,11 +181,13 @@ Frequency:
 
 	cpy	#$00
 	beq	Por_PL
-Por_MI:	cmp	__por_target,x		;if (a - __por_target < 0) then 
+Por_MI:	cmp	__por_target,x		;if (a - __por_target <= 0) then 
 	bcc	Por_O
+	beq	Por_O
 	bcs	Por_S
-Por_PL:	cmp	__por_target,x		;if (a - __por_target > 0) then 
+Por_PL:	cmp	__por_target,x		;if (a - __por_target >= 0) then 
 	bcc	Por_S
+;	beq	Por_0
 ;	bcs	Por_O
 
 Por_O:	lda	__por_target,x		;ターゲットに到達した時の処理

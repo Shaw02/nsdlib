@@ -7,11 +7,11 @@
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
 //		unsigned	int		_id			N163番号
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-N163::N163(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
+N163::N163(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
 	f_Use(false),
 	m_id(_id)
@@ -58,7 +58,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err(L"ブロックの開始を示す{が見つかりません。");
+			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
 		}
 	}
 
@@ -69,7 +69,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err(L"ブロックの終端を示す`}'がありません。");
+			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
 		}
 
 		//１つ戻る
@@ -83,7 +83,7 @@ const	static	Command_Info	Command[] = {
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<0) || (i>15)){
-					MML->Err(L"n163の波形パターンは0～15の範囲で指定して下さい。");
+					MML->Err(_T("n163の波形パターンは0～15の範囲で指定して下さい。"));
 				}
 				WAVE.append((char)1, (char)i & 0x0F);
 				ptN163++;
@@ -94,15 +94,15 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(L"unknown command");
+				MML->Err(_T("unknown command"));
 				break;
 		}
 	}
 	if(ptN163 > 256){
-		MML->Err(L"サンプル長が256個を越えています。");
+		MML->Err(_T("サンプル長が256個を越えています。"));
 	}
 	if((ptN163 & 0x03) != 0){
-		MML->Err(L"サンプル長は4の倍数で記述して下さい。");
+		MML->Err(_T("サンプル長は4の倍数で記述して下さい。"));
 	}
 	ptN163 >>= 1;
 	code.append((char)1, (unsigned char)ptN163);

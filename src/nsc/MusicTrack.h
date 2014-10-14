@@ -150,7 +150,7 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-			MusicTrack(MMLfile* MML, const wchar_t _strName[] = L"==== [ Music Track ]====");
+			MusicTrack(MMLfile* MML, const _CHAR _strName[] = _T("==== [ Music Track ]===="));
 			~MusicTrack(void);
 
 	unsigned	int		TickCount(MusicFile* MUS, unsigned int iLength);

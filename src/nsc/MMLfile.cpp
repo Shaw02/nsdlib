@@ -24,6 +24,7 @@ MMLfile::MMLfile(const char*	strFileName):
 	iTieMode(0),
 	timebase(24),
 	octave_reverse(false),
+	q_reverse(false),
 	rest(2),
 	wait(0),
 	QMax(8),
@@ -146,7 +147,7 @@ void	MMLfile::include()
 	itFiles = ptcFiles.begin();
 	while(itFiles != ptcFiles.end()){
 		if( *(*itFiles)->GetFilename() == _name ){
-			Err(L"既に同じファイルが#includeで開かれています。");
+			Err(_T("既に同じファイルが#includeで開かれています。"));
 		}
 		itFiles++;
 	}
@@ -192,20 +193,20 @@ void	MMLfile::SetMacro(int i_Lv)
 	//------------------
 	//マクロ名の重複チェック
 	if(ptcMac.count(macro_name) != 0){
-		Err(L"既にそのマクロ名は存在しています。");
+		Err(_T("既にそのマクロ名は存在しています。"));
 	}
 
 	//------------------
 	//マクロ内容の取得
 	while(cRead() != '{'){
 		if(eof()){
-			Err(L"文字列開始を示す{が見つかりません。");
+			Err(_T("文字列開始を示す{が見つかりません。"));
 		}
 	}
 
 	while(('}' != (cData = cRead())) || (iKakko != 0)){
 		if(eof()){
-			Err(L"文字列終了を示す}が見つかりません。");
+			Err(_T("文字列終了を示す}が見つかりません。"));
 		}
 		if(cData == '{'){
 			iKakko++;
@@ -312,7 +313,7 @@ void	MMLfile::CallMacro(void)
 	//------------------
 	//マクロ名の存在チェック
 	if(ptcMac.count(_name) == 0){
-		Err(L"そのマクロ名は存在していません。");
+		Err(_T("そのマクロ名は存在していません。"));
 	}
 
 	//------------------
@@ -320,7 +321,7 @@ void	MMLfile::CallMacro(void)
 	i = 0;
 	while(i < p_macro){
 		if(s_macro[i].name == _name){
-			Err(L"マクロ内で同じマクロを呼び出しています。");
+			Err(_T("マクロ内で同じマクロを呼び出しています。"));
 		}
 		i++;
 	}
@@ -358,7 +359,7 @@ void	MMLfile::SetPatch(void)
 
 	//重複チェック
 	if(ptcPatch.count(i) != 0){
-		Err(L"Patch()ブロックで同じ番号が指定されました。");
+		Err(_T("Patch()ブロックで同じ番号が指定されました。"));
 	}
 
 	ptcPatch[i] =  new Patch(this, i);
@@ -668,7 +669,7 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 						do{
 							cData = cRead();		//次のバイトを読み込み
 							if(eof()){
-								Err(L"コメント終端 */ がありません。");
+								Err(_T("コメント終端 */ がありません。"));
 							}
 						}while(cData != '*');
 						cData = cRead();
@@ -679,7 +680,7 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 
 				//それ以外
 				default:
-					Err(L"コメントですか？");
+					Err(_T("コメントですか？"));
 					break;
 			}
 
@@ -710,13 +711,13 @@ string	MMLfile::GetString(void)
 	string	_str;
 	while(cRead() != '"'){
 		if(eof()){
-			Err(L"文字列開始を示す\"が見つかりません。");
+			Err(_T("文字列開始を示す\"が見つかりません。"));
 		}
 	}
 
 	while('"' != (cData = cRead())){
 		if(eof()){
-			Err(L"文字列終了を示す\"が見つかりません。");
+			Err(_T("文字列終了を示す\"が見つかりません。"));
 		}
 		_str += cData;
 	}
@@ -740,7 +741,7 @@ int	MMLfile::GetNum(void)
 
 	while(cRead() != '('){
 		if(eof()){
-			Err(L"数値開始を示す(が見つかりません。");
+			Err(_T("数値開始を示す(が見つかりません。"));
 		}
 	}
 
@@ -748,7 +749,7 @@ int	MMLfile::GetNum(void)
 
 	while(')' != (cData = cRead())){
 		if(eof()){
-			Err(L"数値終了を示す)が見つかりません。");
+			Err(_T("数値終了を示す)が見つかりません。"));
 		}
 	}
 	return(iResult);
@@ -821,7 +822,7 @@ int		MMLfile::GetInt(void)
 		}
 
 	} else {
-			Err(L"数値以外が指定されました。");
+			Err(_T("数値以外が指定されました。"));
 	}
 
 	//ポインタを１つ戻す
@@ -864,17 +865,17 @@ int	MMLfile::readLength(int DefaultLength){
 		if((cData >= '0') && (cData <= '9')){
 			i = GetInt();
 			if(i==0){
-				Err(L"音長に0は使えません。");
+				Err(_T("音長に0は使えません。"));
 			}
 			iLength = (timebase * 4) / i;
 			iMod	= (timebase * 4) % i;
 			if(iMod != 0){
-				Warning(L"音長の計算で割り切れませんでした。小数点は切捨てします。");
+				Warning(_T("音長の計算で割り切れませんでした。小数点は切捨てします。"));
 			}
 		} else {
 			//付点だけ記述される場合。
 			if(DefaultLength == -1){
-				Err(L"音長を記述して下さい。");
+				Err(_T("音長を記述して下さい。"));
 			} else {
 				iLength = DefaultLength;
 			}
@@ -884,12 +885,12 @@ int	MMLfile::readLength(int DefaultLength){
 		//付点
 		while((cData = cRead()) == '.'){
 			if(iLength == -1){
-				Err(L"音長の記述なしに付点を使う場合は、前もってl コマンドを記述して下さい。");
+				Err(_T("音長の記述なしに付点を使う場合は、前もってl コマンドを記述して下さい。"));
 			}
 			iMod = (iDot & 0x01);
 			iDot >>= 1;
 			if(iMod != 0){
-				Warning(L"付点の計算で割り切れませんでした。小数点は切捨てします。");
+				Warning(_T("付点の計算で割り切れませんでした。小数点は切捨てします。"));
 			}
 			iLength += iDot;
 		};
@@ -905,7 +906,7 @@ int	MMLfile::readLength(int DefaultLength){
 	} else {
 		//引数を書かない場合
 		if(DefaultLength == -1){
-			Err(L"音長を記述して下さい。");
+			Err(_T("音長を記述して下さい。"));
 		} else {
 			iLength = -1;
 		}
@@ -949,7 +950,7 @@ int		MMLfile::GetLength(int DefaultLength)	//
 		iCalc = readLength(DefaultLength);
 
 		if(iCalc == -1){
-		//	Warning(L"音長の加減算値に数値以外が指定されています。");
+		//	Warning(_T("音長の加減算値に数値以外が指定されています。"));
 			iCalc = DefaultLength;
 		}
 
@@ -967,7 +968,7 @@ int		MMLfile::GetLength(int DefaultLength)	//
 	}
 
 	if((iLength < 1) || (iLength > 255)){
-		Err(L"音長は、%1（96）～%255（1+1+2+8）の間で指定して下さい。255[tick]を超える場合はタイ`&', `^'を使って下さい。");
+		Err(_T("音長は、%1（96）～%255（1+1+2+8）の間で指定して下さい。255[tick]を超える場合はタイ`&', `^'を使って下さい。"));
 	}
 
 	return(iLength);
@@ -1006,22 +1007,22 @@ int	MMLfile::GetCommandID(const Command_Info _command[], unsigned int _size)
 //		エラー処理
 //--------------------------------------------------------------
 //	●引数
-//		const	wchar_t	msg[]	エラーメッセージ
+//		const	_CHAR	msg[]	エラーメッセージ
 //	●返値
 //				無し
 //==============================================================
-void	MMLfile::Err(const wchar_t msg[])
+void	MMLfile::Err(const _CHAR msg[])
 {
 
 	//エラー内容を表示
 	if(cOptionSW->fErr == true){
 		//現在のファイル名と、行数を表示
 		cerr << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
-		wcerr << msg << endl;
+		_CERR << msg << endl;
 	} else {
 		//現在のファイル名と、行数を表示
 		cout << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
-		wcout << msg << endl;
+		_COUT << msg << endl;
 	}
 
 	//異常終了
@@ -1032,21 +1033,21 @@ void	MMLfile::Err(const wchar_t msg[])
 //		ワーニング処理
 //--------------------------------------------------------------
 //	●引数
-//		const	wchar_t	msg[]	ワーニングメッセージ
+//		const	_CHAR	msg[]	ワーニングメッセージ
 //	●返値
 //				無し
 //==============================================================
-void	MMLfile::Warning(const wchar_t msg[])
+void	MMLfile::Warning(const _CHAR msg[])
 {
 
 	//ワーニング内容を表示
 	if(cOptionSW->fErr == true){
 		//現在のファイル名と、行数を表示
 		cerr << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
-		wcerr << msg << endl;
+		_CERR << msg << endl;
 	} else {
 		//現在のファイル名と、行数を表示
 		cout << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
-		wcout << msg << endl;
+		_COUT << msg << endl;
 	}
 }

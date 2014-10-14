@@ -169,7 +169,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err(L"ブロックの開始を示す{が見つかりません。");
+			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
 		}
 	}
 
@@ -178,7 +178,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err(L"ブロックの終端を示す`}'がありません。");
+			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
 		}
 
 		//１つ戻る
@@ -242,14 +242,14 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Voice):
 				if(m_now_Patch->fEvoi == true){
-					MML->Err(L"音色エンベロープと同時に定義することはできません。");
+					MML->Err(_T("音色エンベロープと同時に定義することはできません。"));
 				}
 				if(m_now_Patch->fVoi == true){
-					MML->Err(L"音色の２重定義です。");
+					MML->Err(_T("音色の２重定義です。"));
 				}
 				i = MML->GetInt();
 				if( (i<0) || (i>255) ){
-					MML->Err(L"音色は0～255の範囲で指定してください。");
+					MML->Err(_T("音色は0～255の範囲で指定してください。"));
 				}
 				m_now_Patch->iVoi		= i;
 				m_now_Patch->fVoi		= true;
@@ -257,12 +257,12 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(Patch_Off_Evoi):
-				MML->Err(L"音色エンベロープは、@コマンドで無効にできます。");
+				MML->Err(_T("音色エンベロープは、@コマンドで無効にできます。"));
 				break;
 
 			case(Patch_Off_Evol):
 				if(m_now_Patch->fEvol == true){
-					MML->Err(L"音量エンベロープの２重定義です。");
+					MML->Err(_T("音量エンベロープの２重定義です。"));
 				}
 				m_now_Patch->fEvol		= true;
 				m_now_Patch->sw_Evol	= false;
@@ -270,7 +270,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Off_Em):
 				if(m_now_Patch->fEm == true){
-					MML->Err(L"音程エンベロープの２重定義です。");
+					MML->Err(_T("音程エンベロープの２重定義です。"));
 				}
 				m_now_Patch->fEm		= true;
 				m_now_Patch->sw_Em		= false;
@@ -278,7 +278,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Off_En):
 				if(m_now_Patch->fEn == true){
-					MML->Err(L"ノートエンベロープの２重定義です。");
+					MML->Err(_T("ノートエンベロープの２重定義です。"));
 				}
 				m_now_Patch->fEn		= true;
 				m_now_Patch->sw_En		= false;
@@ -286,10 +286,10 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Evoi):
 				if(m_now_Patch->fEvoi == true){
-					MML->Err(L"音色エンベロープの２重定義です。");
+					MML->Err(_T("音色エンベロープの２重定義です。"));
 				}
 				if(m_now_Patch->fVoi == true){
-					MML->Err(L"音色と同時に定義することはできません。");
+					MML->Err(_T("音色と同時に定義することはできません。"));
 				}
 				m_now_Patch->iEvoi		= MML->GetInt();
 				m_now_Patch->fEvoi		= true;
@@ -298,7 +298,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Evol):
 				if(m_now_Patch->fEvol == true){
-					MML->Err(L"音量エンベロープの２重定義です。");
+					MML->Err(_T("音量エンベロープの２重定義です。"));
 				}
 				m_now_Patch->iEvol		= MML->GetInt();
 				m_now_Patch->fEvol		= true;
@@ -307,7 +307,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Em):
 				if(m_now_Patch->fEm == true){
-					MML->Err(L"音程エンベロープの２重定義です。");
+					MML->Err(_T("音程エンベロープの２重定義です。"));
 				}
 				m_now_Patch->iEm		= MML->GetInt();
 				m_now_Patch->fEm		= true;
@@ -316,7 +316,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_En):
 				if(m_now_Patch->fEn == true){
-					MML->Err(L"ノートエンベロープの２重定義です。");
+					MML->Err(_T("ノートエンベロープの２重定義です。"));
 				}
 				m_now_Patch->iEn		= MML->GetInt();
 				m_now_Patch->fEn		= true;
@@ -325,7 +325,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Gate_q):
 				if(m_now_Patch->fGate_q == true){
-					MML->Err(L"qコマンドの２重定義です。");
+					MML->Err(_T("qコマンドの２重定義です。"));
 				}
 				m_now_Patch->iGate_q	= MML->GetInt();
 				m_now_Patch->fGate_q	= true;
@@ -333,7 +333,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Gate_u):
 				if(m_now_Patch->fGate_u == true){
-					MML->Err(L"uコマンドの２重定義です。");
+					MML->Err(_T("uコマンドの２重定義です。"));
 				}
 				cData = MML->GetChar();
 				if(cData == '0'){
@@ -348,7 +348,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_KeyShift):
 				if(m_now_Patch->fKey == true){
-					MML->Err(L"移調の２重定義です。");
+					MML->Err(_T("移調の２重定義です。"));
 				}
 				m_now_Patch->iKey		= MML->GetInt();
 				m_now_Patch->fKey		= true;
@@ -356,7 +356,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Sweep):
 				if(m_now_Patch->fSweep == true){
-					MML->Err(L"sコマンドの２重定義です。");
+					MML->Err(_T("sコマンドの２重定義です。"));
 				} else {
 					int		iSpeed;
 					int		iDepth;
@@ -366,17 +366,17 @@ const	static	Command_Info	Command[] = {
 					cData	= MML->GetChar();
 					if(cData != ','){
 						if( (iSpeed < 0) || (iSpeed > 255) ){
-							MML->Err(L"sコマンドは0～255の範囲で指定してください。");
+							MML->Err(_T("sコマンドは0～255の範囲で指定してください。"));
 						}
 						MML->Back();
 						c = (unsigned char)iSpeed;
 					} else {
 						if( (iSpeed < 0) || (iSpeed > 15) ){
-							MML->Err(L"sコマンドの第1パラメータは0～15の範囲で指定してください。");
+							MML->Err(_T("sコマンドの第1パラメータは0～15の範囲で指定してください。"));
 						}
 						iDepth = MML->GetInt();
 						if( (iDepth < 0) || (iDepth > 15) ){
-							MML->Err(L"sコマンドの第2パラメータは0～15の範囲で指定してください。");
+							MML->Err(_T("sコマンドの第2パラメータは0～15の範囲で指定してください。"));
 						}
 						c = (unsigned char)(((iSpeed & 0x0F) << 4) | (iDepth & 0x0F));
 					}
@@ -387,17 +387,17 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_n163set):
 				if(m_now_Patch->fVoi == true){
-					MML->Err(L"@コマンドが既に指定されています。");
+					MML->Err(_T("@コマンドが既に指定されています。"));
 				}
 				if(m_now_Patch->fEvoi == true){
-					MML->Err(L"E@コマンドが既に指定されています。");
+					MML->Err(_T("E@コマンドが既に指定されています。"));
 				}
 				i = MML->GetInt();
 				if((i<0) || (i>252)){
-					MML->Err(L"n16xの波形開始点は0～252の範囲で指定してください。");
+					MML->Err(_T("n16xの波形開始点は0～252の範囲で指定してください。"));
 				}
 				if((i % 4) != 0){
-					MML->Err(L"n16xの波形開始点は4の倍数で指定してください。");
+					MML->Err(_T("n16xの波形開始点は4の倍数で指定してください。"));
 				}
 				m_now_Patch->iVoi		= i/4;
 				m_now_Patch->fVoi		= true;
@@ -405,14 +405,14 @@ const	static	Command_Info	Command[] = {
 				cData = MML->GetChar();
 				if(cData == ','){
 					if(m_now_Patch->fSweep == true){
-						MML->Err(L"sコマンドが既に指定されています。");
+						MML->Err(_T("sコマンドが既に指定されています。"));
 					}
 					i = MML->GetInt();
 					if((i<4) || (i>256)){
-						MML->Err(L"n16xのサンプル長は4～256の範囲で指定してください。");
+						MML->Err(_T("n16xのサンプル長は4～256の範囲で指定してください。"));
 					}
 					if((i % 4) != 0){
-						MML->Err(L"n16xのサンプル長は4の倍数で指定してください。");
+						MML->Err(_T("n16xのサンプル長は4の倍数で指定してください。"));
 					}
 					m_now_Patch->iSweep		= 64 - (i/4);
 					m_now_Patch->fSweep		= true;
@@ -423,7 +423,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Patch_Sub):
 				if(m_now_Patch->fSub == true){
-					MML->Err(L"サブルーチンの２重定義です。");
+					MML->Err(_T("サブルーチンの２重定義です。"));
 				}
 				m_now_Patch->iSub		= MML->GetInt();
 				m_now_Patch->fSub		= true;
@@ -431,7 +431,7 @@ const	static	Command_Info	Command[] = {
 		
 		//unknown command
 			default:
-				MML->Err(L"unknown command");
+				MML->Err(_T("unknown command"));
 				break;
 		}
 	}
@@ -557,7 +557,7 @@ void	Patch::setN(MMLfile* MML, int note)
 {
 
 	if((note<0) || (note>255)){
-		MML->Err(L"音階の範囲を超えています。");
+		MML->Err(_T("音階の範囲を超えています。"));
 	}
 
 	//パッチの設定

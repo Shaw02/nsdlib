@@ -5,24 +5,33 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include <errno.h>
-
-#include <string.h>
+#ifdef	_UNICODE
+	#define	_CHAR	wchar_t
+	#define _T(x)	L ## x
+	#define _EOF	WEOF
+	#define	_COUT	wcout
+	#define	_CERR	wcerr
+#else
+	#define	_CHAR	char
+	#define _T(x)	x
+	#define _EOF	EOF
+	#define	_COUT	cout
+	#define	_CERR	cerr
+#endif
 
 #ifdef	_WIN32
 	#include <locale>
-#else
-	#include <locale.h>
-#endif
-
-#ifdef _WIN32
 	#define _PATH_SPLIT	';'	// MS系は ;
 #else
+	#include <locale.h>
 	#define _PATH_SPLIT	':'	// UNIX系は :
 #endif
 
 
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+//#include <tchar.h>
 
 #include <string>
 #include <iostream>
@@ -32,9 +41,6 @@
 #include <map>
 
 #include <iomanip>
-
-//#include <tchar.h>
-
 
 /****************************************************************/
 /*			プロトタイプ										*/

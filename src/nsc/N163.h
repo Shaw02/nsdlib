@@ -18,7 +18,7 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-				N163(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"N163");
+				N163(MMLfile* MML, unsigned int _id, const _CHAR _strName[] = _T("N163"));
 				~N163(void);
 		void	setUse(void){f_Use = true;};
 		bool	chkUse(void){return(f_Use);};

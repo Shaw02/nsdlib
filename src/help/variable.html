@@ -260,6 +260,8 @@ typedef struct NSD_work_zp {
 	<td>APU ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
 <tr><td>__apu_voice_set2</td>
 	<td>APU ch2の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_tri_time</td>
+	<td>APU ch3のリニアカウンター値</td></tr>
 <tr><td>__apu_voice_set4</td>
 	<td>APU ch4の音色（レジスタ書込みの為の論理演算用）</td></tr>
 <tr><td>__apu_voice_set1</td>
@@ -555,7 +557,7 @@ typedef struct NSD_work {
 	<td>	</td>
 	<td>	</td>
 	<td>	</td>
-	<td>__apu_voice_set4	</td>
+	<td>__apu_tri_time<br>__apu_voice_set4	</td>
 <tr><td>Envelop_Freq[<var>n</var>]</td>
 	<td>__env_frequency</td>
 	<td>	</td>

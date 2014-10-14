@@ -7,11 +7,11 @@
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
 //		unsigned	int		_id			VRC7音色番号
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-VRC7::VRC7(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
+VRC7::VRC7(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
 	f_Use(false),
 	m_id(_id)
@@ -65,7 +65,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err(L"ブロックの開始を示す{が見つかりません。");
+			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
 		}
 	}
 
@@ -75,7 +75,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err(L"ブロックの終端を示す`}'がありません。");
+			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
 		}
 
 		//１つ戻る
@@ -87,7 +87,7 @@ const	static	Command_Info	Command[] = {
 
 			case(VRC7_Normal):
 				if(_mset == true){
-					MML->Err(L"@, @Rコマンドは１回だけ指定して下さい。");
+					MML->Err(_T("@, @Rコマンドは１回だけ指定して下さい。"));
 				}
 				_mset = true;
 				_mode = 0;
@@ -95,7 +95,7 @@ const	static	Command_Info	Command[] = {
 
 			case(VRC7_Resister):
 				if(_mset == true){
-					MML->Err(L"@, @Rコマンドは１回だけ指定して下さい。");
+					MML->Err(_T("@, @Rコマンドは１回だけ指定して下さい。"));
 				}
 				_mset = true;
 				_mode = 1;
@@ -103,22 +103,22 @@ const	static	Command_Info	Command[] = {
 
 			case(VRC7_Num):
 				if(_mset == false){
-					MML->Err(L"先ずは@, @Rコマンドを記述して下さい。");
+					MML->Err(_T("先ずは@, @Rコマンドを記述して下さい。"));
 				}
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<0) || (i>255) ){
-					MML->Err(L"0～255の範囲で指定して下さい。");
+					MML->Err(_T("0～255の範囲で指定して下さい。"));
 				}
 
 				if(_mode == 0){
 					if(_pt >= 24){
-						MML->Err(L"VRC7(パラメータベース)の引数が24個を超えました。");
+						MML->Err(_T("VRC7(パラメータベース)の引数が24個を超えました。"));
 					}
 					_opll[_pt] = (unsigned char)i;
 				} else {
 					if(_pt >= 8){
-						MML->Err(L"VRC7(レジスタベース)の引数が8個を超えました。");
+						MML->Err(_T("VRC7(レジスタベース)の引数が8個を超えました。"));
 					}
 					code[_pt] = (unsigned char)i;
 				}
@@ -129,14 +129,14 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(L"unknown command");
+				MML->Err(_T("unknown command"));
 				break;
 		}
 	}
 
 	if(_mode == 0){
 		if(_pt < 24){
-			MML->Err(L"VRC7(パラメータベース)の引数が24個に満たないです。");
+			MML->Err(_T("VRC7(パラメータベース)の引数が24個に満たないです。"));
 		}
 
 		//TL FB
@@ -156,7 +156,7 @@ const	static	Command_Info	Command[] = {
 		code[7] = ((_opll[15] & 0x0F) << 4) |  (_opll[16] & 0x0F);
 	} else {
 		if(_pt < 8){
-			MML->Err(L"VRC7(レジスタベース)の引数が8個に満たないです。");
+			MML->Err(_T("VRC7(レジスタベース)の引数が8個に満たないです。"));
 		}
 	}
 }

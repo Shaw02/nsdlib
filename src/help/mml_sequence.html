@@ -85,11 +85,12 @@ SE(<var>n</var>){
 <tr><td><a href="mml_octave.html">o</a></td><td>4</td><td>-</td><td>オクターブ</td></tr>
 <tr><td><a href="mml_gate.html">q</a></td><td>0</td><td>-</td><td>ゲートクオンタイズ（Tick）</td></tr>
 <tr><td><a href="mml_rest.html">r</a><td>`=' (#rest)</td><td>-</td></td><td>休符1</td></tr>
-<tr><td><a href="mml_sweep.html">s</a></td><td>-</td><td>-</td><td>	APU  : スイープ<br>
-												FDS  : Sweep (Modulator) bias<br>
-												VRC7 : サスティン<br>
-												n16x : 波形長設定<br>
-												Sunsoft 5B : Envelop Switch & Type</td></tr>
+<tr><td rowspan='6'><a href="mml_sweep.html">s</a>	</td><td>0, 8 (off)		</td><td>-</td><td>APU(パルス波) : スイープ</td></tr>
+<tr>												</td><td>255  (off)		</td><td>-</td><td>APU(三角波)   : リニアカウンタ</td></tr>
+<tr>												</td><td>0				</td><td>-</td><td>FDS  : Sweep (Modulator) bias</td></tr>
+<tr>												</td><td>0    (off)		</td><td>-</td><td>VRC7 : サスティン</td></tr>
+<tr>												</td><td>56 (32 sample)	</td><td>-</td><td>n16x : 波形長設定</td></tr>
+<tr>												</td><td>0, 0 (off)		</td><td>-</td><td>Sunsoft 5B : Envelop Switch & Type</td></tr>
 <tr><td><a href="mml_tempo.html">t</a><td>120 (#timebase=24時)</td></td><td>-</td><td>テンポ</td></tr>
 <tr><td><a href="mml_tempo.html">t_</a><td>-</td></td><td>-</td><td>相対テンポ</td></tr>
 <tr><td><a href="mml_gate.html">u</a></td><td>0</td><td>-</td><td>前方からのゲートタイム</td></tr>

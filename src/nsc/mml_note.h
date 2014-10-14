@@ -11,7 +11,7 @@ class mml_note :
 {
 //ƒƒ“ƒo[ŠÖ”
 public:
-	mml_note(int _code, int length, int gatetime, bool slur, const wchar_t _strName[]=L"Note");
+	mml_note(int _code, int length, int gatetime, bool slur, const _CHAR _strName[]=_T("Note"));
 	~mml_note(void);
 	void	SetTai(void);
 };

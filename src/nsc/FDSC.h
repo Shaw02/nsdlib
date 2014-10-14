@@ -18,7 +18,7 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-				FDSC(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"FDSC");
+				FDSC(MMLfile* MML, unsigned int _id, const _CHAR _strName[] = _T("FDSC"));
 				~FDSC(void);
 		void	setUse(void){f_Use = true;};
 		bool	chkUse(void){return(f_Use);};

@@ -7,11 +7,11 @@
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
 //		unsigned	int		_id			エンベロープ番号
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-Envelop::Envelop(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
+Envelop::Envelop(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
 	f_Use(false),
 	m_id(_id)
@@ -89,7 +89,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err(L"ブロックの開始を示す{が見つかりません。");
+			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
 		}
 	}
 
@@ -98,7 +98,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err(L"ブロックの終端を示す`}'がありません。");
+			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
 		}
 
 		//１つ戻る
@@ -112,7 +112,7 @@ const	static	Command_Info	Command[] = {
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<-64) || (i>127)){
-					MML->Err(L"エンベロープは-64～127の範囲で指定して下さい。");
+					MML->Err(_T("エンベロープは-64～127の範囲で指定して下さい。"));
 				}
 				code.append((char)1, (char)i & 0x7F);
 				ptEnvelop++;
@@ -125,14 +125,14 @@ const	static	Command_Info	Command[] = {
 			case(Env_Hold):
 				i = MML->GetInt();
 				if( (i<0) || (i>255)){
-					MML->Err(L"維持時間は0～255の範囲で指定して下さい。");
+					MML->Err(_T("維持時間は0～255の範囲で指定して下さい。"));
 				}
 				setHold(i);
 				break;
 
 			case(Env_Loop):
 				if(ptEnvelop > 0x3F){
-					MML->Err(L"ループ位置を指定できる範囲を超えました。");
+					MML->Err(_T("ループ位置を指定できる範囲を超えました。"));
 				}
 				if(Release == false){
 					Loop_Normal		= ptEnvelop;
@@ -143,11 +143,11 @@ const	static	Command_Info	Command[] = {
 
 			case(Env_Release):
 				if(Loop_Normal == -1){
-					MML->Warning(L"ループポイントがありません。最後の値をループします。");
+					MML->Warning(_T("ループポイントがありません。最後の値をループします。"));
 					code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
 				} else {
 					if(ptEnvelop == Loop_Normal){
-						MML->Err(L"Lコマンドの直後にRコマンドを置くことはできません。");
+						MML->Err(_T("Lコマンドの直後にRコマンドを置くことはできません。"));
 					}
 					code.append((char)1, (char)(Loop_Normal | 0xC0));
 				}
@@ -161,35 +161,35 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(L"unknown command");
+				MML->Err(_T("unknown command"));
 				break;
 		}
 	}
 
 	if(Release == true){
 		if(Loop_Release == -1){
-			MML->Warning(L"リリース時のループポイントがありません。最後の値をループします。");
+			MML->Warning(_T("リリース時のループポイントがありません。最後の値をループします。"));
 			code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
 		} else {
 			if(ptEnvelop == Loop_Release){
-				MML->Err(L"Lコマンドでパターン定義を終わることはできません。");
+				MML->Err(_T("Lコマンドでパターン定義を終わることはできません。"));
 			}
 			code.append((char)1, (char)(Loop_Release | 0xC0));
 		}
 	} else {
 		if(Loop_Normal == -1){
-			MML->Warning(L"ループポイントがありません。最後の値をループします。");
+			MML->Warning(_T("ループポイントがありません。最後の値をループします。"));
 			code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
 		} else {
 			if(ptEnvelop == Loop_Normal){
-				MML->Err(L"Lコマンドでパターン定義を終わることはできません。");
+				MML->Err(_T("Lコマンドでパターン定義を終わることはできません。"));
 			}
 			code.append((char)1, (char)(Loop_Normal | 0xC0));
 		}
 	}
 
 	if(code.size() > 256){
-		MML->Err(L"エンベロープの定義長が256Byteを越えました。");
+		MML->Err(_T("エンベロープの定義長が256Byteを越えました。"));
 	}
 
 	iSize = code.size();
@@ -255,32 +255,32 @@ void	Envelop::sweep(MMLfile* MML)
 	//
 	iStart = MML->GetInt();
 	if( (iStart<-64) || (iStart>127)){
-		MML->Err(L"開始点は-64～127の範囲で指定して下さい。");
+		MML->Err(_T("開始点は-64～127の範囲で指定して下さい。"));
 	}
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err(L"パラメータが足りません。");
+		MML->Err(_T("パラメータが足りません。"));
 	}
 
 	iEnd = MML->GetInt();
 	if( (iEnd<-64) || (iEnd>127)){
-		MML->Err(L"終了点は-64～127の範囲で指定して下さい。");
+		MML->Err(_T("終了点は-64～127の範囲で指定して下さい。"));
 	}
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err(L"パラメータが足りません。");
+		MML->Err(_T("パラメータが足りません。"));
 	}
 
 	iLength = MML->GetInt();
 	if( (iLength<1) || (iLength>255)){
-		MML->Err(L"長さは1～255の範囲で指定して下さい。");
+		MML->Err(_T("長さは1～255の範囲で指定して下さい。"));
 	}
 
 	cData = MML->GetChar();
 	if((cData != ')') && (cData != '}')){
-		MML->Err(L"パラメータが足りません。");
+		MML->Err(_T("パラメータが足りません。"));
 	}
 
 	//--------------------------

@@ -27,7 +27,7 @@ protected:
 	unsigned	char			Priority;	//
 //ƒƒ“ƒo[ŠÖ”
 public:
-				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const wchar_t _strName[] = L"==== [ Track Set ]====");
+				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const _CHAR _strName[] = _T("==== [ Track Set ]===="));
 				~TrackSet(void);
 
 		void	TickCount(MusicFile* MUS);

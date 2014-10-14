@@ -89,7 +89,7 @@
 </p>
 <table>
 <tr><th>value	</th><th>Depth	(Shift value)	</th></tr>
-<tr><td>0		</td><td>0	(0)		（Default）</td></tr>
+<tr><td>0		</td><td>0	(0)	</td></tr>
 <tr><td>1		</td><td>-7	(1)	</td></tr>
 <tr><td>2		</td><td>-6	(2)	</td></tr>
 <tr><td>3		</td><td>-5	(3)	</td></tr>
@@ -97,7 +97,7 @@
 <tr><td>5		</td><td>-3	(5)	</td></tr>
 <tr><td>6		</td><td>-2	(6)	</td></tr>
 <tr><td>7		</td><td>-1	(7)	</td></tr>
-<tr><td>8		</td><td>0	(0)	</td></tr>
+<tr><td>8		</td><td>0	(0)	（Default）</td></tr>
 <tr><td>9		</td><td>7	(1)	</td></tr>
 <tr><td>10		</td><td>6	(2)	</td></tr>
 <tr><td>11		</td><td>5	(3)	</td></tr>
@@ -116,7 +116,7 @@
 <tr><th>value		</th><th>Depth	(Shift value)	</th></tr>
 <tr><td>0 ～ 127	</td><td>リニアカウンタ設定	（0[msec]～529[msec]）	</td></tr>
 <tr><td>128			</td><td>発音しない。			</td></tr>
-<tr><td>129～255	</td><td>リニアカウンタoff<br>（指定の音長、ゲートにより、ソフトウェアでKeyOffします。）	</td></tr>
+<tr><td>129～255	</td><td>リニアカウンタoff (Default)<br>（指定の音長、ゲートにより、ソフトウェアでKeyOffします。）	</td></tr>
 </table>
 
 <h4>bias (FDS)</h4>
@@ -133,7 +133,7 @@
 
 <h4>length (n106/n163)</h4>
 <p>
-n163の波形長を (64-<var>length</var>)×4 サンプルに設定します。（Default: <var>length</var> = 0 (256 sample)）<br>
+n163の波形長を (64-<var>length</var>)×4 サンプルに設定します。（Default: <var>length</var> = 56 (32 sample)）<br>
 トラック毎に指定して下さい。<br>
 エミュレータによっては、以下表の56～63の範囲にしか対応していませんので、注意して下さい。<br>
 また、サンプル長と、使用するチャンネル数によって音程が変動しますので、注意して下さい。<br>

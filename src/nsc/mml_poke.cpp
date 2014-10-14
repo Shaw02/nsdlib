@@ -11,7 +11,7 @@
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-mml_poke::mml_poke(unsigned int _addr , unsigned char _data, const wchar_t _strName[]):
+mml_poke::mml_poke(unsigned int _addr , unsigned char _data, const _CHAR _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 4;

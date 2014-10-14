@@ -17,7 +17,7 @@ private:
 
 //ÉÅÉìÉoÅ[ä÷êî
 public:
-						DPCM(MMLfile* MML, const char* dmcfile, unsigned int _id, const wchar_t _strName[] = L"==== [ DPCM ]====");
+						DPCM(MMLfile* MML, const char* dmcfile, unsigned int _id, const _CHAR _strName[] = _T("==== [ DPCM ]===="));
 						~DPCM(void);
 	unsigned	char	getDPCMsize(void){return(_DPCM_size);};
 				void	getAsm(MusicFile* MUS);

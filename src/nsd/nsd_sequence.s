@@ -123,14 +123,16 @@ exit:
 	.local	Volume_End
 	.local	exit
 
-	; to do	tai check
-	lda	__tai,x
-	and	#$01
-	jne	exit			;今回の音符がタイ・スラーだった終了
+	;Key On中？
 	lda	__chflag,x
 	and	#nsd_chflag::KeyOff
 	cmp	#nsd_chflag::KeyOff
 	jne	exit			;Key On(=3)の時のみ、処理。
+
+	;tai check
+	lda	__tai,x
+	and	#$01
+	jne	exit			;今回の音符がタイ・スラーだった終了
 
 	;Software key Off
 	lda	__gatemode,x

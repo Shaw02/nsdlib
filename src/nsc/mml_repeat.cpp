@@ -9,7 +9,7 @@
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-mml_repeat::mml_repeat(const wchar_t _strName[]):
+mml_repeat::mml_repeat(const _CHAR _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 2;

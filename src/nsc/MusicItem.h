@@ -15,7 +15,7 @@ class MusicItem
 {
 //メンバー変数
 protected:
-	const		wchar_t*	strName;		//オブジェクトの名称
+	const		_CHAR*		strName;		//オブジェクトの名称
 	list<MusicItem*>		ptcItem;		//構造化
 				string		code;
 				size_t		iSize;
@@ -24,8 +24,8 @@ protected:
 
 //メンバー関数
 public:
-	MusicItem(const wchar_t _strName[]=L"");
-	MusicItem(int _id, const wchar_t _strName[]=L"");
+	MusicItem(const _CHAR _strName[]=_T(""));
+	MusicItem(int _id, const _CHAR _strName[]=_T(""));
 	~MusicItem(void);
 
 				void	clear(void);

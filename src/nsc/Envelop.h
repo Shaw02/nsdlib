@@ -23,7 +23,7 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-				Envelop(MMLfile* MML, unsigned int _id, const wchar_t _strName[] = L"Envelope");
+				Envelop(MMLfile* MML, unsigned int _id, const _CHAR _strName[] = _T("Envelope"));
 				~Envelop(void);
 		void	setHold(int length);
 		void	sweep(MMLfile* MML);

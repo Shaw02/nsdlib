@@ -8,11 +8,11 @@
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
 //		unsigned int	_id		サブルーチン番号
-//		const wchar_t	_strName[]	オブジェクト名
+//		const _CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-Sub::Sub(MMLfile* MML, unsigned int _id, wchar_t _strName[]/* = "==== [ Sub ]===="*/):
+Sub::Sub(MMLfile* MML, unsigned int _id, _CHAR _strName[]/* = "==== [ Sub ]===="*/):
 	TrackSet(MML, _id, true, false, _strName)
 {
 	

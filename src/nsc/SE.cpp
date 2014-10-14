@@ -8,11 +8,11 @@
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
 //		unsigned	int		_id			SE番号
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-SE::SE(MMLfile* MML, unsigned int _id, wchar_t _strName[]):
+SE::SE(MMLfile* MML, unsigned int _id, _CHAR _strName[]):
 	TrackSet(MML, _id, false, true, _strName)
 {
 	

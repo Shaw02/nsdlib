@@ -11,6 +11,6 @@ class mml_poke :
 {
 //ƒƒ“ƒo[ŠÖ”
 public:
-	mml_poke(unsigned int _addr , unsigned char _data,  const wchar_t _strName[]=L"Poke");
+	mml_poke(unsigned int _addr , unsigned char _data,  const _CHAR _strName[]=_T("Poke"));
 	~mml_poke(void);
 };

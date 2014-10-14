@@ -7,11 +7,11 @@
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
 //		unsigned	int		_id			FDSM番号
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-FDSM::FDSM(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
+FDSM::FDSM(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
 	f_Use(false),
 	m_id(_id)
@@ -58,7 +58,7 @@ const	static	Command_Info	Command[] = {
 	// { の検索
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err(L"ブロックの開始を示す{が見つかりません。");
+			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
 		}
 	}
 
@@ -69,7 +69,7 @@ const	static	Command_Info	Command[] = {
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err(L"ブロックの終端を示す`}'がありません。");
+			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
 		}
 
 		//１つ戻る
@@ -83,7 +83,7 @@ const	static	Command_Info	Command[] = {
 				MML->Back();
 				i = MML->GetInt();
 				if( (i<0) || (i>7)){
-					MML->Err(L"FDSMの波形パターンは0～7の範囲で指定して下さい。");
+					MML->Err(_T("FDSMの波形パターンは0～7の範囲で指定して下さい。"));
 				}
 				WAVE.append((char)1, (char)i & 0x07);
 				ptFDSM++;
@@ -94,15 +94,15 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(L"unknown command");
+				MML->Err(_T("unknown command"));
 				break;
 		}
 	}
 	if(ptFDSM < 32){
-		MML->Err(L"波形パターンは32個の数字を記述してください。32個に満たないです。");
+		MML->Err(_T("波形パターンは32個の数字を記述してください。32個に満たないです。"));
 	}
 	if(ptFDSM > 32){
-		MML->Err(L"波形パターンは32個の数字を記述してください。32個を超えています。");
+		MML->Err(_T("波形パターンは32個の数字を記述してください。32個を超えています。"));
 	}
 	i = 0;
 	while(ptFDSM>0){

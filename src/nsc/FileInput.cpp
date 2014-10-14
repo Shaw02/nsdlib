@@ -90,7 +90,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 	};
 
 	if(success == false){
-		wcerr << L"全ての検索パスで、ファイルが見つかりませんでした。" << endl;
+		_CERR << _T("全ての検索パスで、ファイルが見つかりませんでした。") << endl;
 		if(cOptionSW->flag_SearchPass == false){
 			perror(_strFileName);
 		}

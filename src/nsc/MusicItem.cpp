@@ -10,31 +10,31 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //				無し
 //==============================================================
-MusicItem::MusicItem(const wchar_t _strName[]):
+MusicItem::MusicItem(const _CHAR _strName[]):
 	iOffset(0),
 	iSize(0),
 	strName(_strName)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){
-		wcout << L"Create Music Object : " << strName << endl;
+		_COUT << _T("Create Music Object : ") << strName << endl;
 	}
 }
 
-MusicItem::MusicItem(int _id, const wchar_t _strName[]):
+MusicItem::MusicItem(int _id, const _CHAR _strName[]):
 	iOffset(0),
 	iSize(0),
 	strName(_strName)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){
-		wcout << L"Create Music Object : ====[ " << strName << L"(";
+		_COUT << _T("Create Music Object : ====[ ") << strName << _T("(");
 		cout << _id;
-		wcout << L") ]====" << endl;
+		_COUT << _T(") ]====") << endl;
 	}
 }
 
@@ -52,7 +52,7 @@ MusicItem::~MusicItem(void)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x80){
-		wcout << L"Delete Music Object : " << strName << endl;
+		_COUT << _T("Delete Music Object : ") << strName << endl;
 	}
 }
 
@@ -91,7 +91,7 @@ void	MusicItem::clear(int _id)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x40){
-		wcout << L"Clear Music Object : ====[ " << strName << L"(" << _id << L") ]====" << endl;
+		_COUT << _T("Clear Music Object : ====[ ") << strName << _T("(") << _id << _T(") ]====") << endl;
 	}
 
 	clear();
@@ -140,12 +140,12 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x02){
-		wcout << L"Object Address [0x" << hex << setw(4) << setfill(L'0') << _offset << L"]: ";
+		_COUT << _T("Object Address [0x") << hex << setw(4) << setfill(_T('0')) << _offset << _T("]: ");
 		while(i < code.size()){
-			wcout	<<	hex	<<	setw(2)	<<	setfill(L'0')	<<	(unsigned int)(code[i] & 0xFF)	<<	L" ";
+			_COUT	<<	hex	<<	setw(2)	<<	setfill(_T('0'))	<<	(unsigned int)(code[i] & 0xFF)	<<	_T(" ");
 			i++;
 		}
-		wcout  << dec	<< L": " << strName << endl;
+		_COUT  << dec	<< _T(": ") << strName << endl;
 	}
 
 	iOffset = _offset;

@@ -111,9 +111,11 @@ OPSW::OPSW(int argc, char* argv[]):
 					//0x04:	Music File Outputing
 					//0x40:	Class Object Clear	
 					//0x80:	Class Object Delete
-					iResult=sscanf(argv[iCount],"-D%d",&cDebug);
+					int	i;
+					iResult=sscanf(argv[iCount],"-D%d",&i);
+					cDebug = (char)i;
 					if((iResult==NULL)||(iResult==EOF)){
-						opError(L"-D");
+						opError(_T("-D"));
 						break;
 					};
 					break;
@@ -135,7 +137,7 @@ OPSW::OPSW(int argc, char* argv[]):
 							strCodeName+=".bin";
 						};
 					} else {
-						opError(L"-l Code ファイルが2回以上指定されました。");
+						opError(_T("-l Code ファイルが2回以上指定されました。"));
 						break;
 					};
 					break;
@@ -166,7 +168,7 @@ OPSW::OPSW(int argc, char* argv[]):
 				case 'F' :
 					//先に、ファイル名が書いてあるかチェック。
 					if(argv[iCount][3]==0){
-						opError(L"/F ファイル名が書いてありません。");
+						opError(_T("/F ファイル名が書いてありません。"));
 						break;
 					};
 					switch(argv[iCount][2]){
@@ -188,7 +190,7 @@ OPSW::OPSW(int argc, char* argv[]):
 								strASMname+=".s";
 							};
 						} else {
-							opError(L"-fa ASM ファイルが2回以上指定されました。");
+							opError(_T("-fa ASM ファイルが2回以上指定されました。"));
 							break;
 						};
 						break;
@@ -208,19 +210,19 @@ OPSW::OPSW(int argc, char* argv[]):
 								strNSFname+=".nsf";
 							};
 						} else {
-							opError(L"-fn NSF ファイルが2回以上指定されました。");
+							opError(_T("-fn NSF ファイルが2回以上指定されました。"));
 							break;
 						};
 						break;
 					default :
-						opError(L"-f");
+						opError(_T("-f"));
 						break;
 					};
 				break;
 				//--------
 				//デフォルト
 				default :
-					opError(L"");
+					opError(_T(""));
 					break;
 			};
 
@@ -242,7 +244,7 @@ OPSW::OPSW(int argc, char* argv[]):
 					strMMLname+=".mml";
 				};
 			} else {
-				opError(L"MMLファイルが2回以上指定されました。");
+				opError(_T("MMLファイルが2回以上指定されました。"));
 				break;
 			};
 
@@ -354,22 +356,22 @@ OPSW::OPSW(int argc, char* argv[]):
 //==============================================================
 void	OPSW::print_help(){
 
-	wcout	<<	L"MML Compiler for NES Sound Driver & Library\n"
-				L"\n"
-				L"  Usage : nsc [ -options ] [file(.mml)]\n"
-				L"\n"
-				L"  -A			Compile to assembly langage.\n"
-				L"  -N			Compile to NSF music format.\n"
-				L"  -E			Error/Warning messages out the stadard error.\n"
-				L"  -T			Disable tick counting.\n"
-				L"  -S			Enable outout the search pass result.\n"
-				L"  -L[file(.bin)]	Filename of the rom code for NSF.\n"
-				L"  -FA[file(.s  )]	Filename of the output assembly langage file.\n"
-				L"  -FN[file(.nsf)]	Filename of the output NSF music format.\n"
-				L"  -C[dir]		Search pass of the rom code for NSF.\n"
-				L"  -P[dir]		Search pass of the delta-pcm.\n"
-				L"  -I[dir]		Search pass of the include file.\n"
-				L"  -H			Print the this help."	<<	endl;
+	_COUT	<<	_T("MML Compiler for NES Sound Driver & Library\n")
+				_T("\n")
+				_T("  Usage : nsc [ -options ] [file(.mml)]\n")
+				_T("\n")
+				_T("  -A			Compile to assembly langage.\n")
+				_T("  -N			Compile to NSF music format.\n")
+				_T("  -E			Error/Warning messages out the stadard error.\n")
+				_T("  -T			Disable tick counting.\n")
+				_T("  -S			Enable outout the search pass result.\n")
+				_T("  -L[file(.bin)]	Filename of the rom code for NSF.\n")
+				_T("  -FA[file(.s  )]	Filename of the output assembly langage file.\n")
+				_T("  -FN[file(.nsf)]	Filename of the output NSF music format.\n")
+				_T("  -C[dir]		Search pass of the rom code for NSF.\n")
+				_T("  -P[dir]		Search pass of the delta-pcm.\n")
+				_T("  -I[dir]		Search pass of the include file.\n")
+				_T("  -H			Print the this help.")	<<	endl;
 
 	nsc_exit(EXIT_SUCCESS);
 
@@ -390,16 +392,16 @@ OPSW::~OPSW(){
 //		エラー処理	（プロセスも終了する）
 //--------------------------------------------------------------
 //	●引数
-//			const	wchar_t	*stErrMsg	エラーメッセージ
+//			const	_CHAR	*stErrMsg	エラーメッセージ
 //	●返値
 //			無し
 //==============================================================
-void OPSW::opError(const wchar_t *stErrMsg){
+void OPSW::opError(const _CHAR *stErrMsg){
 
 	if(fErr == true){
-		wcerr << L"オプションが不正です。：" << stErrMsg << endl;
+		_CERR << _T("オプションが不正です。：") << stErrMsg << endl;
 	} else {
-		wcout << L"オプションが不正です。：" << stErrMsg << endl;
+		_COUT << _T("オプションが不正です。：") << stErrMsg << endl;
 	}
 	nsc_exit(EXIT_FAILURE);
 

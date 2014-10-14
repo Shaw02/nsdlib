@@ -12,11 +12,11 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //	●引数
 //		MMLfile*			MML			ＭＭＬファイルのオブジェクト
 //		string				_code		リンクするコード（*.bin）のファイル名
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //				無し
 //==============================================================
-MusicFile::MusicFile(MMLfile* MML, string _code, const wchar_t _strName[]):
+MusicFile::MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]):
 	MusicItem(_strName),
 	cDPCMinfo(NULL),
 	Header(_code)
@@ -46,6 +46,7 @@ enum	Command_ID_MusicFile {
 	id_include,
 	id_timebase,
 	id_OctaveReverse,
+	id_QReverse,
 	id_bgm_num,
 	id_se_num,
 	id_releaseVolume,
@@ -119,6 +120,8 @@ const	static	Command_Info	Command[] = {
 		{	"#timebase",		id_timebase		},
 		{	"#OctaveReverse",	id_OctaveReverse},
 		{	"#octaveReverse",	id_OctaveReverse},
+		{	"#QReverse",		id_QReverse		},
+		{	"#qReverse",		id_QReverse		},
 		{	"#BGM",				id_bgm_num		},
 		{	"#bgm",				id_bgm_num		},
 		{	"音楽数",			id_bgm_num		},
@@ -274,22 +277,25 @@ const	static	Command_Info	Command[] = {
 			case(id_OctaveReverse):
 				MML->octave_reverse = true;		//これは、MMLファイルの属性。
 				break;
+			case(id_QReverse):
+				MML->q_reverse = true;			//これは、MMLファイルの属性。
+				break;
 			case(id_releaseVolume):
 				MML->iReleaseVolume	=  MML->GetInt();
 				if((MML->iReleaseVolume<0) || (MML->iReleaseVolume>15)){
-					MML->Err(L"#ReleaseVolumeコマンドは、0～15の範囲で指定してください。");
+					MML->Err(_T("#ReleaseVolumeコマンドは、0～15の範囲で指定してください。"));
 				}
 				break;
 			case(id_repeatMode):
 				MML->iRepeatMode	=  MML->GetInt();
 				if((MML->iRepeatMode<0) || (MML->iRepeatMode>2)){
-					MML->Err(L"#RepeatModeコマンドは、0～2の範囲で指定してください。");
+					MML->Err(_T("#RepeatModeコマンドは、0～2の範囲で指定してください。"));
 				}
 				break;
 			case(id_TieMode):
 				MML->iTieMode	=  MML->GetInt();
 				if((MML->iTieMode<0) || (MML->iTieMode>1)){
-					MML->Err(L"#TieModeコマンドは、0～1の範囲で指定してください。");
+					MML->Err(_T("#TieModeコマンドは、0～1の範囲で指定してください。"));
 				}
 				break;
 			case(id_offset_Ei):
@@ -307,7 +313,7 @@ const	static	Command_Info	Command[] = {
 			case(id_Priority):
 				MML->priority = MML->GetInt();
 				if((MML->priority<0) || (MML->priority>3)){
-					MML->Err(L"#priorityコマンドは、0～3の範囲で指定してください。");
+					MML->Err(_T("#priorityコマンドは、0～3の範囲で指定してください。"));
 				}
 				break;
 			case(id_QMax):
@@ -316,13 +322,13 @@ const	static	Command_Info	Command[] = {
 			case(id_rest):
 				MML->rest = MML->GetInt();
 				if((MML->rest<0) || (MML->rest>2)){
-					MML->Err(L"#Restコマンドは、0～2の範囲で指定してください。");
+					MML->Err(_T("#Restコマンドは、0～2の範囲で指定してください。"));
 				}
 				break;
 			case(id_wait):
 				MML->wait = MML->GetInt();
 				if((MML->rest<0) || (MML->rest>2)){
-					MML->Err(L"#Waitコマンドは、0～2の範囲で指定してください。");
+					MML->Err(_T("#Waitコマンドは、0～2の範囲で指定してください。"));
 				}
 				break;
 			case(id_Macro):
@@ -334,7 +340,7 @@ const	static	Command_Info	Command[] = {
 			//MML
 			case(id_DPCM):
 				if(cDPCMinfo != NULL){
-					MML->Err(L"DPCMブロックは１つまでです。");
+					MML->Err(_T("DPCMブロックは１つまでです。"));
 				}
 				cDPCMinfo = new DPCMinfo(MML, Header.bank);
 				ptcItem.push_back(cDPCMinfo);
@@ -345,7 +351,7 @@ const	static	Command_Info	Command[] = {
 
 				//重複チェック
 				if(ptcFDSC.count(i) != 0){
-					MML->Err(L"FDSC()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("FDSC()ブロックで同じ番号が指定されました。"));
 				}
 				_fdsc = new FDSC(MML, i);
 				ptcItem.push_back(_fdsc);
@@ -357,7 +363,7 @@ const	static	Command_Info	Command[] = {
 
 				//重複チェック
 				if(ptcFDSM.count(i) != 0){
-					MML->Err(L"FDSM()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("FDSM()ブロックで同じ番号が指定されました。"));
 				}
 				_fdsm = new FDSM(MML, i);
 				ptcItem.push_back(_fdsm);
@@ -369,7 +375,7 @@ const	static	Command_Info	Command[] = {
 
 				//重複チェック
 				if(ptcVRC7.count(i) != 0){
-					MML->Err(L"VRC7()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("VRC7()ブロックで同じ番号が指定されました。"));
 				}
 				_vrc7 = new VRC7(MML, i);
 				ptcItem.push_back(_vrc7);
@@ -381,7 +387,7 @@ const	static	Command_Info	Command[] = {
 
 				//重複チェック
 				if(ptcN163.count(i) != 0){
-					MML->Err(L"N163()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("N163()ブロックで同じ番号が指定されました。"));
 				}
 				_n163 = new N163(MML, i);
 				ptcItem.push_back(_n163);
@@ -392,7 +398,7 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcEnv.count(i) != 0){
-					MML->Err(L"Envelope()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("Envelope()ブロックで同じ番号が指定されました。"));
 				}
 				_env = new Envelop(MML, i);
 				ptcItem.push_back(_env);
@@ -404,7 +410,7 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum() + MML->offset_Em;
 				//重複チェック
 				if(ptcEnv.count(i) != 0){
-					MML->Err(L"ビブラート()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("ビブラート()ブロックで同じ番号が指定されました。"));
 				}
 				_env = new Envelop(MML, i);
 				ptcItem.push_back(_env);
@@ -415,7 +421,7 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcSub.count(i) != 0){
-					MML->Err(L"Sub()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("Sub()ブロックで同じ番号が指定されました。"));
 				}
 				//範囲チェック
 				_sub = new Sub(MML, i);
@@ -427,11 +433,11 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcBGM.count(i) != 0){
-					MML->Err(L"BGM()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
 				}
 				//範囲チェック
 				if((Header.iBGM <= i) || (i<0)){
-					MML->Err(L"BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。");
+					MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
 				}
 				_bgm = new BGM(MML, i);
 				ptcItem.push_back(_bgm);
@@ -442,11 +448,11 @@ const	static	Command_Info	Command[] = {
 				i = MML->GetNum();
 				//重複チェック
 				if(ptcSE.count(i) != 0){
-					MML->Err(L"SE()ブロックで同じ番号が指定されました。");
+					MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
 				}
 				//範囲チェック
 				if((Header.iSE <= i) || (i<0)){
-					MML->Err(L"SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。");
+					MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
 				}
 				_se = new SE(MML, i);
 				ptcItem.push_back(_se);
@@ -456,7 +462,7 @@ const	static	Command_Info	Command[] = {
 			case(id_Null):
 				break;
 			default:
-				MML->Err(L"unknown command");
+				MML->Err(_T("unknown command"));
 				break;
 		}
 		
@@ -464,13 +470,13 @@ const	static	Command_Info	Command[] = {
 
 	//Check
 	if( Header.iBGM + Header.iSE > 255){
-		Err(L"BGMとSEの数が合計で255を越えました。");
+		Err(_T("BGMとSEの数が合計で255を越えました。"));
 	}
 
 	i = 0;
 	while(i < Header.iBGM){
 		if(ptcBGM.count(i) == 0){
-			Err(L"BGMデータが足りません。");
+			Err(_T("BGMデータが足りません。"));
 		};
 		i++;
 	}
@@ -478,7 +484,7 @@ const	static	Command_Info	Command[] = {
 	i = 0;
 	while(i < Header.iSE){
 		if(ptcSE.count(i) == 0){
-			Err(L"SE データが足りません。");
+			Err(_T("SE データが足りません。"));
 		};
 		i++;
 	}
@@ -833,8 +839,8 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		nsf->External	= (unsigned char)Header.iExternal;
 	}
 
-	wcout << L"----------------------------------------" << endl;
-	wcout << L"*NSF build process" << endl;
+	_COUT << _T("----------------------------------------") << endl;
+	_COUT << _T("*NSF build process") << endl;
 
 
 	if((nsf->Bank[0] == 0) && (nsf->Bank[1] == 0) && (nsf->Bank[2] == 0) && (nsf->Bank[3] == 0)){
@@ -846,7 +852,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		make_bin(bin_size, 0x8000);
 
 		if(Header.bank == true){
-			Err(L"指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。");
+			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。"));
 		}
 
 		mus_size = bin_size - 0x80 + code.size();
@@ -856,12 +862,12 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		}
 
 		//サイズチェック
-		wcout << L"[CODE & MUSIC]" << endl;
-		wcout << L"  Bank = " << (unsigned int)mus_bank << endl;
-		wcout << L"  Size = " << (unsigned int)mus_size << L" [Byte] / " << Header.offsetPCM - 0x8000 << L" [Byte]" << endl;
+		_COUT << _T("[CODE & MUSIC]") << endl;
+		_COUT << _T("  Bank = ") << (unsigned int)mus_bank << endl;
+		_COUT << _T("  Size = ") << (unsigned int)mus_size << _T(" [Byte] / ") << Header.offsetPCM - 0x8000 << _T(" [Byte]") << endl;
 
 		if((0x8000 + mus_size) > Header.offsetPCM){
-			Err(L"コード・シーケンスのサイズが許容値を越えました。");
+			Err(_T("コード・シーケンスのサイズが許容値を越えました。"));
 		}
 
 	} else {
@@ -875,7 +881,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		make_bin(bin_size, 0x0000);
 
 		if(Header.bank == false){
-			Err(L"指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。");
+			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
 		}
 
 		dpcm_bank = true;
@@ -885,23 +891,23 @@ void	MusicFile::saveNSF(const char*	strFileName)
 			mus_bank++;
 		}
 
-		wcout << L"[CODE]" << endl;
-		wcout << L"  Bank = 3" << endl;
-		wcout << L"  Size = 12288 [Byte]" << endl;
+		_COUT << _T("[CODE]") << endl;
+		_COUT << _T("  Bank = 3") << endl;
+		_COUT << _T("  Size = 12288 [Byte]") << endl;
 
-		wcout << L"[MUSIC]" << endl;
-		wcout << L"  Bank = " << (unsigned int)mus_bank << endl;
-		wcout << L"  Size = " << (unsigned int)mus_size << L" [Byte] / " << iSizeLimit << L" [Byte]" << endl;
+		_COUT << _T("[MUSIC]") << endl;
+		_COUT << _T("  Bank = ") << (unsigned int)mus_bank << endl;
+		_COUT << _T("  Size = ") << (unsigned int)mus_size << _T(" [Byte] / ") << iSizeLimit << _T(" [Byte]") << endl;
 
 		//サイズチェック
 		if(mus_size > iSizeLimit){
-			Err(L"コード・シーケンスのサイズが許容値を越えました。");
+			Err(_T("コード・シーケンスのサイズが許容値を越えました。"));
 		}
 
 	}
 
 	//⊿PCM
-	wcout << L"[DPCM]" << endl;
+	_COUT << _T("[DPCM]") << endl;
 
 	pcm_size = dpcm_code.size();
 	pcm_bank = (unsigned char)((pcm_size + (Header.offsetPCM & 0x0FFF)) >> 12);
@@ -912,21 +918,21 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	if(dpcm_bank == false){
 		//⊿PCMサイズチェック
-		wcout << L"  Bank = " << (unsigned int)pcm_bank << endl;
-		wcout << L"  Size = " << (unsigned int)pcm_size << L" [Byte] / " << 0x10000 - Header.offsetPCM << L" [Byte]" << endl;
+		_COUT << _T("  Bank = ") << (unsigned int)pcm_bank << endl;
+		_COUT << _T("  Size = ") << (unsigned int)pcm_size << _T(" [Byte] / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
 
 		if(	(Header.offsetPCM + pcm_size) > 0x10000	){
-			Err(L"⊿PCMのサイズが許容値を越えました。");
+			Err(_T("⊿PCMのサイズが許容値を越えました。"));
 		}
 
 	} else {
 		//⊿PCMサイズチェック
-		wcout << L"  Bank = " << (unsigned int)pcm_bank << endl;
-		wcout << L"  Size = " << (unsigned int)pcm_size << L" [Byte]" << endl;
+		_COUT << _T("  Bank = ") << (unsigned int)pcm_bank << endl;
+		_COUT << _T("  Size = ") << (unsigned int)pcm_size << _T(" [Byte]") << endl;
 
 		i = mus_bank + pcm_bank + 3;
 		if(i > 255){
-			Err(L"バンク数の合計が255を越えました。");
+			Err(_T("バンク数の合計が255を越えました。"));
 		}
 	}
 
@@ -1084,16 +1090,16 @@ void	MusicFile::saveASM(const char*	strFileName)
 //		エラー処理
 //--------------------------------------------------------------
 //	●引数
-//		const	wchar_t	msg[]	エラーメッセージ
+//		const	_CHAR	msg[]	エラーメッセージ
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::Err(const wchar_t msg[])
+void	MusicFile::Err(const _CHAR msg[])
 {
 	if(cOptionSW->fErr == true){
-		wcerr << L"[ ERROR ] : " << msg << endl;
+		_CERR << _T("[ ERROR ] : ") << msg << endl;
 	} else {
-		wcout << L"[ ERROR ] : " << msg << endl;
+		_COUT << _T("[ ERROR ] : ") << msg << endl;
 	}
 
 	//異常終了
@@ -1104,16 +1110,16 @@ void	MusicFile::Err(const wchar_t msg[])
 //		ワーニング処理
 //--------------------------------------------------------------
 //	●引数
-//		const	wchar_t	msg[]	ワーニングメッセージ
+//		const	_CHAR	msg[]	ワーニングメッセージ
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::Warning(const wchar_t msg[])
+void	MusicFile::Warning(const _CHAR msg[])
 {
 	//現在のファイル名と、行数を表示
 	if(cOptionSW->fErr == true){
-		wcerr << L"[WARNING] : " << msg << endl;
+		_CERR << _T("[WARNING] : ") << msg << endl;
 	} else {
-		wcout << L"[WARNING] : " << msg << endl;
+		_COUT << _T("[WARNING] : ") << msg << endl;
 	}
 }

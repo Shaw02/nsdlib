@@ -13,14 +13,14 @@
 //	●返値
 //				無し
 //==============================================================
-mml_note::mml_note(int _code, int length, int gatetime, bool slur, const wchar_t _strName[]):
+mml_note::mml_note(int _code, int length, int gatetime, bool slur, const _CHAR _strName[]):
 	MusicEvent(_strName)
 {
 	unsigned	char	opcode = nsd_Note | (unsigned char)_code;
 	unsigned	int		i = 0;
 
 	if((_code<0) || (_code>15) || (_code==12)){
-		wcerr << L"mml_note::mml_note()関数で、エラーが発生しました。" << endl;
+		_CERR << _T("mml_note::mml_note()関数で、エラーが発生しました。") << endl;
 		nsc_exit(EXIT_FAILURE);
 	}
 

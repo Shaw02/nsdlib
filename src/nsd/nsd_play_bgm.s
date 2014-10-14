@@ -126,6 +126,18 @@ Loop_End:
 	sta	OPLL_Data
 .endif
 
+.ifdef	N163
+	lda	#$E0			;56(0x38) << 2
+	sta	__n163_frequency + 0
+	sta	__n163_frequency + 1
+	sta	__n163_frequency + 2
+	sta	__n163_frequency + 3
+	sta	__n163_frequency + 4
+	sta	__n163_frequency + 5
+	sta	__n163_frequency + 6
+	sta	__n163_frequency + 7
+.endif
+
 	lda	#~(nsd_flag::BGM + nsd_flag::Disable)
 	and	__flag
 	sta	__flag			;BGM & Main Enable

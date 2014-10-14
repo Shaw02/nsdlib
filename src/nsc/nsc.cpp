@@ -36,17 +36,23 @@ int	main(int argc, char* argv[])
 	MMLfile			*cMML	= NULL;
     MusicFile		*cSND	= NULL;
 
+
 #ifdef	_WIN32
-	locale::global(std::locale("japanese"));
+	locale::global(std::locale(""));
 #else
-	setlocale(LC_ALL, "ja_JP.UTF-8");
+//	setlocale(LC_ALL, "ja_JP.UTF-8");
+	setlocale(LC_ALL, "");
 #endif
+
+
+//	locale::global(std::locale(""));	//g++ だと、ランタイム エラーになる。
+
 
 	try {
 		//==================================
-		wcout	<<	L"MML Compiler for NES Sound Driver & Library (NSD.Lib)\n"
-					L"    Version 1.22\n"
-					L"        Copyright (c) 2012-2014 S.W.\n"	<<	endl;
+		_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
+					_T("    Version 1.23\n")
+					_T("        Copyright (c) 2012-2014 S.W.\n")	<<	endl;
 
 
 
@@ -54,10 +60,10 @@ int	main(int argc, char* argv[])
 		//クラスの作成
 		cOptionSW	= new OPSW(argc,argv);							//オプション処理
 		if(cOptionSW->cDebug & 0x01){
-			wcout << L"\n============ [ 1st phase : Object Creating ] ============" << endl;
+			_COUT << _T("\n============ [ 1st phase : Object Creating ] ============") << endl;
 		}
-		wcout << L"----------------------------------------" << endl;
-		wcout << L"*Object creating process" << endl;
+		_COUT << _T("----------------------------------------") << endl;
+		_COUT << _T("*Object creating process") << endl;
 
 		cMML = new MMLfile(cOptionSW->strMMLname.c_str());
 		cSND = new MusicFile(cMML, cOptionSW->strCodeName);
@@ -67,10 +73,10 @@ int	main(int argc, char* argv[])
 		//==================================
 		//アドレスの解決
 		if(cOptionSW->cDebug & 0x02){
-			wcout << L"\n============ [ 2nd phase : Address Setting ] ============" << endl;
+			_COUT << _T("\n============ [ 2nd phase : Address Setting ] ============") << endl;
 		}
-		wcout << L"----------------------------------------" << endl;
-		wcout << L"*Address settlement process" << endl;
+		_COUT << _T("----------------------------------------") << endl;
+		_COUT << _T("*Address settlement process") << endl;
 
 
 		//ＭＭＬから呼ばれるオブジェクトの検索 ＆ 呼ばれないオブジェクトの削除
@@ -88,7 +94,7 @@ int	main(int argc, char* argv[])
 		//==================================
 		//保存
 		if(cOptionSW->cDebug & 0x04){
-			wcout << L"\n============ [ 3rd phase : Music File Outputing ] ============" << endl;
+			_COUT << _T("\n============ [ 3rd phase : Music File Outputing ] ============") << endl;
 		}
 
 			if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveASM == false))){
@@ -106,20 +112,20 @@ int	main(int argc, char* argv[])
 		if(cOptionSW->flag_TickCount == true){
 
 			if(cOptionSW->cDebug & 0x04){
-				wcout << L"\n============ [ 4th phase : Tick Counting ] ============" << endl;
+				_COUT << _T("\n============ [ 4th phase : Tick Counting ] ============") << endl;
 			}
-			wcout << L"----------------------------------------" << endl;
-			wcout << L"*Tick counting process" << endl;
+			_COUT << _T("----------------------------------------") << endl;
+			_COUT << _T("*Tick counting process") << endl;
 
 			cSND->TickCount();
 
 		} else {
-			wcout	<<	L"tickのカウントは無効化されました。"	<<	endl;
+			_COUT	<<	_T("tickのカウントは無効化されました。")	<<	endl;
 		}
 
 	} catch (int no) {
 		if (no != EXIT_SUCCESS){
-            wcout	<<	L"Error!:" << no << endl;
+            _COUT	<<	_T("Error!:") << no << endl;
 			iResult	= EXIT_FAILURE;
 		}
 	}

@@ -45,6 +45,7 @@ public:
 				int					iTieMode;			//
 				int					timebase;			//
 				bool				octave_reverse;		//Octave Reverse
+				bool				q_reverse;			//q, Q q_reverse
 				int					rest;				// r コマンドの挙動
 				int					wait;				// w コマンドの挙動
 	unsigned	int					QMax;				// qMax
@@ -88,6 +89,6 @@ public:
 				void	SetLine(unsigned int i){nowFile->SetLine(i);};
 
 
-	void		Err(const wchar_t msg[]);
-	void		Warning(const wchar_t msg[]);
+	void		Err(const _CHAR msg[]);
+	void		Warning(const _CHAR msg[]);
 };

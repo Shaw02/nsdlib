@@ -11,7 +11,7 @@ class mml_repeat :
 {
 //ƒƒ“ƒo[ŠÖ”
 public:
-	mml_repeat(const wchar_t _strName[]=L"Repeat(A) Start");
+	mml_repeat(const _CHAR _strName[]=_T("Repeat(A) Start"));
 	~mml_repeat(void);
 	void	set_count(unsigned char count);
 };

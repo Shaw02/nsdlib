@@ -7,11 +7,11 @@
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
 //		unsigned	int		_id			BGM番号
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-BGM::BGM(MMLfile* MML, unsigned int _id, const wchar_t _strName[]):
+BGM::BGM(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
 	TrackSet(MML, _id, false, false, _strName)
 {
 }

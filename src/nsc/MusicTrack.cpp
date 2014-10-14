@@ -10,11 +10,11 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		const		wchar_t	_strName[]	オブジェクト名
+//		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-MusicTrack::MusicTrack(MMLfile* MML, const wchar_t _strName[]):
+MusicTrack::MusicTrack(MMLfile* MML, const _CHAR _strName[]):
 	MusicItem(_strName),
 	offset_now(0),
 	offset_loop(0),				//無限ループ
@@ -72,7 +72,7 @@ MusicTrack::MusicTrack(MMLfile* MML, const wchar_t _strName[]):
 		st_it_repeat_c_e.push_back(pt_itMusic);
 
 		//イベント
-		SetEvent(new MusicItem(L"Null"));
+		SetEvent(new MusicItem(_T("Null")));
 	}
 }
 
@@ -297,9 +297,9 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
 			if( MUS->ptcSub.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"Sub(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("Sub(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"Sub(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("Sub(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -316,9 +316,9 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcEnv.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"Envelope(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("Envelope(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"Envelope(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("Envelope(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -335,9 +335,9 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 			_no			= (*itFDSC)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcFDSC.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"FDSC(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("FDSC(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"FDSC(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("FDSC(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -354,9 +354,9 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 			_no			= (*itFDSM)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcFDSM.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"FDSM(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("FDSM(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"FDSM(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("FDSM(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -373,9 +373,9 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 			_no			= (*itVRC7)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcVRC7.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"VRC7(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("VRC7(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"VRC7(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("VRC7(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -392,9 +392,9 @@ void	MusicTrack::Optimize(MusicFile* MUS)
 			_no			= (*itN163)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcN163.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"N163(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("N163(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"N163(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("N163(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -437,9 +437,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_com_offset	= (*itSE)->getOffset();
 			if( MUS->ptcSE.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"SE(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("SE(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"SE(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("SE(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -458,9 +458,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_com_offset	= (*itSub)->getOffset();
 			if( MUS->ptcSub.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"Sub(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("Sub(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"Sub(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("Sub(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -479,9 +479,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_com_offset	= (*itEnv)->getOffset();
 			if( MUS->ptcEnv.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"Envelope(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("Envelope(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"Envelope(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("Envelope(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -500,9 +500,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_com_offset	= (*itFDSC)->getOffset();
 			if( MUS->ptcFDSC.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"FDSC(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("FDSC(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"FDSC(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("FDSC(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -521,9 +521,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_com_offset	= (*itFDSM)->getOffset();
 			if( MUS->ptcFDSM.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"FDSM(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("FDSM(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"FDSM(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("FDSM(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -542,9 +542,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_com_offset	= (*itVRC7)->getOffset();
 			if( MUS->ptcVRC7.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"VRC7(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("VRC7(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"VRC7(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("VRC7(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -563,9 +563,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			_com_offset	= (*itN163)->getOffset();
 			if( MUS->ptcN163.count(_no) == 0){
 				if(cOptionSW->fErr == true){
-					wcerr << L"N163(" << _no << L")番が存在しません。" << endl;
+					_CERR << _T("N163(") << _no << _T(")番が存在しません。") << endl;
 				} else {
-					wcout << L"N163(" << _no << L")番が存在しません。" << endl;
+					_COUT << _T("N163(") << _no << _T(")番が存在しません。") << endl;
 				}
 				nsc_exit(EXIT_FAILURE);
 			}
@@ -609,18 +609,18 @@ size_t	MusicTrack::SetEnd(MMLfile* MML)
 
 	//リピートのチェック
 	if(offset_repeat_a_s != 0){
-		MML->Err(L"リピート(A)が終わっていません。");
+		MML->Err(_T("リピート(A)が終わっていません。"));
 	}
 	if(sp_repeat_c != 0){
-		MML->Err(L"リピート(C)が終わっていません。");
+		MML->Err(_T("リピート(C)が終わっていません。"));
 	}
 
 	//オブジェクトの作成
 	if(loop_flag == false){
-		SetEvent(new mml_general(nsd_EndOfTrack,L"End of Track"));
+		SetEvent(new mml_general(nsd_EndOfTrack,_T("End of Track")));
 	} else {
 		EchoVolRet();	//疑似エコーの復帰
-		_event = new mml_Address(nsd_Jump, L"End of Track with LOOP");
+		_event = new mml_Address(nsd_Jump, _T("End of Track with LOOP"));
 		_event->set_Address(offset_loop - offset_now - 1);
 		SetEvent(_event);
 	}
@@ -655,7 +655,7 @@ void	MusicTrack::SetLoop()
 //==============================================================
 void	MusicTrack::SetRepeat_B_Start()
 {
-	SetEvent(new mml_general(nsd_Repeat_B_Start, L"Repeat(B) Start"));
+	SetEvent(new mml_general(nsd_Repeat_B_Start, _T("Repeat(B) Start")));
 	offset_repeat_b_s = offset_now;	// :| コマンドでは、次のコマンドに戻る。
 	offset_repeat_b_b = 0;
 
@@ -675,12 +675,12 @@ void	MusicTrack::SetRepeat_B_Branch(MMLfile* MML)
 	if(offset_repeat_b_s != 0){
 		if(offset_repeat_b_b == 0){
 			offset_repeat_b_b = offset_now;	//コマンドがあった事を示す。
-			SetEvent(new mml_general(nsd_Repeat_B_Branch, L"Repeat(B) Branch"));
+			SetEvent(new mml_general(nsd_Repeat_B_Branch, _T("Repeat(B) Branch")));
 		} else {
-			MML->Err(L"リピート(B)内で \\ コマンドが重複しています。");
+			MML->Err(_T("リピート(B)内で \\ コマンドが重複しています。"));
 		}
 	} else {
-		MML->Err(L"リピート(B)の開始 |: コマンドがありません。");
+		MML->Err(_T("リピート(B)の開始 |: コマンドがありません。"));
 	}
 }
 
@@ -699,16 +699,16 @@ void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 	if(offset_repeat_b_s != 0){
 		if(offset_repeat_b_b != 0){
 			if(offset_repeat_b_s < offset_repeat_a_s){
-				MML->Err(L"リピート(A)の区間の途中です。");
+				MML->Err(_T("リピート(A)の区間の途中です。"));
 			}
-			_event = new mml_Address(nsd_Repeat_B_End, L"Repeat(B) End");
+			_event = new mml_Address(nsd_Repeat_B_End, _T("Repeat(B) End"));
 			_event->set_Address(offset_repeat_b_s - offset_now - 1);
 			SetEvent(_event);
 		} else {
-			MML->Err(L"リピート(B)内で \\ コマンドがありませんでした。必ず分岐点 \\ は指定してください。");
+			MML->Err(_T("リピート(B)内で \\ コマンドがありませんでした。必ず分岐点 \\ は指定してください。"));
 		}
 	} else {
-		MML->Err(L"リピート(B)の開始 |: コマンドがありません。");
+		MML->Err(_T("リピート(B)の開始 |: コマンドがありません。"));
 	}
 
 	Reset_opt();
@@ -750,12 +750,12 @@ void	MusicTrack::SetRepeat_A_Start(MMLfile* MML)
 	} else {
 		count_repeat_a = MML->GetInt();
 		if( (count_repeat_a > 255) || (count_repeat_a < 2) ){
-			MML->Err(L"リピート回数は2～255の範囲で指定して下さい。");
+			MML->Err(_T("リピート回数は2～255の範囲で指定して下さい。"));
 		}
 	}
 
 	if(offset_repeat_a_s != 0){
-		MML->Err(L"リピート(A)のネストはできません。");
+		MML->Err(_T("リピート(A)のネストはできません。"));
 	} else {
 		_old_repeat = new mml_repeat();
 
@@ -794,7 +794,7 @@ void	MusicTrack::SetRepeat_C_Start(MMLfile* MML)
 	} else {
 		repeat_cnt = MML->GetInt();
 		if( (repeat_cnt > 255) || (repeat_cnt < 2) ){
-			MML->Err(L"リピート回数は2～255の範囲で指定して下さい。");
+			MML->Err(_T("リピート回数は2～255の範囲で指定して下さい。"));
 		}
 	}
 
@@ -843,13 +843,13 @@ void	MusicTrack::SetRepeat_Branch(MMLfile* MML)
 			if(offset_repeat_a_s != 0){
 				if(offset_repeat_a_b == 0){
 					offset_repeat_a_b = offset_now + 1;	//引数の位置
-					_old_repeatA_Branch = new mml_Address(nsd_Repeat_A_Branch, L"Repeat(A) Branch");
+					_old_repeatA_Branch = new mml_Address(nsd_Repeat_A_Branch, _T("Repeat(A) Branch"));
 					SetEvent(_old_repeatA_Branch);
 				} else {
-					MML->Err(L"リピート(A)内で : コマンドが重複しています。");
+					MML->Err(_T("リピート(A)内で : コマンドが重複しています。"));
 				}
 			} else {
-				MML->Err(L"リピート(A)の開始 [ コマンドがありません。");
+				MML->Err(_T("リピート(A)の開始 [ コマンドがありません。"));
 			}
 			break;
 		case(3):
@@ -858,14 +858,14 @@ void	MusicTrack::SetRepeat_Branch(MMLfile* MML)
 					pt_itMusic--;
 					(*it_it_repeat_c_b) = pt_itMusic;
 				} else {
-					MML->Err(L"リピート(C)内で : コマンドが重複しています。");
+					MML->Err(_T("リピート(C)内で : コマンドが重複しています。"));
 				}
 			} else {
-				MML->Err(L"リピート(C)の開始 [: コマンドがありません。");
+				MML->Err(_T("リピート(C)の開始 [: コマンドがありません。"));
 			}
 			break;
 		default:
-			MML->Err(L"リピート開始コマンドがありません。");
+			MML->Err(_T("リピート開始コマンドがありません。"));
 			break;
 	}
 
@@ -890,7 +890,7 @@ void	MusicTrack::SetRepeat_End(MMLfile* MML)
 			SetRepeat_C_End(MML);
 			break;
 		default:
-			MML->Err(L"リピート開始コマンドがありません。");
+			MML->Err(_T("リピート開始コマンドがありません。"));
 			break;
 	}
 
@@ -909,7 +909,7 @@ void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 	EchoVolRet();	//疑似エコーの復帰
 
 	if((offset_repeat_a_s == 0) || ((*it_repeat_type) != 1)){
-		MML->Err(L"リピート(A)の開始 [ コマンドがありません。");
+		MML->Err(_T("リピート(A)の開始 [ コマンドがありません。"));
 
 	} else {
 		
@@ -921,22 +921,22 @@ void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 		if((cData < '0') || (cData > '9')){
 			//引数が無い場合
 			if(count_repeat_a == -1){
-				MML->Err(L"リピート回数の記述がありません。");
+				MML->Err(_T("リピート回数の記述がありません。"));
 			}
 		} else {
 			//引数がある場合
 			if(count_repeat_a != -1){
-				MML->Err(L"リピート回数が両方に記述されています。");
+				MML->Err(_T("リピート回数が両方に記述されています。"));
 			}
 			count_repeat_a = MML->GetInt();
 			if( (count_repeat_a > 255) || (count_repeat_a < 2) ){
-				MML->Err(L"リピート回数は2～255の範囲で指定して下さい。");
+				MML->Err(_T("リピート回数は2～255の範囲で指定して下さい。"));
 			}
 		}
 
 		_old_repeat->set_count((unsigned char)count_repeat_a);
 
-		_event = new mml_Address(nsd_Repeat_A_End, L"Repeat(A) End");
+		_event = new mml_Address(nsd_Repeat_A_End, _T("Repeat(A) End"));
 		_event->set_Address(offset_repeat_a_s - offset_now - 1);
 		SetEvent(_event);
 		//条件分岐があったら。
@@ -967,7 +967,7 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 	EchoVolRet();	//疑似エコーの復帰
 
 	if((sp_repeat_c == 0) || ((*it_repeat_type) != 3)){
-		MML->Err(L"リピート(C)の開始 [: コマンドがありません。");
+		MML->Err(_T("リピート(C)の開始 [: コマンドがありません。"));
 	} else {
 
 		list<MusicItem*>::iterator	pt_itMusic = ptcItem.end();
@@ -979,16 +979,16 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 		if((cData < '0') || (cData > '9')){
 			//引数が無い場合
 			if(repeat_cnt == -1){
-				MML->Err(L"リピート回数の記述がありません。");
+				MML->Err(_T("リピート回数の記述がありません。"));
 			}
 		} else {
 			//引数がある場合
 			if(repeat_cnt != -1){
-				MML->Err(L"リピート回数が両方に記述されています。");
+				MML->Err(_T("リピート回数が両方に記述されています。"));
 			}
 			repeat_cnt = MML->GetInt();
 			if( (repeat_cnt > 255) || (repeat_cnt < 2) ){
-				MML->Err(L"リピート回数は2～255の範囲で指定して下さい。");
+				MML->Err(_T("リピート回数は2～255の範囲で指定して下さい。"));
 			} else {
 				(*it_ct_repeat_c)	= repeat_cnt;
 			}
@@ -1112,7 +1112,7 @@ void	MusicTrack::SetSE(MMLfile* MML)
 {
 	unsigned	int		_no = MML->GetInt();
 	if(jump_flag==false){
-		mml_Address*		_event = new mml_Address(nsd_Call_SE, L"Call SE");
+		mml_Address*		_event = new mml_Address(nsd_Call_SE, _T("Call SE"));
 		_event->set_id(_no);
 		SetEvent(_event);
 		ptcSE.push_back(_event);
@@ -1130,7 +1130,7 @@ void	MusicTrack::SetSE(MMLfile* MML)
 void	MusicTrack::SetSubroutine(unsigned int _no)
 {
 	if(jump_flag==false){
-		mml_Address*		_event = new mml_Address(nsd_Call, L"Subroutine");
+		mml_Address*		_event = new mml_Address(nsd_Call, _T("Subroutine"));
 		_event->set_id(_no);
 		SetEvent(_event);
 		ptcSub.push_back(_event);
@@ -1144,7 +1144,7 @@ void	MusicTrack::SetSubWuthParch(unsigned int _no)
 		iSub = _no;
 		f_opt_Sub	= true;
 		if(jump_flag==false){
-			mml_Address*		_event = new mml_Address(nsd_Call, L"Subroutine for Patch");
+			mml_Address*		_event = new mml_Address(nsd_Call, _T("Subroutine for Patch"));
 			_event->set_id(_no);
 			SetEvent(_event);
 			ptcSub.push_back(_event);
@@ -1162,7 +1162,7 @@ void	MusicTrack::SetSubWuthParch(unsigned int _no)
 /*
 void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML, int _offset)
 {
-	mml_Address*		_event = new mml_Address(_opcode, L"Envelop");
+	mml_Address*		_event = new mml_Address(_opcode, _T("Envelop"));
 	unsigned	int		_no = MML->GetInt() + _offset;
 
 	_event->set_id(_no);
@@ -1180,7 +1180,7 @@ void	MusicTrack::SetEnvelop_Evoi(unsigned int _no)
 		iEvoi		= _no;
 		sw_Evoi		= true;
 		f_opt_Evoi	= true;		//最適化フラグ
-		_event		= new mml_Address(nsd_Envelop_Voice, L"Voice Envelope");
+		_event		= new mml_Address(nsd_Envelop_Voice, _T("Voice Envelope"));
 
 		_event->set_id(_no);
 		SetEvent(_event);
@@ -1197,7 +1197,7 @@ void	MusicTrack::SetEnvelop_Evol(unsigned int _no)
 		iEvol		= _no;
 		sw_Evol		= true;
 		f_opt_Evol	= true;		//最適化フラグ
-		_event		= new mml_Address(nsd_Envelop_Volume, L"Volume Envelope");
+		_event		= new mml_Address(nsd_Envelop_Volume, _T("Volume Envelope"));
 
 		_event->set_id(_no);
 		SetEvent(_event);
@@ -1214,7 +1214,7 @@ void	MusicTrack::SetEnvelop_Em(unsigned int _no)
 		iEm			= _no;
 		sw_Em		= true;
 		f_opt_Em	= true;		//最適化フラグ
-		_event		= new mml_Address(nsd_Envelop_Frequency, L"Frequency Envelope");
+		_event		= new mml_Address(nsd_Envelop_Frequency, _T("Frequency Envelope"));
 
 		_event->set_id(_no);
 		SetEvent(_event);
@@ -1231,7 +1231,7 @@ void	MusicTrack::SetEnvelop_En(unsigned int _no)
 		iEn			= _no;
 		sw_En		= true;
 		f_opt_En	= true;		//最適化フラグ
-		_event		= new mml_Address(nsd_Envelop_Note, L"Note Envelope");
+		_event		= new mml_Address(nsd_Envelop_Note, _T("Note Envelope"));
 
 		_event->set_id(_no);
 		SetEvent(_event);
@@ -1246,7 +1246,7 @@ void	MusicTrack::SetVoice(unsigned int _no)
 		iVoi = _no;
 		sw_Evoi		= false;
 		f_opt_Evoi	= true;		//最適化フラグ
-		SetEvent(new mml_general(nsd_Voice, (unsigned char)_no, L"Voice"));
+		SetEvent(new mml_general(nsd_Voice, (unsigned char)_no, _T("Voice")));
 	}
 }
 
@@ -1256,7 +1256,7 @@ void	MusicTrack::SetEnvelop_Evol()
 	if((f_opt_Evol == false) || (sw_Evol == true)){
 		sw_Evol		= false;
 		f_opt_Evol	= true;		//最適化フラグ
-		SetEvent(new mml_Address(nsd_Envelop_Volume, L"Volume Envelope Off"));
+		SetEvent(new mml_Address(nsd_Envelop_Volume, _T("Volume Envelope Off")));
 	}
 }
 
@@ -1266,7 +1266,7 @@ void	MusicTrack::SetEnvelop_Em()
 	if((f_opt_Em == false) || (sw_Em == true)){
 		sw_Em		= false;
 		f_opt_Em	= true;		//最適化フラグ
-		SetEvent(new mml_Address(nsd_Envelop_Frequency, L"Frequency Envelope Off"));
+		SetEvent(new mml_Address(nsd_Envelop_Frequency, _T("Frequency Envelope Off")));
 	}
 }
 
@@ -1276,7 +1276,7 @@ void	MusicTrack::SetEnvelop_En()
 	if((f_opt_En == false) || (sw_En == true)){
 		sw_En		= false;
 		f_opt_En	= true;		//最適化フラグ
-		SetEvent(new mml_Address(nsd_Envelop_Note, L"Note Envelope Off"));
+		SetEvent(new mml_Address(nsd_Envelop_Note, _T("Note Envelope Off")));
 	}
 }
 
@@ -1293,7 +1293,7 @@ void	MusicTrack::SetSweep(unsigned char c)
 	if((f_opt_Sweep == false) || ((unsigned char)iSweep != c)){
 		iSweep		= c;
 		f_opt_Sweep	= true;		//最適化フラグ
-		SetEvent(new mml_general(nsd_Sweep, c, L"Sweep"));
+		SetEvent(new mml_general(nsd_Sweep, c, _T("Sweep")));
 	}
 }
 
@@ -1311,7 +1311,7 @@ void	MusicTrack::SetPatch(MMLfile* MML)
 	i_Patch	= MML->GetInt();
 
 	if(MML->ChkPatch(i_Patch) == false){
-		MML->Err(L"存在しないパッチです。");
+		MML->Err(_T("存在しないパッチです。"));
 	}
 }
 
@@ -1403,7 +1403,7 @@ void	MusicTrack::CallPatch(MMLfile* MML, char _note)
 //==============================================================
 void	MusicTrack::SetFDSC(MMLfile* MML)
 {
-	mml_Address*		_event = new mml_Address(nsd_FDS_Career, L"FDS career wave table");
+	mml_Address*		_event = new mml_Address(nsd_FDS_Career, _T("FDS career wave table"));
 	unsigned	int		_no = MML->GetInt();
 
 	_event->set_id(_no);
@@ -1421,7 +1421,7 @@ void	MusicTrack::SetFDSC(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetFDSM(MMLfile* MML)
 {
-	mml_Address*		_event = new mml_Address(nsd_FDS_Modlator, L"FDS modulator wave table");
+	mml_Address*		_event = new mml_Address(nsd_FDS_Modlator, _T("FDS modulator wave table"));
 	unsigned	int		_no = MML->GetInt();
 
 	_event->set_id(_no);
@@ -1439,7 +1439,7 @@ void	MusicTrack::SetFDSM(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetVRC7(MMLfile* MML)
 {
-	mml_Address*		_event = new mml_Address(nsc_VRC7, L"VRC7 user instruments");
+	mml_Address*		_event = new mml_Address(nsc_VRC7, _T("VRC7 user instruments"));
 	unsigned	int		_no = MML->GetInt();
 
 	_event->set_id(_no);
@@ -1458,11 +1458,11 @@ void	MusicTrack::SetVRC7(MMLfile* MML)
 void	MusicTrack::SetN163(MMLfile* MML)
 {
 	unsigned	char	cData;
-	mml_Address*		_event = new mml_Address(nsc_N163,(unsigned char)MML->GetInt(),L"n163 wave table");
+	mml_Address*		_event = new mml_Address(nsc_N163,(unsigned char)MML->GetInt(),_T("n163 wave table"));
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err(L"@N コマンドのパラメータが足りません。２つ指定してください。");
+		MML->Err(_T("@N コマンドのパラメータが足りません。２つ指定してください。"));
 	}
 
 	_event->set_id(MML->GetInt());
@@ -1480,17 +1480,17 @@ void	MusicTrack::SetN163_Load(MMLfile* MML)
 	mml_Address*		_event;
 
 	if(cData != ','){
-		MML->Err(L"@N コマンドのパラメータが足りません。２つ指定してください。");
+		MML->Err(_T("@N コマンドのパラメータが足りません。２つ指定してください。"));
 	}
 
 	if((i<0) || (i>252)){
-		MML->Err(L"n16xの波形開始点は0～252の範囲で指定してください。");
+		MML->Err(_T("n16xの波形開始点は0～252の範囲で指定してください。"));
 	}
 	if((i % 4) != 0){
-		MML->Err(L"n16xの波形開始点は4の倍数で指定してください。");
+		MML->Err(_T("n16xの波形開始点は4の倍数で指定してください。"));
 	}
 
-	_event = new mml_Address(nsc_N163,(unsigned char)(i/4),L"n163 wave table");
+	_event = new mml_Address(nsc_N163,(unsigned char)(i/4),_T("n163 wave table"));
 	_event->set_id(MML->GetInt());
 	SetEvent(_event);
 	ptcWave.push_back(_event);
@@ -1510,10 +1510,10 @@ void	MusicTrack::SetN163_Set(MMLfile* MML)
 	unsigned	char	cData;
 
 	if((i<0) || (i>252)){
-		MML->Err(L"n16xの波形開始点は0～252の範囲で指定してください。");
+		MML->Err(_T("n16xの波形開始点は0～252の範囲で指定してください。"));
 	}
 	if((i % 4) != 0){
-		MML->Err(L"n16xの波形開始点は4の倍数で指定してください。");
+		MML->Err(_T("n16xの波形開始点は4の倍数で指定してください。"));
 	}
 	SetVoice(i/4);
 
@@ -1521,10 +1521,10 @@ void	MusicTrack::SetN163_Set(MMLfile* MML)
 	if(cData == ','){
 		i = MML->GetInt();
 		if((i<4) || (i>256)){
-			MML->Err(L"n16xのサンプル長は4～256の範囲で指定してください。");
+			MML->Err(_T("n16xのサンプル長は4～256の範囲で指定してください。"));
 		}
 		if((i % 4) != 0){
-			MML->Err(L"n16xのサンプル長は4の倍数で指定してください。");
+			MML->Err(_T("n16xのサンプル長は4の倍数で指定してください。"));
 		}
 		SetSweep(64 - (i/4));
 	} else {
@@ -1552,7 +1552,7 @@ void	MusicTrack::SetJump(MMLfile* MML)
 			jump_flag = true;
 			break;
 		default:
-			MML->Err(L"Jコマンドは0～1の範囲で指定してください。");
+			MML->Err(_T("Jコマンドは0～1の範囲で指定してください。"));
 	}
 
 }
@@ -1570,9 +1570,9 @@ void	MusicTrack::Set_q(int i)
 	if(opt_gatetime_q != i){
 		opt_gatetime_q = i;
 		if( (i <= 15) && (i >= 0) ){
-			SetEvent(new mml_general(nsd_GateTime_Byte + (unsigned char)i, L"Gatetime(q) Byte"));
+			SetEvent(new mml_general(nsd_GateTime_Byte + (unsigned char)i, _T("Gatetime(q) Byte")));
 		} else {
-			SetEvent(new mml_general(nsd_GateTime_q, (unsigned char)i, L"Gatetime(q)"));
+			SetEvent(new mml_general(nsd_GateTime_q, (unsigned char)i, _T("Gatetime(q)")));
 		}
 	}
 
@@ -1590,7 +1590,7 @@ void	MusicTrack::Set_u(int i)
 {
 	if(opt_gatetime_u != i){
 		opt_gatetime_u = i;
-		SetEvent(new mml_general(nsd_GateTime_u, (unsigned char)i, L"GateTime(u)"));
+		SetEvent(new mml_general(nsd_GateTime_u, (unsigned char)i, _T("GateTime(u)")));
 	}	
 }
 
@@ -1606,7 +1606,7 @@ void	MusicTrack::SetGatetime_Q(MMLfile* MML)
 {
 	int	i = MML->GetInt();
 	if((i<1) || (i>QMax)){
-		MML->Err(L"ゲートタイムQは1～#QMaxの範囲で指定して下さい。");
+		MML->Err(_T("ゲートタイムQは1～#QMaxの範囲で指定して下さい。"));
 	} else {
 		gatetime_Q = i;
 		if(gatetime_Q == QMax){
@@ -1629,7 +1629,7 @@ void	MusicTrack::SetGatetime(MMLfile* MML)
 {
 	gatetime_q = MML->GetInt();
 	if(gatetime_q > 255){
-		MML->Err(L"ゲートタイムqは0～255の範囲で指定して下さい。");
+		MML->Err(_T("ゲートタイムqは0～255の範囲で指定して下さい。"));
 	} else {
 		gatetime_Q = QMax;
 		Set_q(gatetime_q);
@@ -1985,7 +1985,7 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 
 	while(MML->cRead() != '{'){
 		if(MML->eof()){
-			MML->Err(L"調号コマンド・ブロックの開始を示す{が見つかりません。");
+			MML->Err(_T("調号コマンド・ブロックの開始を示す{が見つかりません。"));
 		}
 	}
 
@@ -1994,7 +1994,7 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 		
 		// } が来る前に、[EOF]が来たらエラー
 		if( MML->eof() ){
-			MML->Err(L"調号コマンド・ブロックの終端を示す`}'がありません。");
+			MML->Err(_T("調号コマンド・ブロックの終端を示す`}'がありません。"));
 		}
 
 		//１つ戻る
@@ -2186,20 +2186,20 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 				break;
 
 			default:
-				MML->Err(L"調号 K{} コマンドの引数で未知の文字が指定されました。");
+				MML->Err(_T("調号 K{} コマンドの引数で未知の文字が指定されました。"));
 				break;
 		}
 	}
 
 	//for Debug
 /*
-	wcout << L"[0] c = " << (int)KeySignature[0] << endl;
-	wcout << L"[1] d = " << (int)KeySignature[1] << endl;
-	wcout << L"[2] e = " << (int)KeySignature[2] << endl;
-	wcout << L"[3] f = " << (int)KeySignature[3] << endl;
-	wcout << L"[4] g = " << (int)KeySignature[4] << endl;
-	wcout << L"[5] a = " << (int)KeySignature[5] << endl;
-	wcout << L"[6] b = " << (int)KeySignature[6] << endl;
+	_COUT << _T("[0] c = ") << (int)KeySignature[0] << endl;
+	_COUT << _T("[1] d = ") << (int)KeySignature[1] << endl;
+	_COUT << _T("[2] e = ") << (int)KeySignature[2] << endl;
+	_COUT << _T("[3] f = ") << (int)KeySignature[3] << endl;
+	_COUT << _T("[4] g = ") << (int)KeySignature[4] << endl;
+	_COUT << _T("[5] a = ") << (int)KeySignature[5] << endl;
+	_COUT << _T("[6] b = ") << (int)KeySignature[6] << endl;
 */
 }
 
@@ -2219,55 +2219,55 @@ void	MusicTrack::SetLength(MMLfile* MML)
 
 	switch(DefaultLength){
 		case(96):
-			_event = new mml_general(nsd_Length_96, L"Length 96");
+			_event = new mml_general(nsd_Length_96, _T("Length 96"));
 			break;
 		case(72):
-			_event = new mml_general(nsd_Length_72, L"Length 72");
+			_event = new mml_general(nsd_Length_72, _T("Length 72"));
 			break;
 		case(48):
-			_event = new mml_general(nsd_Length_48, L"Length 48");
+			_event = new mml_general(nsd_Length_48, _T("Length 48"));
 			break;
 		case(36):
-			_event = new mml_general(nsd_Length_36, L"Length 36");
+			_event = new mml_general(nsd_Length_36, _T("Length 36"));
 			break;
 		case(32):
-			_event = new mml_general(nsd_Length_32, L"Length 32");
+			_event = new mml_general(nsd_Length_32, _T("Length 32"));
 			break;
 		case(24):
-			_event = new mml_general(nsd_Length_24, L"Length 24");
+			_event = new mml_general(nsd_Length_24, _T("Length 24"));
 			break;
 		case(18):
-			_event = new mml_general(nsd_Length_18, L"Length 18");
+			_event = new mml_general(nsd_Length_18, _T("Length 18"));
 			break;
 		case(16):
-			_event = new mml_general(nsd_Length_16, L"Length 16");
+			_event = new mml_general(nsd_Length_16, _T("Length 16"));
 			break;
 		case(12):
-			_event = new mml_general(nsd_Length_12, L"Length 12");
+			_event = new mml_general(nsd_Length_12, _T("Length 12"));
 			break;
 		case(9):
-			_event = new mml_general(nsd_Length_9,  L"Length 9");
+			_event = new mml_general(nsd_Length_9,  _T("Length 9"));
 			break;
 		case(8):
-			_event = new mml_general(nsd_Length_8,  L"Length 8");
+			_event = new mml_general(nsd_Length_8,  _T("Length 8"));
 			break;
 		case(6):
-			_event = new mml_general(nsd_Length_6,  L"Length 6");
+			_event = new mml_general(nsd_Length_6,  _T("Length 6"));
 			break;
 		case(4):
-			_event = new mml_general(nsd_Length_4,  L"Length 4");
+			_event = new mml_general(nsd_Length_4,  _T("Length 4"));
 			break;
 		case(3):
-			_event = new mml_general(nsd_Length_3,  L"Length 3");
+			_event = new mml_general(nsd_Length_3,  _T("Length 3"));
 			break;
 		case(2):
-			_event = new mml_general(nsd_Length_2,  L"Length 2");
+			_event = new mml_general(nsd_Length_2,  _T("Length 2"));
 			break;
 		case(1):
-			_event = new mml_general(nsd_Length_1,  L"Length 1");
+			_event = new mml_general(nsd_Length_1,  _T("Length 1"));
 			break;
 		default:
-			_event = new mml_general(nsd_Length, (unsigned char)DefaultLength, L"Length");
+			_event = new mml_general(nsd_Length, (unsigned char)DefaultLength, _T("Length"));
 			break;
 	}
 	SetEvent(_event);
@@ -2421,17 +2421,17 @@ void	MusicTrack::SetEcho(MMLfile* MML)
 
 	_value = MML->GetInt();
 	if((_value<0) || (_value>255)){
-		MML->Err(L"ECコマンドの第１パラメータは0～255の範囲で指定してください。");
+		MML->Err(_T("ECコマンドの第１パラメータは0～255の範囲で指定してください。"));
 	}
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err(L"EC コマンドのパラメータが足りません。２つ指定してください。");
+		MML->Err(_T("EC コマンドのパラメータが足りません。２つ指定してください。"));
 	}
 
 	_volume = MML->GetInt();
 	if((_volume<-1) || (_volume>15)){
-		MML->Err(L"ECコマンドの第２パラメータは-1～15の範囲で指定してください。");
+		MML->Err(_T("ECコマンドの第２パラメータは-1～15の範囲で指定してください。"));
 	}
 
 	echo_flag = true;
@@ -2495,7 +2495,7 @@ void	MusicTrack::GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur)
 
 	if(echo_slur == false){
 		//Echo volume
-		SetEvent(new mml_general(nsd_Volume + echo_volume, L"Echo Volume"));
+		SetEvent(new mml_general(nsd_Volume + echo_volume, _T("Echo Volume")));
 		echo_vol_ret = true;
 	} else {
 		//前のノートが、音符の場合のみ
@@ -2508,19 +2508,19 @@ void	MusicTrack::GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur)
 	if(old_octave < now_octave){
 		while(old_octave < now_octave){
 			old_octave++;
-			SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
+			SetEvent(new mml_general(nsd_Octave_Down_1, _T("One time octave down")));
 		}
 	} else if(old_octave > now_octave){
 		while(old_octave > now_octave){
 			old_octave--;
-			SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
+			SetEvent(new mml_general(nsd_Octave_Up_1, _T("One time octave up")));
 		}
 	}
 
 	if(Length == opt_DefaultLength){
 		Length = -1;
 	}
-	_old_note = new mml_note(old_note % 12, Length, GateTime, Slur, L"Echo Note");
+	_old_note = new mml_note(old_note % 12, Length, GateTime, Slur, _T("Echo Note"));
 	SetEvent(_old_note);
 
 //	EchoVolRet();
@@ -2542,7 +2542,7 @@ void	MusicTrack::EchoVolRet()
 	//ここで音量を戻す。
 	if(echo_vol_ret == true){
 		//volume return
-		SetEvent(new mml_general(nsd_Volume + volume, L"Volume"));
+		SetEvent(new mml_general(nsd_Volume + volume, _T("Volume")));
 		echo_vol_ret = false;
 	}
 }
@@ -2593,12 +2593,12 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 	//指定できる範囲を超えた場合。
 	while(_key < 0){
 		_key += 12;
-		SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
+		SetEvent(new mml_general(nsd_Octave_Down_1, _T("One time octave down")));
 	}
 
 	while(_key >= 12){
 		_key -= 12;
-		SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
+		SetEvent(new mml_general(nsd_Octave_Up_1, _T("One time octave up")));
 	}
 
 	CallPatch(MML, _note_no);
@@ -2611,7 +2611,7 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 			Length_0 = -1;
 		}
 
-		_old_note = new mml_note(_key, Length_0, GateTime, Slur, L"Note");
+		_old_note = new mml_note(_key, Length_0, GateTime, Slur, _T("Note"));
 
 		//イベントオブジェクトの作成
 		SetEvent(_old_note);
@@ -2622,7 +2622,7 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 			Length = -1;
 		}
 		//疑似エコー なし
-		_old_note = new mml_note(_key, Length, GateTime, Slur, L"Note");
+		_old_note = new mml_note(_key, Length, GateTime, Slur, _T("Note"));
 
 		//イベントオブジェクトの作成
 		SetEvent(_old_note);
@@ -2720,7 +2720,7 @@ void	MusicTrack::SetRest(MMLfile*	MML, int mode)
 			if(Length == opt_DefaultLength){
 				Length = -1;
 			}
-			_old_note = new mml_note(_code, Length, GateTime, Slur, L"Rest");
+			_old_note = new mml_note(_code, Length, GateTime, Slur, _T("Rest"));
 			SetEvent(_old_note);
 		} else {
 			GenerateEcho(MML,Length,GateTime,Slur);
@@ -2800,7 +2800,7 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 			note	= 6;
 			break;
 		default:
-			MML->Err(L"a,b,c～gの音名を記述してください。");
+			MML->Err(_T("a,b,c～gの音名を記述してください。"));
 			break;
 	}
 
@@ -2863,7 +2863,7 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 			note_2	= 6;
 			break;
 		default:
-			MML->Err(L"a,b,c～gの音名を記述してください。");
+			MML->Err(_T("a,b,c～gの音名を記述してください。"));
 			break;
 	}
 
@@ -2874,13 +2874,13 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 	//ポルタメント終了
 	cData = MML->GetChar();
 	if(cData != '}'){
-		MML->Err(L"ポルタメントコマンドは、}で閉じて下さい。");
+		MML->Err(_T("ポルタメントコマンドは、}で閉じて下さい。"));
 	}
 
 	Length_2	= calc_length(MML);
 	if(Length_2 != -1){
 		if(Length != -1){
-			MML->Err(L"ポルタメントコマンドで、音長が2箇所に記述されています。");
+			MML->Err(_T("ポルタメントコマンドで、音長が2箇所に記述されています。"));
 		} else {
 			Length = Length_2;
 		}
@@ -2889,7 +2889,7 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 	GateTime_2	= calc_gate(MML);
 	if(GateTime_2 != -1){
 		if(GateTime != -1){
-			MML->Err(L"ポルタメントコマンドで、ゲートタイムが2箇所に記述されています。");
+			MML->Err(_T("ポルタメントコマンドで、ゲートタイムが2箇所に記述されています。"));
 		} else {
 			GateTime = GateTime_2;
 		}
@@ -2947,7 +2947,7 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 	if(jump_flag == false){
 
 		//ポルタメント
-		SetEvent(new mml_general(nsd_Portamento, (unsigned char)1, (unsigned char)pol_rate, (unsigned char)pol_depth, (unsigned char)pol_target, L"Portamento"));
+		SetEvent(new mml_general(nsd_Portamento, (unsigned char)1, (unsigned char)pol_rate, (unsigned char)pol_depth, (unsigned char)pol_target, _T("Portamento")));
 
 		//ポルタメント元の音符
 		SetNote(MML, _key, Length, GateTime, Slur);
@@ -2992,43 +2992,43 @@ void	MusicTrack::SetProtament(MMLfile* MML)
 
 	_Decay = MML->GetInt();
 	if( (_Decay < 0) || (_Decay > 255) ){
-		MML->Err(L"ポルタメントの第1パラメータは0～255の範囲で指定してください。");
+		MML->Err(_T("ポルタメントの第1パラメータは0～255の範囲で指定してください。"));
 	}
 	_Decay++;
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
+		MML->Err(_T("P コマンドのパラメータが足りません。４つ指定してください。"));
 	}
 
 	_Rate = MML->GetInt();
 	if( (_Rate < 1) || (_Rate > 256) ){
-		MML->Err(L"ポルタメントの第2パラメータは1～256の範囲で指定してください。");
+		MML->Err(_T("ポルタメントの第2パラメータは1～256の範囲で指定してください。"));
 	}
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
+		MML->Err(_T("P コマンドのパラメータが足りません。４つ指定してください。"));
 	}
 
 	_Depth = MML->GetInt();
 	if( (_Depth < -128) || (_Depth > 127) ){
-		MML->Err(L"ポルタメントの第3パラメータは-128～127の範囲で指定してください。");
+		MML->Err(_T("ポルタメントの第3パラメータは-128～127の範囲で指定してください。"));
 	}
 	_Decay++;
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err(L"P コマンドのパラメータが足りません。４つ指定してください。");
+		MML->Err(_T("P コマンドのパラメータが足りません。４つ指定してください。"));
 	}
 
 	_Target = MML->GetInt();
 	if( (_Target < -128) || (_Target > 127) ){
-		MML->Err(L"ポルタメントの第4パラメータは-128～127の範囲で指定してください。");
+		MML->Err(_T("ポルタメントの第4パラメータは-128～127の範囲で指定してください。"));
 	}
 
 	if(jump_flag == false){
-        SetEvent(new mml_general(nsd_Portamento, (unsigned char)_Decay, (unsigned char)_Rate, (unsigned char)_Depth, (unsigned char)_Target, L"Portamento"));
+        SetEvent(new mml_general(nsd_Portamento, (unsigned char)_Decay, (unsigned char)_Rate, (unsigned char)_Depth, (unsigned char)_Target, _T("Portamento")));
 	}
 }
 
@@ -3044,7 +3044,7 @@ void	MusicTrack::SetKeyShift(MMLfile* MML)
 {
 	iKeyShift = MML->GetInt();
 	if( (iKeyShift < -128) || (iKeyShift > 127) ){
-		MML->Err(L"キーシフトは-127～128の範囲で指定してください。");
+		MML->Err(_T("キーシフトは-127～128の範囲で指定してください。"));
 	}
 }
 
@@ -3060,7 +3060,7 @@ void	MusicTrack::SetKeyShift_Relative(MMLfile* MML)
 {
 	iKeyShift += MML->GetInt();
 	if( (iKeyShift < -128) || (iKeyShift > 127) ){
-		MML->Err(L"キーシフトの範囲が-127～128を超えました。");
+		MML->Err(_T("キーシフトの範囲が-127～128を超えました。"));
 	}
 
 }
@@ -3078,7 +3078,7 @@ void	MusicTrack::SetTranspose(int _no)
 	if((iTranspose != _no) || (f_opt_Key == false)){
 		f_opt_Key	= true;
 		iTranspose	= _no;
-		SetEvent(new mml_general(nsd_Transpose, iTranspose, L"Transpose"));
+		SetEvent(new mml_general(nsd_Transpose, iTranspose, _T("Transpose")));
 	}
 }
 
@@ -3093,7 +3093,7 @@ void	MusicTrack::SetTranspose(int _no)
 void	MusicTrack::SetTranspose_Relative(int _no)
 {
 	iTranspose += _no;
-	SetEvent(new mml_general(nsd_Relative_Transpose, _no, L"Relative Transpose"));
+	SetEvent(new mml_general(nsd_Relative_Transpose, _no, _T("Relative Transpose")));
 }
 
 //==============================================================
@@ -3110,18 +3110,18 @@ void	MusicTrack::SetOctave(MMLfile* MML)
 
 	if( (octave <= 7) && (octave >=0) ){
 		if(opt_octave != octave){
-			SetEvent(new mml_general(nsd_Octave + (unsigned char)octave, L"Octave"));
+			SetEvent(new mml_general(nsd_Octave + (unsigned char)octave, _T("Octave")));
 			opt_octave = octave;
 		}
 	} else {
-		MML->Err(L"オクターブは1～8の範囲で指定してください。");
+		MML->Err(_T("オクターブは1～8の範囲で指定してください。"));
 	}
 }
 
 //--------------------------------------------------------------
 void	MusicTrack::SetOctaveInc()
 {
-	SetEvent(new mml_general(nsd_Octave_Up, L"Octave Up"));
+	SetEvent(new mml_general(nsd_Octave_Up, _T("Octave Up")));
 	if(octave<10){
 		octave++;
 		if(opt_octave != -1){
@@ -3133,7 +3133,7 @@ void	MusicTrack::SetOctaveInc()
 //--------------------------------------------------------------
 void	MusicTrack::SetOctaveDec()
 {
-	SetEvent(new mml_general(nsd_Octave_Down, L"Octave Down"));
+	SetEvent(new mml_general(nsd_Octave_Down, _T("Octave Down")));
 	if(octave>0){
 		octave--;
 		if(opt_octave != -1){
@@ -3146,7 +3146,7 @@ void	MusicTrack::SetOctaveDec()
 void	MusicTrack::SetOctaveOne_Inc()
 {
 	if(jump_flag == false){
-		SetEvent(new mml_general(nsd_Octave_Up_1, L"One time octave up"));
+		SetEvent(new mml_general(nsd_Octave_Up_1, _T("One time octave up")));
 		octave1++;
 	}
 }
@@ -3155,7 +3155,7 @@ void	MusicTrack::SetOctaveOne_Inc()
 void	MusicTrack::SetOctaveOne_Dec()
 {
 	if(jump_flag == false){
-		SetEvent(new mml_general(nsd_Octave_Down_1, L"One time octave down"));
+		SetEvent(new mml_general(nsd_Octave_Down_1, _T("One time octave down")));
 		octave1--;
 	}
 }

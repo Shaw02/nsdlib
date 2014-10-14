@@ -12,11 +12,11 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //	●引数
 //		FileInput*			DPCMfile	⊿PCM（*.dmc）のファイル名
 //		unsigned	int		_id			番号
-//		const		wchar_t	_strName[]	このオブジェクトの名前
+//		const		_CHAR	_strName[]	このオブジェクトの名前
 //	●返値
 //					無し
 //==============================================================
-DPCM::DPCM(MMLfile* MML, const char* dmcfile, unsigned int _id, const wchar_t _strName[]):
+DPCM::DPCM(MMLfile* MML, const char* dmcfile, unsigned int _id, const _CHAR _strName[]):
 	MusicItem(_strName),
 	f_Use(false),
 	m_id(_id)
@@ -29,7 +29,7 @@ DPCM::DPCM(MMLfile* MML, const char* dmcfile, unsigned int _id, const wchar_t _s
 	fileopen(dmcfile, &cOptionSW->m_pass_dmc);
 	_size = GetSize();
 	if(_size > 4081){
-		MML->Err(L"⊿PCMは4081Byte以下にしてください。");
+		MML->Err(_T("⊿PCMは4081Byte以下にしてください。"));
 	}
 
 	if((_size & 0x000F) != 0x01){

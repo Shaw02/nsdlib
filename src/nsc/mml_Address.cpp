@@ -10,7 +10,7 @@
 //	●返値
 //				無し
 //==============================================================
-mml_Address::mml_Address(unsigned char _code, const wchar_t _strName[]):
+mml_Address::mml_Address(unsigned char _code, const _CHAR _strName[]):
 	f_id(false),
 	MusicEvent(_strName)
 {
@@ -32,7 +32,7 @@ mml_Address::mml_Address(unsigned char _code, const wchar_t _strName[]):
 //	●返値
 //				無し
 //==============================================================
-mml_Address::mml_Address(unsigned char _code, unsigned char _data, const wchar_t _strName[]):
+mml_Address::mml_Address(unsigned char _code, unsigned char _data, const _CHAR _strName[]):
 	f_id(false),
 	MusicEvent(_strName)
 {
@@ -76,7 +76,7 @@ void	mml_Address::set_Address(unsigned int _addr)
 			code[3] = (unsigned char)((_addr >> 8) & 0xFF);
 			break;
 		default:
-			wcerr << L"mml_Address::set_Address()関数でエラーが発生しました。" << endl;
+			_CERR << _T("mml_Address::set_Address()関数でエラーが発生しました。") << endl;
 			nsc_exit(EXIT_FAILURE);
 			break;
 	}
