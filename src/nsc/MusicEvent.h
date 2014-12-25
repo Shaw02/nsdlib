@@ -82,6 +82,8 @@
 
 #define	nsd_sub_Jump_on			0x00
 #define	nsd_sub_Jump_off		0x01
+#define	nsd_sub_Detune_Cent		0x02
+#define	nsd_sub_Derune_Register	0x03
 
 
 /****************************************************************/

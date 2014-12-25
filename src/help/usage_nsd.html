@@ -49,7 +49,7 @@ cc65‚ÍA<a href="http://www.cc65.org/" target="_blank">http://www.cc65.org/</a>‚
 i¦cc65‚Ìƒz[ƒ€ƒy[ƒWAƒ}ƒjƒ…ƒAƒ‹‚ÍA‘S‚Ä‰p•¶‚Å‚·Bj<br>
 </p>
 
-<h4>‰¹Œ¹ƒhƒ‰ƒCƒo[‚ðƒ†[ƒU[ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚É‘g‚Ýž‚Þ</h4>
+<h4>nsd.lib‚ðƒ†[ƒU[ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚É‘g‚Ýž‚Þ</h4>
 <p>
 ƒŠƒ“ƒJ["ld65.exe"‚ÅƒŠƒ“ƒN‚·‚éŽž‚ÉA"nsd.lib"i‰¹Œ¹ƒhƒ‰ƒCƒo[–{‘Ìj‚ðƒŠƒ“ƒN‚µ‚Ä‰º‚³‚¢B<br>
 ŠeƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹i‚bŒ¾Œê—p‚Í"nsd.h"AƒAƒZƒ“ƒuƒŠŒ¾Œê—p‚Í"nsd.inc"j‚É‚ÍA
@@ -57,9 +57,39 @@ nsd.lib‚ð§Œä‚·‚éƒ‰ƒCƒuƒ‰ƒŠŠÖ”‚ÌŠO•”éŒ¾“™‚ª‹Lq‚³‚ê‚Ä‚¢‚Ü‚·‚Ì‚ÅA
 ƒ†[ƒU[ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ìƒ\[ƒX‚©‚çƒŠƒ“ƒN‚·‚é‚Æ•Ö—˜‚Å‚·B<br>
 </p>
 
-<h4>‹Èƒf[ƒ^‚ðÄ¶‚·‚é</h4>
+</div>
+
+<div class='block'>
+<h3>ƒ‰ƒCƒuƒ‰ƒŠ"nsd.lib"‚ª—p‚¢‚éƒZƒOƒƒ“ƒgEƒ‰ƒxƒ‹</h3>
+
+<h4>ƒZƒOƒƒ“ƒg‚É‚Â‚¢‚Ä</h4>
 <p>
-•Ê“rA<a href="nsc_asm.html">nes.exe‚ªo—Í‚·‚éƒAƒZƒ“ƒuƒŠŒ¾Œêƒ\[ƒX‚É‚Â‚¢‚Ä</a>‚ðŽQÆ‚µ‚Ä‰º‚³‚¢B<br>
+ˆÈ‰º‚ÌƒZƒOƒƒ“ƒg‚ðŽg‚Á‚Ä‚¢‚Ü‚·B<br>
+ƒŠƒ“ƒJ[‚ÌƒRƒ“ƒtƒBƒOƒtƒ@ƒCƒ‹‚ÅA‚©‚È‚ç‚¸–{ƒZƒOƒƒ“ƒg—Ìˆæ‚ðì‚Á‚Ä‚­‚¾‚³‚¢B<br>
+¦‚bŒ¾Œê‚©‚çƒRƒ“ƒpƒCƒ‹‚³‚ê‚éƒAƒZƒ“ƒuƒŠŒ¾Œêƒ\[ƒX‚Å—p‚¢‚ç‚ê‚éƒZƒOƒƒ“ƒg–¼‚É‡‚í‚¹‚Ä‚ ‚è‚Ü‚·B<br>
+</p>
+<table>
+<tr><th>ƒZƒOƒƒ“ƒg–¼</th><th>“à—e</th></tr>
+<tr><td>CODE		</td><td>‰¹Œ¹ƒhƒ‰ƒCƒo‚ÌƒvƒƒOƒ‰ƒ€–{‘Ì‚Å‚·</td></tr>
+<tr><td>RODATA		</td><td>ŒÅ’èƒf[ƒ^‚Å‚·B<br>‰¹’öƒe[ƒuƒ‹‚âAƒIƒyƒR[ƒh–ˆ‚ÌƒWƒƒƒ“ƒvƒe[ƒuƒ‹“™‚Ìƒf[ƒ^‚ª‚ ‚è‚Ü‚·B</td></tr>
+<tr><td>BSS			</td><td>§Œä—p‚Ìƒ[ƒNƒGƒŠƒAi”ñƒ[ƒƒy[ƒWj‚Å‚·B</td></tr>
+<tr><td>ZEROPAGE	</td><td>§Œä—p‚Ìƒ[ƒNƒGƒŠƒAiƒ[ƒƒy[ƒWj‚Å‚·B<br>
+							¦ƒŠƒ“ƒJ[‚Ì"-t nes"ƒIƒvƒVƒ‡ƒ“‚Å‚Í—e—Ê‚ª‘«‚è‚È‚¢Ž|A’ˆÓ‚µ‚Ä‚­‚¾‚³‚¢B</td></tr>
+</table>
+
+<h4>ƒ‰ƒxƒ‹‚É‚Â‚¢‚Ä</h4>
+<p>
+ŠO•”éŒ¾‚³‚ê‚éƒ‰ƒxƒ‹‚É‚ÍAƒ‰ƒxƒ‹–¼‚Ìæ“ª‚É"_nsd_"‚Ì5•¶Žš‚ð•t‰Á‚µ‚Ä‚¢‚Ü‚·B<br>
+‚bŒ¾Œê‚©‚çŽQÆ‚·‚éê‡‚ÍAæ“ª‚Ì`_'‚ð”²‚«A"nsd_"‚Ì4•¶Žš‚ÅŽQÆ‰Â”\‚Å‚·B<br>
+</p>
+
+<h4>‹Èƒf[ƒ^‚ª—p‚¢‚éƒZƒOƒƒ“ƒgEƒ‰ƒxƒ‹</h4>
+<p>
+•t‘®‚ÌMMLƒRƒ“ƒpƒCƒ‰‚ð—p‚¢‚ÄŠy‹È§ì‚·‚éê‡A
+‚l‚l‚kƒ\[ƒX‚É‚ÄA‹Èƒf[ƒ^‚ð”z’u‚·‚éƒZƒOƒƒ“ƒgA—p‚¢‚éƒ‰ƒxƒ‹–¼‚ðÝ’è‚·‚é‚±‚Æ‚ª‰Â”\‚Å‚·B<br>
+i]‚¢A‚P‚Â‚ÌƒvƒƒWƒFƒNƒg‚ÉA•¡”‚Ì‚l‚l‚k‚©‚çì‚Á‚½ƒIƒuƒWƒFƒNƒg‚ðƒŠƒ“ƒN‰Â”\‚Å‚·Bj<br>
+‚Ü‚½A•t‘®‚ÌMMLƒRƒ“ƒpƒCƒ‰‚Åì‚ç‚ê‚½ƒAƒZƒ“ƒuƒŠŒ¾Œêƒ\[ƒX‚ÍAƒ\[ƒX‚Ì•ÒW–³‚µ‚É‚»‚Ì‚Ü‚ÜƒAƒZƒ“ƒuƒ‹EƒŠƒ“ƒN‚·‚éŽ–‚ª‰Â”\‚Å‚·B<br>
+•Ê“rA<a href="nsc_asm.html">nsc.exe‚ªo—Í‚·‚éƒAƒZƒ“ƒuƒŠŒ¾Œêƒ\[ƒX‚É‚Â‚¢‚Ä</a>‚ðŽQÆ‚µ‚Ä‰º‚³‚¢B<br>
 ‚bŒ¾Œê‚Å‹Èƒf[ƒ^‚ðÄ¶‚·‚éƒTƒ“ƒvƒ‹ƒ\[ƒX‚Å‚·‚ªAƒAƒZƒ“ƒuƒŠŒ¾Œê‚Å‚à•û–@‚Í“¯‚¶‚Å‚·B<br>
 </p>
 
@@ -82,7 +112,9 @@ Zeropage‚ðâ‘ÎƒAƒhƒŒƒXi‚Â‚Ü‚èA”Ô’n‚ð’¼ÚŽw’èj‚Å“Ç‚Ý‘‚«‚µ‚Ä‚¢‚é—Ìˆæ‚ª‚ ‚è‚Ü‚·
 ƒŠƒ“ƒJ[—p‚Ì config ƒtƒ@ƒCƒ‹‚Ìì¬‚ÉÛ‚µ‚Ä‚ÍA
 cc65‚É•t‘®‚ÌƒhƒLƒ…ƒƒ“ƒg‹y‚ÑA"nes.inc"‹y‚ÑA"nes.lib"‚Ìƒ\[ƒXƒtƒ@ƒCƒ‹‚ð—Ç‚­ŽQÆ‚µ‚Ä‚­‚¾‚³‚¢B<br>
 </p>
+
 </div>
+
 
 <div class='block'>
 <h3>ŠÖ”ƒŠƒtƒ@ƒŒƒ“ƒXiFunction referencej</h3>

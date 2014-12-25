@@ -61,11 +61,12 @@
 	sta	__channel
 
 	;-----------------------
-	lda	(__ptr),y		; a = 優先度
+	lda	(__ptr),y		;
 	iny
 	and	#$03
 	shl	a,2
-	sta	__tmp + 1
+	sta	__tmp			; __tmp  = 優先度
+	pha
 
 	;-----------------------
 	;Init the channel structure
@@ -78,20 +79,19 @@ SE1:	ldx	#nsd::TR_SE1
 
 	lda	__flag
 	and	#nsd_flag::Priority	; 0000-1100<2>
-	cmp	__tmp + 1
+	cmp	__tmp
 	bcc	SE2			;優先度判定
 
 @Done:
 	lda	__flag
 	and	#~nsd_flag::Priority
-	ora	__tmp + 1
+	ora	__tmp
 	sta	__flag			;優先度更新
 
 	lda	(__ptr),y
-	iny
 	sta	__tmp
-	lda	(__ptr),y
-	ora	__tmp
+	iny
+	ora	(__ptr),y
 	bne	@L			;ポインターが0だったら、トラック無し。
 	iny
 	jmp	SE2
@@ -105,7 +105,10 @@ SE1:	ldx	#nsd::TR_SE1
 	sta	APU_PULSE2RAMP		;ch 2 only
 
 	;-----------------------
-SE2:	ldx	#nsd::TR_SE2
+SE2:	
+	pla
+	sta	__tmp
+	ldx	#nsd::TR_SE2
 	cpx	__channel
 	bcs	Exit
 
@@ -114,15 +117,14 @@ SE2:	ldx	#nsd::TR_SE2
 
 	lda	__flag
 	and	#nsd_flag::Priority
-	cmp	__tmp + 1
+	cmp	__tmp
 	bcc	Exit			;優先度判定
 
 @Done:
 	lda	(__ptr),y
-	iny
 	sta	__tmp
-	lda	(__ptr),y
-	ora	__tmp
+	iny
+	ora	(__ptr),y
 	bne	@L			;ポインターが0だったら、トラック無し。
 	iny
 	jmp	Exit

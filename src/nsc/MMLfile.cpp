@@ -709,10 +709,16 @@ string	MMLfile::GetString(void)
 	char	cData;
 	
 	string	_str;
+/*
 	while(cRead() != '"'){
 		if(eof()){
 			Err(_T("文字列開始を示す\"が見つかりません。"));
 		}
+	}
+*/
+	cData = GetChar();
+	if(cData != '"'){
+			Err(_T("文字列開始を示す\"が見つかりません。"));
 	}
 
 	while('"' != (cData = cRead())){
@@ -738,20 +744,31 @@ int	MMLfile::GetNum(void)
 {
 	char	cData;
 	int		iResult;
-
+/*
 	while(cRead() != '('){
 		if(eof()){
 			Err(_T("数値開始を示す(が見つかりません。"));
 		}
 	}
+*/
+	cData = GetChar();
+	if(cData != '('){
+		Err(_T("数値開始を示す(が見つかりません。"));
+	}
 
 	iResult = GetInt();
-
+/*
 	while(')' != (cData = cRead())){
 		if(eof()){
 			Err(_T("数値終了を示す)が見つかりません。"));
 		}
 	}
+*/
+	cData = GetChar();
+	if(cData != ')'){
+		Err(_T("数値終了を示す)が見つかりません。"));
+	}
+
 	return(iResult);
 }
 

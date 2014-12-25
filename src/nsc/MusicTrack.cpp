@@ -672,6 +672,8 @@ void	MusicTrack::SetRepeat_B_Start()
 //==============================================================
 void	MusicTrack::SetRepeat_B_Branch(MMLfile* MML)
 {
+	EchoVolRet();	//疑似エコーの復帰
+
 	if(offset_repeat_b_s != 0){
 		if(offset_repeat_b_b == 0){
 			offset_repeat_b_b = offset_now;	//コマンドがあった事を示す。
@@ -695,6 +697,8 @@ void	MusicTrack::SetRepeat_B_Branch(MMLfile* MML)
 void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 {
 	mml_Address*	_event;
+
+	EchoVolRet();	//疑似エコーの復帰
 
 	if(offset_repeat_b_s != 0){
 		if(offset_repeat_b_b != 0){
@@ -1069,6 +1073,8 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 		st_it_repeat_c_b.pop_back();
 		st_it_repeat_c_e.pop_back();
 		sp_repeat_c--;
+
+		Reset_opt();
 
 		//リピートタイプの復帰
 		it_repeat_type--;
@@ -2451,6 +2457,49 @@ void	MusicTrack::SetEcho(MMLfile* MML)
 		echo_length	= MML->GetLength(DefaultLength);
 	}
 }
+
+//==============================================================
+//		疑似エコーのバッファに書き込み
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetEchoBuffer(MMLfile* MML,int note)
+{
+	int		iEchoNote;
+
+	if(note == -1){
+		//休符を書き込む場合
+		iEchoNote = -1;
+
+	} else {
+		//ノートを書き込む場合
+		unsigned	char	cData;
+					int		iOctave;
+
+		iEchoNote = calc_note(MML, note);
+
+		cData = MML->GetChar();
+		MML->Back();
+
+		if((cData >= '0') && (cData <= '9')){
+			iOctave = MML->GetInt() - 1;
+		} else {
+			iOctave = octave;
+		}
+		iEchoNote += iKeyShift;
+		iEchoNote += iOctave*12;
+		if((iEchoNote<0) || (iEchoNote>255)){
+			MML->Err(_T("音程の範囲がノートナンバー0～255の範囲を超えました。"));
+		}
+	}
+
+	pt_oldNote++;
+	oldNote[pt_oldNote]	= iEchoNote;
+}
+
 //==============================================================
 //		疑似エコーのリセット
 //--------------------------------------------------------------
@@ -2676,20 +2725,38 @@ void	MusicTrack::SetRest(MMLfile*	MML, int mode)
 	cData = MML->GetChar();
 	switch(cData){
 		case('-'):
-			_code = 0x0D;
+			_code = 0x0D;	//mode 0
 			break;
 		case('#'):
 		case('+'):
-			_code = 0x0E;
+			_code = 0x0E;	//mode 1
 			break;
 		case('='):
+			_code = 0x0F;	//mode 2
+			break;
 		case('*'):
-			_code = 0x0F;
+			_code = 0x0C;	//mode 3
 			break;
 		default:
 			MML->Back();
 			if(mode & 0x80){
-				_code = 0x0D + ((char)mode & 0x03);
+				switch(mode){
+					case(0x80):
+						_code = 0x0D;
+						break;
+					case(0x81):
+						_code = 0x0E;
+						break;
+					case(0x82):
+						_code = 0x0F;
+						break;
+					case(0x83):
+						_code = 0x0C;
+						break;
+					default:
+						MML->Err(_T("MusicTrack::SetRest()関数内で、#waitコマンドのmodeの値が未知の値です。"));
+						break;
+				}
 			} else {
 				switch(KeySignature[7]){
 					case(-1):
@@ -2699,7 +2766,23 @@ void	MusicTrack::SetRest(MMLfile*	MML, int mode)
 						_code = 0x0E;
 						break;
 					default:
-						_code = 0x0D + ((char)mode & 0x03);
+						switch(mode){
+							case(0):
+								_code = 0x0D;
+								break;
+							case(1):
+								_code = 0x0E;
+								break;
+							case(2):
+								_code = 0x0F;
+								break;
+							case(3):
+								_code = 0x0C;
+								break;
+							default:
+								MML->Err(_T("MusicTrack::SetRest()関数内で、#restコマンドのmodeの値が未知の値です。"));
+								break;
+						}
 						break;
 				}
 			}
@@ -2914,19 +2997,19 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 		Length_0 = DefaultLength;
 	}
 
-	pol_length	= (Length_0 * 150) / iTempo;
+	pol_length	= (Length_0 * 150) / (iTempo);
 	pol_target	= iNote_2 - iNote;
 
 	if(abs(pol_target) * 16 >= pol_length){
 		pol_rate	= 1;
 		pol_depth	= (pol_target * 16) / pol_length;
-		if((pol_depth * pol_length) != (pol_target * 16)){
+	//	if((pol_depth * pol_length) != (pol_target * 16)){
 			if(pol_target>=0){
 				pol_depth++;
 			} else {
 				pol_depth--;
 			}
-		}
+	//	}
 	} else {
 		if(pol_target < 0){
 			pol_rate	= pol_length / (-pol_target * 16);

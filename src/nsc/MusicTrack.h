@@ -226,6 +226,7 @@ public:
 
 				void	SetEcho(void);
 				void	SetEcho(MMLfile* MML);
+				void	SetEchoBuffer(MMLfile* MML,int note);
 				void	ResetEcho();
 				void	EchoVolRet();
 				void	GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur);

@@ -57,11 +57,13 @@ MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<b
 <tr><td>#rest <var>n</var>				</td><td>2</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">r コマンド</a>による休符のコンパイル方法を設定します。<br>
 												　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。<br>
 												　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
-												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br></td></tr>
+												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br>
+												　3 … <a href="mml_release.html">Rmコマンド</a>に従います。<br></td></tr>
 <tr><td>#wait <var>n</var>				</td><td>0</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">w コマンド</a>による休符のコンパイル方法を設定します。<br>
 												　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。<br>
 												　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
-												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br></td></tr>
+												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br>
+												　3 … <a href="mml_release.html">Rmコマンド</a>に従います。<br></td></tr>
 <tr><td>#QMax <var>n</var>				</td><td>8</td><td>シーケンス記述ブロック内における<a href="mml_gate.html">Q コマンド</a>の分母を設定します。<br>
 												Qコマンド使用時、実際の発音音長は、音長 × <a href="mml_gate.html">Q コマンド</a>の値 ÷ <var>n</var> となります。</td></tr>
 <tr><td>#RepeatMode <var>n</var>		</td><td>0</td><td>シーケンス記述ブロック内における<a href="mml_repeatA.html">リピート(A)コマンド</a>のコンパイル方法を設定します。<br>

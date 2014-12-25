@@ -413,15 +413,15 @@ PSG_Envelope_Form	= $0D
 
 .ifdef	VRC7
 	VRC7_VoiceSet	.byte			nsd::VRC7_Track
-	VRC7_Frequency	.byte			nsd::VRC7_Track	;VRC7 frequecny
 	VRC7_Freq_old	.byte			nsd::VRC7_Track
+	VRC7_Frequency	.word			nsd::VRC7_Track	;VRC7 frequecny
 	VRC7_Reg	.word					;
 .endif
 
 .ifdef	OPLL
 	OPLL_VoiceSet	.byte			nsd::OPLL_Track_FM
-	OPLL_Frequency	.byte			nsd::OPLL_Track_FM	;OPLL frequency (FM)
 	OPLL_Freq_old	.byte			nsd::OPLL_Track_FM
+	OPLL_Frequency	.word			nsd::OPLL_Track_FM	;OPLL frequency (FM)
 	OPLL_Reg	.word		
 	OPLL_Rhythm	.byte						;OPLL Rhythm
 .endif
@@ -449,6 +449,7 @@ PSG_Envelope_Form	= $0D
 	KeyOn	= $10		;for VRC7
 	Envelop	= $10		;for PSG
 	FDSVOL	= $0C
+	NoKeyOff= $04		;for VRC7
 	KeyOff	= $03		;00	Key Off	: Vol = 0
 				;01	Key Off	: Release command
 				;10	Key Off	:  envelop

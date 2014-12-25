@@ -198,9 +198,49 @@
 		<param name="Local" value="mml_echo.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="EC-">
+		<param name="Name" value="MML reference: Echo Buffer Control">
+		<param name="Local" value="mml_echo_buffer.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="EC*">
 		<param name="Name" value="MML reference: Echo">
 		<param name="Local" value="mml_echo.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ECa">
+		<param name="Name" value="MML reference: Echo Buffer Control">
+		<param name="Local" value="mml_echo_buffer.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ECb">
+		<param name="Name" value="MML reference: Echo Buffer Control">
+		<param name="Local" value="mml_echo_buffer.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ECc">
+		<param name="Name" value="MML reference: Echo Buffer Control">
+		<param name="Local" value="mml_echo_buffer.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ECd">
+		<param name="Name" value="MML reference: Echo Buffer Control">
+		<param name="Local" value="mml_echo_buffer.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ECe">
+		<param name="Name" value="MML reference: Echo Buffer Control">
+		<param name="Local" value="mml_echo_buffer.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ECf">
+		<param name="Name" value="MML reference: Echo Buffer Control">
+		<param name="Local" value="mml_echo_buffer.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="ECg">
+		<param name="Name" value="MML reference: Echo Buffer Control">
+		<param name="Local" value="mml_echo_buffer.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Em">
@@ -268,14 +308,14 @@
 		<param name="Local" value="mml_scale.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="j">
-		<param name="Name" value="MML reference: Jump">
-		<param name="Local" value="mml_jump2.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="J">
 		<param name="Name" value="MML reference: Jump">
 		<param name="Local" value="mml_jump.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="j">
+		<param name="Name" value="MML reference: Jump">
+		<param name="Local" value="mml_jump2.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="k">
@@ -288,14 +328,14 @@
 		<param name="Local" value="mml_keyshift.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="L">
-		<param name="Name" value="MML reference: Loop">
-		<param name="Local" value="mml_loop.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="l">
 		<param name="Name" value="MML reference: Length">
 		<param name="Local" value="mml_length.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="L">
+		<param name="Name" value="MML reference: Loop">
+		<param name="Local" value="mml_loop.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="MMinor">
@@ -328,14 +368,14 @@
 		<param name="Local" value="mml_scale.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="N163">
-		<param name="Name" value="MML reference: N16x sample wave block">
-		<param name="Local" value="mml_N163.html">
-		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="n163">
 		<param name="Name" value="n16x(n160,n161,n162,n163) ‚ÌŽg‚¢•û">
 		<param name="Local" value="n163.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="N163">
+		<param name="Name" value="MML reference: N16x sample wave block">
+		<param name="Local" value="mml_N163.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="n16x">

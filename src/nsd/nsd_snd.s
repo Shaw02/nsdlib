@@ -213,12 +213,12 @@ JMPTBL:	.addr	_nsd_ch1_keyon		;BGM ch1 Pulse
 	.addr	_nsd_vrc7_keyon
 .endif
 .ifdef	OPLL
-	.addr	_nsd_vrc7_keyon
-	.addr	_nsd_vrc7_keyon
-	.addr	_nsd_vrc7_keyon
-	.addr	_nsd_vrc7_keyon
-	.addr	_nsd_vrc7_keyon
-	.addr	_nsd_vrc7_keyon
+	.addr	_nsd_opll_keyon
+	.addr	_nsd_opll_keyon
+	.addr	_nsd_opll_keyon
+	.addr	_nsd_opll_keyon
+	.addr	_nsd_opll_keyon
+	.addr	_nsd_opll_keyon
 	.addr	_nsd_opll_keyon_R
 	.addr	_nsd_opll_keyon_R
 	.addr	_nsd_opll_keyon_R
@@ -357,23 +357,69 @@ _nsd_mmc5_ch2_keyon:
 
 .endif
 ;---------------------------------------
-.if	.defined(OPLL)
-_nsd_opll_keyon_R:
-
-	;OPLL_Rhythm check
-	lda	__opll_ryhthm
-	cmp	#$20
-	bcs	_nsd_vrc7_keyon_exit
-.endif
-;---------------------------------------
-.if	.defined(VRC7) || .defined(OPLL)
+.ifdef	VRC7
 _nsd_vrc7_keyon:
 
+	lda	__chflag,x		;[4]4
+	and	#nsd_chflag::NoKeyOff
+	beq	@exit
+
+	;KeyOffしていないので、onする前に、offする。
+	txa				;[2]12
+	sub	#nsd::TR_VRC7		;[]
+	shr	a, 1			;[2]
+	tay				;[2]
+	add	#VRC7_Octave		;[2]
+	sta	VRC7_Resister		;レジスターをセット
+
+	lda	__vrc7_freq_old,y	;[5]
+	and	#$EF			;[2]
+	sta	__vrc7_freq_old,y	;[5]
+	sta	VRC7_Data		;
+
+
+@exit:
 	lda	__chflag,x
 	ora	#nsd_chflag::KeyOn
 	sta	__chflag,x
 
 _nsd_vrc7_keyon_exit:
+	rts
+.endif
+;---------------------------------------
+.ifdef	OPLL
+_nsd_opll_keyon_R:
+
+	;OPLL_Rhythm check
+	lda	__opll_ryhthm
+	cmp	#$20
+	bcs	_nsd_opll_keyon_exit
+
+_nsd_opll_keyon:
+
+	lda	__chflag,x		;[4]4
+	and	#nsd_chflag::NoKeyOff
+	beq	@exit
+
+	;KeyOffしていないので、onする前に、offする。
+	txa				;[2]12
+	sub	#nsd::TR_OPLL		;[]
+	shr	a, 1			;[2]
+	tay				;[2]
+	add	#OPLL_Octave		;[2]
+	sta	OPLL_Resister		;レジスターをセット
+
+	lda	__opll_freq_old,y	;[5]
+	and	#$EF			;[2]
+	sta	__opll_freq_old,y	;[5]
+	sta	OPLL_Data		;
+
+@exit:
+	lda	__chflag,x
+	ora	#nsd_chflag::KeyOn
+	sta	__chflag,x
+
+_nsd_opll_keyon_exit:
 	rts
 .endif
 .endproc
@@ -567,6 +613,10 @@ _nsd_dpcm_keyoff:
 .ifdef	VRC7
 _nsd_vrc7_keyoff:
 
+	lda	__chflag,x		;[4]4
+	and	#nsd_chflag::NoKeyOff
+	bne	@exit
+
 	;取りあえず、必ずKeyOffする。
 	lda	__chflag,x		;[4]4
 	and	#~nsd_chflag::KeyOn	;[2]6
@@ -585,6 +635,7 @@ _nsd_vrc7_keyoff:
 	sta	__vrc7_freq_old,y	;[5]
 	sta	VRC7_Data		;
 
+@exit:
 	rts				;[6]
 .endif
 
@@ -598,6 +649,10 @@ _nsd_OPLL_keyoff_R:
 	bcs	_nsd_OPLL_keyoff_exit
 
 _nsd_OPLL_keyoff:
+
+	lda	__chflag,x		;[4]4
+	and	#nsd_chflag::NoKeyOff
+	bne	_nsd_OPLL_keyoff_exit
 
 	;取りあえず、必ずKeyOffする。
 	lda	__chflag,x		;[4]4
@@ -1484,39 +1539,62 @@ _nsd_vrc6_ch3_volume:
 .ifdef	VRC7
 _nsd_vrc7_volume:
 
+
 	eor	#$FF			;[2]2
 	and	#$0F			;[2]4
-	sta	__tmp			;[3]7
+	sta	__tmp			;[3]7	__tmp <- volume
 
 	;チャンネルの計算
 	txa				;[2]9
 	sub	#nsd::TR_VRC7		;[3]12
 	shr	a, 1			;[2]14
 	tay				;[2]16
+	pha				;[3]19
 
-	;音量・音色番号書き込み
-	add	#VRC7_Volume		;[4]20
+	;《音量・音色番号書き込み》
+	;────────────────
+	add	#VRC7_Volume		;[4]23
 	sta	VRC7_Resister		;●Resister Write
 	lda	__tmp			;[3]
 	ora	__vrc7_voice_set,y	;[4]
 	sta	VRC7_Data		;●Data Write
 
-	;周波数 下位byte 書き込み
+	;《周波数 下位byte 書き込み》
+	;────────────────
+	ldy	#0					;[2]2
+	lda	__detune_fine,x				;[4]6
+	bpl	@L					;[3] or [4]9	(Branch) or [4](not Branch)
+	dey						;	ay = __detune_fine (sign expand)
+@L:	add	__vrc7_frequency - nsd::TR_VRC7 + 0,x	;[6]15
+	sta	__tmp					;[3]18
+	tya						;[2]20
+	adc	__vrc7_frequency - nsd::TR_VRC7 + 1,x	;[4]24
+	and	#$0F					;[2]26
+	sta	__tmp + 1				;[3]29	__tmp += (signed int)__detune_cent
+	pla						;[4]33
+	pha						;[3]36
+	tay						;[2]38	y <- device channel
+	add	#VRC7_Frequency				;[4]42 > 42 clock !! (VRC7のwait)
+	sta	VRC7_Resister				;●Resister Write
+	pla						;[4]
+	lda	__tmp					;[2]6
+	sta	VRC7_Data				;●Data Write
 
-	lda	__chflag,x		;[4]4
+	;《フラグ・オクターブ・周波数上位byte書き込み》
+	;────────────────
+	lda	__chflag,x		;[4]
 	and	#$30			;[2]6	 00XX 0000 <2>
-	ora	__vrc7_frequency,y	;[4]10	flag と octave をマージ
-	cmp	__vrc7_freq_old,y	;[4]14
-	beq	@freq_exit		;[2]16
-	sta	__vrc7_freq_old,y	;[5]21
-
-	lda	(__ptr),y		;[5]26
-	lda	(__ptr),y		;[5]31
-	lda	(__ptr),y		;[5]36
-
+	ora	__tmp + 1		;[3]9	flag と octave をマージ
+	cmp	__vrc7_freq_old,y	;[4]13
+	beq	@freq_exit		;[2]15	同じだったら書かない。
+	sta	__vrc7_freq_old,y	;[5]20
+	pha				;[3]23	*Wait
+	pla				;[4]27	*Wait
+	pha				;[3]30	*Wait
+	pla				;[4]34	*Wait
+	tya				;[2]36	*Wait
 	tya				;[2]38
 	add	#VRC7_Octave		;[4]42 > 42 clock !! (VRC7のwait)
-
 	sta	VRC7_Resister		;●Resister Write
 	tya				;[2]
 	lda	__vrc7_freq_old,y	;[4]6 clock
@@ -1525,7 +1603,6 @@ _nsd_vrc7_volume:
 @freq_exit:
 
 	rts				;[6]
-
 .endif
 
 ;---------------------------------------
@@ -1541,48 +1618,68 @@ _nsd_OPLL_volume:
 
 	eor	#$FF			;[2]2
 	and	#$0F			;[2]4
-	sta	__tmp			;[3]7
+	sta	__tmp			;[3]7	__tmp <- volume
 
 	;チャンネルの計算
 	txa				;[2]9
 	sub	#nsd::TR_OPLL		;[3]12
 	shr	a, 1			;[2]14
 	tay				;[2]16
+	pha				;[3]19
 
-	;音量・音色番号書き込み
-	add	#OPLL_Volume		;[4]20
+	;《音量・音色番号書き込み》
+	;────────────────
+	add	#OPLL_Volume		;[4]23
 	sta	OPLL_Resister		;●Resister Write
 	lda	__tmp			;[3]
 	ora	__opll_voice_set,y	;[4]
 	sta	OPLL_Data		;●Data Write
 
-	;周波数 下位byte 書き込み
+	;《周波数 下位byte 書き込み》
+	;────────────────
+	ldy	#0					;[2]2
+	lda	__detune_fine,x				;[4]6
+	bpl	@L					;[3] or [4]9	(Branch) or [4](not Branch)
+	dey						;	ay = __detune_fine (sign expand)
+@L:	add	__opll_frequency - nsd::TR_VRC7 + 0,x	;[6]15
+	sta	__tmp					;[3]18
+	tya						;[2]20
+	adc	__opll_frequency - nsd::TR_VRC7 + 1,x	;[4]24
+	and	#$0F					;[2]26
+	sta	__tmp + 1				;[3]29	__tmp += (signed int)__detune_cent
+	pla						;[4]33
+	pha						;[3]36
+	tay						;[2]38	y <- device channel
+	add	#OPLL_Frequency				;[4]42 > 42 clock !! (VRC7のwait)
+	sta	OPLL_Resister				;●Resister Write
+	pla						;[4]
+	lda	__tmp					;[2]6
+	sta	OPLL_Data				;●Data Write
 
-	lda	__chflag,x		;[4]4
+	;《フラグ・オクターブ・周波数上位byte書き込み》
+	;────────────────
+	lda	__chflag,x		;[4]
 	and	#$30			;[2]6	 00XX 0000 <2>
-	ora	__opll_frequency,y	;[4]10	flag と octave をマージ
-	cmp	__opll_freq_old,y	;[4]14
-	beq	@freq_exit		;[2]16
-	sta	__opll_freq_old,y	;[5]21
-
-	lda	(__ptr),y		;[5]26
-	lda	(__ptr),y		;[5]31
-	lda	(__ptr),y		;[5]36
-
+	ora	__tmp + 1		;[3]9	flag と octave をマージ
+	cmp	__opll_freq_old,y	;[4]13
+	beq	@freq_exit		;[2]15	同じだったら書かない。
+	sta	__opll_freq_old,y	;[5]20
+	pha				;[3]23	*Wait
+	pla				;[4]27	*Wait
+	pha				;[3]30	*Wait
+	pla				;[4]34	*Wait
+	tya				;[2]36	*Wait
 	tya				;[2]38
 	add	#OPLL_Octave		;[4]42 > 42 clock !! (OPLLのwait)
-
 	sta	OPLL_Resister		;●Resister Write
 	tya				;[2]
 	lda	__opll_freq_old,y	;[4]6 clock
 	sta	OPLL_Data		;●Data Write
 
 @freq_exit:
-
 _nsd_OPLL_volume_exit:
 
-	rts
-
+	rts				;[6]
 ;---------------------------------------
 _nsd_opll_BD_volume:
 	lda	#$0F
@@ -1895,13 +1992,33 @@ _nsd_ch3_time:
 .if	.defined(VRC7) || .defined(OPLL)
 .proc	_nsd_vrc7_sustain
 
-	tay
+	ror	a		;c <= 0bit
+	tay			;
 	lda	__chflag,x
-	cpy	#0
-	bne	@L
+
+	bcc	@Sustain
+	ora	#nsd_chflag::Sustain
+	bne	@Sustain_E
+@Sustain:
 	and	#~nsd_chflag::Sustain
-	jmp	@Set
-@L:	ora	#nsd_chflag::Sustain
+@Sustain_E:
+
+	cpy	#0
+	beq	@NoKeyOff
+	ora	#nsd_chflag::NoKeyOff
+	bne	@NoKeyOff_E
+@NoKeyOff:
+	and	#~nsd_chflag::NoKeyOff
+@NoKeyOff_E:
+
+;	tay
+;	lda	__chflag,x
+;	cpy	#0
+;	bne	@L
+;	and	#~nsd_chflag::Sustain
+;	jmp	@Set
+;@L:	ora	#nsd_chflag::Sustain
+
 @Set:	sta	__chflag,x
 
 	rts
@@ -2038,607 +2155,610 @@ Exit:
 ;APU, MMC5, VRC6, FME7 Frequency table
 Freq:
 	.word	$0D4D	;C
-	.word	$0D34
-	.word	$0D1C
+	.word	$0D35
+	.word	$0D1D
 	.word	$0D04
 	.word	$0CEC
-	.word	$0CD4
+	.word	$0CD5
 	.word	$0CBD
-	.word	$0CA5
-	.word	$0C8E	;Cis
+	.word	$0CA6
+	.word	$0C8E	;Cis / Ds
 	.word	$0C77
 	.word	$0C60
 	.word	$0C49
-	.word	$0C32
+	.word	$0C33
 	.word	$0C1C
 	.word	$0C06
-	.word	$0BEF
-	.word	$0BD9
+	.word	$0BF0
+	.word	$0BDA	;D
 	.word	$0BC4
 	.word	$0BAE
-	.word	$0B98
-	.word	$0B83
+	.word	$0B99
+	.word	$0B84
 	.word	$0B6E
 	.word	$0B59
 	.word	$0B44
-	.word	$0B2F
+	.word	$0B30	;Dis / Es
 	.word	$0B1B
-	.word	$0B06
+	.word	$0B07
 	.word	$0AF2
 	.word	$0ADE
 	.word	$0ACA
 	.word	$0AB6
 	.word	$0AA2
-	.word	$0A8E
+	.word	$0A8F	;E
 	.word	$0A7B
 	.word	$0A68
-	.word	$0A54
-	.word	$0A41
+	.word	$0A55
+	.word	$0A42
 	.word	$0A2F
 	.word	$0A1C
-	.word	$0A09
-	.word	$09F7
-	.word	$09E4
-	.word	$09D2
-	.word	$09C0
-	.word	$09AE
-	.word	$099C
+	.word	$0A0A
+	.word	$09F7	;F
+	.word	$09E5
+	.word	$09D3
+	.word	$09C1
+	.word	$09AF
+	.word	$099D
 	.word	$098B
 	.word	$0979
-	.word	$0968
-	.word	$0956
+	.word	$0968	;Fis / Ges
+	.word	$0957
 	.word	$0945
 	.word	$0934
 	.word	$0923
-	.word	$0912
-	.word	$0901
+	.word	$0913
+	.word	$0902
 	.word	$08F1
-	.word	$08E0
-	.word	$08D0
+	.word	$08E1	;G
+	.word	$08D1
 	.word	$08C0
 	.word	$08B0
 	.word	$08A0
 	.word	$0890
 	.word	$0880
-	.word	$0870
-	.word	$0861
-	.word	$0851
-	.word	$0842
+	.word	$0871
+	.word	$0861	;Gis / As
+	.word	$0852
+	.word	$0843
 	.word	$0833
 	.word	$0824
 	.word	$0815
 	.word	$0806
-	.word	$07F7
-	.word	$07E8	;A
+	.word	$07F8
+	.word	$07E9	;A
 	.word	$07DA
-	.word	$07CB
+	.word	$07CC
 	.word	$07BD
 	.word	$07AF
 	.word	$07A1
 	.word	$0793
 	.word	$0785
-	.word	$0777	;B (Bs / Ais)
+	.word	$0777	;B
 	.word	$0769
-	.word	$075B
+	.word	$075C
 	.word	$074E
-	.word	$0740
+	.word	$0741
 	.word	$0733
 	.word	$0726
 	.word	$0719
-	.word	$070B	;H (B)
-	.word	$06FE
+	.word	$070C	;H
+	.word	$06FF
 	.word	$06F2
 	.word	$06E5
-	.word	$06D8
+	.word	$06D9
 	.word	$06CC
 	.word	$06BF
 	.word	$06B3
-
+	.word	$06A7	;`C （線形補完用）
 
 
 ;---------------------------------------
 ;FDS Frequency table
 .ifdef	FDS
 Freq_FDS:
-	.word	$99F
-	.word	$9B1
-	.word	$9C3
-	.word	$9D5
-	.word	$9E7
-	.word	$9F9
-	.word	$A0C
-	.word	$A1E
-	.word	$A31
-	.word	$A44
-	.word	$A57
-	.word	$A6A
-	.word	$A7E
-	.word	$A91
-	.word	$AA5
-	.word	$AB9
-	.word	$ACC
-	.word	$AE0
-	.word	$AF5
-	.word	$B09
-	.word	$B1D
-	.word	$B32
-	.word	$B47
-	.word	$B5C
-	.word	$B71
-	.word	$B86
-	.word	$B9B
-	.word	$BB1
-	.word	$BC7
-	.word	$BDD
-	.word	$BF3
-	.word	$C09
-	.word	$C1F
-	.word	$C36
-	.word	$C4C
-	.word	$C63
-	.word	$C7A
-	.word	$C91
-	.word	$CA8
-	.word	$CC0
-	.word	$CD8
-	.word	$CEF
-	.word	$D07
-	.word	$D20
-	.word	$D38
-	.word	$D50
-	.word	$D69
-	.word	$D82
-	.word	$D9B
-	.word	$DB4
-	.word	$DCE
-	.word	$DE7
-	.word	$E01
-	.word	$E1B
-	.word	$E35
-	.word	$E50
-	.word	$E6A
-	.word	$E85
-	.word	$EA0
-	.word	$EBB
-	.word	$ED6
-	.word	$EF2
-	.word	$F0E
-	.word	$F2A
-	.word	$F46
-	.word	$F62
-	.word	$F7F
-	.word	$F9B
-	.word	$FB8
-	.word	$FD5
-	.word	$FF3
-	.word	$1010
-	.word	$102E
-	.word	$104C
-	.word	$106B
-	.word	$1089
-	.word	$10A8
-	.word	$10C7
-	.word	$10E6
-	.word	$1105
-	.word	$1125
-	.word	$1144
-	.word	$1164
-	.word	$1185
-	.word	$11A5
-	.word	$11C6
-	.word	$11E7
-	.word	$1208
-	.word	$122A
-	.word	$124B
-	.word	$126D
-	.word	$128F
-	.word	$12B2
-	.word	$12D5
-	.word	$12F7
-	.word	$131B
+	.word	$09A0	;C
+	.word	$09B2
+	.word	$09C4
+	.word	$09D6
+	.word	$09E8
+	.word	$09FA
+	.word	$0A0D
+	.word	$0A1F
+	.word	$0A32	;Cis / Ds
+	.word	$0A45
+	.word	$0A58
+	.word	$0A6B
+	.word	$0A7F
+	.word	$0A92
+	.word	$0AA6
+	.word	$0ABA
+	.word	$0ACD	;D
+	.word	$0AE1
+	.word	$0AF6
+	.word	$0B0A
+	.word	$0B1E
+	.word	$0B33
+	.word	$0B48
+	.word	$0B5D
+	.word	$0B72	;Dis / Es
+	.word	$0B87
+	.word	$0B9C
+	.word	$0BB2
+	.word	$0BC8
+	.word	$0BDE
+	.word	$0BF4
+	.word	$0C0A
+	.word	$0C20	;E
+	.word	$0C37
+	.word	$0C4D
+	.word	$0C64
+	.word	$0C7B
+	.word	$0C92
+	.word	$0CA9
+	.word	$0CC1
+	.word	$0CD9	;F
+	.word	$0CF0
+	.word	$0D08
+	.word	$0D21
+	.word	$0D39
+	.word	$0D51
+	.word	$0D6A
+	.word	$0D83
+	.word	$0D9C	;Fis / Ges
+	.word	$0DB5
+	.word	$0DCF
+	.word	$0DE8
+	.word	$0E02
+	.word	$0E1C
+	.word	$0E36
+	.word	$0E51
+	.word	$0E6B	;G
+	.word	$0E86
+	.word	$0EA1
+	.word	$0EBC
+	.word	$0ED7
+	.word	$0EF3
+	.word	$0F0F
+	.word	$0F2B
+	.word	$0F47	;Gis / As
+	.word	$0F63
+	.word	$0F80
+	.word	$0F9C
+	.word	$0FB9
+	.word	$0FD6
+	.word	$0FF4
+	.word	$1011
+	.word	$102F	;A
+	.word	$104D
+	.word	$106C
+	.word	$108A
+	.word	$10A9
+	.word	$10C8
+	.word	$10E7
+	.word	$1106
+	.word	$1126	;B
+	.word	$1145
+	.word	$1165
+	.word	$1186
+	.word	$11A6
+	.word	$11C7
+	.word	$11E8
+	.word	$1209
+	.word	$122B	;H
+	.word	$124C
+	.word	$126E
+	.word	$1290
+	.word	$12B3
+	.word	$12D6
+	.word	$12F8
+	.word	$131C
+	.word	$133F	;`C （線形補完用）
 .endif
 
 ;---------------------------------------
 ;SAW Frequency table
 .ifdef	VRC6
 Freq_SAW:
-	.word	$0F33
-	.word	$0F17
-	.word	$0EFC
-	.word	$0EE0
-	.word	$0EC5
-	.word	$0EA9
-	.word	$0E8E
-	.word	$0E74
-	.word	$0E59
-	.word	$0E3F
-	.word	$0E24
-	.word	$0E0A
-	.word	$0DF0
-	.word	$0DD7
-	.word	$0DBD
-	.word	$0DA4
-	.word	$0D8B
-	.word	$0D72
-	.word	$0D59
-	.word	$0D41
-	.word	$0D28
-	.word	$0D10
-	.word	$0CF8
-	.word	$0CE0
-	.word	$0CC8
-	.word	$0CB1
-	.word	$0C99
-	.word	$0C82
-	.word	$0C6B
-	.word	$0C54
-	.word	$0C3D
-	.word	$0C27
-	.word	$0C11
-	.word	$0BFA
-	.word	$0BE4
-	.word	$0BCE
-	.word	$0BB9
-	.word	$0BA3
-	.word	$0B8E
-	.word	$0B78
-	.word	$0B63
-	.word	$0B4E
-	.word	$0B39
-	.word	$0B25
-	.word	$0B10
-	.word	$0AFC
-	.word	$0AE8
-	.word	$0AD3
-	.word	$0AC0
-	.word	$0AAC
-	.word	$0A98
-	.word	$0A85
-	.word	$0A71
-	.word	$0A5E
-	.word	$0A4B
-	.word	$0A38
-	.word	$0A25
-	.word	$0A12
-	.word	$0A00
-	.word	$09ED
-	.word	$09DB
-	.word	$09C9
-	.word	$09B7
-	.word	$09A5
-	.word	$0993
-	.word	$0982
-	.word	$0970
-	.word	$095F
-	.word	$094D
-	.word	$093C
-	.word	$092B
-	.word	$091A
-	.word	$090A
-	.word	$08F9
-	.word	$08E8
-	.word	$08D8
-	.word	$08C8
-	.word	$08B8
-	.word	$08A8
-	.word	$0898
-	.word	$0888
-	.word	$0878
-	.word	$0868
-	.word	$0859
-	.word	$084A
-	.word	$083A
-	.word	$082B
-	.word	$081C
-	.word	$080D
-	.word	$07FE
-	.word	$07F0
-	.word	$07E1
-	.word	$07D2
-	.word	$07C4
-	.word	$07B6
-	.word	$07A8
+	.word	$0F34	;C
+	.word	$0F18
+	.word	$0EFD
+	.word	$0EE1
+	.word	$0EC6
+	.word	$0EAA
+	.word	$0E8F
+	.word	$0E75
+	.word	$0E5A
+	.word	$0E40
+	.word	$0E25
+	.word	$0E0B
+	.word	$0DF1
+	.word	$0DD8
+	.word	$0DBE
+	.word	$0DA5
+	.word	$0D8C	;D
+	.word	$0D73
+	.word	$0D5A
+	.word	$0D42
+	.word	$0D29
+	.word	$0D11
+	.word	$0CF9
+	.word	$0CE1
+	.word	$0CC9
+	.word	$0CB2
+	.word	$0C9A
+	.word	$0C83
+	.word	$0C6C
+	.word	$0C55
+	.word	$0C3E
+	.word	$0C28
+	.word	$0C12	;E
+	.word	$0BFB
+	.word	$0BE5
+	.word	$0BCF
+	.word	$0BBA
+	.word	$0BA4
+	.word	$0B8F
+	.word	$0B79
+	.word	$0B64	;F
+	.word	$0B4F
+	.word	$0B3A
+	.word	$0B26
+	.word	$0B11
+	.word	$0AFD
+	.word	$0AE9
+	.word	$0AD4
+	.word	$0AC1
+	.word	$0AAD
+	.word	$0A99
+	.word	$0A86
+	.word	$0A72
+	.word	$0A5F
+	.word	$0A4C
+	.word	$0A39
+	.word	$0A26	;G
+	.word	$0A13
+	.word	$0A01
+	.word	$09EE
+	.word	$09DC
+	.word	$09CA
+	.word	$09B8
+	.word	$09A6
+	.word	$0994
+	.word	$0983
+	.word	$0971
+	.word	$0960
+	.word	$094E
+	.word	$093D
+	.word	$092C
+	.word	$091B
+	.word	$090B	;A
+	.word	$08FA
+	.word	$08E9
+	.word	$08D9
+	.word	$08C9
+	.word	$08B9
+	.word	$08A9
+	.word	$0899
+	.word	$0889	;B
+	.word	$0879
+	.word	$0869
+	.word	$085A
+	.word	$084B
+	.word	$083B
+	.word	$082C
+	.word	$081D
+	.word	$080E	;H
+	.word	$07FF
+	.word	$07F1
+	.word	$07E2
+	.word	$07D3
+	.word	$07C5
+	.word	$07B7
+	.word	$07A9
+	.word	$079A	;`C （線形補完用）
 .endif
 
 ;---------------------------------------
 ;VRC7 Frequency table
 .if	.defined(VRC7) || .defined(OPLL)
 Freq_VRC7:
-	.byte	$AD
+	.byte	$AD	;C
 	.byte	$AE
-	.byte	$AF
+	.byte	$B0
 	.byte	$B1
 	.byte	$B2
-	.byte	$B3
 	.byte	$B4
+	.byte	$B5
 	.byte	$B6
-	.byte	$B7
 	.byte	$B8
+	.byte	$B9
 	.byte	$BA
-	.byte	$BB
 	.byte	$BC
+	.byte	$BD
 	.byte	$BE
-	.byte	$BF
+	.byte	$C0
 	.byte	$C1
-	.byte	$C2
-	.byte	$C3
+	.byte	$C2	;D
+	.byte	$C4
 	.byte	$C5
-	.byte	$C6
+	.byte	$C7
 	.byte	$C8
-	.byte	$C9
+	.byte	$CA
 	.byte	$CB
-	.byte	$CC
 	.byte	$CD
+	.byte	$CE
 	.byte	$CF
-	.byte	$D0
-	.byte	$D2
+	.byte	$D1
+	.byte	$D3
 	.byte	$D4
-	.byte	$D5
+	.byte	$D6
 	.byte	$D7
-	.byte	$D8
-	.byte	$DA
-	.byte	$DB
+	.byte	$D9
+	.byte	$DA	;E
+	.byte	$DC
 	.byte	$DD
 	.byte	$DF
-	.byte	$E0
+	.byte	$E1
 	.byte	$E2
-	.byte	$E3
-	.byte	$E5
-	.byte	$E7
-	.byte	$E8
-	.byte	$EA
+	.byte	$E4
+	.byte	$E6
+	.byte	$E7	;F
+	.byte	$E9
+	.byte	$EB
 	.byte	$EC
-	.byte	$ED
-	.byte	$EF
+	.byte	$EE
+	.byte	$F0
 	.byte	$F1
 	.byte	$F3
-	.byte	$F4
-	.byte	$F6
-	.byte	$F8
+	.byte	$F5
+	.byte	$F7
+	.byte	$F9
 	.byte	$FA
 	.byte	$FC
-	.byte	$FD
-	.byte	$FF
-	.byte	$01
-	.byte	$03
+	.byte	$FE
+	.byte	$00
+	.byte	$02
+	.byte	$04	;G
 	.byte	$05
 	.byte	$07
 	.byte	$09
 	.byte	$0B
 	.byte	$0D
 	.byte	$0F
-	.byte	$10
-	.byte	$12
-	.byte	$14
-	.byte	$16
-	.byte	$18
+	.byte	$11
+	.byte	$13
+	.byte	$15
+	.byte	$17
+	.byte	$19
 	.byte	$1B
 	.byte	$1D
 	.byte	$1F
 	.byte	$21
-	.byte	$23
+	.byte	$23	;A
 	.byte	$25
-	.byte	$27
-	.byte	$29
-	.byte	$2B
+	.byte	$28
+	.byte	$2A
+	.byte	$2C
 	.byte	$2E
 	.byte	$30
 	.byte	$32
-	.byte	$34
-	.byte	$36
+	.byte	$35	;B
+	.byte	$37
 	.byte	$39
 	.byte	$3B
-	.byte	$3D
-	.byte	$3F
+	.byte	$3E
+	.byte	$40
 	.byte	$42
-	.byte	$44
-	.byte	$46
+	.byte	$45
+	.byte	$47	;H
 	.byte	$49
-	.byte	$4B
+	.byte	$4C
 	.byte	$4E
-	.byte	$50
+	.byte	$51
 	.byte	$53
 	.byte	$55
-	.byte	$57
+	.byte	$58
+	.byte	$5A	;`C （線形補完用）
 .endif
 
 ;---------------------------------------
 ;N163 Frequency table
 .ifdef	N163
 Freq_N163:
-	.word	$4168
-	.word	$437F
-	.word	$4597
-	.word	$47B2
-	.word	$49CE
-	.word	$4BEC
-	.word	$4E0D
-	.word	$502F
-	.word	$5253
-	.word	$547A
-	.word	$56A2
-	.word	$58CC
-	.word	$5AF8
-	.word	$5D27
-	.word	$5F57
-	.word	$6189
-	.word	$63BE
-	.word	$65F4
-	.word	$682D
-	.word	$6A67
-	.word	$6CA4
-	.word	$6EE2
-	.word	$7123
-	.word	$7366
-	.word	$75AB
-	.word	$77F2
-	.word	$7A3B
-	.word	$7C86
-	.word	$7ED3
-	.word	$8123
-	.word	$8374
-	.word	$85C8
-	.word	$881E
-	.word	$8A76
-	.word	$8CD0
-	.word	$8F2D
-	.word	$918B
-	.word	$93EC
-	.word	$964F
-	.word	$98B4
-	.word	$9B1C
-	.word	$9D85
-	.word	$9FF1
-	.word	$A25F
-	.word	$A4D0
-	.word	$A742
-	.word	$A9B7
-	.word	$AC2F
-	.word	$AEA8
-	.word	$B124
-	.word	$B3A2
-	.word	$B622
-	.word	$B8A5
-	.word	$BB2A
-	.word	$BDB1
-	.word	$C03B
-	.word	$C2C7
-	.word	$C555
-	.word	$C7E6
-	.word	$CA79
-	.word	$CD0F
-	.word	$CFA7
-	.word	$D241
-	.word	$D4DE
-	.word	$D77D
-	.word	$DA1E
-	.word	$DCC2
-	.word	$DF69
-	.word	$E212
-	.word	$E4BD
-	.word	$E76B
-	.word	$EA1B
-	.word	$ECCE
-	.word	$EF83
-	.word	$F23B
-	.word	$F4F5
-	.word	$F7B2
-	.word	$FA71
-	.word	$FD33
-	.word	$FFF8
+	.word	$4169
+	.word	$4380
+	.word	$4598
+	.word	$47B3
+	.word	$49CF
+	.word	$4BED
+	.word	$4E0E
+	.word	$5030
+	.word	$5254
+	.word	$547B
+	.word	$56A3
+	.word	$58CD
+	.word	$5AF9
+	.word	$5D28
+	.word	$5F58
+	.word	$618A
+	.word	$63BF
+	.word	$65F5
+	.word	$682E
+	.word	$6A68
+	.word	$6CA5
+	.word	$6EE3
+	.word	$7124
+	.word	$7367
+	.word	$75AC
+	.word	$77F3
+	.word	$7A3C
+	.word	$7C87
+	.word	$7ED4
+	.word	$8124
+	.word	$8375
+	.word	$85C9
+	.word	$881F
+	.word	$8A77
+	.word	$8CD1
+	.word	$8F2E
+	.word	$918C
+	.word	$93ED
+	.word	$9650
+	.word	$98B5
+	.word	$9B1D
+	.word	$9D86
+	.word	$9FF2
+	.word	$A260
+	.word	$A4D1
+	.word	$A743
+	.word	$A9B8
+	.word	$AC30
+	.word	$AEA9
+	.word	$B125
+	.word	$B3A3
+	.word	$B623
+	.word	$B8A6
+	.word	$BB2B
+	.word	$BDB2
+	.word	$C03C
+	.word	$C2C8
+	.word	$C556
+	.word	$C7E7
+	.word	$CA7A
+	.word	$CD10
+	.word	$CFA8
+	.word	$D242
+	.word	$D4DF
+	.word	$D77E
+	.word	$DA1F
+	.word	$DCC3
+	.word	$DF6A
+	.word	$E213
+	.word	$E4BE
+	.word	$E76C
+	.word	$EA1C
+	.word	$ECCF
+	.word	$EF84
+	.word	$F23C
+	.word	$F4F6
+	.word	$F7B3
+	.word	$FA72
+	.word	$FD34
+	.word	$FFF9
 Freq_N163_50:
-	.word	$02BF		;$50
-	.word	$0589
-	.word	$0855
-	.word	$0B23
-	.word	$0DF5
-	.word	$10C9
-	.word	$139F
-	.word	$1679
-	.word	$1955
-	.word	$1C33
-	.word	$1F14
-	.word	$21F8
-	.word	$24DF
-	.word	$27C8
-	.word	$2AB4
-	.word	$2DA2
-	.word	$3094
-	.word	$3388
-	.word	$367E
-	.word	$3978
-	.word	$3C74
-	.word	$3F73
-	.word	$4275
-	.word	$457A
-	.word	$4881
-	.word	$4B8B
-	.word	$4E98
-	.word	$51A8
-	.word	$54BB
-	.word	$57D0
-	.word	$5AE9
-	.word	$5E04
-	.word	$6122
-	.word	$6443
-	.word	$6767
-	.word	$6A8E
-	.word	$6DB7
-	.word	$70E4
-	.word	$7414
-	.word	$7746
-	.word	$7A7C
-	.word	$7DB4
-	.word	$80F0
-	.word	$842E
-	.word	$8770
-	.word	$8AB4
-	.word	$8DFC
-	.word	$9146
-	.word	$9494
-	.word	$97E4
-	.word	$9B38
-	.word	$9E8F
-	.word	$A1E9
-	.word	$A546
-	.word	$A8A6
-	.word	$AC09
-	.word	$AF6F
-	.word	$B2D9
-	.word	$B645
-	.word	$B9B5
-	.word	$BD28
-	.word	$C09E
-	.word	$C418
-	.word	$C794
-	.word	$CB14
-	.word	$CE97
-	.word	$D21E
-	.word	$D5A7
-	.word	$D934
-	.word	$DCC4
-	.word	$E058
-	.word	$E3EF
-	.word	$E789
-	.word	$EB26
-	.word	$EEC7
-	.word	$F26B
-	.word	$F613
-	.word	$F9BE
-	.word	$FD6C
-	.word	$011E		;$9F
-	.word	$04D3
-	.word	$088B
-	.word	$0C47
-	.word	$1007
-	.word	$13CA
-	.word	$1790
-	.word	$1B5A
-	.word	$1F27
-	.word	$22F8
-	.word	$26CD
-	.word	$2AA5
-	.word	$2E80
-	.word	$325F
-	.word	$3642
-	.word	$3A28
-	.word	$3E12
-	.word	$4200
-	.word	$45F1
-	.word	$49E6
-	.word	$4DDF
-	.word	$51DB
-	.word	$55DB
-	.word	$59DE
-	.word	$5DE5
-	.word	$61F0
-	.word	$65FF
-	.word	$6A12
-	.word	$6E28
-	.word	$7242
-	.word	$7660
-	.word	$7A82
-	.word	$7EA7
+	.word	$02C0
+	.word	$058A
+	.word	$0856
+	.word	$0B24
+	.word	$0DF6
+	.word	$10CA
+	.word	$13A0
+	.word	$167A
+	.word	$1956
+	.word	$1C34
+	.word	$1F15
+	.word	$21F9
+	.word	$24E0
+	.word	$27C9
+	.word	$2AB5
+	.word	$2DA3
+	.word	$3095
+	.word	$3389
+	.word	$367F
+	.word	$3979
+	.word	$3C75
+	.word	$3F74
+	.word	$4276
+	.word	$457B
+	.word	$4882
+	.word	$4B8C
+	.word	$4E99
+	.word	$51A9
+	.word	$54BC
+	.word	$57D1
+	.word	$5AEA
+	.word	$5E05
+	.word	$6123
+	.word	$6444
+	.word	$6768
+	.word	$6A8F
+	.word	$6DB8
+	.word	$70E5
+	.word	$7415
+	.word	$7747
+	.word	$7A7D
+	.word	$7DB5
+	.word	$80F1
+	.word	$842F
+	.word	$8771
+	.word	$8AB5
+	.word	$8DFD
+	.word	$9147
+	.word	$9495
+	.word	$97E5
+	.word	$9B39
+	.word	$9E90
+	.word	$A1EA
+	.word	$A547
+	.word	$A8A7
+	.word	$AC0A
+	.word	$AF70
+	.word	$B2DA
+	.word	$B646
+	.word	$B9B6
+	.word	$BD29
+	.word	$C09F
+	.word	$C419
+	.word	$C795
+	.word	$CB15
+	.word	$CE98
+	.word	$D21F
+	.word	$D5A8
+	.word	$D935
+	.word	$DCC5
+	.word	$E059
+	.word	$E3F0
+	.word	$E78A
+	.word	$EB27
+	.word	$EEC8
+	.word	$F26C
+	.word	$F614
+	.word	$F9BF
+	.word	$FD6D
+	.word	$011F
+	.word	$04D4
+	.word	$088C
+	.word	$0C48
+	.word	$1008
+	.word	$13CB
+	.word	$1791
+	.word	$1B5B
+	.word	$1F28
+	.word	$22F9
+	.word	$26CE
+	.word	$2AA6
+	.word	$2E81
+	.word	$3260
+	.word	$3643
+	.word	$3A29
+	.word	$3E13
+	.word	$4201
+	.word	$45F2
+	.word	$49E7
+	.word	$4DE0
+	.word	$51DC
+	.word	$55DC
+	.word	$59DF
+	.word	$5DE6
+	.word	$61F1
+	.word	$6600
+	.word	$6A13
+	.word	$6E29
+	.word	$7243
+	.word	$7661
+	.word	$7A83
+	.word	$7EA8
 .endif
 
 .code
@@ -2675,9 +2795,9 @@ JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
 	.addr	_nsd_OPLL_frequency
 	.addr	_nsd_OPLL_frequency
 	.addr	_nsd_OPLL_frequency
-	.addr	_nsd_OPLL_frequency_R
-	.addr	_nsd_OPLL_frequency_R
-	.addr	_nsd_OPLL_frequency_R
+	.addr	_nsd_OPLL_frequency	;変数に書くだけは書いていい。
+	.addr	_nsd_OPLL_frequency	;
+	.addr	_nsd_OPLL_frequency	;
 	.addr	_nsd_OPLL_frequency_BD
 	.addr	_nsd_OPLL_frequency_HH_SD
 	.addr	_nsd_OPLL_frequency_HH_SD
@@ -2882,7 +3002,11 @@ Exit:
 .proc	_nsd_fds_frequency
 
 	jsr	_nsd_div192		; 
-	and	#$FE			; x =  ax  /  192
+;	and	#$FE			; x =  ax  /  192
+	lsr	a
+	bcc	@L
+	ora	#$80
+@L:	asl	a
 	tay				; y = (ax mod 192) & 0xFE
 
 	;-------------------------------
@@ -2892,7 +3016,18 @@ Exit:
 	sta	__tmp + 1
 	lda	Freq_FDS,y
 
-	;-------------------------------
+	bcc	Octave_Proc
+
+	;線形補完
+	add	Freq_FDS + 2,y
+	sta	__tmp
+	lda	__tmp + 1
+	adc	Freq_FDS + 3,y
+	lsr	a
+	sta	__tmp + 1
+	lda	__tmp
+	ror	a
+
 	; *** Octave caluclate  and  overflow check
 Octave_Proc:
 	;if (octave == 0) {
@@ -2966,7 +3101,11 @@ Detune:
 .proc	_nsd_vrc6_ch3_frequency
 
 	jsr	_nsd_div192		; 
-	and	#$FE			; x =  ax  /  192
+;	and	#$FE			; x =  ax  /  192
+	lsr	a
+	bcc	@L
+	ora	#$80
+@L:	asl	a
 	tay				; y = (ax mod 192) & 0xFE
 
 	;-------------------------------
@@ -2974,6 +3113,18 @@ Detune:
 	lda	Freq_SAW + 1,y
 	sta	__tmp + 1
 	lda	Freq_SAW,y
+
+	bcc	Octave_Proc
+
+	;線形補完
+	add	Freq_SAW + 2,y
+	sta	__tmp
+	lda	__tmp + 1
+	adc	Freq_SAW + 3,y
+	lsr	a
+	sta	__tmp + 1
+	lda	__tmp
+	ror	a
 
 	;-------------------------------
 	; *** Octave caluclate  and  overflow check
@@ -3023,41 +3174,19 @@ Detune:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6E
+	cmp	#$6C
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
 	tay				;y = (ax mod 192) >> 1
 	lda	Freq_VRC7,y		;
-	sta	__tmp			;__tmp + 0 = Note_LSB
+	adc	#0			;補完
 
 	;チャンネルの計算
 	ldx	__channel
-	txa
-	sub	#nsd::TR_VRC7
-	shr	a, 1
-	pha				;push VRC7でのチャンネル番号
-	;オクターブ
-	add	#VRC7_Frequency
-	sta	VRC7_Resister		;●Resister Write
-
-Detune:	
-	ldy	#$00			;[2]
-	lda	__detune_fine,x		;[4]6
-	bpl	@L			;[2]8
-	dey				;	ay = __detune_fine (sign expand)
-@L:	add	__tmp			;[5]13	clock > 6 clock
-	sta	VRC7_Data		;●Data Write
-	tya				;[2]
-	adc	__tmp + 1		;[3]5
-	and	#$0F			;[2]7
-	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
-
-	;追加
-	pla				;a ← VRC7でのチャンネル番号
-	tay
-	lda	__tmp + 1		;[3]3
-	sta	__vrc7_frequency,y	;[5]8 clock > 6 clock
+	sta	__vrc7_frequency - nsd::TR_VRC7 + 0,x
+	lda	__tmp + 1
+	sta	__vrc7_frequency - nsd::TR_VRC7 + 1,x
 
 	rts
 .endproc
@@ -3070,66 +3199,35 @@ Detune:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6E
+	cmp	#$6D
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
 	tay				;y = (ax mod 192) >> 1
 	lda	Freq_VRC7,y		;
-	sta	__tmp			;__tmp + 0 = Note_LSB
+	adc	#0			;補完
 
 	;チャンネルの計算
 	ldx	__channel
-	txa
-	sub	#nsd::TR_OPLL
-	shr	a, 1
-	pha				;push OPLLでのチャンネル番号
-	;オクターブ
-	add	#OPLL_Frequency
-	sta	OPLL_Resister		;●Resister Write
-
-Detune:	
-	ldy	#$00			;[2]
-	lda	__detune_fine,x		;[4]6
-	bpl	@L			;[2]8
-	dey			;	ay = __detune_fine (sign expand)
-@L:	add	__tmp			;[5]13	clock > 6 clock
-	sta	OPLL_Data		;●Data Write
-	tya				;[2]
-	adc	__tmp + 1		;[3]5
-	and	#$0F			;[2]7
-	sta	__tmp + 1		;[3]10	__tmp += (signed int)__detune_cent
-
-	;追加
-	pla				;a ← VRC7でのチャンネル番号
-	tay
-	lda	__tmp + 1		;[3]3
-	sta	__opll_frequency,y	;[5]8 clock > 6 clock
+	sta	__opll_frequency - nsd::TR_OPLL + 0,x
+	lda	__tmp + 1
+	sta	__opll_frequency - nsd::TR_OPLL + 1,x
 
 	rts
 .endproc
-
-.proc	_nsd_OPLL_frequency_R
-
-	;OPLL_Rhythm check
-	ldy	__opll_ryhthm
-	cpy	#$20
-	bcc	_nsd_OPLL_frequency
-	rts
-.endproc
-
 
 .proc	_nsd_OPLL_frequency_BD
 
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6E
+	cmp	#$6D
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
 	tay				;y = (ax mod 192) >> 1
 	lda	Freq_VRC7,y		;
+	adc	#0			;補完
 	sta	__tmp			;__tmp + 0 = Note_LSB
 
 	ldx	__channel
@@ -3172,12 +3270,13 @@ Detune:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6E
+	cmp	#$6D
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
 	tay				;y = (ax mod 192) >> 1
 	lda	Freq_VRC7,y		;
+	adc	#0			;補完
 	sta	__tmp			;__tmp + 0 = Note_LSB
 
 	ldx	__channel
@@ -3225,12 +3324,13 @@ Exit:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6E
+	cmp	#$6D
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
 	tay				;y = (ax mod 192) >> 1
 	lda	Freq_VRC7,y		;
+	adc	#0			;補完
 	sta	__tmp			;__tmp + 0 = Note_LSB
 
 	ldx	__channel
@@ -3476,7 +3576,11 @@ Exit:
 .proc	Normal_frequency
 
 	jsr	_nsd_div192		; 
-	and	#$FE			; x =  ax  /  192
+;	and	#$FE			; x =  ax  /  192
+	lsr	a
+	bcc	@L
+	ora	#$80
+@L:	asl	a
 	tay				; y = (ax mod 192) & 0xFE
 
 	;-------------------------------
@@ -3485,6 +3589,18 @@ Exit:
 	lda	Freq + 1,y
 	sta	__tmp + 1
 	lda	Freq,y
+
+	bcc	Octave_Proc
+
+	;線形補完（次の音程を足して２で割る）
+	add	Freq + 2,y
+	sta	__tmp
+	lda	__tmp + 1
+	adc	Freq + 3,y
+	lsr	a
+	sta	__tmp + 1
+	lda	__tmp
+	ror	a
 
 	;-------------------------------
 	; *** Octave caluclate  and  overflow check
@@ -3547,7 +3663,11 @@ Exit:
 .proc	Normal12_frequency
 
 	jsr	_nsd_div192		; 
-	and	#$FE			; x =  ax  /  192
+;	and	#$FE			; x =  ax  /  192
+	lsr	a
+	bcc	@L
+	ora	#$80
+@L:	asl	a
 	tay				; y = (ax mod 192) & 0xFE
 
 	;-------------------------------
@@ -3556,6 +3676,18 @@ Exit:
 	lda	Freq + 1,y
 	sta	__tmp + 1
 	lda	Freq,y
+
+	bcc	Octave_Proc
+
+	;線形補完（次の音程を足して２で割る）
+	add	Freq + 2,y
+	sta	__tmp
+	lda	__tmp + 1
+	adc	Freq + 3,y
+	lsr	a
+	sta	__tmp + 1
+	lda	__tmp
+	ror	a
 
 	;-------------------------------
 	; *** Octave caluclate  and  overflow check

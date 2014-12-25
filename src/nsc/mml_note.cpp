@@ -19,7 +19,7 @@ mml_note::mml_note(int _code, int length, int gatetime, bool slur, const _CHAR _
 	unsigned	char	opcode = nsd_Note | (unsigned char)_code;
 	unsigned	int		i = 0;
 
-	if((_code<0) || (_code>15) || (_code==12)){
+	if((_code<0) || (_code>15)){
 		_CERR << _T("mml_note::mml_note()関数で、エラーが発生しました。") << endl;
 		nsc_exit(EXIT_FAILURE);
 	}

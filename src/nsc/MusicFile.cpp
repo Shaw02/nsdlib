@@ -321,14 +321,14 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(id_rest):
 				MML->rest = MML->GetInt();
-				if((MML->rest<0) || (MML->rest>2)){
-					MML->Err(_T("#Restコマンドは、0～2の範囲で指定してください。"));
+				if((MML->rest<0) || (MML->rest>3)){
+					MML->Err(_T("#Restコマンドは、0～3の範囲で指定してください。"));
 				}
 				break;
 			case(id_wait):
 				MML->wait = MML->GetInt();
-				if((MML->rest<0) || (MML->rest>2)){
-					MML->Err(_T("#Waitコマンドは、0～2の範囲で指定してください。"));
+				if((MML->rest<0) || (MML->rest>3)){
+					MML->Err(_T("#Waitコマンドは、0～3の範囲で指定してください。"));
 				}
 				break;
 			case(id_Macro):

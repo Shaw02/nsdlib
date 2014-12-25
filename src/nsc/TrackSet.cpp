@@ -69,6 +69,14 @@ enum	Command_ID_mml {
 	mml_Echo,
 	mml_Echo_Off,
 	mml_Echo_Reset,
+	mml_Echo_C,
+	mml_Echo_D,
+	mml_Echo_E,
+	mml_Echo_F,
+	mml_Echo_G,
+	mml_Echo_A,
+	mml_Echo_B,
+	mml_Echo_R,
 
 	mml_Jump,
 	mml_Jump_drv,
@@ -108,7 +116,9 @@ enum	Command_ID_mml {
 	mml_Octave_Up1,
 	mml_Octave_Down1,
 	mml_Detune_Cent,
+	mml_Detune_Cent_Relative,
 	mml_Detune_Register,
+	mml_Detune_Register_Relative,
 	mml_Transpose,
 	mml_Transpose_Relative,
 	mml_KeyShift,
@@ -238,6 +248,14 @@ const	static	Command_Info	Command[] = {
 		{	"ゲート",	mml_Gate_q				},
 		{	"u",		mml_Gate_u				},
 
+		{	"ECc",			mml_Echo_C				},
+		{	"ECd",			mml_Echo_D				},
+		{	"ECe",			mml_Echo_E				},
+		{	"ECf",			mml_Echo_F				},
+		{	"ECg",			mml_Echo_G				},
+		{	"ECa",			mml_Echo_A				},
+		{	"ECb",			mml_Echo_B				},
+		{	"ECr",			mml_Echo_R				},
 		{	"EC-",			mml_Echo_Reset			},
 		{	"EC*",			mml_Echo_Off			},
 		{	"EC",			mml_Echo				},
@@ -295,8 +313,10 @@ const	static	Command_Info	Command[] = {
 		{	"\"",	mml_Octave_Down1		},
 		{	"”",	mml_Octave_Down1		},
 
-		{	"D%",			mml_Detune_Register		},
-		{	"D",			mml_Detune_Cent			},
+		{	"D%_",			mml_Detune_Register_Relative		},
+		{	"D%",			mml_Detune_Register					},
+		{	"D_",			mml_Detune_Cent_Relative			},
+		{	"D",			mml_Detune_Cent						},
 		{	"ディチューン",	mml_Detune_Cent			},
 		{	"__",			mml_Transpose_Relative	},
 		{	"_",			mml_Transpose			},
@@ -573,6 +593,38 @@ const	static	Command_Info	Command[] = {
 				nowTrack->SetGatetime_u(MML);
 				break;
 
+			case(mml_Echo_C):
+				nowTrack->SetEchoBuffer(MML, 0);
+				break;
+
+			case(mml_Echo_D):
+				nowTrack->SetEchoBuffer(MML, 1);
+				break;
+
+			case(mml_Echo_E):
+				nowTrack->SetEchoBuffer(MML, 2);
+				break;
+
+			case(mml_Echo_F):
+				nowTrack->SetEchoBuffer(MML, 3);
+				break;
+
+			case(mml_Echo_G):
+				nowTrack->SetEchoBuffer(MML, 4);
+				break;
+
+			case(mml_Echo_A):
+				nowTrack->SetEchoBuffer(MML, 5);
+				break;
+
+			case(mml_Echo_B):
+				nowTrack->SetEchoBuffer(MML, 6);
+				break;
+
+			case(mml_Echo_R):
+				nowTrack->SetEchoBuffer(MML, -1);
+				break;
+
 			case(mml_Echo_Reset):
 				nowTrack->ResetEcho();
 				break;
@@ -733,6 +785,14 @@ const	static	Command_Info	Command[] = {
 				SetEvent(new mml_general(nsd_Derune_Register, MML, _T("Derune Register")));
 				break;
 
+			case(mml_Detune_Cent_Relative):
+				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Detune_Cent, MML->GetInt(), _T("Relative Detune Cent")));
+				break;
+
+			case(mml_Detune_Register_Relative):
+				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Derune_Register, MML->GetInt(), _T("Relative Detune Register")));
+				break;
+	
 			case(mml_Transpose):
 				i = MML->GetInt();
 				if( (i < -128) || (i > 127) ){
@@ -1183,9 +1243,9 @@ void	TrackSet::SetTempo(MMLfile* MML)
 {
 	int	iValue	= MML->GetInt();
 
-	iTempo = (char)((iValue * MML->timebase) / 24);
+	iTempo = ((iValue * MML->timebase) / 24);
 	
-	if((iValue<0) || (iValue>255)){
+	if((iTempo<0) || (iTempo>255)){
 		MML->Err(_T("テンポが指定可能な範囲を超えました。"));
 	}
 	SetEvent(new mml_general(nsd_Tempo, (unsigned char)iTempo, _T("Tempo")));
@@ -1203,7 +1263,7 @@ void	TrackSet::SetRelativeTempo(MMLfile* MML)
 {
 	int	iValue	= MML->GetInt();
 
-	iTempo += (unsigned char)iValue;
+	iTempo += iValue;
 
 	SetEvent(new mml_general(nsd_Relative_Tempo, (char)iValue, _T("Relative Tempo")));
 

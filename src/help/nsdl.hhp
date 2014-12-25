@@ -48,6 +48,7 @@ mml_sequence.html
 mml_tips.html
 mml_detune.html
 mml_echo.html
+mml_echo_buffer.html
 mml_envelop.html
 mml_gate.html
 mml_KeySignature.html

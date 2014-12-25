@@ -153,6 +153,10 @@ DRV_Version2:	.byte	1
 
 .ifdef	DPCMBank
 
+	;Bank change (CODE)
+	lda	#$00
+	sta	$5FFF
+
 	;‚Ü‚¸AJMP–½—ß‚ğ‘‚«‚İ
 	lda	#$4C
 	sta	$0100

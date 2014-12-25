@@ -123,13 +123,9 @@
 <tr><td>0x2C		</td><td>			</td><td>Octave down (only next note)		</td></tr>
 <tr><td>0x2D		</td><td>			</td><td>Octave up   (only next note)		</td></tr>
 <tr><td>0x2E		</td><td>n1			</td><td>One time transpose	(a relative value)</td></tr>
-<tr><td>0x2F 0x00</td><td>				</td><td>Jump flag on	</td></tr>
-<tr><td>0x2F 0x01</td><td>				</td><td>Jump flag off	</td></tr>
-<tr><td>0x2F 0x02<br>～<br>
-		0x2F 0xFF	</td><td> ...	</td><td>Expansion (2 byte) op-code.	<strong>今後の拡張用（未実装）</strong>	<br>
-												<strong>all reserved	</strong>				</td></tr>
+<tr><td>0x2F		</td><td> -			</td><td>Expand op-code</td></tr>
 <tr><td>0x30-0x37	</td><td>n1			</td><td>Voice of release (after key-off)	</td></tr>
-<tr><td>0x38-0x3F	</td><td>			</td><td>Octave			(op-code lower 4bit is value)	</td></tr>
+<tr><td>0x38-0x3F	</td><td>			</td><td>Octave 1-8	(op-code lower 4bit is value)	</td></tr>
 <tr><td>0x40-0x4F	</td><td>			</td><td>Note length of 省略時	(op-code lower 4bit is value)	<br>
 								 0x00 : 96 tick	(l1)	<br>
 								 0x01 : 72 tick	(l2.)	<br>
@@ -168,12 +164,32 @@
 								 0x09 : A			<br>
 								 0x0A : Ais / Bs (B)<br>
 								 0x0B : B (H)		<br>
-								 0x0C : undefined	<br>
+								 0x0C : r	(release of gate mode)			<br>
 								 0x0D : r	(no release. volume = 0)		<br>
 								 0x0E : r	(release of command value)		<br>
 								 0x0F : r	(release of envelop pattern)	</td></tr>
 </table>
 </div>
+
+<div class='block'>
+<table>
+<caption>Expand op-code (Op-code = 0x2F)</caption>
+<tr><th>sub op-code	</th><th>value	</th><th>Contents		</th></tr>
+<tr><td>0x00		</td><td>		</td><td>Jump flag on	</td></tr>
+<tr><td>0x01		</td><td>		</td><td>Jump flag off	</td></tr>
+<tr><td>0x02		</td><td>n1		</td><td>Relative Detune (16 = 100 cent)	</td></tr>
+<tr><td>0x03		</td><td>n1		</td><td>Relative Detune (Resister base)	</td></tr>
+<tr><td>0x04-0xFF	</td><td>		</td><td><strong>reserved	</strong>	</td></tr>
+<!--
+<tr><td>0x08-0x0F	</td><td>		</td><td>Octave 9-17 (op-code lower 4bit is value) 	</td></tr>
+<tr><td>0x10-0x7F	</td><td>		</td><td><strong>reserved	</strong>	</td></tr>
+<tr><td>0x80-0x8F	</td><td>		</td><td>Relative volume (up)	(Sub op-code lower 4bit is value)	</td></tr>
+<tr><td>0x90-0x9F	</td><td>		</td><td>Relative volume (down)	(Sub op-code lower 4bit is value)	</td></tr>
+<tr><td>0xA0-0xFF	</td><td>		</td><td><strong>reserved	</strong>	</td></tr>
+-->
+</table>
+</div>
+
 
 <div class='block'>
 <h3>エンベロープ（Envelop）</h3>

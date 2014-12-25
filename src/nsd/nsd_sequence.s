@@ -506,9 +506,9 @@ Done:
 
 	;length == gatetime q ?
 	dec	__Length_ctr,x		;length--
-	lda	__Length_ctr,x
-	cmp	__Gate,x
-	jne	GateTime_Exit		; if(__Length_ctr == __Gate){
+	lda	__Gate,x
+	cmp	__Length_ctr,x
+	jne	GateTime_Exit		; if(__Length_ctr <= __Gate){
 	_NSD_keyoff			; 	nsd_keyoff();
 GateTime_Exit:				; }
 	lda	__Length_ctr,x
@@ -583,6 +583,7 @@ op60:
 	;Set volume
 	tya
 	and	#$0F
+Set_Volume:
 	sta	__tmp
 	lda	__volume,x
 	and	#$F0
@@ -632,22 +633,27 @@ Chk_GateTime:
 	bcc	@L
 
 	jsr	nsd_load_sequence
+	cmp	#0
+	beq	GateSet
 	sta	__tmp
 	lda	__Length_ctr,x
 	sub	__tmp			; a = __Length_ctr - __Gate;
-	bcs	@gateset		; if(a < 0){
+	bcs	GateSet			; if(a < 0){
 	lda	#$0			;    a = 0x0; //no gate
-	beq	@gateset		; }	// relative jump because "0"
+	beq	GateSet			; }	// relative jump because "0"
 @L:
 	lda	__gate_u,x		;if (__gate_u,x == 0) then @q
 	beq	@q			;
 	lda	__Length_ctr,x
-	sub	__gate_u,x		; a = __Length_ctr - __Gate
+	sub	__gate_u,x		; a = __Length_ctr - __gate_u,x	(gate timing)
 	bcc	@q			; if (a < 0) then @q
 	cmp	__gate_q,x		;
-	bcs	@gateset		; if( a < __gate_q){
+	bcs	GateSet			; if( a < __gate_q){
 @q:	lda	__gate_q,x		;    a = __gate_q;
-@gateset:				; }
+	cmp	__Length_ctr,x		; }
+	bcc	GateSet
+	lda	#0
+GateSet:
 	sta	__Gate,x
 
 Calc_Note_Number:
@@ -655,9 +661,10 @@ Calc_Note_Number:
 	and	#$0F
 	cmp	#12
 	bcc	NoteSet
+	beq	@Exit
 
-@Rest:	and	#$0F
-	sub	#$0D
+	;0x0D-0x0F	[Rest mode 0-2]
+@Rest:	sbc	#$0D	;cy は `H'
 	sta	__tmp
 	lda	__tai,x
 	and	#$02
@@ -667,8 +674,10 @@ Calc_Note_Number:
 	ora	__tmp
 	sta	__chflag,x
 @Exit:
+	;0x0C		[Rest mode 3]
 	rts
 
+	;0x00-0x0B	[Note]
 NoteSet:
 	add	__octave,x
 	add	__trans,x
@@ -944,7 +953,7 @@ nsd_op0F:
 ;-----------------------------------------------------------------------
 nsd_op10:
 	lda	__gatemode,x
-	ora	#nsd_mode::voice
+	ora	#nsd_mode::voice	;Voice Envelope 有効
 	sta	__gatemode,x
 
 	jsr	nsd_load_ptr
@@ -1131,15 +1140,53 @@ nsd_op17:
 ;		opcode	0x1B:	Voice
 ;-----------------------------------------------------------------------
 nsd_op1B:
-	lda	__gatemode,x
-	and	#~nsd_mode::voice
-	sta	__gatemode,x
 
+	jsr	nsd_load_sequence
+
+.ifdef	VRC7
+	;VRC7は、mode 2の時はリリース処理しない。
+	cpx	#nsd::TR_VRC7
+	bcc	@VRC7L
+	cpx	#nsd::TR_VRC7 + 6*2
+	bcs	@VRC7L
+	jmp	nsd_op1B_FM
+@VRC7L:
+.endif
+
+.ifdef	OPLL
+	;OPLLは、mode 2の時はリリース処理しない。
+	cpx	#nsd::TR_OPLL
+	bcc	@OPLLL
+	cpx	#nsd::TR_OPLL + 9*2
+	bcs	@OPLLL
+	jmp	nsd_op1B_FM
+@OPLLL:
+.endif
+
+nsd_op1B_done:
+
+	sta	__env_voice,x
 	lda	#0
 	sta	__env_voice + 1,x
-	jsr	nsd_load_sequence
-	sta	__env_voice,x
+
+	lda	__gatemode,x
+	and	#~nsd_mode::voice	;Voice Envelope無効
+	sta	__gatemode,x
+
 	jmp	Sequence
+
+.if	.defined(VRC7) || .defined(OPLL)
+nsd_op1B_FM:
+	pha
+	jsr	_nsd_snd_voice		;音色＆レジスタ設定
+	pla
+
+	cmp	#$10
+	bcc	nsd_op1B_done		;16未満だったら、音色定義
+	jmp	Sequence
+.endif
+
+
 ;=======================================================================
 ;		opcode	0x1C:	VRC7 : Set user instrument 
 ;-----------------------------------------------------------------------
@@ -1514,22 +1561,84 @@ nsd_Set_Trans_One:
 _sub_op_adr:
 	.addr	nsd_op2F_00
 	.addr	nsd_op2F_01
+	.addr	nsd_op2F_02
+	.addr	nsd_op2F_03
+;	.addr	nsd_op2F_04
+;	.addr	nsd_op2F_05
+;	.addr	nsd_op2F_06
+;	.addr	nsd_op2F_07
+
+;	.addr	nsd_op2F_08
+;	.addr	nsd_op2F_09
+;	.addr	nsd_op2F_0A
+;	.addr	nsd_op2F_0B
+;	.addr	nsd_op2F_0C
+;	.addr	nsd_op2F_0D
+;	.addr	nsd_op2F_0E
+;	.addr	nsd_op2F_0F
 
 .code
 nsd_op2F:
 	jsr	nsd_load_sequence
-	cmp	#2
-	bcc	nsd_op2F_done
-	jmp	Sequence
-
-nsd_op2F_done:
+	tay
 	asl	a
+	bcs	nsd_op2F_80
+
+	;---------------
+	;sub op-code = 0x00 - 0x7F
+nsd_op2F_Command:
 	tay				;[2]	x <- a * 2
 	lda	_sub_op_adr,y		;[4]
 	sta	__ptr			;[3]
 	lda	_sub_op_adr + 1,y	;[4]
 	sta	__ptr + 1		;[3]
 	jmp	(__ptr)			;[5]	jump for each op-code
+
+	;---------------
+	;sub op-code = 0x80 - 0xFF
+	;---------------
+	;0x80 - 0x8F
+nsd_op2F_80:
+;	asl	a
+;	bcs	nsd_op2F_C0
+;	asl	a
+;	bcs	nsd_op2F_A0
+;	bmi	nsd_op2F_90
+;
+;	tya
+;	and	#$0F
+;	sta	__tmp
+;	lda	__volume,x
+;	and	#$0F
+;	add	__tmp
+;	cmp	#$10
+;	bcc	@L
+;	lda	#$0F
+;@L:	jmp	Set_Volume
+
+	;---------------
+	;0x90 - 0x9F
+nsd_op2F_90:
+;	tya
+;	and	#$0F
+;	sta	__tmp
+;	lda	__volume,x
+;	and	#$0F
+;	sub	__tmp
+;	bcs	@L
+;	lda	#$00
+;@L:	jmp	Set_Volume
+
+	;---------------
+	;0xA0 - 
+nsd_op2F_A0:
+nsd_op2F_B0:
+nsd_op2F_C0:
+nsd_op2F_D0:
+nsd_op2F_E0:
+nsd_op2F_F0:
+	jmp	Sequence
+
 
 ;=======================================================================
 ;		opcode	0x2F 00:	Jump Flag On
@@ -1547,6 +1656,29 @@ nsd_op2F_01:
 	lda	#~nsd_flag::Jump
 	and	__flag
 	sta	__flag
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x2F 02:	Relative Detune (CENT)
+;-----------------------------------------------------------------------
+nsd_op2F_02:
+	jsr	nsd_load_sequence
+	add	__detune_cent,x
+	sta	__detune_cent,x
+	jmp	Sequence
+
+;=======================================================================
+;		opcode	0x2F 03:	Relative Detune (Reg.)
+;-----------------------------------------------------------------------
+nsd_op2F_03:
+	jsr	nsd_load_sequence
+	add	__detune_fine,x
+	sta	__detune_fine,x
+
+nsd_op2F_04:
+nsd_op2F_05:
+nsd_op2F_06:
+nsd_op2F_07:
 	jmp	Sequence
 
 ;=======================================================================
@@ -1645,6 +1777,38 @@ nsd_op3E:
 nsd_op3F:
 	lda	#84
 	bne	nsd_Set_Octave
+
+nsd_op2F_08:
+;	lda	#96
+;	bne	nsd_Set_Octave
+
+nsd_op2F_09:
+;	lda	#108
+;	bne	nsd_Set_Octave
+
+nsd_op2F_0A:
+;	lda	#120
+;	bne	nsd_Set_Octave
+
+nsd_op2F_0B:
+;	lda	#132
+;	bne	nsd_Set_Octave
+
+nsd_op2F_0C:
+;	lda	#144
+;	bne	nsd_Set_Octave
+
+nsd_op2F_0D:
+;	lda	#156
+;	bne	nsd_Set_Octave
+
+nsd_op2F_0E:
+;	lda	#168
+;	bne	nsd_Set_Octave
+
+nsd_op2F_0F:
+;	lda	#180
+;	bne	nsd_Set_Octave
 
 .endproc
 

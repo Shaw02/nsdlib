@@ -151,8 +151,9 @@ Frequency:
 
 	;-------------------------------
 	;Por
+Portamento:
 	lda	__por_target,x
-	beq	F_Env			;ポルタメント中？
+	jeq	F_Env			;ポルタメント中？
 
 	lda	__por_depth,x
 	beq	Por_S			;ターゲットに到達？
@@ -173,36 +174,44 @@ Frequency:
 	adc	__por_now + 1,x
 	sta	__por_now + 1,x		;__por_now += __por_depth
 
+	lda	__por_target,x
 	shl	a, 4
-	sta	__ptr			;※ __ptr を __tmp + 2 として使用している。
-	lda	__por_now + 0,x
-	shr	a, 4
-	ora	__ptr			;a = (char)(__por_now >> 4);
-
-	cpy	#$00
-	beq	Por_PL
-Por_MI:	cmp	__por_target,x		;if (a - __por_target <= 0) then 
-	bcc	Por_O
-	beq	Por_O
-	bcs	Por_S
-Por_PL:	cmp	__por_target,x		;if (a - __por_target >= 0) then 
-	bcc	Por_S
-;	beq	Por_0
-;	bcs	Por_O
-
-Por_O:	lda	__por_target,x		;ターゲットに到達した時の処理
-	sta	__por_now + 1,x
-	shl	a, 4
-	sta	__por_now,x
-	lda	__por_now + 1,x
+	sta	__ptr
+	lda	__por_target,x
 	shr	a, 4
 	cpy	#00
 	beq	@L
 	ora	#$F0			;算術シフト的なもの
-@L:	sta	__por_now + 1,x
+	tay				;__ptr = __por_target << 4
+	bne	Por_MI			;必ず 非 0
+@L:	tay
+
+Por_PL:	cmp	__por_now + 1,x		;if ((__por_target<<4 - __por_now) < 0) then 
+	bcc	Por_O			;
+	beq	Por_P2			;
+	bcs	Por_S			;
+Por_P2:	lda	__ptr
+	cmp	__por_now + 0,x
+	bcc	Por_O
+	bcs	Por_S
+
+Por_MI:	cmp	__por_now + 1,x	
+	bcc	Por_S			;
+	beq	Por_M2			;
+	bcs	Por_O			;
+Por_M2:	lda	__ptr
+	cmp	__por_now + 0,x
+	bcc	Por_S
+;	bcs	Por_O
+
+Por_O:	lda	__ptr
+	sta	__por_now + 0,x
+	tya
+	sta	__por_now + 1,x
 	lda	#$0
 	sta	__por_rate,x
 	sta	__por_depth,x
+
 Por_S:	lda	__por_now,x		;音程にポルタメント値加算
 	add	__tmp
 	sta	__tmp

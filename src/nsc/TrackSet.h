@@ -12,7 +12,7 @@ class TrackSet :
 //メンバー変数
 protected:
 	unsigned	int				m_id;		//ID
-	unsigned	char			iTempo;
+				int				iTempo;
 
 protected:
 //static	const	Command_Info	Command[];	//コマンドの情報

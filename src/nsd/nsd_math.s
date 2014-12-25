@@ -22,6 +22,7 @@
 ;-----------------------------------------------------------------------
 ;<<Contents>>
 ;	Divide `ax' by 192 (0xC0) = 16 * 12
+;	‰ñ•œ–@‚É‚æ‚é192ŒÅ’èœZ
 ;<<Input>>
 ;	ax	value
 ;<<Output>>
@@ -33,33 +34,29 @@
 	pha		; save a
 	txa
 	tay		; y = x
-	lda	#0
-	tax		; x = 0
-	pla		; restore a
+	lda	#0	; a = octave
 
 	;if (ax > 0x0600) then
 	cpy	#$06
 	bcc	Div_8
-	dey
-	dey
-	dey	; y -= 3
-	inx
-	inx
-	inx
-	inx	; x += 4
+	tya
+	sbc	#6	;cy = `H'
+	tay		; y -= 6
+	lda	#8
 
 Div_8:	;if (ax > 0x0300) then
 	cpy	#$03
 	bcc	Div_4
+	adc	#3	; + cy = 4
 	dey
 	dey
 	dey	; y -= 3
-	inx
-	inx
-	inx
-	inx	; x += 4
 
-Div_4:	;if (ax > 0x0180) then
+Div_4:	
+	tax		; x = octave
+	pla		; restore a
+
+	;if (ax > 0x0180) then
 	cpy	#$01
 	bcc	Div_2
 	bne	@L2

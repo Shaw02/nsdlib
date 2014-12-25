@@ -40,38 +40,34 @@
 
 Start:
 
-	;DPCM IEQ check
-DPCM_CHK:
-	lda	APU_CHANCTRL
-	bpl	DPCM_END
+;	;DPCM DMAによる割り込みか？
+;	lda	APU_CHANCTRL
+;	bpl	DPCM_END
 
-	and	#$7F
+	;---------------
+	;⊿PCM再生が終わるのを待つ。
+@wait:
+	lda	APU_CHANCTRL
+	and	#%00010000
+	bne	@wait
+
+	lda	#$0F
 	sta	APU_CHANCTRL
 
-	and	#%00010000		;カウンタが残っていた場合。
-	beq	DPCM_IRQ
-DPCM_END:
-
-Exit:
-	rts
-
-DPCM_IRQ:
-	lda	#$10			
-	sta	APU_MODCTRL		;End of IRQ の発行
-
-	;next DPCM
+	;---------------
+	;現在発音している⊿PCM構造体の要素を取得
 	ldx	#nsd::TR_BGM5
-	jsr	_nsd_dpcm_calc		;現在の構造体から取得
+	jsr	_nsd_dpcm_calc
 .ifdef	DPCMBank
 	jsr	_nsd_ptr_bank
 .endif
 
-	;次に発音するノート番号
+	;---------------
+	;これから発音する⊿PCM構造体の要素を取得
 	ldy	#5
 	lda	(__ptr),y
-	sta	__note,x
-
-	jsr	_nsd_dpcm_calc		;これから発音する構造体から取得
+	sta	__note,x		;次に発音するノート番号
+	jsr	_nsd_dpcm_calc
 .ifdef	DPCMBank
 	jsr	_nsd_ptr_bank
 .endif
@@ -103,7 +99,10 @@ DPCM_IRQ:
 	lda	#$1F
 	sta	APU_CHANCTRL
 
-	bne	Start
+DPCM_END:
+
+Exit:
+	rts
 
 .endproc
 
