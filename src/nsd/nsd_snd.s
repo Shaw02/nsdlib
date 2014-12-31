@@ -1641,16 +1641,16 @@ _nsd_OPLL_volume:
 	lda	__detune_fine,x				;[4]6
 	bpl	@L					;[3] or [4]9	(Branch) or [4](not Branch)
 	dey						;	ay = __detune_fine (sign expand)
-@L:	add	__opll_frequency - nsd::TR_VRC7 + 0,x	;[6]15
+@L:	add	__opll_frequency - nsd::TR_OPLL + 0,x	;[6]15
 	sta	__tmp					;[3]18
 	tya						;[2]20
-	adc	__opll_frequency - nsd::TR_VRC7 + 1,x	;[4]24
+	adc	__opll_frequency - nsd::TR_OPLL + 1,x	;[4]24
 	and	#$0F					;[2]26
 	sta	__tmp + 1				;[3]29	__tmp += (signed int)__detune_cent
 	pla						;[4]33
 	pha						;[3]36
 	tay						;[2]38	y <- device channel
-	add	#OPLL_Frequency				;[4]42 > 42 clock !! (VRC7ÇÃwait)
+	add	#OPLL_Frequency				;[4]42 > 42 clock !! (OPLLÇÃwait)
 	sta	OPLL_Resister				;ÅúResister Write
 	pla						;[4]
 	lda	__tmp					;[2]6

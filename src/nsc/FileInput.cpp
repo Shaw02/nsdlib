@@ -53,7 +53,7 @@ void	FileInput::fileopen(const char*	_strFileName){
 //--------------------------------
 void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 {
-	bool	success = false;
+	bool	success	= false;
 
 	//先ずは、そのまま
 	errno = 0;	//グローバル変数 errno を０に初期化
@@ -62,6 +62,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 	if(cOptionSW->flag_SearchPass){
 		perror(_strFileName);
 	}
+
 	if(good()==true){
 		success = true;
 	} else {
@@ -70,10 +71,22 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 		int		i		= 0;
 		int		iSize	= _pass->count();
 		string	name;
+		string	workName= string(_strFileName);
+		int		loc		= workName.rfind('/');
+
+		//指定のファイルにパスが書かれていたら、消す。
+		if(loc != string::npos){
+			workName.erase(0, loc);		//ファイル名のみ
+		}
 
 		while(i < iSize){
+
+#ifdef _WIN32
+			//Windowsの場合は、相対パスも含めて検索する（UNIX系は不可）
+			//指定の検索パスを基準とした相対パスも検索する。
 			errno = 0;	//グローバル変数 errno を０に初期化
 			clear();	//フラグのクリア
+
 			name.assign(_pass->get(i));
 			name.append(_strFileName);
 			open(name.c_str(),ios_base::in | ios_base::binary);
@@ -84,6 +97,23 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 				success = true;
 				break;
 			};
+#endif
+			//WINDOWS, UNIX系共通
+			//検索パス＋ファイル名のみで検索。
+			errno = 0;	//グローバル変数 errno を０に初期化
+			clear();	//フラグのクリア
+
+			name.assign(_pass->get(i));
+			name.append(workName);
+			open(name.c_str(),ios_base::in | ios_base::binary);
+			if(cOptionSW->flag_SearchPass){
+				perror(name.c_str());
+			}
+			if(good()==true){
+				success = true;
+				break;
+			};
+
 			i++;
 		}
 

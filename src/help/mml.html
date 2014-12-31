@@ -52,8 +52,21 @@ MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<b
 												何度でも指定可能であり、各シーケンス記述ブロック毎に設定することもできます。<br>
 												音符、休符において、この数値<var>n</var>の４倍の値を割り切ることが可能なｍ分音符を使用することができます。<br>
 												それ以外のｍ分音符を使用した場合、割り切れない旨のWarning（警告）となり、小数点を切り捨ててコンパイルします。</td></tr>
+<tr><td>#QMax <var>n</var>				</td><td>8</td><td>シーケンス記述ブロック内における<a href="mml_gate.html">Q コマンド</a>の分母を設定します。<br>
+												Qコマンド使用時、実際の発音音長は、音長 × <a href="mml_gate.html">Q コマンド</a>の値 ÷ <var>n</var> となります。</td></tr>
+<tr><td>#QReverse						</td><td>-</td><td>本コマンドを記述することで、シーケンス記述ブロック内におけるゲートクオンタイズコマンド
+												`<a href="mml_gate.html">Q</a>'と`<a href="mml_gate.html">q</a>'を入れ替えます。</td></tr>
 <tr><td>#octaveReverse					</td><td>-</td><td>本コマンドを記述することで、シーケンス記述ブロック内における相対オクターブコマンド
 												`<a href="mml_relative_octave.html">&lt;</a>'と`<a href="mml_relative_octave.html">&gt;</a>'を入れ替えます。</td></tr>
+<tr><td>#RepeatMode <var>n</var>		</td><td>0</td><td>シーケンス記述ブロック内における<a href="mml_repeatA.html">リピート(A)コマンド</a>のコンパイル方法を設定します。<br>
+												　0 … MMLコンパイラが自動的に、リピートコマンドのコンパイル方法を選択します。<br>
+												　1 … ユーザーにて明示的に、リピートコマンドのコンパイル方法を選択します。<br>
+												　2 … ユーザーにて明示的に、リピートコマンドのコンパイル方法を選択します。<br>
+												数値の詳細は、<a href="mml_repeatA.html">リピート(A)コマンド</a>を参照。</td></tr>
+<tr><td>#TieMode <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内における<b> ^ </b>コマンドのコンパイル方法を設定します。<br>
+												　0 … <b> ^ </b>コマンドは、すべての場合において<a href="mml_tie.html">「タイ」</a>としてコンパイルします。<br>
+												　1 … 音符の直後に^コマンドが記述された場合は、直前の音符に対する音長を加算する演算子として処理します。<br>
+												　　　　（※加算結果が255[tick]を超えるとエラーになります。）</td></tr>
 <tr><td>#rest <var>n</var>				</td><td>2</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">r コマンド</a>による休符のコンパイル方法を設定します。<br>
 												　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。<br>
 												　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
@@ -64,17 +77,6 @@ MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<b
 												　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
 												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br>
 												　3 … <a href="mml_release.html">Rmコマンド</a>に従います。<br></td></tr>
-<tr><td>#QMax <var>n</var>				</td><td>8</td><td>シーケンス記述ブロック内における<a href="mml_gate.html">Q コマンド</a>の分母を設定します。<br>
-												Qコマンド使用時、実際の発音音長は、音長 × <a href="mml_gate.html">Q コマンド</a>の値 ÷ <var>n</var> となります。</td></tr>
-<tr><td>#RepeatMode <var>n</var>		</td><td>0</td><td>シーケンス記述ブロック内における<a href="mml_repeatA.html">リピート(A)コマンド</a>のコンパイル方法を設定します。<br>
-												　0 … MMLコンパイラが自動的に、リピートコマンドのコンパイル方法を選択します。<br>
-												　1 … ユーザーにて明示的に、リピートコマンドのコンパイル方法を選択します。<br>
-												　2 … ユーザーにて明示的に、リピートコマンドのコンパイル方法を選択します。<br>
-												数値の詳細は、<a href="mml_repeatA.html">リピート(A)コマンド</a>を参照。</td></tr>
-<tr><td>#TieMode <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内における<b> ^ </b>コマンドのコンパイル方法を設定します。<br>
-												　0 … <b> ^ </b>コマンドは、すべての場合において<a href="mml_tie.html">「タイ」</a>としてコンパイルします。<br>
-												　1 … 音符の直後に^コマンドが記述された場合は、直前の音符に対する音長を加算する演算子として処理します。<br>
-												　　　　（※加算結果が255[tick]を超えるとエラーになります。）</td></tr>
 <tr><td>#ReleaseVolume <var>n</var>		</td><td>2</td><td>シーケンス記述ブロック内における<a href="mml_release.html">Rvコマンド</a>の初期値を設定します。<br>
 												nは0～15の範囲で指定します。<br>
 												※音源ドライバ側のデフォルトは2であるため、2以外を指定した場合は各トラックの先頭に自動でRvコマンドを出力します。</td></tr>
