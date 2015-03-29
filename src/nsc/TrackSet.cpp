@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "trackset.h"
+#include "TrackSet.h"
 
 //==============================================================
 //		コンストラクタ
@@ -880,9 +880,15 @@ const	static	Command_Info	Command[] = {
 		//各トラックに終端を書いて、曲データのアドレス情報を作成
 		iTrack = 0;
 		while(iTrack <= maxTrack){
-			code[iTrack *2 + 2]	= (unsigned char)((i   ) & 0xFF);
-			code[iTrack *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
-			i += (int)ptcTrack[iTrack]->SetEnd(MML);
+			unsigned	int	n	= (int)ptcTrack[iTrack]->SetEnd(MML);
+			if(n==0){
+				code[iTrack *2 + 2]	= 0;
+				code[iTrack *2 + 3]	= 0;
+			} else {
+				code[iTrack *2 + 2]	= (unsigned char)((i   ) & 0xFF);
+				code[iTrack *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
+			}
+			i += n;
 			iTrack++;
 		}
 	}

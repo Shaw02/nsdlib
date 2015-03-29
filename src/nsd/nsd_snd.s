@@ -113,7 +113,7 @@
 	lda	#$10
 	sta	APU_MODCTRL		; Delta Modulation Control Register (W)
 
-	lda	#$80
+	lda	#$40
 	sta	APU_PAD2		; SOFTCLK (RW)
 
 .ifdef	N163

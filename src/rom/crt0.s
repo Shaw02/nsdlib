@@ -298,11 +298,11 @@ Loop:
 	;変数設定
 	sta	_play		;フレームオーバー防止用変数
 
+	lda	#$40
+	sta	APU_PAD2		; SOFTCLK (RW)
+
 	;nsd.lib初期化
 	jsr	_nsd_init
-
- 	lda	#$40
-	sta	APU_PAD2
 
 _Play:
 	;⊿PCMデータの設定

@@ -615,14 +615,16 @@ size_t	MusicTrack::SetEnd(MMLfile* MML)
 		MML->Err(_T("リピート(C)が終わっていません。"));
 	}
 
-	//オブジェクトの作成
-	if(loop_flag == false){
-		SetEvent(new mml_general(nsd_EndOfTrack,_T("End of Track")));
-	} else {
-		EchoVolRet();	//疑似エコーの復帰
-		_event = new mml_Address(nsd_Jump, _T("End of Track with LOOP"));
-		_event->set_Address(offset_loop - offset_now - 1);
-		SetEvent(_event);
+	if(offset_now != 0){
+		//オブジェクトの作成
+		if(loop_flag == false){
+			SetEvent(new mml_general(nsd_EndOfTrack,_T("End of Track")));
+		} else {
+			EchoVolRet();	//疑似エコーの復帰
+			_event = new mml_Address(nsd_Jump, _T("End of Track with LOOP"));
+			_event->set_Address(offset_loop - offset_now - 1);
+			SetEvent(_event);
+		}
 	}
 	iSize = offset_now;
 

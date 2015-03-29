@@ -1,5 +1,5 @@
 #pragma once
-#include "musicevent.h"
+#include "MusicEvent.h"
 
 /****************************************************************/
 /*																*/

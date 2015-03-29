@@ -332,86 +332,49 @@ Voice_Exit:
 
 	;-------------------------------
 	;Envelop of Volume
+
+;	mode	env	process
+;	0	-	v0
+;	1	-	rel
+;	2	off	rel
+;	2	on	vol * env
+;	3	off	vol
+;	3	on	vol * env
+
 Volume:
 	lda	__chflag,x
-	and	#$03
-	cmp	#$03
-	beq	@L3	;mode = 3 だったら、エンベロープへ
+	and	#nsd_chflag::KeyOff
 	cmp	#$01
-	beq	@L1		;mode = 1 で、リリース音量
+	jeq	Mode1		;mode = 1 で、リリース音量
 
-@L2:	;Release (Envelope)
+	;Envelope
+	tay
 	lda	__env_volume + 1,x
 .ifdef	DPCMBank
 	ora	__env_volume,x
-	beq	@NOENV
+	beq	@No_Envelop
 	lda	__env_volume + 1,x
-	jmp	@Envelop
 .else
-	bne	@Envelop	;mode = 2 且つ、ポインタ有りで、エンベロープへ。
+	beq	@No_Envelop
 .endif
-@NOENV:
-.ifdef	VRC7
-	;VRC7は、mode 2の時はリリース処理しない。
-	cpx	#nsd::TR_VRC7
-	bcc	@VRC7L
-	cpx	#nsd::TR_VRC7 + 6*2
-	bcs	@VRC7L
+
+@Envelop:
+	sta	__ptr + 1
+	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
+
+	sta	__tmp
 	lda	__volume,x
-	and	#$0F
-	jmp	@VRC7_Exit
-@VRC7L:
-.endif
-.ifdef	OPLL
-	;OPLLは、mode 2の時はリリース処理しない。
-	cpx	#nsd::TR_OPLL
-	bcc	@OPLLL
-	cpx	#nsd::TR_OPLL + 9*2
-	bcs	@OPLLL
-	lda	__volume,x
-	and	#$0F
-	jmp	@OPLL_Exit
-@OPLLL:
-.endif
+	ldx	__tmp
+	jsr	_nsd_mul
+	ldx	__channel
+	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
 
-@L1:	;Release (Volume)
-	lda	__volume,x
 
-.ifdef	VRC6
-	cpx	#nsd::TR_VRC6 + 4	;VRC6 SAW ?
-	bne	@VRC6
-	and	#$F0
-	shr	a, 2
-	jmp	@EX
-@VRC6:
-.endif
+@No_Envelop:
+	cpy	#$02
+	beq	Mode2
 
-.ifdef	FDS
-	cpx	#nsd::TR_FDS
-	bne	@FDS
-	and	#$F0
-	shr	a, 2
-	jmp	@EX
-@FDS:
-.endif
-	shr	a, 4
-@VRC7_Exit:
-@OPLL_Exit:
-@EX:
-	jmp	Set_Volume
-
-@L3:	lda	__env_volume + 1,x
-.ifdef	DPCMBank
-	ora	__env_volume,x
-	beq	@NOENV2
-	lda	__env_volume + 1,x
-	jmp	@Envelop
-.else
-	bne	@Envelop
-.endif
-	bne	@Envelop
-
-@NOENV2:
+Mode3:
 	;Envelope 無効時の処理
 	lda	__volume,x
 
@@ -429,21 +392,55 @@ Volume:
 @FDSV:
 .endif
 
-	jmp	Set_Volume
+	jmp	_nsd_snd_volume
 
-@Envelop:
-	sta	__ptr + 1
-	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
 
-	sta	__tmp
+Mode2:
+.ifdef	VRC7
+	;VRC7は、mode 2の時はリリース処理しない。
+	cpx	#nsd::TR_VRC7
+	bcc	@VRC7L
+	cpx	#nsd::TR_VRC7 + 6*2
+	bcs	@VRC7L
 	lda	__volume,x
-	ldx	__tmp
-	jsr	_nsd_mul
-	ldx	__channel
+	and	#$0F
+	jmp	_nsd_snd_volume
+@VRC7L:
+.endif
+.ifdef	OPLL
+	;OPLLは、mode 2の時はリリース処理しない。
+	cpx	#nsd::TR_OPLL
+	bcc	@OPLLL
+	cpx	#nsd::TR_OPLL + 9*2
+	bcs	@OPLLL
+	lda	__volume,x
+	and	#$0F
+	jmp	_nsd_snd_volume
+@OPLLL:
+.endif
 
-	;-----------------------
-	;Setting device (APU)
-Set_Volume:
-	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
+Mode1:	;Release (Volume)
+	lda	__volume,x
+
+.ifdef	VRC6
+	cpx	#nsd::TR_VRC6 + 4	;VRC6 SAW ?
+	bne	@VRC6
+	and	#$F0
+	jmp	@EX
+@VRC6:
+.endif
+
+.ifdef	FDS
+	cpx	#nsd::TR_FDS
+	bne	@FDS
+	and	#$F0
+	jmp	@EX
+@FDS:
+.endif
+	lsr	a
+	lsr	a
+@EX:	lsr	a
+	lsr	a
+	jmp	_nsd_snd_volume
 
 .endproc

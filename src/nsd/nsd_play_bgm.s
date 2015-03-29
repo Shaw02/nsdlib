@@ -78,13 +78,13 @@ Loop:
 	lda	(__ptr),y
 	iny
 	sta	__tmp
-	lda	(__ptr),y
-	ora	__tmp
-	bne	@L		;ポインターが0だったら、トラック無し。
-	iny
-	jmp	@E
-
-@L:
+;	lda	(__ptr),y
+;	ora	__tmp
+;	bne	@L		;ポインターが0だったら、トラック無し。
+;	iny
+;	jmp	@E
+;
+;@L:
 	lda	#$01
 	jsr	_nsd_play
 	iny
@@ -99,11 +99,18 @@ Loop_End:
 	;-----------------------
 	;common
 	lda	#$08
-	sta	APU_PULSE1RAMP
-	sta	APU_PULSE2RAMP
 	sta	__sweep_ch1
 	sta	__sweep_ch2
+	sta	APU_PULSE1RAMP
 
+	lda	__Sequence_ptr + 1 + nsd::TR_SE1
+.ifdef	DPCMBank
+	ora	__Sequence_ptr + 0 + nsd::TR_SE1
+.endif
+	bne	@L
+	lda	#$08
+	sta	APU_PULSE2RAMP
+@L:
 	lda	#120
 	sta	__Tempo
 
@@ -162,6 +169,13 @@ Loop_End:
 	sta	__chflag,x
 
 	lda	__tmp
+	ora	(__ptr),y
+	bne	@L
+	lda	#0			;0だったら、演奏ポインタも０
+	sta	__Sequence_ptr,x
+	beq	@SET
+@L:
+	lda	__tmp
 	add	__ptr
 	sta	__Sequence_ptr,x
 	lda	(__ptr),y
@@ -170,6 +184,8 @@ Loop_End:
 .else
 	adc	__ptr + 1
 .endif
+
+@SET:
 	sta	__Sequence_ptr + 1,x	;__Sequence_ptr = __ptr + (__ptr),y
 
 	lda	#0
