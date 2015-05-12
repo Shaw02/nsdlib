@@ -185,7 +185,7 @@ public:
 
 				void	SetSE(MMLfile* MML);
 				void	SetSubroutine(unsigned int _no);
-				void	SetSubWuthParch(unsigned int _no);
+				void	SetSubWuthParch(unsigned int _no,bool _f);
 			//	void	SetEnvelop(unsigned char _opcode, MMLfile* MML, int _offset);
 				void	SetEnvelop_Evoi(unsigned int _no);
 				void	SetEnvelop_Evol(unsigned int _no);

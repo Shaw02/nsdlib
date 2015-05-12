@@ -11,6 +11,8 @@ typedef	struct{
 	unsigned	char	ctrl;
 	unsigned	char	DA;
 	unsigned	char	next;
+	unsigned	char	offset;
+	unsigned	char	size;
 } nsd_dpcm_info;
 
 typedef struct{

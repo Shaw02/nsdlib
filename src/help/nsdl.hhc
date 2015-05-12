@@ -41,6 +41,94 @@
 		<param name="Merge" value="help.css">
 
 		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Aeolian.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Dorius.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_HarmonicMinor.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Ionian.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Locrian.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Lydius.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_MelodicMinor.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Mixolydius.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Phrygius.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_01.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_02.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_03.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_04.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_05.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_06.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_07.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_08.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_09.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_10.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_11.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_12.png">
+
+		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="NES Sound Driver Library">
 		<param name="Local" value="index.html">

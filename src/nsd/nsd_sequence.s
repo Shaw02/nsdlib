@@ -81,16 +81,13 @@
 	sta	__env_freq_ptr,x
 	sta	__env_note_ptr,x
 
-	;-----------------------
-	;以降は、三角波では不要
-	cpx	#nsd::TR_BGM3
-	beq	exit
-
 	lda	#$00
 	sta	__Envelop_V,x
 	lda	#$01
-	sta	__env_voi_ptr,x
 	sta	__env_vol_ptr,x
+	cpx	#nsd::TR_BGM3		;-----------------------
+	beq	exit			;以降は、三角波では不要
+	sta	__env_voi_ptr,x
 
 	;音色エンベロープ
 	lda	__gatemode,x		;●●●　最適化　●●●
@@ -151,11 +148,13 @@ exit:
 	cpx	#nsd::TR_BGM5
 	jeq	exit
 
+	;---------------
 	;Portamento
 	lda	#$00
 	tay
 	sta	__por_depth,x		;ポルタメントを終了させる。
 
+	;---------------
 	;Frequency Envelop keyoff
 	lda	__env_frequency + 1,x
 .ifdef	DPCMBank
@@ -179,6 +178,7 @@ exit:
 	sta	__Envelop_F,x
 Freq_End:
 
+	;---------------
 	;Note Envelop keyoff
 	lda	__env_note + 1,x
 .ifdef	DPCMBank
@@ -202,11 +202,30 @@ Freq_End:
 	sta	__Envelop_F,x
 Note_End:
 
+	;---------------
+	;Volume Envelop keyoff
+	lda	__env_volume + 1,x
+;	beq	Volume_End		;基本的には有効だろうので、コメントアウトしておく。
+	sta	__ptr + 1
+	lda	__env_volume,x
+	sta	__ptr
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+.endif
+	lda	(__ptr),y
+	beq	Volume_End
+	sta	__env_vol_ptr,x
+	lda	__Envelop_V,x
+	and	#$F0
+	sta	__Envelop_V,x
+Volume_End:
+
 	;-----------------------
 	;以降は、三角波では不要
 	cpx	#nsd::TR_BGM3
 	beq	exit
 
+	;---------------
 	;Voice Envelop keyoff
 	lda	__gatemode,x
 	and	#nsd_mode::voice
@@ -226,23 +245,7 @@ Note_End:
 	sta	__Envelop_V,x
 Voice_End:
 
-	;Volume Envelop keyoff
-	lda	__env_volume + 1,x
-;	beq	Volume_End		;基本的には有効だろうので、コメントアウトしておく。
-	sta	__ptr + 1
-	lda	__env_volume,x
-	sta	__ptr
-.ifdef	DPCMBank
-	jsr	_nsd_ptr_bank
-.endif
-	lda	(__ptr),y
-	beq	Volume_End
-	sta	__env_vol_ptr,x
-	lda	__Envelop_V,x
-	and	#$F0
-	sta	__Envelop_V,x
-Volume_End:
-
+	;---------------
 	;音色エンベロープ
 	lda	__chflag,x
 	and	#$01			;●●●　最適化　●●●
@@ -981,8 +984,6 @@ nsd_op10:
 nsd_op11:
 	jsr	nsd_load_ptr
 
-	cpx	#nsd::TR_BGM3
-	beq	@Exit
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
 
@@ -1070,7 +1071,10 @@ nsd_op13:
 ;-----------------------------------------------------------------------
 nsd_op14:
 	jsr	nsd_load_sequence
+	cpx	#nsd::TR_BGM5
+	beq	@exit
 	sta	__detune_cent,x
+@exit:
 	jmp	Sequence
 
 ;=======================================================================
@@ -1078,7 +1082,10 @@ nsd_op14:
 ;-----------------------------------------------------------------------
 nsd_op15:
 	jsr	nsd_load_sequence
+	cpx	#nsd::TR_BGM5
+	beq	@exit
 	sta	__detune_fine,x
+@exit:
 	jmp	Sequence
 
 ;=======================================================================

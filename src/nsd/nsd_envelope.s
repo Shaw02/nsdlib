@@ -272,7 +272,30 @@ Detune:
 	ldx	__channel	;óvÇÈÅH
 	cpx	#nsd::TR_BGM3
 	bne	Voice
-exit:	rts
+
+Ch3_Envelope:
+;	mode	env	process
+;	-	off	no process
+;	0	on	no process
+;	1	on	no process
+;	2	on	env
+;	3	on	env
+
+	lda	__chflag,x
+	and	#$02
+	beq	@NOENV
+
+	lda	__env_volume + 1,x
+	sta	__ptr + 1
+.ifdef	DPCMBank
+	ora	__env_volume,x
+.endif
+	beq	@NOENV
+
+	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
+	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
+
+@NOENV:	rts
 
 	;-------------------------------
 	;Envelop of Voice

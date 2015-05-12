@@ -268,6 +268,8 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 				int		mode			= 0;
 				int		start_volume	= 0x40;
 				int		next;
+				int		start_offset;
+				int		size_offset;
 	DPCM*		_DPCM;
 
 	if((note<0) || (note>255)){
@@ -333,6 +335,25 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	}
 
 	//次のノート
+	if(mode == 2){
+		cData = MML->GetChar();
+		if(cData == ','){
+			next = MML->GetInt();	
+			if((next<-1) || (next>255)){
+				MML->Err(_T("次のノート番号は0～255の範囲で指定して下さい。"));
+			}
+			infoDPCM[note].next = (unsigned char)next;
+		} else {
+			if(mode == 2){
+				MML->Err(_T("モード2(IRQ)の時は必ず次に発音するノート番号を指定してください。"));
+			}
+			MML->Back();
+			infoDPCM[note].next = 0;
+		}
+	} else {
+		infoDPCM[note].next = 0;
+	}
+/*
 	cData = MML->GetChar();
 	if(cData == ','){
 		if(mode != 2){
@@ -349,6 +370,33 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		}
 		MML->Back();
 		infoDPCM[note].next = 0;
+	}
+*/
+
+	//offset
+	cData = MML->GetChar();
+	if(cData == ','){
+		start_offset = MML->GetInt();	
+		if((start_offset<0) || (start_offset>255)){
+			MML->Err(_T("⊿PCMの発音開始オフセットは0～255の範囲で指定して下さい。"));
+		}
+		infoDPCM[note].offset = (unsigned char)start_offset;
+	} else {
+		MML->Back();
+		infoDPCM[note].offset = 0;
+	}
+
+	//size
+	cData = MML->GetChar();
+	if(cData == ','){
+		size_offset = MML->GetInt();	
+		if((size_offset<0) || (size_offset>255)){
+			MML->Err(_T("⊿PCMの発音サイズは0～255の範囲で指定して下さい。"));
+		}
+		infoDPCM[note].size = (unsigned char)size_offset;
+	} else {
+		MML->Back();
+		infoDPCM[note].size = 0;
 	}
 
 }
@@ -400,8 +448,16 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset, unsigned char _MusBan
 				_DPCM = ptcDPCM[infoDPCM[i].file];
 				code[i*4 + 0] = infoDPCM[i].ctrl;
 				code[i*4 + 1] = infoDPCM[i].DA;
-				code[i*4 + 2] = (unsigned char)((_DPCM->getOffset() - 0xC000) >> 6);
-				code[i*4 + 3] = _DPCM->getDPCMsize();
+				code[i*4 + 2] = (unsigned char)((_DPCM->getOffset() - 0xC000) >> 6) + infoDPCM[i].offset;
+				if(infoDPCM[i].size == 0){
+					if(_DPCM->getDPCMsize() >= (infoDPCM[i].offset*4)){
+                        code[i*4 + 3] = _DPCM->getDPCMsize() - (infoDPCM[i].offset*4);
+					} else {
+						code[i*4 + 3] = 0;
+					}
+				} else {
+					code[i*4 + 3] = infoDPCM[i].size;
+				}
 			}
 			i++;
 		}
@@ -418,8 +474,17 @@ unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset, unsigned char _MusBan
 				_DPCM = ptcDPCM[infoDPCM[i].file];
 				code[i*6 + 0] = infoDPCM[i].ctrl;
 				code[i*6 + 1] = infoDPCM[i].DA;
-				code[i*6 + 2] = (unsigned char)((_DPCM->getOffset() & 0x0FFF) >> 6);
-				code[i*6 + 3] = _DPCM->getDPCMsize();
+				code[i*6 + 2] = (unsigned char)((_DPCM->getOffset() & 0x0FFF) >> 6) + infoDPCM[i].offset;
+				if(infoDPCM[i].size == 0){
+					if(_DPCM->getDPCMsize() >= (infoDPCM[i].offset*4)){
+                        code[i*6 + 3] = _DPCM->getDPCMsize() - (infoDPCM[i].offset*4);
+					} else {
+						code[i*6 + 3] = 0;
+					}
+				} else {
+					code[i*6 + 3] = infoDPCM[i].size;
+				}
+
 				code[i*6 + 4] = (unsigned char)((_DPCM->getOffset() - 0xC000) / 0x1000) + _MusBank;
 				code[i*6 + 5] = infoDPCM[i].next;
 			}

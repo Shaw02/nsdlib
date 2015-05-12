@@ -27,14 +27,14 @@
 <h3>定義（Define）</h3>
 <code><pre>
 DPCM{
-	n<var>number</var>,"<var>filename</var>",<var>rate</var>,<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
-	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
+	n<var>number</var>,"<var>filename</var>",<var>rate</var>,<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)(</span>,<var>offset</var><span style="color:blue;">)(</span>,<var>size</var><span style="color:blue;">)</span>
+	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)(</span>,<var>offset</var><span style="color:blue;">)(</span>,<var>size</var><span style="color:blue;">)</span>
 }
 </pre></code>
 <code><pre>
 @DPCM{
-	n<var>number</var>,"<var>filename</var>",<var>rate</var>,<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
-	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)</span>
+	n<var>number</var>,"<var>filename</var>",<var>rate</var>,<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)(</span>,<var>offset</var><span style="color:blue;">)(</span>,<var>size</var><span style="color:blue;">)</span>
+	<var>note</var><span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>octave</var>,"<var>filename</var>",<var>mode</var><span style="color:blue;">(</span>,<var>volume</var><span style="color:blue;">)(</span>,<var>next</var><span style="color:blue;">)(</span>,<var>offset</var><span style="color:blue;">)(</span>,<var>size</var><span style="color:blue;">)</span>
 </pre></code>
 </div>
 
@@ -133,6 +133,23 @@ DPCM{
 <p>
 発音終了時に次にならすノート番号です。<br>
 バンクに対応したbin（nsd_all.bin, nsd_all2.bin）でのみ対応しています。<br>
+<var>mode</var>が2の場合は、必ず指定してください。
+</p>
+
+<h4>offset</h4>
+<p>
+発音開始位置を指定の分だけずらします。<br>
+1で64[Byte]（512[サンプル]）ずれます。<br>
+省略した場合は、0となります。
+</p>
+
+<h4>size</h4>
+<p>
+発音サイズを指定します。<br>
+0を指定した場合はdmcファイルに合せたサイズで再生されます
+（<var>offset</var>の指定がある場合、その分だけサイズを自動で小さくします）。<br>
+1で16[Byte]（128[サンプル]）に相当します。<br>
+省略した場合は、0となります。
 </p>
 
 </div>

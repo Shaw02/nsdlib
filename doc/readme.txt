@@ -1,6 +1,6 @@
 +-----------------------------------------------------------------------------
 | タイトル | NES Sound Driver Library
-|ファイル名| NSDL123.ZIP
+|ファイル名| NSDL124.ZIP
 | カテゴリ | Sound Driver for NES
 | 動作機種 | NES (Nintendo Entertainment System)
 |前提ソフト| cc65 (Complete cross development package for 65(C)02 systems.)
@@ -28,4 +28,4 @@ This is developed as object library, and user application can control it.
 ・mixi		http://mixi.jp/show_profile.pl?id=16558
 ========================================================================
 
-製作のファイルは【NSDL123.ZIP】です。
+製作のファイルは【NSDL124.ZIP】です。

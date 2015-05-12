@@ -1146,9 +1146,9 @@ void	MusicTrack::SetSubroutine(unsigned int _no)
 	Reset_opt();
 }
 
-void	MusicTrack::SetSubWuthParch(unsigned int _no)
+void	MusicTrack::SetSubWuthParch(unsigned int _no,bool _f)
 {
-	if((_no != iSub) || (f_opt_Sub == false)){
+	if((_no != iSub) || (f_opt_Sub == false) || (_f == true)){
 		iSub = _no;
 		f_opt_Sub	= true;
 		if(jump_flag==false){
@@ -1345,7 +1345,7 @@ void	MusicTrack::CallPatch(MMLfile* MML, char _note)
 		MML->ptcPatch[i_Patch]->setNote(_note);
 
 		if(	MML->ptcPatch[i_Patch]->get_fSub() == true){
-			SetSubWuthParch(MML->ptcPatch[i_Patch]->get_iSub());
+			SetSubWuthParch(MML->ptcPatch[i_Patch]->get_iSub(), MML->ptcPatch[i_Patch]->get_fSub_opt());
 		}
 
 		if(	MML->ptcPatch[i_Patch]->get_fGate_q() == true){

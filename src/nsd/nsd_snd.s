@@ -268,20 +268,30 @@ _nsd_ch1_keyon:
 Exit:
 	rts
 
+;---------------------------------------
 _nsd_ch2_keyon:
 	lda	#$00
 	sta	__apu_frequency2
 	rts
 
+;---------------------------------------
 _nsd_ch3_keyon:
-	;Hardware key off for ch3
+
+	;Hardware key on for ch3
+	lda	__env_volume + 1,x
+.ifdef	DPCMBank
+	ora	__env_volume,x
+.endif
+	;音量エンベロープが有効な場合、エンベロープ処理に任す
+	bne	@L
 	lda	__apu_tri_time
 	sta	APU_TRICTRL1
-
+@L:
 	lda	#$00
 	sta	__apu_frequency3
 	rts
 
+;---------------------------------------
 _nsd_se_keyon:
 	;For hardware Key on
 	lda	#$00
@@ -591,6 +601,22 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 
 ;---------------------------------------
 _nsd_ch3_keyoff:
+
+	;Hardware key off for ch3
+
+	;音量エンベロープが無効？
+	lda	__env_volume + 1,x
+.ifdef	DPCMBank
+	ora	__env_volume,x
+.endif
+	beq	@S
+
+	;発音mode == 2 or 3 では無い？
+	lda	__chflag,x
+	and	#$02
+	bne	Exit
+
+@S:	;の条件を満たしていたら、設定。
 	lda	#$80
 	sta	APU_TRICTRL1
 Exit:
@@ -1319,7 +1345,7 @@ _nsd_psg_ch3_voice:
 .rodata
 JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	.addr	_nsd_ch2_volume		;BGM ch2 Pulse
-	.addr	Exit			;BGM ch3 Triangle	-- no process --
+	.addr	_nsd_ch3_volume		;BGM ch3 Triangle
 	.addr	_nsd_ch4_volume		;BGM ch4 Noize
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
 .ifdef	FDS
@@ -1428,6 +1454,24 @@ _nsd_ch2_volume:
 
 	;-------------------------------
 	; *** Exit
+	rts
+
+;---------------------------------------
+_nsd_ch3_volume:
+
+	cmp	#0
+	beq	@L0
+	cmp	#4
+	bcc	@L
+	lda	#$FF
+
+@L:	sta	APU_TRICTRL1
+	lda	__apu_frequency3
+	sta	APU_TRIFREQ2
+	rts
+
+@L0:	lda	#$80
+	sta	APU_TRICTRL1
 	rts
 
 ;---------------------------------------

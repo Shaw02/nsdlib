@@ -28,6 +28,7 @@ typedef	struct{
 				bool	fKey;		//
 				bool	fSweep;		//
 				bool	fSub;		//
+				bool	fSub_opt;	//true‚ÅÅ“K‰»–³Œø
 				bool	fGate_q;	//
 				bool	fGate_u;	//
 
@@ -90,6 +91,7 @@ public:
 				bool	get_fKey(void){		return(m_now_Patch->fKey);};
 				bool	get_fSweep(void){	return(m_now_Patch->fSweep);};
 				bool	get_fSub(void){		return(m_now_Patch->fSub);};
+				bool	get_fSub_opt(void){	return(m_now_Patch->fSub_opt);};
 				bool	get_fGate_q(void){	return(m_now_Patch->fGate_q);};
 				bool	get_fGate_u(void){	return(m_now_Patch->fGate_u);};
 

@@ -262,7 +262,7 @@ PSG_Envelope_Form	= $0D
 	_ptr		.word					;00 General pointer value
 	_tmp		.word					;02 General value
 	channel		.byte					;04 channel (x resister)
-;	flag		.byte					;05 flag
+	flag		.byte					;05 flag
 	Sequence_ptr	.word			nsd::Track	;06 Address of playing sequence
 .ifndef	HFX4
 	LengthCnt	.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
@@ -286,14 +286,14 @@ PSG_Envelope_Form	= $0D
 ;Zero Page Works
 .define	__ptr		nsd_work_zp + NSD_work_zp::_ptr
 .define	__tmp		nsd_work_zp + NSD_work_zp::_tmp
-;.define	__flag		nsd_work_zp + NSD_work_zp::flag
+.define	__flag		nsd_work_zp + NSD_work_zp::flag
 .define	__channel	nsd_work_zp + NSD_work_zp::channel
 .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
 
 .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
 .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
 
-.define	__flag		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+;.define	__flag		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
 .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F + nsd::TR_BGM5
 .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 
@@ -390,7 +390,6 @@ PSG_Envelope_Form	= $0D
 	Trans		.tag	NSD_Trans	nsd::Track	;Transpose
 	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat
 	Volume		.tag	NSD_volume	nsd::Track	;volume	/ TR3: BGM1 sweep / TR5: BGM2 sweep
-;	Voice		.tag	NSD_voice	nsd::Track	;voice
 	Env_F_Now	.tag	NSD_Env_F_Now	nsd::Track	;Now value of envelop
 	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;Address of envelop / TR5:DPCM info
 	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;Address of envelop
@@ -492,8 +491,6 @@ PSG_Envelope_Form	= $0D
 .define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
 .define	__repeat_ctr2	nsd_work + NSD_work::Repeat + NSD_Repeat::count2
 .define	__volume	nsd_work + NSD_work::Volume + NSD_volume::volume
-;.define	__voice		nsd_work + NSD_work::Voice + NSD_voice::voice		;”pŽ~—\’è
-;.define	__voice_set	nsd_work + NSD_work::Voice + NSD_voice::voice_set	;”pŽ~—\’è
 .define	__frequency	nsd_work + NSD_work::Frequency
 .define	__subroutine	nsd_work + NSD_work::SubRoutine
 .define	__repeat2	nsd_work + NSD_work::Repeat2
@@ -515,16 +512,23 @@ PSG_Envelope_Form	= $0D
 .define	__dpcm_info		nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5		;.word
 
 ;Sweep
-.define	__sweep_ch1		nsd_work + NSD_work::Volume + NSD_volume::volume     + nsd::TR_BGM5
-.define	__sweep_ch2		nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
+.define	__sweep_ch1		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM3
+.define	__sweep_ch2		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM3 + 1
+;.define	__sweep_ch1		nsd_work + NSD_work::Volume + NSD_volume::volume     + nsd::TR_BGM5
+;.define	__sweep_ch2		nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
+
 
 ;Voice
 .define	__apu_voice_set1	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5
 .define	__apu_voice_set2	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5 + 1
-.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
-.define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
-.define	__se_voice_set1		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency  + nsd::TR_BGM5
-.define	__se_voice_set2		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note       + nsd::TR_BGM5
+.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5	;.byte
+.define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1	;.byte
+.define	__se_voice_set1		nsd_work + NSD_work::Frequency      + nsd::TR_BGM5
+.define	__se_voice_set2		nsd_work + NSD_work::Frequency      + nsd::TR_BGM5 + 1
+;.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
+;.define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
+;.define	__se_voice_set1		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency  + nsd::TR_BGM5
+;.define	__se_voice_set2		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note       + nsd::TR_BGM5
 
 ;Frequency
 .define	__apu_frequency1	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5		;.byte
@@ -539,8 +543,10 @@ PSG_Envelope_Form	= $0D
 .endif
 
 .ifdef	MMC5
-.define	__mmc5_voice_set1	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5	;.byte
-.define	__mmc5_voice_set2	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1	;.byte
+;.define	__mmc5_voice_set1	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5	;.byte
+;.define	__mmc5_voice_set2	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1	;.byte
+.define	__mmc5_voice_set1	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
+.define	__mmc5_voice_set2	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
 .define	__mmc5_frequency1	nsd_work + NSD_work::Por_now        + nsd::TR_BGM5	;.byte
 .define	__mmc5_frequency2	nsd_work + NSD_work::Por_now        + nsd::TR_BGM5 + 1	;.byte
 .endif

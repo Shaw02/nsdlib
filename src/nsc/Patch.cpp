@@ -427,6 +427,24 @@ const	static	Command_Info	Command[] = {
 				}
 				m_now_Patch->iSub		= MML->GetInt();
 				m_now_Patch->fSub		= true;
+
+				cData = MML->GetChar();
+				if(cData == ','){	//最適化無効フラグ
+					i = MML->GetInt();
+					switch(i){
+						case(0):
+							m_now_Patch->fSub_opt=false;
+							break;
+						case(1):
+							m_now_Patch->fSub_opt=true;
+							break;
+						default:
+							MML->Err(_T("サブルーチンの最適化フラグは0～1の範囲で指定してください。"));
+							break;
+					}
+				} else {
+					MML->Back();
+				}
 				break;
 		
 		//unknown command
@@ -494,7 +512,7 @@ void	Patch::DebugMsg(void)
 			cout	<<	"  n" << itPatch->first;
 			if(get_fGate_q()){ cout	<<	"  q"	<<	get_iGate_q();	};
 			if(get_fGate_u()){ cout	<<	"  u"	<<	get_iGate_u();	};
-			if(get_fSub()){	cout	<<	"  S"	<<	get_iSub();		};
+			if(get_fSub()){	cout	<<	"  S"	<<	get_iSub()	<<	","	<<	get_fSub_opt();		};
 			if(get_fKey()){	cout	<<	"  _"	<<	get_iKey();		};
 			if(get_fSweep()){cout	<<	"  s"	<<	(int)get_iSweep();	};
 			if(get_fVoi()){	cout	<<	"  @"	<<	get_iVoi();		};
@@ -579,6 +597,7 @@ void	Patch::setN(MMLfile* MML, int note)
 		m_now_Patch->fKey	= false;
 		m_now_Patch->fSweep	= false;
 		m_now_Patch->fSub	= false;
+		m_now_Patch->fSub_opt= false;
 		m_now_Patch->fGate_q = false;
 		m_now_Patch->fGate_u = false;
 
