@@ -1722,7 +1722,7 @@ void	MusicTrack::SetKey(int _key, int _scale)
 	};
 
 	//í≤
-	static	const	char	Scale[28][7]={
+	static	const	char	Scale[80][7]={
 	//	  c  d  e  f  g  a  b		ID		Scale (Key = C)		Name
 		{ 0, 0, 0, 0, 0, 0, 0},	//	0		c d e f g a b		Ionian
 		{ 0, 0,-1, 0, 0, 0,-1},	//	1		c d e-f g a b-		Dorian
@@ -1731,27 +1731,88 @@ void	MusicTrack::SetKey(int _key, int _scale)
 		{ 0, 0, 0, 0, 0, 0,-1},	//	4		c d e f g a b-		Mixo-Lydian
 		{ 0, 0,-1, 0, 0,-1,-1},	//	5		c d e-f g a-b-		Aeolian
 		{ 0,-1,-1, 0,-1,-1,-1},	//	6		c d-e-f g-a-b-		Locrian
-		{ 0, 1, 1, 1, 0, 1, 0},	//	7		c d+e+f+g a+b
-		{ 0, 0, 0, 0, 0, 0, 0},	//	8		Dummy
+		{ 0, 1, 1, 1, 0, 1, 0},	//	7		c d+e+f+g a+b		Minor blues
+		{ 0, 0,-1,-1, 0, 0, 0},	//	8		c d e-f-g a b		Major blues
 		{ 0, 0, 0, 0, 0, 0, 0},	//	9		Dummy
+
 		{ 0, 0,-1, 0, 0,-1, 0},	//	10		c d e-f g a-b		Harmonic minor
 		{ 0,-1,-1, 0,-1, 0,-1},	//	11		c d-e-f g-a b-		Locrian natural13
-		{ 0, 0, 0, 0, 1, 0, 0},	//	12		c d e f g+a b		Ionian Åî5
+		{ 0, 0, 0, 0, 1, 0, 0},	//	12		c d e f g+a b		Ionian Augmented
 		{ 0, 0,-1, 1, 0, 0,-1},	//	13		c d e-f g a b-		Dorian Åî11
-		{ 0,-1, 0, 0, 0,-1,-1},	//	14		c d-e f g a-b-		Harmonic minor perfect 5th below
+		{ 0,-1, 0, 0, 0,-1,-1},	//	14		c d-e f g a-b-		Harmonic minor perfect 5th below (Spanish Gypsy)
 		{ 0, 1, 0, 1, 0, 0, 0},	//	15		c d+e f+g a b		Lydian Åî9
-		{ 0,-1,-1,-1,-1,-1,-2},	//	16		c d-e-f-g-a-a		Altered ÅÛ7
+		{ 0,-1,-1,-1,-1,-1,-2},	//	16		c d-e-f-g-a-a		Altered ÅÛ7 (Ultra Locrian)
 		{ 0, 0, 0, 0, 0, 0, 0},	//	17		Dummy
 		{ 0, 0, 0, 0, 0, 0, 0},	//	18		Dummy
 		{ 0, 0, 0, 0, 0, 0, 0},	//	19		Dummy
+
 		{ 0, 0,-1, 0, 0, 0, 0},	//	20		c d e-f g a b		Melodic minor
 		{ 0,-1,-1, 0, 0, 0,-1},	//	21		c d-e-f g a b-		Dorian ÅÛ9
-		{ 0, 0, 0, 1, 1, 0, 0},	//	22		c d e f+g+a b		Lydian Åî5
-		{ 0, 0, 0, 1, 0, 0,-1},	//	23		c d e f+g a b-		Mixo-Lydian Åî11 (Lydian ÅÛ7)
+		{ 0, 0, 0, 1, 1, 0, 0},	//	22		c d e f+g+a b		Lydian Augmented
+		{ 0, 0, 0, 1, 0, 0,-1},	//	23		c d e f+g a b-		Mixo-Lydian Åî11 (Lydian Dominant)
 		{ 0, 0, 0, 0, 0,-1,-1},	//	24		c d e f g a-b-		Mixo-Lydian ÅÛ13
-		{ 0, 0,-1, 0,-1,-1,-1},	//	25		c d e-f g-a-b-		Aeolian ÅÛ5 (Super Locrian)
-		{ 0,-1,-1,-1,-1,-1,-1},	//	26		c d-e-f-g-a-b-		Altered
-		{-1,-1,-1, 0, 0,-1,-1}	//	27		c-d-e-f g a-b-		G Altered
+		{ 0, 0,-1, 0,-1,-1,-1},	//	25		c d e-f g-a-b-		Aeolian ÅÛ5 (Semi Locrian)
+		{ 0,-1,-1,-1,-1,-1,-1},	//	26		c d-e-f-g-a-b-		Altered (Super Locrian)
+		{-1,-1,-1, 0, 0,-1,-1},	//	27		c-d-e-f g a-b-		G Altered
+		{ 0, 0, 0, 0, 0, 0, 0},	//	28		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	29		Dummy
+
+		//c  d  e  f  g  a  b
+		{ 0, 0, 0, 0, 0,-1, 0},	//	30		c d e f g a-b		Harmonic Major
+		{ 0, 0,-1, 0,-1, 0,-1},	//	31		c d e-f g-a b-		Dorian ÅÛ5
+		{ 0,-1,-1,-1, 0,-1,-1},	//	32		c d-e-f-g a-b-		Phrygian ÅÛ4
+		{ 0, 0,-1, 1, 0, 0, 0},	//	33		c d e-f+g a b		Lydian ÅÛ3
+		{ 0,-1, 0, 0, 0, 0,-1},	//	34		c d-e f g a b-		Mixo-Lydian ÅÛ9
+		{ 0, 1, 0, 1, 1, 0, 0},	//	35		c d+e f+g+a b		Lydian Åî2 Åî5
+		{ 0,-1,-1, 0,-1,-1,-2},	//	36		c d-e-f g-a-a		Locrian ÅÛÅÛ7
+		{ 0, 0, 0, 0, 0, 0, 0},	//	37		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	38		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	39		Dummy
+
+		{ 0,-1,-1, 0, 0, 0, 0},	//	40		c d-e-f g a b		Neapolitan
+		{ 0, 0, 0, 1, 1, 1, 0},	//	41		c d e f+g+a+b		Leading whole-tone
+		{ 0, 0, 0, 1, 1, 0,-1},	//	42		c d e f+g+a b-		Lydian Augmented Dominant
+		{ 0, 0, 0, 1, 0,-1,-1},	//	43		c d e f+g a-b-		Lydian Dominant ÅÛ6 
+		{ 0, 0, 0, 0,-1,-1,-1},	//	44		c d e f g-a-b-		Major Locrian
+		{ 0, 0,-1,-1,-1,-1,-1},	//	45		c d e-f-g-a-b-		Semi Locrian ÅÛ4 
+		{ 0,-1,-2,-1,-1,-1,-1},	//	46		c d-d f-g-a-b-		Super Locrian ÅÛÅÛ3
+		{ 0, 0, 0, 0, 0, 0, 0},	//	47		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	48		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	49		Dummy
+
+		{ 0,-1,-1, 0, 0,-1, 0},	//	50		c d-e-f g a-b		Neapolitan minor
+		{ 0, 0, 0, 1, 0, 1, 0},	//	51		c d e f+g a+b		Lydian Åî6 
+		{ 0, 0, 0, 0, 1, 0,-1},	//	52		c d e f g+a b-		Mixo-Lydian Augmented
+		{ 0, 0,-1, 1, 0,-1,-1},	//	53		c d e-f+g a-b-		Hungarian Gypsy 
+		{ 0,-1, 0, 0,-1,-1,-1},	//	54		c d-e f g-a-b-		Locrian Dominant
+		{ 0, 1, 0, 0, 0, 0, 0},	//	55		c d+e f g a b		Ionian Åî2
+		{ 0,-1,-2,-1,-1,-1,-2},	//	56		c d-d f-g-a-a		Ultra Locrian ÅÛÅÛ3
+		{ 0, 0, 0, 0, 0, 0, 0},	//	57		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	58		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	59		Dummy
+
+		{ 0,-1, 0, 0, 0,-1, 0},	//	60		c d-e f g a-b		Gypsy
+		{ 0, 1, 0, 1, 0, 1, 0},	//	61		c d+e f+g a+b		Lydian Åî2 Åî6
+		{ 0,-1,-1,-1, 0,-1,-2},	//	62		c d-e-f-g a-a		Ultra Phrygian
+		{ 0, 0,-1, 1, 0,-1, 0},	//	63		c d e-f+g a-b		Hungarian minor
+		{ 0,-1, 0, 0,-1, 0,-1},	//	64		c d-e f g-a b-		Oriental
+		{ 0, 1, 0, 0, 1, 0, 0},	//	65		c d+e f g+a b		Ionian Augmented Åî2
+		{ 0,-1,-2, 0,-1,-1,-2},	//	66		c d-d f g-a-a		Locrian ÅÛÅÛ3 ÅÛÅÛ7
+		{ 0, 0, 0, 0, 0, 0, 0},	//	67		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	68		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	69		Dummy
+
+		{ 0, 1, 0, 1, 0, 0,-1},	//	70		c d+e f+g a b-		Hungarian major
+		{ 0,-1,-1,-1,-1,-2,-2},	//	71		c d-e-f-g-g a		Super Locrian ÅÛÅÛ6 ÅÛÅÛ7 
+		{ 0, 0,-1, 0,-1,-1, 0},	//	72		c d e-f g-a-b		Harmonic minor ÅÛ5
+		{ 0,-1,-1,-1,-1, 0,-1},	//	73		c d-e-f-g-a b-		Super Locrian Åî6 
+		{ 0, 0,-1, 0, 1, 0, 0},	//	74		c d e-f g+a b		Melodic minor Åî5
+		{ 0,-1,-1, 1, 0, 0,-1},	//	75		c d-e-f+g a b-		Dorian ÅÛ9 Åî11
+		{ 0, 0, 1, 1, 1, 0, 0},	//	76		c d e+f+g+a b		Lydian Augmented Åî3
+		{ 0, 0, 0, 0, 0, 0, 0},	//	77		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0},	//	78		Dummy
+		{ 0, 0, 0, 0, 0, 0, 0}	//	79		Dummy
+
 	};
 
 	char	shift;

@@ -264,49 +264,65 @@ Detune:
 	tax				;
 	lda	__tmp			;ax <- frequency　（これで済むよね。）
 	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
+	ldx	__channel		;チャンネルの復帰（※必要）
 
 
 
-	;=======================================
-	;Voice & Volume
-	ldx	__channel	;要る？
+;	----------------------------------------
+;	mode	env	voi	vol
+;	0	-	-	v0	
+;	1	-	rel	rel	Mode1
+;	2	off	-	rel	Mode2
+;	2	on	env	vol*env	Envelope
+;	3	off	-	vol	Mode3
+;	3	on	env	vol*env	Envelope
+;	----------------------------------------
+
+	lda	__chflag,x		;gatemode ＝ 1 の場合、Mode1へ。
+	and	#$02			;音色設定は、nsd_key_on()関数及び
+	bne	V_Envelope		;nsd_key_off()関数でやる。
+
+Mode1:	;-----------------------
+	;Release Mode
+
 	cpx	#nsd::TR_BGM3
-	bne	Voice
+	beq	Exit
 
-Ch3_Envelope:
-;	mode	env	process
-;	-	off	no process
-;	0	on	no process
-;	1	on	no process
-;	2	on	env
-;	3	on	env
+	lda	__volume,x
 
-	lda	__chflag,x
-	and	#$02
-	beq	@NOENV
-
-	lda	__env_volume + 1,x
-	sta	__ptr + 1
-.ifdef	DPCMBank
-	ora	__env_volume,x
+.ifdef	VRC6
+	cpx	#nsd::TR_VRC6 + 4	;VRC6 SAW ?
+	bne	@VRC6
+	and	#$F0
+	jmp	@EX
+@VRC6:
 .endif
-	beq	@NOENV
 
-	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
-	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
+.ifdef	FDS
+	cpx	#nsd::TR_FDS
+	bne	@FDS
+	and	#$F0
+	jmp	@EX
+@FDS:
+.endif
+	lsr	a
+	lsr	a
+@EX:	lsr	a
+	lsr	a
+	jmp	_nsd_snd_volume
 
-@NOENV:	rts
+Exit:	rts
+
+V_Envelope:
 
 	;-------------------------------
 	;Envelop of Voice
 Voice:
-	ldy	__env_voice + 1,x
-	lda	__gatemode,x
-	and	#nsd_mode::voice	;●●●　最適化　●●●
-	beq	Voice_Exit		;音色エンベロープOffの場合は飛ばす
-	lda	__chflag,x		;且つ(gatemode==1)でも飛ばす。設定は
-	and	#$02			;nsd_key_on()関数及び
-	beq	Voice_Exit		;nsd_key_off()関数でやる。
+	lda	__gatemode,x		;
+	and	#nsd_mode::voice	;
+	beq	Voice_Exit		;Ch3 は必ずLow になっている。
+;	cpx	#nsd::TR_BGM3		;ので、コメントアウト
+;	beq	Voice_Exit		;
 
 @Envelop:
 	lda	__Envelop_V,x
@@ -317,7 +333,9 @@ Voice:
 	sta	__Envelop_V,x		;
 	jmp	Voice_Exit		;} else {
 
-@Done:	sty	__ptr + 1
+@Done:	
+	lda	__env_voice + 1,x
+	sta	__ptr + 1
 	lda	__env_voice,x
 	sta	__ptr			;  __ptr = (table address of envelop)
 .ifdef	DPCMBank
@@ -355,23 +373,7 @@ Voice_Exit:
 
 	;-------------------------------
 	;Envelop of Volume
-
-;	mode	env	process
-;	0	-	v0
-;	1	-	rel
-;	2	off	rel
-;	2	on	vol * env
-;	3	off	vol
-;	3	on	vol * env
-
 Volume:
-	lda	__chflag,x
-	and	#nsd_chflag::KeyOff
-	cmp	#$01
-	jeq	Mode1		;mode = 1 で、リリース音量
-
-	;Envelope
-	tay
 	lda	__env_volume + 1,x
 .ifdef	DPCMBank
 	ora	__env_volume,x
@@ -385,19 +387,49 @@ Volume:
 	sta	__ptr + 1
 	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
 
+	cpx	#nsd::TR_BGM3		;
+	beq	@S			;ch3 はリニアカウンタなので、v コマンド値との乗算はしない。
 	sta	__tmp
 	lda	__volume,x
 	ldx	__tmp
 	jsr	_nsd_mul
 	ldx	__channel
-	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
-
+@S:	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
 
 @No_Envelop:
-	cpy	#$02
-	beq	Mode2
+	cpx	#nsd::TR_BGM3
+	beq	Exit2
 
-Mode3:
+	lda	__chflag,x
+	and	#nsd_chflag::KeyOff
+	cmp	#$02
+	bne	Mode3
+
+Mode2:	;-----------------------
+.ifdef	VRC7
+	;VRC7は、mode 2の時はリリース処理しない。
+	cpx	#nsd::TR_VRC7
+	bcc	@VRC7L
+	cpx	#nsd::TR_VRC7 + 6*2
+	bcs	@VRC7L
+	lda	__volume,x
+	jmp	_nsd_snd_volume
+@VRC7L:
+.endif
+
+.ifdef	OPLL
+	;OPLLは、mode 2の時はリリース処理しない。
+	cpx	#nsd::TR_OPLL
+	bcc	@OPLLL
+	cpx	#nsd::TR_OPLL + 9*2
+	bcs	@OPLLL
+	lda	__volume,x
+	jmp	_nsd_snd_volume
+@OPLLL:
+.endif
+	jmp	Mode1
+
+Mode3:	;-----------------------
 	;Envelope 無効時の処理
 	lda	__volume,x
 
@@ -414,56 +446,8 @@ Mode3:
 	shl	a, 2
 @FDSV:
 .endif
-
 	jmp	_nsd_snd_volume
 
-
-Mode2:
-.ifdef	VRC7
-	;VRC7は、mode 2の時はリリース処理しない。
-	cpx	#nsd::TR_VRC7
-	bcc	@VRC7L
-	cpx	#nsd::TR_VRC7 + 6*2
-	bcs	@VRC7L
-	lda	__volume,x
-	and	#$0F
-	jmp	_nsd_snd_volume
-@VRC7L:
-.endif
-.ifdef	OPLL
-	;OPLLは、mode 2の時はリリース処理しない。
-	cpx	#nsd::TR_OPLL
-	bcc	@OPLLL
-	cpx	#nsd::TR_OPLL + 9*2
-	bcs	@OPLLL
-	lda	__volume,x
-	and	#$0F
-	jmp	_nsd_snd_volume
-@OPLLL:
-.endif
-
-Mode1:	;Release (Volume)
-	lda	__volume,x
-
-.ifdef	VRC6
-	cpx	#nsd::TR_VRC6 + 4	;VRC6 SAW ?
-	bne	@VRC6
-	and	#$F0
-	jmp	@EX
-@VRC6:
-.endif
-
-.ifdef	FDS
-	cpx	#nsd::TR_FDS
-	bne	@FDS
-	and	#$F0
-	jmp	@EX
-@FDS:
-.endif
-	lsr	a
-	lsr	a
-@EX:	lsr	a
-	lsr	a
-	jmp	_nsd_snd_volume
+Exit2:	rts
 
 .endproc

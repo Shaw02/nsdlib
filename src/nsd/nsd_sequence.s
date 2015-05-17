@@ -955,10 +955,6 @@ nsd_op0F:
 ;		opcode	0x10:	Voice envelop. 
 ;-----------------------------------------------------------------------
 nsd_op10:
-	lda	__gatemode,x
-	ora	#nsd_mode::voice	;Voice Envelope —LŒø
-	sta	__gatemode,x
-
 	jsr	nsd_load_ptr
 
 	cpx	#nsd::TR_BGM3
@@ -975,6 +971,10 @@ nsd_op10:
 
 	lda	#$01
 	sta	__env_voi_ptr,x
+
+	lda	__gatemode,x
+	ora	#nsd_mode::voice	;Voice Envelope —LŒø
+	sta	__gatemode,x
 @Exit:
 	jmp	Sequence
 

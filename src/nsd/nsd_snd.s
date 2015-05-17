@@ -2900,7 +2900,7 @@ Set_Frequency:
 	lda	__frequency,y		;ax Å© __frequency
 	jmp	(__ptr)
 Exit:
-	ldx	__channel
+;	ldx	__channel		;rtsêÊÇ≈ñﬂÇµÇƒÇ¢ÇÈÅB
 	rts
 .endproc
 
@@ -2994,7 +2994,6 @@ Exit:
 	;-------------------------------
 	; *** Mix voice and frequency
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-	ldx	__channel
 	and	#$0F
 	ora	__apu_voice_set4
 	
@@ -3024,7 +3023,6 @@ Exit:
 	;-------------------------------
 	; *** Mix voice and frequency
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
-	ldx	__channel
 	and	#$0F
 	ora	__se_voice_set2
 	

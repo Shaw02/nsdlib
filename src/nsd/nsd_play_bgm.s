@@ -208,25 +208,30 @@ Loop_End:
 	sta	__env_note + 1,x
 	sta	__env_note_ptr,x
 
-	;Ch3(Tri) or Ch5(DPCM) ?
-	cpx	#nsd::TR_BGM3
-	beq	Step
+	;Ch5(DPCM) ?
 	cpx	#nsd::TR_BGM5
-	beq	Step
+	beq	Step5
 
 	sta	__env_volume,x
 	sta	__env_volume + 1,x
 	sta	__env_vol_ptr,x
+
+	;Ch3(Tri) ?
+	cpx	#nsd::TR_BGM3
+	beq	Step3
+
 	sta	__env_voice + 1,x
 	sta	__env_voi_ptr,x
 	lda	#$02
 	sta	__env_voice,x
 ;	lda	#$00
 ;	sta	__voice,x	;îpé~
+
+Step3:
 	lda	#$2F
 	sta	__volume,x
-Step:
 
+Step5:
 	lda	#1
 	sta	__Length_ctr,x
 

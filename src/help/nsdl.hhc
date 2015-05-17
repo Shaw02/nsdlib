@@ -58,6 +58,10 @@
 
 		</OBJECT>
 	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_HarmonicMajor.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
 		<param name="Merge" value="Scale_Ionian.png">
 
 		</OBJECT>
@@ -79,6 +83,42 @@
 		</OBJECT>
 	<OBJECT type="text/sitemap">
 		<param name="Merge" value="Scale_Phrygius.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_MajorBlues.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_MinorBlues.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_HungarianMajor.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_HungarianMajor.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_NeapolitanMinor.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_NeapolitanMajor.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Gypsy.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_SpanishGypsy.png">
+
+		</OBJECT>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="Scale_Dorian_s11.png">
 
 		</OBJECT>
 	<OBJECT type="text/sitemap">
