@@ -60,7 +60,7 @@
 
 	;Software key on
 	lda	__chflag,x
-	and	#~nsd_chflag::KeyOff
+	and	#<~nsd_chflag::KeyOff
 	ora	#nsd_chflag::KeyOff
 	sta	__chflag,x
 
@@ -136,7 +136,7 @@ exit:
 	and	#nsd_mode::gatemode
 	sta	__tmp
 	lda	__chflag,x
-	and	#~nsd_chflag::KeyOff
+	and	#<~nsd_chflag::KeyOff
 	ora	__tmp
 	sta	__chflag,x
 
@@ -673,7 +673,7 @@ Calc_Note_Number:
 	and	#$02
 	bne	@Exit		;If tai then exit
 	lda	__chflag,x
-	and	#~nsd_chflag::KeyOff
+	and	#<~nsd_chflag::KeyOff
 	ora	__tmp
 	sta	__chflag,x
 @Exit:
@@ -708,7 +708,7 @@ nsd_op00:
 	sta	__Sequence_ptr,x
 
 	lda	__chflag,x
-	and	#~nsd_chflag::KeyOff
+	and	#<~nsd_chflag::KeyOff
 	sta	__chflag,x
 ;
 ;	Sweep‚Ìó‘Ô‚ðŒ³‚É–ß‚·B
@@ -879,24 +879,24 @@ nsd_op07:
 ;		opcode	0x08:	Tempo [BPM]
 ;-----------------------------------------------------------------------
 nsd_op08:
-	lda	__chflag,x
-	and	#nsd_chflag::SE1 + nsd_chflag::SE2
-	bne	Set_Tempo_SE
 	jsr	nsd_load_sequence
+	cpx	#nsd::TR_SE1
+	beq	Set_Tempo_SE
+	cpx	#nsd::TR_SE2
+	beq	Set_Tempo_SE
 Set_Tempo:
 	sta	__Tempo
-	jmp	Sequence
 Set_Tempo_SE:
-	jsr	nsd_load_sequence
 	jmp	Sequence
 ;=======================================================================
 ;		opcode	0x0C:	Relative Tempo [BPM]
 ;-----------------------------------------------------------------------
 nsd_op0C:
-	lda	__chflag,x
-	and	#nsd_chflag::SE1 + nsd_chflag::SE2
-	bne	Set_Tempo_SE
 	jsr	nsd_load_sequence
+	cpx	#nsd::TR_SE1
+	beq	Set_Tempo_SE
+	cpx	#nsd::TR_SE2
+	beq	Set_Tempo_SE
 	add	__Tempo
 	jmp	Set_Tempo
 ;=======================================================================
@@ -928,7 +928,7 @@ nsd_op0B:
 ;-----------------------------------------------------------------------
 nsd_op0D:
 	lda	__gatemode,x
-	and	#~nsd_mode::gatemode
+	and	#<~nsd_mode::gatemode
 ;	ora	#$00
 	sta	__gatemode,x
 	jmp	Sequence
@@ -937,7 +937,7 @@ nsd_op0D:
 ;-----------------------------------------------------------------------
 nsd_op0E:
 	lda	__gatemode,x
-	and	#~nsd_mode::gatemode
+	and	#<~nsd_mode::gatemode
 	ora	#$01
 	sta	__gatemode,x
 	jmp	Sequence
@@ -946,7 +946,7 @@ nsd_op0E:
 ;-----------------------------------------------------------------------
 nsd_op0F:
 	lda	__gatemode,x
-	and	#~nsd_mode::gatemode
+	and	#<~nsd_mode::gatemode
 	ora	#$02
 	sta	__gatemode,x
 	jmp	Sequence
@@ -1177,7 +1177,7 @@ nsd_op1B_done:
 	sta	__env_voice + 1,x
 
 	lda	__gatemode,x
-	and	#~nsd_mode::voice	;Voice Envelope–³Œø
+	and	#<~nsd_mode::voice	;Voice Envelope–³Œø
 	sta	__gatemode,x
 
 	jmp	Sequence
@@ -1479,7 +1479,7 @@ nsd_op25:
 
 .ifdef	FDS
 	lda	__chflag,x
-	and	#~nsd_chflag::FDSVOL
+	and	#<~nsd_chflag::FDSVOL
 	sta	__tmp
 .endif
 
@@ -1543,7 +1543,7 @@ nsd_op2B:
 ;		opcode	0x2C:	One time octave down (-1) 
 ;-----------------------------------------------------------------------
 nsd_op2C:
-	lda	#-12
+	lda	#<-12
 	bne	nsd_Set_Trans_One
 ;=======================================================================
 ;		opcode	0x2D:	One time octave up (+1) 
@@ -1660,7 +1660,7 @@ nsd_op2F_00:
 ;		opcode	0x2F 01:	Jump Flag Off
 ;-----------------------------------------------------------------------
 nsd_op2F_01:
-	lda	#~nsd_flag::Jump
+	lda	#<~nsd_flag::Jump
 	and	__flag
 	sta	__flag
 	jmp	Sequence

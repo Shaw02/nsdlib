@@ -31,7 +31,7 @@ CFLAGS  = -t none -I$(INC_PASS) -c -o
 #---------------
 #;  Assembler
 AS      = $(TOOL_PASS)ca65
-ASFLAGS = -t none -I$(INC_PASS) --listing --list-bytes 255
+ASFLAGS = -t none -I$(INC_PASS) --listing $*.lst --list-bytes 255
 
 #---------------
 #;  Archiver

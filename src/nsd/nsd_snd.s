@@ -255,6 +255,10 @@ JMPTBL:	.addr	_nsd_ch1_keyon		;BGM ch1 Pulse
 
 ;---------------------------------------
 .code
+.ifdef	MASK
+	lda	__chflag,x
+	bmi	Exit
+.endif
 	ldy	JMPTBL,x		;
 	sty	__ptr			;
 	ldy	JMPTBL + 1,x		;
@@ -469,27 +473,27 @@ _nsd_opll_keyon_exit:
 .endproc
 
 .proc	_nsd_opll_BD_keyoff
-	lda	#~$10
+	lda	#<~$10
 	bne	_nsd_opll_rhythm_set_and
 .endproc
 
 .proc	_nsd_opll_SD_keyoff
-	lda	#~$08
+	lda	#<~$08
 	bne	_nsd_opll_rhythm_set_and
 .endproc
 
 .proc	_nsd_opll_HH_keyoff
-	lda	#~$01
+	lda	#<~$01
 	bne	_nsd_opll_rhythm_set_and
 .endproc
 
 .proc	_nsd_opll_Cym_keyoff
-	lda	#~$02
+	lda	#<~$02
 	bne	_nsd_opll_rhythm_set_and
 .endproc
 
 .proc	_nsd_opll_Tom_keyoff
-	lda	#~$04
+	lda	#<~$04
 ;	bne	_nsd_opll_rhythm_set_and
 .endproc
 
@@ -645,7 +649,7 @@ _nsd_vrc7_keyoff:
 
 	;取りあえず、必ずKeyOffする。
 	lda	__chflag,x		;[4]4
-	and	#~nsd_chflag::KeyOn	;[2]6
+	and	#<~nsd_chflag::KeyOn	;[2]6
 	sta	__chflag,x		;[4]10
 
 	;書かれない可能性があるので、ここでレジスタに書く。
@@ -682,7 +686,7 @@ _nsd_OPLL_keyoff:
 
 	;取りあえず、必ずKeyOffする。
 	lda	__chflag,x		;[4]4
-	and	#~nsd_chflag::KeyOn	;[2]6
+	and	#<~nsd_chflag::KeyOn	;[2]6
 	sta	__chflag,x		;[4]10
 
 	;書かれない可能性があるので、ここでレジスタに書く。
@@ -1407,6 +1411,17 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 
 ;---------------------------------------
 .code
+.ifdef	MASK
+	tay
+	lda	__chflag,x
+	bpl	@PL
+@MI:
+	lda	#0
+	beq	@LL
+@PL:
+	tya
+@LL:
+.endif
 	ldy	JMPTBL,x		;
 	sty	__ptr			;
 	ldy	JMPTBL + 1,x		;
@@ -2044,7 +2059,7 @@ _nsd_ch3_time:
 	ora	#nsd_chflag::Sustain
 	bne	@Sustain_E
 @Sustain:
-	and	#~nsd_chflag::Sustain
+	and	#<~nsd_chflag::Sustain
 @Sustain_E:
 
 	cpy	#0
@@ -2052,14 +2067,14 @@ _nsd_ch3_time:
 	ora	#nsd_chflag::NoKeyOff
 	bne	@NoKeyOff_E
 @NoKeyOff:
-	and	#~nsd_chflag::NoKeyOff
+	and	#<~nsd_chflag::NoKeyOff
 @NoKeyOff_E:
 
 ;	tay
 ;	lda	__chflag,x
 ;	cpy	#0
 ;	bne	@L
-;	and	#~nsd_chflag::Sustain
+;	and	#<~nsd_chflag::Sustain
 ;	jmp	@Set
 ;@L:	ora	#nsd_chflag::Sustain
 
@@ -2177,7 +2192,7 @@ Exit:
 	and	#nsd_chflag::Envelop
 	sta	__tmp
 	lda	__chflag,x
-	and	#~nsd_chflag::Envelop
+	and	#<~nsd_chflag::Envelop
 	ora	__tmp
 	sta	__chflag,x
 	rts

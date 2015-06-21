@@ -28,7 +28,7 @@
 ;=======================================================================
 .proc	_nsd_resume_bgm: near
 
-	lda	#~nsd_flag::BGM
+	lda	#<~nsd_flag::BGM
 	and	__flag
 	sta	__flag			;BGM Enable
 

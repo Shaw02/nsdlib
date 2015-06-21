@@ -84,7 +84,7 @@ SE1:	ldx	#nsd::TR_SE1
 
 @Done:
 	lda	__flag
-	and	#~nsd_flag::Priority
+	and	#<~nsd_flag::Priority
 	ora	__tmp
 	sta	__flag			;—Dæ“xXV
 
@@ -96,8 +96,6 @@ SE1:	ldx	#nsd::TR_SE1
 	iny
 	jmp	SE2
 @L:
-
-	lda	#nsd_chflag::SE1 + $01
 	jsr	_nsd_play
 	iny
 
@@ -129,7 +127,6 @@ SE2:
 	iny
 	jmp	Exit
 @L:
-	lda	#nsd_chflag::SE2
 	jsr	_nsd_play
 	iny
 
@@ -140,7 +137,7 @@ Exit:
 	pla
 	sta	__channel
 
-	lda	#~(nsd_flag::SE + nsd_flag::Disable)
+	lda	#<~(nsd_flag::SE + nsd_flag::Disable)
 	and	__flag
 	sta	__flag			;SE & Main Enable
 

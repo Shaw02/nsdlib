@@ -33,12 +33,12 @@
 </pre></code>
 
 <p>
-配列変数で記載されるメンバー変数は、構造体定義内容の通り2Byte毎に配置しています。<br>
+パート毎のメンバー変数は、2Byte毎に配置しています。<br>
 xレジスタ等に、（トラック番号－１）×２の値を書くと、アクセスに便利です。<br>
 </p>
 
 <p>
-<strong>ヴァージョンアップにより制御変数の構造体の構成が変わる場合があるため、制御変数へのアクセスは以下表の変数名でアクセスの程、お願いいたします。。</strong><br>
+<strong>ヴァージョンアップにより制御変数の構造体の構成が変わる場合があるため、制御変数へのアクセスは以下表の変数名でアクセスの程、お願いいたします。</strong><br>
 又、拡張音源用のメンバー変数は割愛します（拡張音源を使用しない場合は、拡張音源用のメンバー変数は構造体のメンバーに入りません）。<br>
 </p>
 
@@ -56,7 +56,7 @@ Zeropageに置かれる制御用変数（構造体）です。<br>
 </p>
 
 <table>
-<caption>変数の内容</caption>
+<caption>変数の内容　（共通／Common）</caption>
 <tr><th>変数名</th><th>内容</th></tr>
 <tr><td>__ptr</td>
 	<td>汎用変数（ポインター用）<br>
@@ -74,11 +74,20 @@ Zeropageに置かれる制御用変数（構造体）です。<br>
 		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
 		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
 <tr><td>__flag</td>
-	<td>音源ドライバ全体のフラグ</td></tr>
+	<td><code>D... ....</code> :	再生制御無効<br>
+		<code>..PP ....</code> :	効果音の優先度<br>
+		<code>.... J...</code> :	早送り中<br>
+		<code>.... ..S.</code> :	ＳＥ再生中<br>
+		<code>.... ...B</code> :	ＢＧＭが再生中	</td></tr>
 <tr><td>__Tempo</td>
 	<td>テンポ（tコマンドの数値）</td></tr>
 <tr><td>__Tempo_ctr</td>
 	<td>テンポカウンタ</td></tr>
+</table>
+<p>
+</p>
+<table>
+<caption>変数の内容　（パート毎／Each part）</caption>
 <tr><td>__Sequence_ptr</td>
 	<td>演奏ポインタ</td></tr>
 <tr><td>__Length_ctr</td>
@@ -106,14 +115,19 @@ Zeropageに置かれる制御用変数（構造体）です。<br>
 </p>
 
 <table>
-<caption>変数の内容</caption>
+<caption>変数の内容　（パート毎／Each part）</caption>
 <tr><th>変数名</th><th>内容</th></tr>
 <tr><td>__chflag</td>
-	<td>チャンネル毎のフラグ</td></tr>
+	<td><code>..V. ....</code> :	VRC7：Sustain<br>
+		<code>...V ....</code> :	VRC7：KeyOn/Off制御<br>
+		<code>...S ....</code> :	SN5B：ハードウェアエンベロープ<br>
+		<code>.... FF..</code> :	FDS ：マスター音量<br>
+		<code>.... .V..</code> :	VRC7：KeyOff時にハードウェアのKeyOffをするかどうか<br>
+		<code>.... ..KK</code> :	エンベロープ処理のフェーズ<br></td></tr>
 <tr><td>__gatemode</td>
-	<td><code>.... ..rr</code> :	ゲートモード（Rmコマンドの設定値）<br>
+	<td><code>vvvv ....</code> :	リリース時の音色（R@コマンドの数値）<br>
 		<code>.... e...</code> :	音色エンベロープのスイッチ<br>
-		<code>vvvv ....</code> :	リリース時の音色（R@コマンドの数値）</td></tr>
+		<code>.... ..rr</code> :	ゲートモード（Rmコマンドの設定値）</td></tr>
 <tr><td>__length</td>
 	<td>音長省略時の音長（lコマンドの設定値）</td></tr>
 <tr><td>__tai</td>

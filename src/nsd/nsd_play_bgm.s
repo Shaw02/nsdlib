@@ -85,7 +85,6 @@ Loop:
 ;	jmp	@E
 ;
 ;@L:
-	lda	#$01
 	jsr	_nsd_play
 	iny
 
@@ -145,7 +144,7 @@ Loop_End:
 	sta	__n163_frequency + 7
 .endif
 
-	lda	#~(nsd_flag::BGM + nsd_flag::Disable)
+	lda	#<~(nsd_flag::BGM + nsd_flag::Disable)
 	and	__flag
 	sta	__flag			;BGM & Main Enable
 
@@ -166,6 +165,13 @@ Loop_End:
 ;=======================================================================
 .proc	_nsd_play
 
+.ifdef	MASK
+	lda	__chflag,x
+	and	#$80
+	ora	#$01
+.else
+	lda	#$01
+.endif
 	sta	__chflag,x
 
 	lda	__tmp

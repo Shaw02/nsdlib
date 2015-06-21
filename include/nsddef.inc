@@ -442,8 +442,9 @@ PSG_Envelope_Form	= $0D
 ;	Defines for work structures
 
 .scope	nsd_chflag
-	SE2	= $80
-	SE1	= $40
+.ifdef	MASK
+	Mask	= $80
+.endif
 	Sustain	= $20		;for VRC7
 	KeyOn	= $10		;for VRC7
 	Envelop	= $10		;for PSG
