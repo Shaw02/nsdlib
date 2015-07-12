@@ -21,20 +21,18 @@
 <div id='contents'>
 <h2>ＭＭＬ文法</h2>
 
-
-<div class='block'>
-<h3><a name="construction">全体の構文（MML Construction）</a></h3>
 <p>
 MMLの全体的な構文は、`#'で始まる定義、疑似命令及び、
 データ（音色データ、エンベロープパターン、シーケンスデータ等）を記述する記述ブロックで構成されます。<br>
 MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。<br>
 </p>
+
 <p>
 MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<br>
 </p>
 
 <div class='block'>
-<h4><a name="common">共通のコマンド</a></h4>
+<h3><a name="common">共通のコマンド</a></h3>
 <p>
 曲や効果音の設定・記述をするためのコマンド群です。<br>
 </p>
@@ -143,7 +141,7 @@ MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<b
 </div>
 
 <div class='block'>
-<h4><a name="nsf">NSF music formatを出力する際に有効なコマンド</a></h4>
+<h3><a name="nsf">NSF music formatを出力する際に有効なコマンド</a></h3>
 
 <p>
 NSF music format用の設定コマンドです。<br>
@@ -166,7 +164,7 @@ NSF music format用の設定コマンドです。<br>
 </div>
 
 <div class='block'>
-<h4><a name="asm">アセンブリ言語ソースを出力する際に有効なコマンド</a></h4>
+<h3><a name="asm">アセンブリ言語ソースを出力する際に有効なコマンド</a></h3>
 <p>
 アセンブリ言語ソースにて出力する際の設定コマンドです。<br>
 主に、6502開発環境"cc65"に付属の、アセンブラ"ca65.exe"用の疑似命令の出力を制御します。<br>
@@ -228,15 +226,13 @@ NSF music format用の設定コマンドです。<br>
 </div>
 
 <div class='block'>
-<h4><a name="num">数値の記法</a></h4>
+<h3><a name="num">数値の記法</a></h3>
 <p>
 0～9で始まる数値は、10進数とみなします。<br>
 $で始まる数値は、16進数とみなします。<br>
 %で始まる数値は、2進数とみなします。<br>
 </p>
 </div>
-
-</div>	<!-- h3 -->
 
 </div>
 

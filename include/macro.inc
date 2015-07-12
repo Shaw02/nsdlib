@@ -1,15 +1,21 @@
+;=======================================================================
+;
+;	NES Sound Driver & library (NSD.lib)	Macros
+;
+;-----------------------------------------------------------------------
+;
+;	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+;	For conditions of distribution and use, see copyright notice
+;	  in "nsd.h" or "nsd.inc".
+;
+;=======================================================================
 
 .ifndef	__MACRO_DEF__
 
 .define	__MACRO_DEF__	1
 
-;=======================================================================
-;	Macros
-;-----------------------------------------------------------------------
-
 .MACPACK generic
 .MACPACK longbranch 
-
 
 ;---------------------------------------
 ;	ax <= arg(mem16/imm16)

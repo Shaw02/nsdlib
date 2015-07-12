@@ -1,6 +1,12 @@
 ;=======================================================================
 ;
-;	NES Sound Driver Libraly		Sound Device Driver
+;	NES Sound Driver & library (NSD.lib)	Sound Device Driver
+;
+;-----------------------------------------------------------------------
+;
+;	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+;	For conditions of distribution and use, see copyright notice
+;	  in "nsd.h" or "nsd.inc".
 ;
 ;=======================================================================
 
@@ -73,6 +79,18 @@
 ;	sta	APU_MODDA		; Delta Modulation D/A Register (W)
 ;	sta	APU_MODADDR		; Delta Modulation Address Register (W)
 ;	sta	APU_MODLEN		; Delta Modulation Data Length Register (W)
+
+	sta	__flag
+
+.ifdef	MASK
+	ldx	#nsd::TR_BGM1
+@loop:
+	sta	__chflag,x
+	inx
+	inx
+	cpx	#nsd::TR_BGM1 + nsd::Track * 2
+	bcc	@loop
+.endif
 
 .ifdef	FDS
 	sta	FDS_Sweep_Bias

@@ -1,3 +1,12 @@
+/*******************************************************************************
+
+			NES Sound Driver & Library	(NSD.lib)	MML Compiler
+
+	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+	 For conditions of distribution and use, see copyright notice in "nsc.cpp".
+
+*******************************************************************************/
+
 #include "StdAfx.h"
 #include "MusicTrack.h"
 
@@ -1534,7 +1543,7 @@ void	MusicTrack::SetN163_Set(MMLfile* MML)
 		if((i % 4) != 0){
 			MML->Err(_T("n16xのサンプル長は4の倍数で指定してください。"));
 		}
-		SetSweep(64 - (i/4));
+		SetSweep((unsigned char)(64 - (i/4)));
 	} else {
 		MML->Back();
 	}
@@ -1875,7 +1884,7 @@ void	MusicTrack::SetHMinor(MMLfile* MML)
 	MML->Back();
 
 	if(cData=='('){
-		nowScale	+= (char)MML->GetNum();
+		nowScale	+= (char)(MML->GetNum());
 	}
 
 	SetKey(nowKey, nowScale);
@@ -1890,7 +1899,7 @@ void	MusicTrack::SetMMinor(MMLfile* MML)
 	MML->Back();
 
 	if(cData=='('){
-		nowScale	+= (char)MML->GetNum();
+		nowScale	+= (char)(MML->GetNum());
 	}
 
 	SetKey(nowKey, nowScale);
@@ -2560,7 +2569,7 @@ void	MusicTrack::SetEchoBuffer(MMLfile* MML,int note)
 	}
 
 	pt_oldNote++;
-	oldNote[pt_oldNote]	= iEchoNote;
+	oldNote[pt_oldNote]	= (char)iEchoNote;
 }
 
 //==============================================================
@@ -2596,7 +2605,7 @@ void	MusicTrack::ResetEcho()
 void	MusicTrack::GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur)
 {
 	char	old_note = oldNote[(pt_oldNote - echo_value) & 0xFF];
-	char	now_note = oldNote[pt_oldNote];
+//	char	now_note = oldNote[pt_oldNote];
 
 	char	now_octave = octave;
 	char	old_octave = (old_note / 12);

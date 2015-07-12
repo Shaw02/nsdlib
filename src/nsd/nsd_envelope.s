@@ -1,6 +1,12 @@
 ;=======================================================================
 ;
-;	NES Sound Driver Libraly		Envelope Controler
+;	NES Sound Driver & library (NSD.lib)	Envelope Controler
+;
+;-----------------------------------------------------------------------
+;
+;	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+;	For conditions of distribution and use, see copyright notice
+;	  in "nsd.h" or "nsd.inc".
 ;
 ;=======================================================================
 

@@ -1,3 +1,12 @@
+/*******************************************************************************
+
+			NES Sound Driver & Library	(NSD.lib)	MML Compiler
+
+	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+	 For conditions of distribution and use, see copyright notice in "nsc.cpp".
+
+*******************************************************************************/
+
 #include "StdAfx.h"
 #include "MusicFile.h"
 
@@ -311,9 +320,11 @@ const	static	Command_Info	Command[] = {
 				MML->offset_Em = MML->GetInt();
 				break;
 			case(id_Priority):
-				MML->priority = MML->GetInt();
-				if((MML->priority<0) || (MML->priority>3)){
+				i = MML->GetInt();
+				if((i<0) || (i>3)){
 					MML->Err(_T("#priorityコマンドは、0～3の範囲で指定してください。"));
+				} else {
+					MML->priority = (unsigned char)i;
 				}
 				break;
 			case(id_QMax):
@@ -751,18 +762,18 @@ void	MusicFile::make_bin(size_t rom_size, int ptOffset)
 	if(Header.bank == false){
 
 		if(cDPCMinfo != NULL){
-			pt[1]	= ptOffset + (unsigned short)rom_size - 0x80 + (unsigned short)_size + (unsigned short)cDPCMinfo->getOffset();	//ΔPCM info のアドレス
+			pt[1]	= (unsigned short)(ptOffset + rom_size - 0x80 + _size + cDPCMinfo->getOffset());	//ΔPCM info のアドレス
 		} else {
 			pt[1]	= 0;
 		}
 
 		while(iBGM < Header.iBGM){
-			pt[i] = ptOffset + (unsigned short)rom_size - 0x80 + (unsigned short)_size + (unsigned short)ptcBGM[iBGM]->getOffset();
+			pt[i] = (unsigned short)(ptOffset + rom_size - 0x80 + _size + ptcBGM[iBGM]->getOffset());
 			i++;
 			iBGM++;
 		}
 		while(iSE < Header.iSE){
-			pt[i] = ptOffset + (unsigned short)rom_size - 0x80 + (unsigned short)_size + (unsigned short)ptcSE[iSE]->getOffset();
+			pt[i] = (unsigned short)(ptOffset + rom_size - 0x80 + _size + ptcSE[iSE]->getOffset());
 			i++;
 			iSE++;
 		}
@@ -770,18 +781,18 @@ void	MusicFile::make_bin(size_t rom_size, int ptOffset)
 	} else {
 
 		if(cDPCMinfo != NULL){
-			pt[1]	= ptOffset + (unsigned short)_size + (unsigned short)cDPCMinfo->getOffset();	//ΔPCM info のアドレス
+			pt[1] = (unsigned short)(ptOffset + _size + cDPCMinfo->getOffset());	//ΔPCM info のアドレス
 		} else {
 			pt[1]	= 0;
 		}
 
 		while(iBGM < Header.iBGM){
-			pt[i] = ptOffset + (unsigned short)_size + (unsigned short)ptcBGM[iBGM]->getOffset();
+			pt[i] = (unsigned short)(ptOffset + _size + ptcBGM[iBGM]->getOffset());
 			i++;
 			iBGM++;
 		}
 		while(iSE < Header.iSE){
-			pt[i] = ptOffset + (unsigned short)_size + (unsigned short)ptcSE[iSE]->getOffset();
+			pt[i] = (unsigned short)(ptOffset + _size + ptcSE[iSE]->getOffset());
 			i++;
 			iSE++;
 		}

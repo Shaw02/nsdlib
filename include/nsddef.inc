@@ -1,14 +1,16 @@
 ;=======================================================================
 ;
-;	NES Sound Driver Libraly		Define file
+;	NES Sound Driver & library (NSD.lib)	Define file
 ;
 ;-----------------------------------------------------------------------
 ;
-;	《メモ》	！！注意！！
-;
-;	変えた場合は、 include フォルダの nes.inc にも適用する事！！
+;	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+;	For conditions of distribution and use, see copyright notice
+;	  in "nsd.h" or "nsd.inc".
 ;
 ;=======================================================================
+
+
 
 ;****************************************************************
 ;*	Sound I/O Device address defines			*
@@ -278,7 +280,7 @@ PSG_Envelope_Form	= $0D
 .scope	nsd_flag
 	BGM		= $01
 	SE		= $02
-	Jump		= $04
+	Jump		= $10
 	Priority	= $0C
 	Disable		= $80
 .endscope

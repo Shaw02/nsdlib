@@ -45,7 +45,7 @@ cc65以外の開発環境で記述されたコードから呼び出しても動作するとは思いますが、
 フリーの6502開発環境としては非常に優れており、本格的なクロス開発によるソフトウェア開発ができます。<br>
 </p>
 <p>
-cc65は、<a href="http://www.cc65.org/" target="_blank">http://www.cc65.org/</a>からダウンロードできます。<br>
+cc65は、<a href="http://cc65.github.io/cc65/" target="_blank">http://cc65.github.io/cc65/</a>からダウンロードできます。<br>
 （※cc65のホームページ、マニュアルは、全て英文です。）<br>
 </p>
 
@@ -126,7 +126,7 @@ cc65に付属のドキュメント及び、"nes.inc"及び、"nes.lib"のソースファイルを良く参照
 <table>
 <tr><th>return value	</th><th>Function name		</th><th>Contents		</th></tr>
 <tr><td>void	</td><td><a href="func_nsd_init.html">nsd_init(void)</a>							</td><td>Initraize the driver.	</td></tr>
-<tr><td>void	</td><td><a href="func_nsd_set_dpcm.html">nsd_set_dpcm(<var>void* dpcm</var>)</a>	</td><td>Set the dpcm information.	</td></tr>
+<tr><td>void	</td><td><a href="func_nsd_set_dpcm.html">nsd_set_dpcm(<var>nsd_dpcm* dpcm</var>)</a></td><td>Set the dpcm information.	</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_main.html">nsd_main(void)</a>							</td><td>Driver main routine. Please call by one V-blank.</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_main_bgm.html">nsd_main_bgm(void)</a>					</td><td>Driver main routine(BGM). Please call by one V-blank.</td></tr>
 <tr><td>void	</td><td><a href="func_nsd_main_se.html">nsd_main_se(void)</a>						</td><td>Driver main routine(SE). Please call by one V-blank.</td></tr>

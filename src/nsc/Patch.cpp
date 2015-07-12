@@ -1,3 +1,12 @@
+/*******************************************************************************
+
+			NES Sound Driver & Library	(NSD.lib)	MML Compiler
+
+	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+	 For conditions of distribution and use, see copyright notice in "nsc.cpp".
+
+*******************************************************************************/
+
 #include "StdAfx.h"
 #include "Patch.h"
 
@@ -414,7 +423,7 @@ const	static	Command_Info	Command[] = {
 					if((i % 4) != 0){
 						MML->Err(_T("n16xのサンプル長は4の倍数で指定してください。"));
 					}
-					m_now_Patch->iSweep		= 64 - (i/4);
+					m_now_Patch->iSweep		= (unsigned char)(64 - (i/4));
 					m_now_Patch->fSweep		= true;
 				} else {
 					MML->Back();

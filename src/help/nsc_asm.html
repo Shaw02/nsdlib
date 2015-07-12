@@ -50,9 +50,13 @@ MMLƒRƒ“ƒpƒCƒ‰‚ÍAƒAƒZƒ“ƒuƒŠŒ¾Œêƒ\[ƒX‚É‘Î‚µ‚ÄAŠe‹LqƒuƒƒbƒN‚Ìæ“ª‚Éƒ‰ƒxƒ‹‚ğ•t—
 </div>
 
 <div class='block'>
-<h4>‚bŒ¾Œê‚Æ‚l‚l‚kƒtƒ@ƒCƒ‹‚ğƒŠƒ“ƒN‚·‚é—á</h4>
+<h3>‚bŒ¾Œê‚Æ‚l‚l‚kƒtƒ@ƒCƒ‹‚ğƒŠƒ“ƒN‚·‚é—á</h3>
+<p>
+ÀÛ‚É‚bŒ¾Œê‚©‚çƒŠƒ“ƒN‚·‚éƒTƒ“ƒvƒ‹‚ÍA"\sample\cc65"ƒtƒHƒ‹ƒ_A<br>
+ƒAƒZƒ“ƒuƒŠŒ¾Œê‚©‚çƒŠƒ“ƒN‚·‚éƒTƒ“ƒvƒ‹‚ÍA"\sample\ca65"ƒtƒHƒ‹ƒ_‚ğ‚²QÆŠè‚¢‚Ü‚·B
+</p>
 <hr>
-<h5>testmus.mml@i‚l‚l‚kƒ\[ƒXj</h5>
+<h4>testmus.mml@i‚l‚l‚kƒ\[ƒXj</h4>
 <code><pre>
 #title	"Test"
 #Label	"_Test_"	<span style="color:green">//‚bŒ¾Œê‚©‚ç extern éŒ¾‚·‚é‚Ì‚ÅAƒVƒ“ƒ{ƒ‹æ“ª‚É‚Í'_'‚ğ•t‚¯‚éB</span>
@@ -90,7 +94,7 @@ BGM(0){
 }
 </pre></code>
 <hr>
-<h5>test.c@i‚bŒ¾Œêƒ\[ƒXj</h5>
+<h4>test.c@i‚bŒ¾Œêƒ\[ƒXj</h4>
 <code><pre>
 #define	__NES__
 
@@ -120,17 +124,21 @@ void	main()
 </pre></code>
 <hr>
 
-<h5>config.cfg@iƒŠƒ“ƒJ["ld65.exe"‚Ìİ’èƒtƒ@ƒCƒ‹j</h5>
+<h4>config.cfg@iƒŠƒ“ƒJ["ld65.exe"‚Ìİ’èƒtƒ@ƒCƒ‹j</h4>
 <code><pre>
 MEMORY {
-    ZP:       start = $02,   size = $60,   type = rw, define = yes;
+    <span style="color:green"># INES Cartridge Header</span>
     HEADER:   start = $0,    size = $10,   file = %O ,fill = yes;
+    <span style="color:green"># PRG-ROM (32kByte)</span>
     ROM0:     start = $8000, size = $4000, file = %O ,fill = yes, define = yes;
     ROM1:     start = $C000, size = $3ff4, file = %O ,fill = yes, define = yes;
     ROMV:     start = $fff6, size = $c,    file = %O, fill = yes;
+    <span style="color:green"># CHR-ROM ( 8kByte)</span>
     ROM2:     start = $0000, size = $2000, file = %O, fill = yes;
-    SRAM:     start = $0500, size = $0300, define = yes;
-    RAM:      start = $6000, size = $2000, define = yes;
+    <span style="color:green"># RAM     ( 2kByte)</span>
+    ZP:       start = $02,   size = $60,   type = rw,             define = yes;
+    SRAM:     start = $0500, size = $0300,                        define = yes;
+    RAM:      start = $6000, size = $2000,                        define = yes;
 }
 
 SEGMENTS {
@@ -144,9 +152,9 @@ SEGMENTS {
     PCMDATA:  load = ROM1,            type = ro,  define = yes;
     VECTORS:  load = ROMV,            type = rw;
     CHARS:    load = ROM2,            type = rw;
-    BSS:      load = RAM,             type = bss, define = yes;
-    HEAP:     load = RAM,             type = bss, optional = yes;
     ZEROPAGE: load = ZP,              type = zp;
+    BSS:      load = RAM,             type = bss, define = yes;
+    HEAP:     load = RAM,             type = bss,               optional = yes;
 }
 
 FEATURES {
@@ -165,12 +173,13 @@ FEATURES {
 }
 
 SYMBOLS {
-    __STACKSIZE__ = $0300;  	<span style="color:green"># 3 pages stack</span>
-}
+	<span style="color:green"># 3 pages stack</span>
+<span style="color:green">#   __STACKSIZE__ = $0300;                          for cc65 version 2.13.3</span>
+    __STACKSIZE__: type = weak, value = $0300;      <span style="color:green">for cc65 version 2.14</span>
 </pre></code>
 
 <hr>
-<h5>make.bat@i"test.nes"‚ğƒrƒ‹ƒh‚·‚éƒoƒbƒ`j</h5>
+<h4>make.bat@i"test.nes"‚ğƒrƒ‹ƒh‚·‚éƒoƒbƒ`j</h4>
 <code><pre>
 cl65 -t none -Oi -Os -Or -c -o test.o test.c
 nsc -a testmus.mml

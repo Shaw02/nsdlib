@@ -5,7 +5,7 @@
 <meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>BGM,SEデータフォーマット</Title>
+<Title>データフォーマット</Title>
 </HEAD>
 <BODY>
 
@@ -18,64 +18,76 @@
 
 <!-- contents start -->
 <div id='contents'>
-<h2>BGM,SEデータフォーマット（Format of BGM and SE）</h2>
+<h2>データフォーマット（Data Format）</h2>
 
-<p>
-ポインターと記載された場合は、現アドレスからの相対アドレスを意味します。<br>
-</p>
 
 <div class='block'>
-<h3>ヘッダー（Header）</h3>
+<h3>曲・効果音シーケンスデータ（Music and SE Sequence）</h2>
+
+<div class='block'>
+<h4><u>ヘッダー　（Header）</u></h4>
 <p>
 </p>
 <table>
 <tr><th>Address	</th><th>Size</th><th>Contents					</th></tr>
-<tr><td>0x0000	</td><td>BYTE	</td><td>Number of track (BGM:max=5, SE:max=2)	</td></tr>
-<tr><td>0x0001	</td><td>BYTE	</td><td>下位2bit : 優先度（効果音のみ）		</td></tr>
-<tr><td>0x0002	</td><td>WORD[n]</td><td>曲データの先頭を基点としたオフセットアドレス。	</td></tr>
-<tr><td> -	</td><td> -	</td><td>Datas.					</td></tr>
+<tr><td>0x0000	</td><td>BYTE	</td><td>トラック数 (BGM:max=5, SE:max=2)<br>
+											Number of track		</td></tr>
+<tr><td>0x0001	</td><td>BYTE	</td><td>効果音の優先度 (Lv = 0～3)<br>
+											Lower 2bit : Priority for SE</td></tr>
+<tr><td>0x0002	</td><td>WORD[n]</td><td>シーケンスデータのオフセットアドレス（ヘッダーのアドレス0x0000が基点）。<br>
+										Offser address for music sequence data. (Based on header address 0x0000.)	</td></tr>
+<tr><td>		</td><td> -	</td><td>Music sequence datas.	</td></tr>
 </table>
 </div>
 
 <div class='block'>
-<h3>シーケンス（sequence）</h3>
+<h4><u>曲データ　（Music Sequence Datas）</u></h4>
 <p>
+ポインターと記載された場合は、現アドレスからの相対アドレスを意味します。<br>
+"Pointer" meaning relative address from this memory address.<br>
 </p>
 <table>
 <tr><th>op-code		</th><th>value		</th><th>Contents							</th></tr>
 <tr><td>0x00		</td><td>			</td><td>End of Track / End of Subroutine	</td></tr>
-<tr><td>0x01		</td><td>n1 n2		</td><td>Jump (End of Track with loop)		<br>
-												n1::n2 = jumping pointer.			</td></tr>
+<tr><td>0x01		</td><td>n1 n2		</td><td>Jump(Dal Segno.) (End of Track with loop)		<br>
+												<var>n1</var>::<var>n2</var> = jumping pointer.</td></tr>
 <tr><td>0x02		</td><td>n1 n2		</td><td>Sub-routine call					<br>
-												n1::n2 = Pointer of sub-routine.	</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer of sub-routine.	</td></tr>
 <tr><td>0x03		</td><td>n1			</td><td>Repeat(A) Start point.					<br>
-												n1 = repeat times					</td></tr>
+												<var>n1</var> = repeat times					</td></tr>
 <tr><td>0x04		</td><td>n1 n2		</td><td>Repeat(A) Branch point						<br>
-												n1::n2 = Pointer of exit.			</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer of exit.			</td></tr>
 <tr><td>0x05		</td><td>n1 n2		</td><td>Repeat(A) End point.						<br>
-												n1::n2 = Pointer of start.			</td></tr>
-<tr><td>0x06		</td><td>n1 n2		</td><td>効果音呼び出し								<br>
-												n1::n2 = Pointer of SE.				</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer of start.			</td></tr>
+<tr><td>0x06		</td><td>n1 n2		</td><td>SE call							<br>
+												<var>n1</var>::<var>n2</var> = Pointer of SE.				</td></tr>
 <tr><td>0x07		</td><td>n1 n2 n3	</td><td>Write data to memory.				<br>
-												n1::n2 = Address. / n3 = Writing data	</td></tr>
-<tr><td>0x08		</td><td>n1			</td><td>Tempo [BPM]						</td></tr>
-<tr><td>0x09		</td><td>n1			</td><td>Note length of 省略時	[Ticks]		</td></tr>
-<tr><td>0x0A		</td><td>n1			</td><td>Gate time (key-off timing from last)	</td></tr>
-<tr><td>0x0B		</td><td>n1			</td><td>Gate time (length of 発音)			</td></tr>
-<tr><td>0x0C		</td><td>n1			</td><td>Relative Tempo [BPM]				</td></tr>
+												<var>n1</var>::<var>n2</var> = Address. / <var>n3</var> = Writing data	</td></tr>
+<tr><td>0x08		</td><td>n1			</td><td>Tempo								<br>
+												<var>n1</var> = tempo [BPM]			</td></tr>
+<tr><td>0x09		</td><td>n1			</td><td>a note/rest length when length is omitted	<br>
+												<var>n1</var> = length [Ticks]		</td></tr>
+<tr><td>0x0A		</td><td>n1			</td><td>Gate time (key-off timing from last)	<br>
+												<var>n1</var> = length [Ticks]		</td></tr>
+<tr><td>0x0B		</td><td>n1			</td><td>Gate time							<br>
+												<var>n1</var> = length [Ticks]		</td></tr>
+<tr><td>0x0C		</td><td>n1			</td><td>Relative Tempo						<br>
+												<var>n1</var> = tempo [BPM]			</td></tr>
 <tr><td>0x0D		</td><td>			</td><td>Gate mode (no release. volume = 0)		</td></tr>
 <tr><td>0x0E		</td><td>			</td><td>Gate mode (release of command value)	</td></tr>
 <tr><td>0x0F		</td><td>			</td><td>Gate mode (release of envelop pattern)	</td></tr>
 <tr><td>0x10		</td><td>n1 n2		</td><td>Voice envelop.						<br>
-												n1::n2 = Pointer.					</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer.					</td></tr>
 <tr><td>0x11		</td><td>n1 n2		</td><td>Volume envelop.					<br>
-												n1::n2 = Pointer.					</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer.					</td></tr>
 <tr><td>0x12		</td><td>n1 n2		</td><td>Frequency envelop.					<br>
-												n1::n2 = Pointer.					</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer.					</td></tr>
 <tr><td>0x13		</td><td>n1 n2		</td><td>Note envelop.						<br>
-												n1::n2 = Pointer.					</td></tr>
-<tr><td>0x14		</td><td>n1			</td><td>Detune (16 = 100 cent)				</td></tr>
-<tr><td>0x15		</td><td>n1			</td><td>Detune (Resister base)				</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer.					</td></tr>
+<tr><td>0x14		</td><td>n1			</td><td>Detune<br>
+												<var>n1</var>*100/16 [Cent]		</td></tr>
+<tr><td>0x15		</td><td>n1			</td><td>Detune (Resister base)	<br>
+												<var>n1</var> = detune			</td></tr>
 <tr><td>0x16		</td><td>n1			</td><td>	APU : Sweep (Resister base)		<br>
 													FDS : Sweep (Modulator) bias	<br>
 													VRC6: -							<br>
@@ -84,49 +96,54 @@
 													n16x: Sample length				<br>
 													Sunsoft 5B: Envelop Switch & Type</td></tr>
 <tr><td>0x17		</td><td>n1 n2 n3 n4</td><td>Portamento							<br>
-												n1 = Decay  (1 = 1 VBlank)			<br>
-												n2 = Rate   (1 = 1 VBlank)			<br>
-												n3 = Depth  (16 = 100 [cent])		<br>
-												n4 = Target (1 = 100 [cent])		</td></tr>
+												<var>n1</var> = Decay  (1 = 1 VBlank)			<br>
+												<var>n2</var> = Rate   (1 = 1 VBlank)			<br>
+												<var>n3</var> = Depth  (16 = 100 [cent])		<br>
+												<var>n4</var> = Target (1 = 100 [cent])		</td></tr>
 <tr><td>0x18		</td><td>			</td><td>Repeat(B) Start point				</td></tr>
 <tr><td>0x19		</td><td>			</td><td>Repeat(B) Branch point				</td></tr>
 <tr><td>0x1A		</td><td>n1 n2		</td><td>Repeat(B) End point				<br>
-												n1::n2 = Pointer of start.			</td></tr>
-<tr><td>0x1B		</td><td>n1			</td><td>Voice (Voice Envelop Off)			</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer of start.			</td></tr>
+<tr><td>0x1B		</td><td>n1			</td><td>Voice (Voice Envelop Off)<br>
+												<var>n1</var> = Voice number.	</td></tr>
 <tr><td>0x1C		</td><td>n1 n2		</td><td>VRC6: Set user instrument			<br>
-												n1::n2 = Pointer.					</td></tr>
-<tr><td>0x1D		</td><td>n1 n2		</td><td>VRC6: Set resister					<br>
-												n1 : Resister						<br>
-												n2 : Data							</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer.					</td></tr>
+<tr><td>0x1D		</td><td>n1 n2		</td><td>VRC7: Set resister					<br>
+												<var>n1</var> : Resister						<br>
+												<var>n2</var> : Data							</td></tr>
 <tr><td>0x1E		</td><td>n1 n2 n3	</td><td>n16x: Set wave table				<br>
-												n1 = Addres							<br>
-												n1::n2 = Pointer.					</td></tr>
+												<var>n1</var> = Addres							<br>
+												<var>n2</var>::<var>n3</var> = Pointer.					</td></tr>
 <tr><td>0x1F		</td><td>n1			</td><td>n16x: Set Channel number			<br>
-												n1 = number of channel				</td></tr>
+												<var>n1</var> = number of channel				</td></tr>
 <tr><td>0x20		</td><td>			</td><td>Volume down	(-1)				</td></tr>
 <tr><td>0x21		</td><td>			</td><td>Volume up		(+1)				</td></tr>
 <tr><td>0x22		</td><td>n1 n2		</td><td>FDS : Set career wave table		<br>
-												n1::n2 = Pointer.					</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer.					</td></tr>
 <tr><td>0x23		</td><td>n1 n2		</td><td>FDS : Set modulator wave table		<br>
-												n1::n2 = Pointer.					</td></tr>
+												<var>n1</var>::<var>n2</var> = Pointer.					</td></tr>
 <tr><td>0x24		</td><td>n1 n2		</td><td>FDS : Modulator frequency			<br>
-												n1::n2 = Frequency					</td></tr>
+												<var>n1</var>::<var>n2</var> = Frequency					</td></tr>
 <tr><td>0x25		</td><td>n1			</td><td>FDS : Master volume				<br>
-												n1 = master volume					</td></tr>
+												<var>n1</var> = master volume					</td></tr>
 <tr><td>0x26		</td><td>n1 n2		</td><td>Sunsoft 5B: Envelope frequency	<br>
-												n1::n2 = Frequency	</td></tr>
+												<var>n1</var>::<var>n2</var> = Frequency	</td></tr>
 <tr><td>0x27		</td><td>			</td><td><strong>reserve</strong>			</td></tr>
 <tr><td>0x28		</td><td>			</td><td>Octave down	(-1)				</td></tr>
 <tr><td>0x29		</td><td>			</td><td>Octave up		(+1)				</td></tr>
-<tr><td>0x2A		</td><td>n1			</td><td>Transpose (an absolute value)		</td></tr>
-<tr><td>0x2B		</td><td>n1			</td><td>Transpose (a relative value)		</td></tr>
+<tr><td>0x2A		</td><td>n1			</td><td>Transpose (an absolute value)	<br>
+												<var>n1</var> = Transpose (sighed char)	</td></tr>
+<tr><td>0x2B		</td><td>n1			</td><td>Transpose (a relative value)	<br>
+												<var>n1</var> = Transpose (sighed char)	</td></tr>
 <tr><td>0x2C		</td><td>			</td><td>Octave down (only next note)		</td></tr>
 <tr><td>0x2D		</td><td>			</td><td>Octave up   (only next note)		</td></tr>
-<tr><td>0x2E		</td><td>n1			</td><td>One time transpose	(a relative value)</td></tr>
+<tr><td>0x2E		</td><td>n1			</td><td>One time transpose	(a relative value)	<br>
+												<var>n1</var> = Transpose (sighed char)	</td></tr>
 <tr><td>0x2F		</td><td> -			</td><td>Expand op-code</td></tr>
-<tr><td>0x30-0x37	</td><td>n1			</td><td>Voice of release (after key-off)	</td></tr>
+<tr><td>0x30-0x37	</td><td>n1			</td><td>Voice of release (after key-off)<br>
+												<var>n1</var> = Voice number	</td></tr>
 <tr><td>0x38-0x3F	</td><td>			</td><td>Octave 1-8	(op-code lower 4bit is value)	</td></tr>
-<tr><td>0x40-0x4F	</td><td>			</td><td>Note length of 省略時	(op-code lower 4bit is value)	<br>
+<tr><td>0x40-0x4F	</td><td>			</td><td>a note/rest length when length is omitted<br>(op-code lower 4bit is value)	<br>
 								 0x00 : 96 tick	(l1)	<br>
 								 0x01 : 72 tick	(l2.)	<br>
 								 0x02 : 48 tick	(l2)	<br>
@@ -149,8 +166,8 @@
 <tr><td>0x80-0xFF	</td><td>(n1) (n2)	</td><td>Note and Rest				<br>
 								op-code bit 7 = `H'			<br>
 								op-code bit 6 = flag of Thai & Slur	<br>
-								op-code bit 5 = flag of Length (n1 [tick])	<br>
-								op-code bit 4 = flag of Gate Time (n2 [tick])	<br>
+								op-code bit 5 = flag of Length (<var>n1</var> [tick])	<br>
+								op-code bit 4 = flag of Gate Time (<var>n2</var> [tick])	<br>
 								op-code bit 3-0 = note	<br>
 								 0x00 : C			<br>
 								 0x01 : Cis / Des	<br>
@@ -190,32 +207,76 @@
 </table>
 </div>
 
+</div>	<!-- h3 -->
 
 <div class='block'>
-<h3>エンベロープ（Envelop）</h3>
-
+<h3>エンベロープ・パターン（Envelope pattern）</h3>
 <p>
-
 </p>
 
-<h4>データ構造（Struct）</h4>
+<div class='block'>
+<h4><u>データ構造（Struct）</u></h4>
+<p>
+</p>
 <table>
 <tr><th>Address	</th><th>Contents				</th></tr>
 <tr><td>0x00	</td><td>Pointer of release (after key-off)	<br>
 			 If setting `0', no release pattern.	</td></tr>
 <tr><td>0x01 -	</td><td>Envelop pattern			</td></tr>
 </table>
-<h4>パターン（Pattern）</h4>
+</div>
+
+<div class='block'>
+<h4><u>パターン（Pattern）</u></h4>
+<p>
+</p>
 <table>
 <tr><th>op-code		</th><th>Contents				</th></tr>
-<tr><td>0xxx xxxx <2>	</td><td>xxx xxxx (7bit) = Envelop value	</td></tr>
-<tr><td>1000 xxxx <2>	</td><td>xxxx (4bit)     = Hold length (0=1Vblank, 1=2Vblank, ...)		</td></tr>
+<tr><td>0xxx xxxx <2>	</td><td>xxx xxxx (7bit) = Envelope value	</td></tr>
+<tr><td>1000 xxxx <2>	</td><td>xxxx (4bit)     = Hold length (0=1[Vblank], 1=2[Vblank], ...)		</td></tr>
 <tr><td>11xx xxxx <2>	</td><td>xx xxxx (6bit)  = Address of jump	</td></tr>
 </table>
 </div>
 
+</div>	<!-- h3 -->
 
-</div>
+
+<div class='block'>
+<h3>ＦＤＳ音源音色パターン（FDS career wave pattern）</h3>
+<p>
+This is 64[Bytes] data.
+</p>
+</div>	<!-- h3 -->
+
+<div class='block'>
+<h3>ＦＤＳ音源変調パターン（FDS modulator wave pattern）</h3>
+<p>
+This is 32[Bytes] data.
+</p>
+</div>	<!-- h3 -->
+
+
+<div class='block'>
+<h3>ｎ１６ｘ音源音色パターン（N16x wave pattern）</h3>
+<p>
+</p>
+<table>
+<tr><th>Address	</th><th>Contents				</th></tr>
+<tr><td>0x00	</td><td>Number of byte  (Must be a multiple of 2)	</td></tr>
+<tr><td>0x01 -	</td><td>Wave table pattern	(1[Byte] is 2 samples)	</td></tr>
+</table>
+</div>	<!-- h3 -->
+
+<div class='block'>
+<h3>ＶＲＣ７音源音色パターン（VRC7 instruments data）</h3>
+<p>
+This is 8[Bytes] data based on register.
+</p>
+</div>	<!-- h3 -->
+
+
+
+</div>	<!-- h2 -->
 
 </BODY>
 </HTML>

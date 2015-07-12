@@ -1,6 +1,12 @@
 ;=======================================================================
 ;
-;	NES Sound Driver Libraly		Library Functions
+;	NES Sound Driver & library (NSD.lib)	Library Functions
+;
+;-----------------------------------------------------------------------
+;
+;	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+;	For conditions of distribution and use, see copyright notice
+;	  in "nsd.h" or "nsd.inc".
 ;
 ;=======================================================================
 
@@ -167,10 +173,10 @@ Loop_End:
 
 .ifdef	MASK
 	lda	__chflag,x
-	and	#$80
+	and	#$80			;Channnel MaskèÛë‘ÇÃï€éù
 	ora	#$01
 .else
-	lda	#$01
+	lda	#$01			;Release Mode = 1
 .endif
 	sta	__chflag,x
 

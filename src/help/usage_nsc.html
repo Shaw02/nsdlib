@@ -54,19 +54,28 @@ But, it develope by C++ language with only standard function.<br>
 日本語で音楽を記述するための構文です。<br>
 ＭＭＬ表記よりはできる事に限りがありますが、簡単に音楽を打ち込むことができます。<br>
 </p>
+<h4><a href="jmml.html#common">全体のコマンド</a></h4>
+<p>
+mmlファイルの全体的な書き方のリファレンスです。
+</p>
+<h4><a href="jmml.html#sequence">音楽・効果音の記法</a></h4>
+<p>
+実際に曲データを書く部分の説明です。
+</p>
+<h4><a href="jmml.html#envelope">音量推移（エンベロープ）パターンの記法</a></h4>
+<p>
+曲で使う音量変化を定義する部分の説明です。
+</p>
+<h4><a href="jmml.html#vibrapo">音程推移（ビブラート）パターンの記法</a></h4>
+<p>
+曲で使う音程変化を定義する部分の説明です。
+</p>
 </div>
 
 <div class='block'>
 <h3><a href="mml.html">ＭＭＬ文法（Syntax of MML）</a></h3>
 
-<div class='block'>
-<h4><a href="mml.html#construction">ＭＭＬの構文（MML Construction）</a></h4>
-<p>
-MMLの構文は、`#'で始まる定義命令・疑似命令及び、<br>
-データ（エンベロープパターン、シーケンスデータ）を記述する記述ブロックで構成されます。
-</p>
-
-<h5><a href="mml.html#common">●共通のコマンド</a></h5>
+<h4><a href="mml.html#common">共通のコマンド</a></h4>
 <p>
 曲や効果音の設定・記述をするためのコマンド群です。<br>
 </p>
@@ -77,36 +86,34 @@ MMLの構文は、`#'で始まる定義命令・疑似命令及び、<br>
 <li><a href="mml_FDSM.html">FDSモジュレータ波形定義</a></li>
 <li><a href="mml_vrc7.html">VRC7音色波形記述ブロック</a></li>
 <li><a href="mml_N163.html">n163音色波形記述ブロック</a></li>
-<li><a href="mml_sequence.html">シーケンス記述ブロック</a>
+<li><a href="mml_sequence.html">シーケンス（ＭＭＬ）記述ブロック</a>
 </ul>
 
-<h5><a href="mml.html#nsf">●NSF music formatを出力する際に有効なコマンド</a></h5>
+<h4><a href="mml.html#nsf">NSF music formatを出力する際に有効なコマンド</a></h4>
 <p>
 NSF music format用の設定コマンドです。<br>
 多くのコマンドは、NSFへビルドする際に、NSFヘッダーに設定されます。<br>
 </p>
 
-<h5><a href="mml.html#asm">●アセンブリ言語ソースを出力する際に有効なコマンド</a></h5>
+<h4><a href="mml.html#asm">アセンブリ言語ソースを出力する際に有効なコマンド</a></h4>
 <p>
 アセンブリ言語ソースにて出力する際の設定コマンドです。<br>
 主に、6502開発環境"cc65"に付属の、アセンブラ"ca65.exe"用の疑似命令の出力を制御します。<br>
 ユーザー・アプリケーションに組み込む場合に、設定して下さい。<br>
 </p>
 
-<h5><a href="mml.html#num">●数値の記法</a></h5>
+<h4>数値の記法</h4>
 <p>
-各コマンドの引数で、数値を記述する時の記法です。<br>
+0～9で始まる数値は、10進数とみなします。<br>
+$で始まる数値は、16進数とみなします。<br>
+%で始まる数値は、2進数とみなします。<br>
 </p>
-</div>
-
-<div class='block'>
 <h4><a name="tips">Tips</h4>
 <ul>
 <li><a href="mml_tips.html">最適化のためのヒント</a></li>
 <li><a href="n163.html">n106 / n163 の使い方</a></li>
 <li><a href="scale.html">スケールとコード</a></li>
 </ul>
-</div>
 
 </div>
 

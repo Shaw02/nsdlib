@@ -1,7 +1,12 @@
 #==============================================================================
-#	NES Sound Driver Libraly
+#	NES Sound Driver & library (NSD.lib)
 #		Make file
-#;				A.Waranabe
+#------------------------------------------------------------------------------
+#
+#	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+#	For conditions of distribution and use, see copyright notice
+#	  in "nsd.h" or "nsd.inc".
+#
 #==============================================================================
 
 ########################################

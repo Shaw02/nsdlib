@@ -1,0 +1,955 @@
+Modules list:
+-------------
+test.o:
+    CODE              Offs=000000  Size=0003CD  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000074  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000001  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+testmus.o:
+    CODE              Offs=0003CD  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=000074  Size=0000DF  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+    PCMDATA           Offs=000000  Size=002E81  Align=00040  Fill=0000
+..\..\lib\\nsd.lib(nsd_init.o):
+    CODE              Offs=0003CD  Size=00000A  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_set_dpcm.o):
+    CODE              Offs=0003D7  Size=000007  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_main.o):
+    CODE              Offs=0003DE  Size=000086  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_play_bgm.o):
+    CODE              Offs=000464  Size=0000E2  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_stop_bgm.o):
+    CODE              Offs=000546  Size=000020  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_pause_bgm.o):
+    CODE              Offs=000566  Size=00001B  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_resume_bgm.o):
+    CODE              Offs=000581  Size=00003C  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_play_se.o):
+    CODE              Offs=0005BD  Size=000084  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_stop_se.o):
+    CODE              Offs=000641  Size=000024  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_sequence.o):
+    CODE              Offs=000665  Size=00059A  Align=00001  Fill=0000
+    RODATA            Offs=000153  Size=000098  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_envelope.o):
+    CODE              Offs=000BFF  Size=00023B  Align=00001  Fill=0000
+    RODATA            Offs=0001EB  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_snd.o):
+    CODE              Offs=000E3A  Size=0002A2  Align=00001  Fill=0000
+    RODATA            Offs=0001EB  Size=000116  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_math.o):
+    CODE              Offs=0010DC  Size=000066  Align=00001  Fill=0000
+    RODATA            Offs=000301  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+..\..\lib\\nsd.lib(nsd_work.o):
+    CODE              Offs=001142  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=000301  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000001  Size=000126  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000030  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(_hextab.o):
+    CODE              Offs=001142  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=000301  Size=000010  Align=00001  Fill=0000
+    BSS               Offs=000127  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(_longminstr.o):
+    CODE              Offs=001142  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=000311  Size=00000C  Align=00001  Fill=0000
+    BSS               Offs=000127  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(_printf.o):
+    CODE              Offs=001142  Size=0003A5  Align=00001  Fill=0000
+    RODATA            Offs=00031D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000127  Size=00002B  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000003  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(addysp.o):
+    CODE              Offs=0014E7  Size=00000E  Align=00001  Fill=0000
+    RODATA            Offs=00031D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000152  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000003  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(aslax1.o):
+    CODE              Offs=0014F5  Size=000008  Align=00001  Fill=0000
+    RODATA            Offs=00031D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000152  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000003  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(axlong.o):
+    CODE              Offs=0014FD  Size=000012  Align=00001  Fill=0000
+    RODATA            Offs=00031D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000152  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000003  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(callmain.o):
+    CODE              Offs=00150F  Size=000017  Align=00001  Fill=0000
+    RODATA            Offs=00031D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000152  Size=000004  Align=00001  Fill=0000
+    DATA              Offs=000003  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(color.o):
+    CODE              Offs=001526  Size=00002D  Align=00001  Fill=0000
+    RODATA            Offs=00031D  Size=000010  Align=00001  Fill=0000
+    BSS               Offs=000156  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000003  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(condes.o):
+    CODE              Offs=001553  Size=00000C  Align=00001  Fill=0000
+    RODATA            Offs=00032D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000156  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000003  Size=000025  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+    INIT              Offs=000000  Size=00000C  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(copydata.o):
+    CODE              Offs=00155F  Size=00002D  Align=00001  Fill=0000
+    RODATA            Offs=00032D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000156  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(cprintf.o):
+    CODE              Offs=00158C  Size=00002A  Align=00001  Fill=0000
+    RODATA            Offs=00032D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000156  Size=000001  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(cputc.o):
+    CODE              Offs=0015B6  Size=00003B  Align=00001  Fill=0000
+    RODATA            Offs=00032D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+    INIT              Offs=00000C  Size=000011  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(crt0.o):
+    CODE              Offs=0015F1  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=00032D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+    HEADER            Offs=000000  Size=000010  Align=00001  Fill=0000
+    STARTUP           Offs=000000  Size=00005D  Align=00001  Fill=0000
+    VECTORS           Offs=000000  Size=00000C  Align=00001  Fill=0000
+    CHARS             Offs=000000  Size=001000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(ctype.o):
+    CODE              Offs=0015F1  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=00032D  Size=000100  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(decsp4.o):
+    CODE              Offs=0015F1  Size=00000D  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(decsp6.o):
+    CODE              Offs=0015FE  Size=00000D  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(gotoxy.o):
+    CODE              Offs=00160B  Size=00000D  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(icmp.o):
+    CODE              Offs=001618  Size=00002E  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(incaxy.o):
+    CODE              Offs=001646  Size=00000B  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(incsp1.o):
+    CODE              Offs=001651  Size=000007  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(incsp2.o):
+    CODE              Offs=001658  Size=000016  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(incsp3.o):
+    CODE              Offs=00166E  Size=000005  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(lpush.o):
+    CODE              Offs=001673  Size=000021  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(ltoa.o):
+    CODE              Offs=001694  Size=0000AF  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(makebool.o):
+    CODE              Offs=001743  Size=000031  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(ne.o):
+    CODE              Offs=001774  Size=00000A  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(or.o):
+    CODE              Offs=00177E  Size=000012  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(popa.o):
+    CODE              Offs=001790  Size=00000C  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(ppu.o):
+    CODE              Offs=00179C  Size=00004D  Align=00001  Fill=0000
+    RODATA            Offs=00042D  Size=000020  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(ppubuf.o):
+    CODE              Offs=0017E9  Size=0000B0  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000157  Size=000001  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(push1.o):
+    CODE              Offs=001899  Size=000005  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(pusha.o):
+    CODE              Offs=00189E  Size=000016  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(pushax.o):
+    CODE              Offs=0018B4  Size=00001A  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(return0.o):
+    CODE              Offs=0018CE  Size=000004  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(setcursor.o):
+    CODE              Offs=0018D2  Size=000049  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(strlen.o):
+    CODE              Offs=00191B  Size=000016  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(strlower.o):
+    CODE              Offs=001931  Size=000028  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(vcprintf.o):
+    CODE              Offs=001959  Size=00007E  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000028  Size=000008  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(waitvblank.o):
+    CODE              Offs=0019D7  Size=000006  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000030  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(zerobss.o):
+    CODE              Offs=0019DD  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000030  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+    INIT              Offs=00001D  Size=000023  Align=00001  Fill=0000
+C:\Program Files\cc65/lib/nes.lib(zeropage.o):
+    CODE              Offs=0019DD  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=00044D  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000158  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000030  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000030  Size=00001A  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+CHARS                 000000  000FFF  001000  00001
+HEADER                000000  00000F  000010  00001
+NULL                  000000  000000  000000  00001
+ZEROPAGE              000002  00004B  00004A  00001
+DATA                  006000  00602F  000030  00001
+BSS                   006030  006187  000158  00001
+STARTUP               008000  00805C  00005D  00001
+INIT                  00805D  00809E  000042  00001
+CODE                  00809F  009A7B  0019DD  00001
+RODATA                009A7C  009EC8  00044D  00001
+PCMDATA               00C000  00EE80  002E81  00040
+VECTORS               00FFF6  010001  00000C  00001
+
+
+Exports list by name:
+---------------------
+_Test_BGM0                009B9C RLA    _Test_DPCMinfo            009AF0 RLA    
+__BSS_LOAD__              006030  LA    __BSS_RUN__               006030 RLA    
+__BSS_SIZE__              000158 REA    __CODE_LOAD__             00809F  LA    
+__CODE_RUN__              00809F  LA    __CODE_SIZE__             0019DD  EA    
+__CONSTRUCTOR_COUNT__     000001 REA    __CONSTRUCTOR_TABLE__     00809D RLA    
+__DATA_LOAD__             009EC9 RLA    __DATA_RUN__              006000 RLA    
+__DATA_SIZE__             000030 REA    __DESTRUCTOR_COUNT__      000000 REA    
+__DESTRUCTOR_TABLE__      009EC9 RLA    __INIT_LOAD__             00805D  LA    
+__INIT_RUN__              00805D  LA    __INIT_SIZE__             000042  EA    
+__PCMDATA_LOAD__          00C000  LA    __PCMDATA_RUN__           00C000  LA    
+__PCMDATA_SIZE__          002E81  EA    __RAM_FILEOFFS__          00A010  EA    
+__RAM_LAST__              006188  LA    __RAM_SIZE__              002000  EA    
+__RAM_START__             006000  LA    __RODATA_LOAD__           009A7C  LA    
+__RODATA_RUN__            009A7C  LA    __RODATA_SIZE__           00044D  EA    
+__ROM0_FILEOFFS__         000010  EA    __ROM0_LAST__             009EF9  LA    
+__ROM0_SIZE__             004000  EA    __ROM0_START__            008000  LA    
+__ROM1_FILEOFFS__         004010  EA    __ROM1_LAST__             00EE81  LA    
+__ROM1_SIZE__             003FF4  EA    __ROM1_START__            00C000  LA    
+__SRAM_FILEOFFS__         00A010  EA    __SRAM_LAST__             000500  LA    
+__SRAM_SIZE__             000300 REA    __SRAM_START__            000500 RLA    
+__STACKSIZE__             000300  EA    __STARTUP_LOAD__          008000  LA    
+__STARTUP_RUN__           008000  LA    __STARTUP_SIZE__          00005D  EA    
+__STARTUP__               000001 REA    __ZP_FILEOFFS__           000000  EA    
+__ZP_LAST__               00004C  LA    __ZP_SIZE__               000060  EA    
+__ZP_START__              000002  LA    __argc                    006182  LA    
+__argv                    006184  LA    __ctype                   009DA9 RLA    
+__hextab                  009D7D RLA    __longminstr              009D8D RLA    
+__printf                  0092D4 RLA    _bgcolor                  0095C5 RLA    
+_bordercolor              00996D  EA    _cprintf                  00962B RLA    
+_cputc                    00965D RLA    _cputcxy                  009655  LA    
+_exit                     00802F  LA    _gotoxy                   0096AA RLA    
+_inkey                    0081D8  LA    _ltoa                     00974F RLA    
+_main                     008215 RLA    _nsd_div192               00917B RLA    
+_nsd_dpcm_calc            008EFF  LA    _nsd_init                 00846C RLA    
+_nsd_main                 00847D RLA    _nsd_mul                  0091B8 RLA    
+_nsd_pause                008617  LA    _nsd_pause_bgm            008605 RLA    
+_nsd_play                 008559 RLA    _nsd_play_bgm             008503 RLA    
+_nsd_play_se              00865C RLA    _nsd_resume_bgm           008620 RLA    
+_nsd_set_dpcm             008476 RLA    _nsd_snd_frequency        009062 RLA    
+_nsd_snd_init             008ED9 RLA    _nsd_snd_keyoff           008F79 RLA    
+_nsd_snd_keyon            008F1A RLA    _nsd_snd_sweep            00903F RLA    
+_nsd_snd_voice            008FA5 RLA    _nsd_snd_volume           008FE7 RLA    
+_nsd_stop_bgm             0085E5 RLA    _nsd_stop_se              0086E0 RLA    
+_read_key                 00809F  LA    _strlen                   0099BA RLA    
+_strlower                 0099D0 RLA    _strlwr                   0099D0  LA    
+_textcolor                00996D  EA    _ultoa                    0097A6 RLA    
+_vcprintf                 009A46 RLA    _waitvblank               009A76 RLA    
+addysp                    009587 RLA    addysp1                   009586 RLA    
+aslax1                    009594  LA    axlong                    0095A3 RLA    
+axulong                   00959C RLA    booleq                    0097E8  LA    
+boolge                    0097F8  LA    boolgt                    0097F6  LA    
+boolle                    0097EE  LA    boollt                    0097F0  LA    
+boolne                    0097E2 RLA    booluge                   009808  LA    
+boolugt                   009806  LA    boolule                   0097FE  LA    
+boolult                   009800  LA    callmain                  0095AE RLA    
+condes                    006003  LA    copydata                  0095FE RLA    
+cputdirect                00966B  LA    decsp4                    009690 RLA    
+decsp6                    00969D RLA    donelib                   0095F2 RLA    
+incax4                    0096E5  LA    incaxy                    0096E7 RLA    
+incsp1                    0096F0 RLA    incsp2                    0096FF  LA    
+incsp3                    00970D RLA    initconio                 008069  LAI   
+initlib                   00805D RLA    newline                   00967E  LA    
+nsd_envelop               008C9E RLA    nsd_sequence              00872B RLA    
+nsd_work                  006031 RLA    nsd_work_zp               000002 RLZ    
+paldata                   009EA9  LA    paletteinit               00986B RLA    
+popa                      00982F RLA    popax                     0096F7 RLA    
+ppubuf_flush              0098B4 RLA    ppubuf_put                009894 RLA    
+ppubuf_wait               00988D  LA    ppubuf_waitempty          009888  LA    
+ppuinit                   00983B RLA    ptr1                      00003A RLZ    
+ptr2                      00003C RLZ    ptr3                      00003E RLZ    
+ptr4                      000040  LZ    push0                     009953  LA    
+push0ax                   009715  LA    push1                     009938 RLA    
+pusha                     009941 RLA    pusha0                    009955 RLA    
+pusha0sp                  00993D  LA    pushax                    009957 RLA    
+pushaysp                  00993F  LA    pusheax                   00971B RLA    
+pushl0                    009712  LA    putchar                   009687  LA    
+regbank                   000046 RLZ    regsave                   000036  LZ    
+return0                   00996D RLA    setcursor                 009971 RLA    
+shlax1                    009594 RLA    sp                        000032 RLZ    
+sreg                      000034 RLZ    tmp1                      000042 RLZ    
+tmp2                      000043  LZ    tmp3                      000044  LZ    
+tmp4                      000045  LZ    tosicmp                   0096B9 RLA    
+tosicmp0                  0096B7  LA    tosne00                   009813  LA    
+tosnea0                   009815  LA    tosneax                   009817 RLA    
+tosora0                   00981D  LA    tosorax                   00981F RLA    
+zerobss                   00807A RLA    
+
+
+Exports list by value:
+----------------------
+__ZP_FILEOFFS__           000000  EA    __DESTRUCTOR_COUNT__      000000 REA    
+__CONSTRUCTOR_COUNT__     000001 REA    __STARTUP__               000001 REA    
+__ZP_START__              000002  LA    nsd_work_zp               000002 RLZ    
+__ROM0_FILEOFFS__         000010  EA    __DATA_SIZE__             000030 REA    
+sp                        000032 RLZ    sreg                      000034 RLZ    
+regsave                   000036  LZ    ptr1                      00003A RLZ    
+ptr2                      00003C RLZ    ptr3                      00003E RLZ    
+ptr4                      000040  LZ    __INIT_SIZE__             000042  EA    
+tmp1                      000042 RLZ    tmp2                      000043  LZ    
+tmp3                      000044  LZ    tmp4                      000045  LZ    
+regbank                   000046 RLZ    __ZP_LAST__               00004C  LA    
+__STARTUP_SIZE__          00005D  EA    __ZP_SIZE__               000060  EA    
+__BSS_SIZE__              000158 REA    __STACKSIZE__             000300  EA    
+__SRAM_SIZE__             000300 REA    __RODATA_SIZE__           00044D  EA    
+__SRAM_LAST__             000500  LA    __SRAM_START__            000500 RLA    
+__CODE_SIZE__             0019DD  EA    __RAM_SIZE__              002000  EA    
+__PCMDATA_SIZE__          002E81  EA    __ROM1_SIZE__             003FF4  EA    
+__ROM0_SIZE__             004000  EA    __ROM1_FILEOFFS__         004010  EA    
+__RAM_START__             006000  LA    __DATA_RUN__              006000 RLA    
+condes                    006003  LA    __BSS_LOAD__              006030  LA    
+__BSS_RUN__               006030 RLA    nsd_work                  006031 RLA    
+__argc                    006182  LA    __argv                    006184  LA    
+__RAM_LAST__              006188  LA    __ROM0_START__            008000  LA    
+__STARTUP_RUN__           008000  LA    __STARTUP_LOAD__          008000  LA    
+_exit                     00802F  LA    __INIT_LOAD__             00805D  LA    
+__INIT_RUN__              00805D  LA    initlib                   00805D RLA    
+initconio                 008069  LAI   zerobss                   00807A RLA    
+__CONSTRUCTOR_TABLE__     00809D RLA    _read_key                 00809F  LA    
+__CODE_LOAD__             00809F  LA    __CODE_RUN__              00809F  LA    
+_inkey                    0081D8  LA    _main                     008215 RLA    
+_nsd_init                 00846C RLA    _nsd_set_dpcm             008476 RLA    
+_nsd_main                 00847D RLA    _nsd_play_bgm             008503 RLA    
+_nsd_play                 008559 RLA    _nsd_stop_bgm             0085E5 RLA    
+_nsd_pause_bgm            008605 RLA    _nsd_pause                008617  LA    
+_nsd_resume_bgm           008620 RLA    _nsd_play_se              00865C RLA    
+_nsd_stop_se              0086E0 RLA    nsd_sequence              00872B RLA    
+nsd_envelop               008C9E RLA    _nsd_snd_init             008ED9 RLA    
+_nsd_dpcm_calc            008EFF  LA    _nsd_snd_keyon            008F1A RLA    
+_nsd_snd_keyoff           008F79 RLA    _nsd_snd_voice            008FA5 RLA    
+_nsd_snd_volume           008FE7 RLA    _nsd_snd_sweep            00903F RLA    
+_nsd_snd_frequency        009062 RLA    _nsd_div192               00917B RLA    
+_nsd_mul                  0091B8 RLA    __printf                  0092D4 RLA    
+addysp1                   009586 RLA    addysp                    009587 RLA    
+shlax1                    009594 RLA    aslax1                    009594  LA    
+axulong                   00959C RLA    axlong                    0095A3 RLA    
+callmain                  0095AE RLA    _bgcolor                  0095C5 RLA    
+donelib                   0095F2 RLA    copydata                  0095FE RLA    
+_cprintf                  00962B RLA    _cputcxy                  009655  LA    
+_cputc                    00965D RLA    cputdirect                00966B  LA    
+newline                   00967E  LA    putchar                   009687  LA    
+decsp4                    009690 RLA    decsp6                    00969D RLA    
+_gotoxy                   0096AA RLA    tosicmp0                  0096B7  LA    
+tosicmp                   0096B9 RLA    incax4                    0096E5  LA    
+incaxy                    0096E7 RLA    incsp1                    0096F0 RLA    
+popax                     0096F7 RLA    incsp2                    0096FF  LA    
+incsp3                    00970D RLA    pushl0                    009712  LA    
+push0ax                   009715  LA    pusheax                   00971B RLA    
+_ltoa                     00974F RLA    _ultoa                    0097A6 RLA    
+boolne                    0097E2 RLA    booleq                    0097E8  LA    
+boolle                    0097EE  LA    boollt                    0097F0  LA    
+boolgt                    0097F6  LA    boolge                    0097F8  LA    
+boolule                   0097FE  LA    boolult                   009800  LA    
+boolugt                   009806  LA    booluge                   009808  LA    
+tosne00                   009813  LA    tosnea0                   009815  LA    
+tosneax                   009817 RLA    tosora0                   00981D  LA    
+tosorax                   00981F RLA    popa                      00982F RLA    
+ppuinit                   00983B RLA    paletteinit               00986B RLA    
+ppubuf_waitempty          009888  LA    ppubuf_wait               00988D  LA    
+ppubuf_put                009894 RLA    ppubuf_flush              0098B4 RLA    
+push1                     009938 RLA    pusha0sp                  00993D  LA    
+pushaysp                  00993F  LA    pusha                     009941 RLA    
+push0                     009953  LA    pusha0                    009955 RLA    
+pushax                    009957 RLA    _bordercolor              00996D  EA    
+_textcolor                00996D  EA    return0                   00996D RLA    
+setcursor                 009971 RLA    _strlen                   0099BA RLA    
+_strlwr                   0099D0  LA    _strlower                 0099D0 RLA    
+_vcprintf                 009A46 RLA    _waitvblank               009A76 RLA    
+__RODATA_RUN__            009A7C  LA    __RODATA_LOAD__           009A7C  LA    
+_Test_DPCMinfo            009AF0 RLA    _Test_BGM0                009B9C RLA    
+__hextab                  009D7D RLA    __longminstr              009D8D RLA    
+__ctype                   009DA9 RLA    paldata                   009EA9  LA    
+__DESTRUCTOR_TABLE__      009EC9 RLA    __DATA_LOAD__             009EC9 RLA    
+__ROM0_LAST__             009EF9  LA    __SRAM_FILEOFFS__         00A010  EA    
+__RAM_FILEOFFS__          00A010  EA    __ROM1_START__            00C000  LA    
+__PCMDATA_LOAD__          00C000  LA    __PCMDATA_RUN__           00C000  LA    
+__ROM1_LAST__             00EE81  LA    
+
+
+Imports list:
+-------------
+_Test_BGM0 (testmus.o):
+    test.o                    test.s(25)
+_Test_DPCMinfo (testmus.o):
+    test.o                    test.s(26)
+__BSS_LOAD__ ([linker generated]):
+__BSS_RUN__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__BSS_SIZE__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__CODE_LOAD__ ([linker generated]):
+__CODE_RUN__ ([linker generated]):
+__CODE_SIZE__ ([linker generated]):
+__CONSTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__CONSTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__DATA_LOAD__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DATA_RUN__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DATA_SIZE__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DESTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__DESTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__INIT_LOAD__ ([linker generated]):
+__INIT_RUN__ ([linker generated]):
+__INIT_SIZE__ ([linker generated]):
+__PCMDATA_LOAD__ ([linker generated]):
+__PCMDATA_RUN__ ([linker generated]):
+__PCMDATA_SIZE__ ([linker generated]):
+__RAM_FILEOFFS__ ([linker generated]):
+__RAM_LAST__ ([linker generated]):
+__RAM_SIZE__ ([linker generated]):
+__RAM_START__ ([linker generated]):
+__RODATA_LOAD__ ([linker generated]):
+__RODATA_RUN__ ([linker generated]):
+__RODATA_SIZE__ ([linker generated]):
+__ROM0_FILEOFFS__ ([linker generated]):
+__ROM0_LAST__ ([linker generated]):
+__ROM0_SIZE__ ([linker generated]):
+__ROM0_START__ ([linker generated]):
+__ROM1_FILEOFFS__ ([linker generated]):
+__ROM1_LAST__ ([linker generated]):
+__ROM1_SIZE__ ([linker generated]):
+__ROM1_START__ ([linker generated]):
+__SRAM_FILEOFFS__ ([linker generated]):
+__SRAM_LAST__ ([linker generated]):
+__SRAM_SIZE__ ([linker generated]):
+    crt0.o                    nes/crt0.s(16)
+__SRAM_START__ ([linker generated]):
+    crt0.o                    nes/crt0.s(16)
+__STACKSIZE__ ([linker generated]):
+__STARTUP_LOAD__ ([linker generated]):
+__STARTUP_RUN__ ([linker generated]):
+__STARTUP_SIZE__ ([linker generated]):
+__STARTUP__ (crt0.o):
+    test.o                    test.s(13)
+__ZP_FILEOFFS__ ([linker generated]):
+__ZP_LAST__ ([linker generated]):
+__ZP_SIZE__ ([linker generated]):
+__ZP_START__ ([linker generated]):
+__argc (callmain.o):
+__argv (callmain.o):
+__ctype (ctype.o):
+    strlower.o                common/strlower.s(13)
+__hextab (_hextab.o):
+    ltoa.o                    common/ltoa.s(10)
+__longminstr (_longminstr.o):
+    ltoa.o                    common/ltoa.s(10)
+__printf (_printf.o):
+    vcprintf.o                conio/vcprintf.s(9)
+_bgcolor (color.o):
+    test.o                    test.s(17)
+_bordercolor (color.o):
+_cprintf (cprintf.o):
+    test.o                    test.s(16)
+_cputc (cputc.o):
+    vcprintf.o                conio/vcprintf.s(9)
+_cputcxy (cputc.o):
+_exit (crt0.o):
+_gotoxy (gotoxy.o):
+    cputc.o                   nes/cputc.s(12)
+    test.o                    test.s(15)
+_inkey (test.o):
+_ltoa (ltoa.o):
+    _printf.o                 common/_printf.s(12)
+_main (test.o):
+    callmain.o                runtime/callmain.s(11)
+_nsd_div192 (nsd_math.o):
+    nsd_snd.o                 nsd_snd.s(25)
+_nsd_dpcm_calc (nsd_snd.o):
+_nsd_init (nsd_init.o):
+    test.o                    test.s(19)
+_nsd_main (nsd_main.o):
+    test.o                    test.s(18)
+_nsd_mul (nsd_math.o):
+    nsd_envelope.o            nsd_envelope.s(20)
+_nsd_pause (nsd_pause_bgm.o):
+_nsd_pause_bgm (nsd_pause_bgm.o):
+    test.o                    test.s(23)
+_nsd_play (nsd_play_bgm.o):
+    nsd_play_se.o             nsd_play_se.s(17)
+_nsd_play_bgm (nsd_play_bgm.o):
+    test.o                    test.s(21)
+_nsd_play_se (nsd_play_se.o):
+    nsd_sequence.o            nsd_sequence.s(21)
+_nsd_resume_bgm (nsd_resume_bgm.o):
+    test.o                    test.s(24)
+_nsd_set_dpcm (nsd_set_dpcm.o):
+    test.o                    test.s(20)
+_nsd_snd_frequency (nsd_snd.o):
+    nsd_envelope.o            nsd_envelope.s(19)
+_nsd_snd_init (nsd_snd.o):
+    nsd_init.o                nsd_init.s(20)
+_nsd_snd_keyoff (nsd_snd.o):
+    nsd_sequence.o            nsd_sequence.s(18)
+    nsd_stop_se.o             nsd_stop_se.s(22)
+    nsd_pause_bgm.o           nsd_pause_bgm.s(19)
+    nsd_stop_bgm.o            nsd_stop_bgm.s(19)
+_nsd_snd_keyon (nsd_snd.o):
+    nsd_sequence.o            nsd_sequence.s(17)
+_nsd_snd_sweep (nsd_snd.o):
+    nsd_sequence.o            nsd_sequence.s(19)
+_nsd_snd_voice (nsd_snd.o):
+    nsd_envelope.o            nsd_envelope.s(17)
+    nsd_sequence.o            nsd_sequence.s(20)
+_nsd_snd_volume (nsd_snd.o):
+    nsd_envelope.o            nsd_envelope.s(18)
+    nsd_stop_se.o             nsd_stop_se.s(21)
+    nsd_pause_bgm.o           nsd_pause_bgm.s(18)
+    nsd_stop_bgm.o            nsd_stop_bgm.s(18)
+_nsd_stop_bgm (nsd_stop_bgm.o):
+    nsd_play_bgm.o            nsd_play_bgm.s(18)
+    nsd_init.o                nsd_init.s(17)
+    test.o                    test.s(22)
+_nsd_stop_se (nsd_stop_se.o):
+    nsd_init.o                nsd_init.s(18)
+_read_key (test.o):
+_strlen (strlen.o):
+    _printf.o                 common/_printf.s(13)
+_strlower (strlower.o):
+    _printf.o                 common/_printf.s(13)
+_strlwr (strlower.o):
+_textcolor (color.o):
+_ultoa (ltoa.o):
+    _printf.o                 common/_printf.s(12)
+_vcprintf (vcprintf.o):
+    cprintf.o                 conio/cprintf.s(8)
+_waitvblank (waitvblank.o):
+    test.o                    test.s(14)
+addysp (addysp.o):
+    incsp3.o                  runtime/incsp3.s(8)
+    cprintf.o                 conio/cprintf.s(8)
+addysp1 (addysp.o):
+    or.o                      runtime/or.s(8)
+aslax1 (aslax1.o):
+axlong (axlong.o):
+    _printf.o                 common/_printf.s(11)
+axulong (axlong.o):
+    _printf.o                 common/_printf.s(11)
+booleq (makebool.o):
+boolge (makebool.o):
+boolgt (makebool.o):
+boolle (makebool.o):
+boollt (makebool.o):
+boolne (makebool.o):
+    ne.o                      runtime/ne.s(8)
+booluge (makebool.o):
+boolugt (makebool.o):
+boolule (makebool.o):
+boolult (makebool.o):
+callmain (callmain.o):
+    crt0.o                    nes/crt0.s(10)
+condes (condes.o):
+copydata (copydata.o):
+    crt0.o                    nes/crt0.s(11)
+cputdirect (cputc.o):
+decsp4 (decsp4.o):
+    lpush.o                   runtime/lpush.s(11)
+decsp6 (decsp6.o):
+    _printf.o                 common/_printf.s(11)
+donelib (condes.o):
+    crt0.o                    nes/crt0.s(10)
+incax4 (incaxy.o):
+incaxy (incaxy.o):
+    test.o                    test.s(528)
+incsp1 (incsp1.o):
+    test.o                    test.s(528)
+    test.o                    test.s(528)
+incsp2 (incsp2.o):
+incsp3 (incsp3.o):
+    test.o                    test.s(528)
+initconio (cputc.o):
+initlib (condes.o):
+    crt0.o                    nes/crt0.s(10)
+newline (cputc.o):
+nsd_envelop (nsd_envelope.o):
+    nsd_main.o                nsd_main.s(21)
+nsd_sequence (nsd_sequence.o):
+    nsd_main.o                nsd_main.s(20)
+nsd_work (nsd_work.o):
+    nsd_snd.o                 nsd_snd.s(27)
+    nsd_envelope.o            nsd_envelope.s(26)
+    nsd_sequence.o            nsd_sequence.s(22)
+    nsd_stop_se.o             nsd_stop_se.s(24)
+    nsd_resume_bgm.o          nsd_resume_bgm.s(17)
+    nsd_stop_bgm.o            nsd_stop_bgm.s(21)
+    nsd_play_bgm.o            nsd_play_bgm.s(24)
+    nsd_set_dpcm.o            nsd_set_dpcm.s(17)
+nsd_work_zp (nsd_work.o):
+    nsd_play_se.o             nsd_play_se.s(25)
+    nsd_math.o                nsd_math.s(18)
+    nsd_snd.o                 nsd_snd.s(28)
+    nsd_envelope.o            nsd_envelope.s(27)
+    nsd_sequence.o            nsd_sequence.s(23)
+    nsd_stop_se.o             nsd_stop_se.s(25)
+    nsd_resume_bgm.o          nsd_resume_bgm.s(18)
+    nsd_pause_bgm.o           nsd_pause_bgm.s(22)
+    nsd_stop_bgm.o            nsd_stop_bgm.s(22)
+    nsd_play_bgm.o            nsd_play_bgm.s(25)
+    nsd_main.o                nsd_main.s(17)
+paldata (ppu.o):
+paletteinit (ppu.o):
+    cputc.o                   nes/cputc.s(13)
+popa (popa.o):
+    cputc.o                   nes/cputc.s(12)
+    gotoxy.o                  nes/gotoxy.s(9)
+popax (incsp2.o):
+    ltoa.o                    common/ltoa.s(9)
+    _printf.o                 common/_printf.s(11)
+    vcprintf.o                conio/vcprintf.s(8)
+ppubuf_flush (ppubuf.o):
+    crt0.o                    nes/crt0.s(12)
+ppubuf_put (ppubuf.o):
+    cputc.o                   nes/cputc.s(13)
+    color.o                   nes/color.s(12)
+ppubuf_wait (ppubuf.o):
+ppubuf_waitempty (ppubuf.o):
+ppuinit (ppu.o):
+    cputc.o                   nes/cputc.s(13)
+ptr1 (zeropage.o):
+    strlower.o                common/strlower.s(14)
+    strlen.o                  common/strlen.s(8)
+    ltoa.o                    common/ltoa.s(11)
+    copydata.o                common/copydata.s(9)
+    _printf.o                 /home/travis/build/cc65/cc65/asminc/zeropage.inc(12)
+    zerobss.o                 common/zerobss.s(9)
+    vcprintf.o                conio/vcprintf.s(10)
+    cprintf.o                 conio/cprintf.s(9)
+ptr2 (zeropage.o):
+    strlower.o                common/strlower.s(14)
+    ltoa.o                    common/ltoa.s(11)
+    copydata.o                common/copydata.s(9)
+    _printf.o                 /home/travis/build/cc65/cc65/asminc/zeropage.inc(12)
+    vcprintf.o                conio/vcprintf.s(10)
+ptr3 (zeropage.o):
+    ltoa.o                    common/ltoa.s(11)
+    vcprintf.o                conio/vcprintf.s(10)
+ptr4 (zeropage.o):
+push0 (pushax.o):
+push0ax (lpush.o):
+push1 (push1.o):
+    _printf.o                 common/_printf.s(11)
+pusha (pusha.o):
+    test.o                    test.s(528)
+    test.o                    test.s(528)
+    test.o                    test.s(528)
+pusha0 (pushax.o):
+    push1.o                   runtime/push1.s(8)
+pusha0sp (pusha.o):
+pushax (pushax.o):
+    callmain.o                runtime/callmain.s(11)
+    _printf.o                 common/_printf.s(11)
+    vcprintf.o                conio/vcprintf.s(8)
+    cprintf.o                 conio/cprintf.s(8)
+    test.o                    test.s(528)
+    test.o                    test.s(528)
+    test.o                    test.s(528)
+pushaysp (pusha.o):
+pusheax (lpush.o):
+    _printf.o                 common/_printf.s(11)
+pushl0 (lpush.o):
+putchar (cputc.o):
+regbank (zeropage.o):
+    _printf.o                 /home/travis/build/cc65/cc65/asminc/zeropage.inc(14)
+regsave (zeropage.o):
+return0 (return0.o):
+    color.o                   nes/color.s(12)
+setcursor (setcursor.o):
+    cputc.o                   nes/cputc.s(14)
+    gotoxy.o                  nes/gotoxy.s(8)
+shlax1 (aslax1.o):
+    test.o                    test.s(528)
+sp (zeropage.o):
+    decsp4.o                  runtime/decsp4.s(8)
+    lpush.o                   runtime/lpush.s(12)
+    incsp2.o                  runtime/incsp2.s(8)
+    icmp.o                    runtime/icmp.s(9)
+    decsp6.o                  runtime/decsp6.s(8)
+    addysp.o                  runtime/addysp.s(8)
+    _printf.o                 /home/travis/build/cc65/cc65/asminc/zeropage.inc(11)
+    vcprintf.o                conio/vcprintf.s(10)
+    pushax.o                  runtime/pushax.s(8)
+    pusha.o                   runtime/pusha.s(8)
+    popa.o                    runtime/popa.s(8)
+    or.o                      runtime/or.s(9)
+    incsp1.o                  runtime/incsp1.s(8)
+    crt0.o                    /home/travis/build/cc65/cc65/asminc/zeropage.inc(11)
+    cprintf.o                 conio/cprintf.s(9)
+    test.o                    test.s(10)
+sreg (zeropage.o):
+    ltoa.o                    common/ltoa.s(11)
+    lpush.o                   runtime/lpush.s(12)
+    icmp.o                    runtime/icmp.s(9)
+    axlong.o                  runtime/axlong.s(8)
+    _printf.o                 /home/travis/build/cc65/cc65/asminc/zeropage.inc(11)
+tmp1 (zeropage.o):
+    ltoa.o                    common/ltoa.s(11)
+    copydata.o                common/copydata.s(9)
+    _printf.o                 /home/travis/build/cc65/cc65/asminc/zeropage.inc(13)
+    vcprintf.o                conio/vcprintf.s(10)
+    or.o                      runtime/or.s(9)
+    incaxy.o                  runtime/incaxy.s(8)
+    aslax1.o                  runtime/aslax1.s(8)
+    test.o                    test.s(11)
+tmp2 (zeropage.o):
+tmp3 (zeropage.o):
+tmp4 (zeropage.o):
+tosicmp (icmp.o):
+    ne.o                      runtime/ne.s(8)
+tosicmp0 (icmp.o):
+tosne00 (ne.o):
+tosnea0 (ne.o):
+tosneax (ne.o):
+    test.o                    test.s(528)
+    test.o                    test.s(528)
+tosora0 (or.o):
+tosorax (or.o):
+    test.o                    test.s(528)
+zerobss (zerobss.o):
+    crt0.o                    nes/crt0.s(11)
+

@@ -1,0 +1,9 @@
+I:\NES\NSDL\sample\cc65\comlog.txt が見つかりませんでした。
+I:\NES\NSDL\sample\cc65\errlog.txt が見つかりませんでした。
+I:\NES\NSDL\sample\cc65\buildlog.txt
+プロセスはファイルにアクセスできません。別のプロセスが使用中です。
+cl65  -t none -I..\..\include\\ -c -o test.o test.c 1>>comlog.txt		 2>>errlog.txt		
+nsc -a -e testmus.mml 1>>comlog.txt		 2>>errlog.txt		
+ca65 -t none -I..\..\include\\ --listing testmus.lst --list-bytes 255 testmus.s 1>>comlog.txt		 2>>errlog.txt		
+del testmus.s 1>>comlog.txt		 2>>errlog.txt		
+ld65 -C nesc.cfg -L..\..\lib\\ -v -m test.map -vm -o test.nes test.o testmus.o ..\..\lib\\nsd.lib nes.lib 1>>comlog.txt		 2>>errlog.txt		

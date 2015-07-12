@@ -1,3 +1,4 @@
+path %path%;..\..\bin
 del buildlog.txt
 del errlog.txt
 del comlog.txt

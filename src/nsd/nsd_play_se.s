@@ -1,6 +1,12 @@
 ;=======================================================================
 ;
-;	NES Sound Driver Libraly		Library Functions
+;	NES Sound Driver & library (NSD.lib)	Library Functions
+;
+;-----------------------------------------------------------------------
+;
+;	Copyright (c) 2012 A.Watanabe (S.W.), All rights reserved.
+;	For conditions of distribution and use, see copyright notice
+;	  in "nsd.h" or "nsd.inc".
 ;
 ;=======================================================================
 
@@ -36,6 +42,12 @@
 ;=======================================================================
 .proc	_nsd_play_se: near
 
+	pha
+	lda	#nsd_flag::Disable
+	ora	__flag
+	sta	__flag			;サウンド処理禁止
+	pla
+
 	sta	__ptr
 	stx	__ptr + 1
 
@@ -44,9 +56,6 @@
 	jsr	_nsd_ptr_bank
 .endif
 
-	lda	#nsd_flag::Disable
-	ora	__flag
-	sta	__flag			;サウンド処理禁止
 
 	lda	__channel
 	pha				;BGMから呼ばれるので、保存しておく。

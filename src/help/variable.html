@@ -75,8 +75,8 @@ Zeropageに置かれる制御用変数（構造体）です。<br>
 		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
 <tr><td>__flag</td>
 	<td><code>D... ....</code> :	再生制御無効<br>
-		<code>..PP ....</code> :	効果音の優先度<br>
-		<code>.... J...</code> :	早送り中<br>
+		<code>...J ....</code> :	早送り中<br>
+		<code>.... PP..</code> :	効果音の優先度<br>
 		<code>.... ..S.</code> :	ＳＥ再生中<br>
 		<code>.... ...B</code> :	ＢＧＭが再生中	</td></tr>
 <tr><td>__Tempo</td>
@@ -95,9 +95,13 @@ Zeropageに置かれる制御用変数（構造体）です。<br>
 <tr><td>__Gate</td>
 	<td>現在の音符のゲートタイム</td></tr>
 <tr><td>__Envelop_V</td>
-	<td>音色・音量エンベロープのホールドタイム用のカウンタ</td></tr>
+	<td>エンベロープのホールドタイム用のカウンタ<br>
+		<code>iiii ....</code> :	音色<br>
+		<code>.... vvvv</code> :	音量</td></tr>
 <tr><td>__Envelop_F</td>
-	<td>音程・ノートエンベロープのホールドタイム用のカウンタ</td></tr>
+	<td>エンベロープのホールドタイム用のカウンタ<br>
+		<code>nnnn ....</code> :	ノート<br>
+		<code>.... ffff</code> :	音程</td></tr>
 </table>
 
 </div>
@@ -163,7 +167,8 @@ Zeropageに置かれる制御用変数（構造体）です。<br>
 <tr><td>__repeat_ctr2</td>
 	<td>リピートＢのカウンタ</td></tr>
 <tr><td>__volume</td>
-	<td>音量（v, Rvコマンドの数値）</td></tr>
+	<td><code>rrrr ....</code> :	リリース時の音量（Rvコマンドの数値）<br>
+		<code>.... vvvv</code> :	音量（vコマンドの数値）</td></tr>
 <tr><td>__env_vol_now</td>
 	<td>音量エンベロープの現在値</td></tr>
 <tr><td>__env_freq_now</td>
