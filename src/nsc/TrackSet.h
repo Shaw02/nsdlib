@@ -33,7 +33,7 @@ protected:
 				bool			fSE;		//SEかどうかのフラグ
 	unsigned	int				TrackPt;	//
 	unsigned	int				TrackLine;	//
-	unsigned	char			Priority;	//
+	unsigned	char			Priority;	//効果音優先順位
 //メンバー関数
 public:
 				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const _CHAR _strName[] = _T("==== [ Track Set ]===="));
@@ -53,28 +53,27 @@ public:
 
 		void	SetEvent(MusicItem* _item);		//イベントの追加
 
+		//----------------------------------
+		//曲全体に効くＭＭＬコマンド
+
+		//効果音の優先順位
+		void	Set_Priority(MMLfile* MML);
+
+		//早送り
 		void	SetJumpDrv(MMLfile* MML);
+
+		//テンポ操作
 		void	SetTempo(MMLfile* MML);
 		void	SetRelativeTempo(MMLfile* MML);
-		void	SetRelativeUp();
-		void	SetRelativeDown();
+		void	TempoUp();
+		void	TempoDown();
 
-		void	SetVolume(MMLfile* MML);
-		void	SetVolumeInc(MMLfile* MML);
-		void	SetVolumeDec(MMLfile* MML);
+		//レジスタ操作
+		void	Set_Poke(MMLfile* MML);				//メモリ書き込み
+		void	Set_VRC7_Write(MMLfile* MML);		//VRC7	レジスタ書き込み
 
-		void	SetReleaseMode(MMLfile* MML);
-		void	SetReleaseVoice(MMLfile* MML);
-		void	SetReleaseVolume(MMLfile* MML);
-
-		void	SetSweep(MMLfile* MML);
-
-		void	SetPoke(MMLfile* MML);
-		void	Set_FDS_Frequency(MMLfile* MML);
-		void	Set_FDS_Volume(MMLfile* MML);
-		void	SetVRC7_Write(MMLfile* MML);
-		void	SetN163Channel(MMLfile* MML);
-		void	Set_FME7_Frequency(MMLfile* MML);
-
-		void	SetPriority(MMLfile* MML);
+		void	Set_FDS_Frequency(MMLfile* MML);	//FDS	モジュレータ周波数
+		void	Set_FDS_Volume(MMLfile* MML);		//FDS	マスター音量
+		void	Set_N163_Channel(MMLfile* MML);		//N16x	チャンネル数
+		void	Set_FME7_Frequency(MMLfile* MML);	//SN5B	エンベロープ周波数
 };

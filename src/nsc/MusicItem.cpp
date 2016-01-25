@@ -145,7 +145,7 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 	//----------------------
 	//Local変数
 	list<	MusicItem*>::iterator	itItem;
-	int		i	=	0;
+	unsigned	int		i	=	0;
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x02){
@@ -179,12 +179,12 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 //	●返値
 //		unsigned	char	内容
 //==============================================================
-unsigned	char	MusicItem::getCode(int n)
+unsigned	char	MusicItem::getCode(unsigned int n)
 {
 	unsigned	char	iCode;
 	
 	if((n<0) || (n>iSize)){
-		iCode = -1;
+		iCode = 0xFF;
 	} else {
 		iCode = code[n];
 	}

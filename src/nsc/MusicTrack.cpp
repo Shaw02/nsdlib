@@ -139,7 +139,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS, unsigned int iLength)
 			if(offset_loop == offset_now){
 				iTickLoop = iTickTotal;
 			}
-			iCode		=	(*itItem)->getCode(0);
+			iCode		=	(*itItem)->getCode((unsigned int)0);
 			if((f_RepeatA == false) && (f_RepeatB == false)){
 				offset_now	+=	(*itItem)->getSize();
 			}
@@ -1024,7 +1024,7 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 				if(pt_itMusic != *it_it_repeat_c_e){
 					do{
 						pt_itMusic++;
-						cOpCode		=	(*pt_itMusic)->getCode(0);
+						cOpCode		=	(*pt_itMusic)->getCode((unsigned int)0);
 						sOpCode.clear();
 										(*pt_itMusic)->getCode(&sOpCode);
 						switch(cOpCode){
@@ -1155,7 +1155,10 @@ void	MusicTrack::SetSubroutine(unsigned int _no)
 	Reset_opt();
 }
 
-void	MusicTrack::SetSubWuthParch(unsigned int _no,bool _f)
+//==============================================================
+//		S	サブルーチン呼び出し（パッチから）
+//--------------------------------------------------------------
+void	MusicTrack::SetSubWithParch(unsigned int _no,bool _f)
 {
 	if((_no != iSub) || (f_opt_Sub == false) || (_f == true)){
 		iSub = _no;
@@ -1168,6 +1171,103 @@ void	MusicTrack::SetSubWuthParch(unsigned int _no,bool _f)
 		};
 	}
 }
+
+//==============================================================
+//		パッチ
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetPatch(MMLfile* MML)
+{
+	f_Patch = true;
+	i_Patch	= MML->GetInt();
+
+	if(MML->ChkPatch(i_Patch) == false){
+		MML->Err(_T("存在しないパッチです。"));
+	}
+}
+
+//--------------------------------------------------------------
+void	MusicTrack::SetPatch()
+{
+	f_Patch = false;
+}
+
+//==============================================================
+//		パッチの展開
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//		char		 _note	ノート番号
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::CallPatch(MMLfile* MML, char _note)
+{
+	if(f_Patch == true){
+		//ノート番号の設定
+		MML->ptcPatch[i_Patch]->setNote(_note);
+
+		if(	MML->ptcPatch[i_Patch]->get_fSub() == true){
+			SetSubWithParch(MML->ptcPatch[i_Patch]->get_iSub(), MML->ptcPatch[i_Patch]->get_fSub_opt());
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fGate_q() == true){
+			Set_q(MML->ptcPatch[i_Patch]->get_iGate_q());
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fGate_u() == true){
+			Set_u(MML->ptcPatch[i_Patch]->get_iGate_u());
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fSweep() == true){
+			SetSweep(MML->ptcPatch[i_Patch]->get_iSweep());
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fKey() == true){
+			SetTranspose(MML->ptcPatch[i_Patch]->get_iKey());
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fVoi() == true){
+			SetVoice(MML->ptcPatch[i_Patch]->get_iVoi());
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fEvoi() == true){
+			if(MML->ptcPatch[i_Patch]->get_sw_Evoi() == true){
+				SetEnvelop_Evoi(MML->ptcPatch[i_Patch]->get_iEvoi() + MML->offset_Ei);
+			}
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fEvol() == true){
+			if(MML->ptcPatch[i_Patch]->get_sw_Evol() == true){
+				SetEnvelop_Evol(MML->ptcPatch[i_Patch]->get_iEvol() + MML->offset_Ev);
+			} else {
+				SetEnvelop_Evol();
+			}
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fEm() == true){
+			if(MML->ptcPatch[i_Patch]->get_sw_Em() == true){
+				SetEnvelop_Em(MML->ptcPatch[i_Patch]->get_iEm() + MML->offset_Em);
+			} else {
+				SetEnvelop_Em();
+			}
+		}
+
+		if(	MML->ptcPatch[i_Patch]->get_fEn() == true){
+			if(MML->ptcPatch[i_Patch]->get_sw_En() == true){
+				SetEnvelop_En(MML->ptcPatch[i_Patch]->get_iEn() + MML->offset_En);
+			} else {
+				SetEnvelop_En();
+			}
+		}
+
+	}
+}
+
 //==============================================================
 //		E	エンベロープ設定
 //--------------------------------------------------------------
@@ -1176,19 +1276,6 @@ void	MusicTrack::SetSubWuthParch(unsigned int _no,bool _f)
 //	●返値
 //				無し
 //==============================================================
-/*
-void	MusicTrack::SetEnvelop(unsigned char _opcode, MMLfile* MML, int _offset)
-{
-	mml_Address*		_event = new mml_Address(_opcode, _T("Envelop"));
-	unsigned	int		_no = MML->GetInt() + _offset;
-
-	_event->set_id(_no);
-	SetEvent(_event);
-	ptcEnv.push_back(_event);
-}
-*/
-
-//--------------------------------------------------------------
 void	MusicTrack::SetEnvelop_Evoi(unsigned int _no)
 {
 	mml_Address*		_event;
@@ -1298,115 +1385,47 @@ void	MusicTrack::SetEnvelop_En()
 }
 
 //==============================================================
-//		音源固有パラメータ
+//		音源固有パラメータ（スイープ）
 //--------------------------------------------------------------
 //	●引数
-//		char	c	
+//		MMLfile*	MML		MMLファイルのオブジェクト
 //	●返値
-//				無し
+//		無し
 //==============================================================
-void	MusicTrack::SetSweep(unsigned char c)
+void	MusicTrack::SetSweep(MMLfile* MML)
 {
-	if((f_opt_Sweep == false) || ((unsigned char)iSweep != c)){
-		iSweep		= c;
+				int		iSpeed;
+				int		iDepth;
+	unsigned	char	cData;
+
+	iSpeed = MML->GetInt();
+
+	cData = MML->GetChar();
+	if(cData != ','){
+		if( (iSpeed < 0) || (iSpeed > 255) ){
+			MML->Err(_T("sコマンドは0～255の範囲で指定してください。"));
+		}
+		MML->Back();
+		SetSweep((unsigned char)iSpeed);
+	} else {
+		if( (iSpeed < 0) || (iSpeed > 15) ){
+			MML->Err(_T("sコマンドの第1パラメータは0～15の範囲で指定してください。"));
+		}
+		iDepth = MML->GetInt();
+		if( (iDepth < 0) || (iDepth > 15) ){
+			MML->Err(_T("sコマンドの第2パラメータは0～15の範囲で指定してください。"));
+		}
+		SetSweep((unsigned char)(((iSpeed & 0x0F) << 4) | (iDepth & 0x0F)));
+	}
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetSweep(unsigned char _c)
+{
+	//設定
+	if((f_opt_Sweep == false) || ((unsigned char)iSweep != _c)){
+		iSweep		= _c;
 		f_opt_Sweep	= true;		//最適化フラグ
-		SetEvent(new mml_general(nsd_Sweep, c, _T("Sweep")));
-	}
-}
-
-//==============================================================
-//		パッチ
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::SetPatch(MMLfile* MML)
-{
-	f_Patch = true;
-	i_Patch	= MML->GetInt();
-
-	if(MML->ChkPatch(i_Patch) == false){
-		MML->Err(_T("存在しないパッチです。"));
-	}
-}
-
-//--------------------------------------------------------------
-void	MusicTrack::SetPatch()
-{
-	f_Patch = false;
-}
-
-//==============================================================
-//		パッチの展開
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//		char		 _note	ノート番号
-//	●返値
-//				無し
-//==============================================================
-void	MusicTrack::CallPatch(MMLfile* MML, char _note)
-{
-	if(f_Patch == true){
-		//ノート番号の設定
-		MML->ptcPatch[i_Patch]->setNote(_note);
-
-		if(	MML->ptcPatch[i_Patch]->get_fSub() == true){
-			SetSubWuthParch(MML->ptcPatch[i_Patch]->get_iSub(), MML->ptcPatch[i_Patch]->get_fSub_opt());
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fGate_q() == true){
-			Set_q(MML->ptcPatch[i_Patch]->get_iGate_q());
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fGate_u() == true){
-			Set_u(MML->ptcPatch[i_Patch]->get_iGate_u());
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fSweep() == true){
-			SetSweep(MML->ptcPatch[i_Patch]->get_iSweep());
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fKey() == true){
-			SetTranspose(MML->ptcPatch[i_Patch]->get_iKey());
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fVoi() == true){
-			SetVoice(MML->ptcPatch[i_Patch]->get_iVoi());
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fEvoi() == true){
-			if(MML->ptcPatch[i_Patch]->get_sw_Evoi() == true){
-				SetEnvelop_Evoi(MML->ptcPatch[i_Patch]->get_iEvoi() + MML->offset_Ei);
-			}
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fEvol() == true){
-			if(MML->ptcPatch[i_Patch]->get_sw_Evol() == true){
-				SetEnvelop_Evol(MML->ptcPatch[i_Patch]->get_iEvol() + MML->offset_Ev);
-			} else {
-				SetEnvelop_Evol();
-			}
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fEm() == true){
-			if(MML->ptcPatch[i_Patch]->get_sw_Em() == true){
-				SetEnvelop_Em(MML->ptcPatch[i_Patch]->get_iEm() + MML->offset_Em);
-			} else {
-				SetEnvelop_Em();
-			}
-		}
-
-		if(	MML->ptcPatch[i_Patch]->get_fEn() == true){
-			if(MML->ptcPatch[i_Patch]->get_sw_En() == true){
-				SetEnvelop_En(MML->ptcPatch[i_Patch]->get_iEn() + MML->offset_En);
-			} else {
-				SetEnvelop_En();
-			}
-		}
-
+		SetEvent(new mml_general(nsd_Sweep, _c, _T("Sweep")));
 	}
 }
 
@@ -1675,6 +1694,74 @@ void	MusicTrack::SetGatetime_u(MMLfile* MML)
 		i = MML->GetLength(-1);
 	}
 	Set_u(i);
+}
+
+//==============================================================
+//		リリースモード
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetReleaseMode(MMLfile* MML)
+{
+	mml_general*	_event;
+				int	i = MML->GetInt();
+
+	switch(i){
+		case(0):
+			_event = new mml_general(nsd_GateMode_0,  _T("GateMode 0"));
+			break;
+		case(1):
+			_event = new mml_general(nsd_GateMode_1,  _T("GateMode 1"));
+			break;
+		case(2):
+			_event = new mml_general(nsd_GateMode_2,  _T("GateMode 2"));
+			break;
+		default:
+			MML->Err(_T("リリースモードは0～2の範囲で指定してください。"));
+			break;
+	}
+	SetEvent(_event);
+}
+
+//==============================================================
+//		リリース音色
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetReleaseVoice(MMLfile* MML)
+{
+	int	i = MML->GetInt();
+
+	if( (i <= 7) && (i >= 0) ){
+		SetEvent(new mml_general(nsd_Release_Voice + (unsigned char)i, _T("Release Voice")));
+	} else {
+		MML->Err(_T("リリース音色は0～7の範囲で指定してください。"));
+	}
+}
+
+//==============================================================
+//		リリース音量
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetReleaseVolume(MMLfile* MML)
+{
+	int	i = MML->GetInt();
+
+	if( (i <= 15) && (i >= 0) ){
+		SetEvent(new mml_general(nsd_Release_Volume + (unsigned char)i, _T("Release Volume")));
+	} else {
+		MML->Err(_T("音量は0～15の範囲で指定してください。"));
+	}
 }
 
 //==============================================================
@@ -2701,7 +2788,6 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 	//疑似エコーのバッファ書き込み
 	pt_oldNote++;
 	oldNote[pt_oldNote]	= _note_no;
-	octave1_old			= octave1;
 	octave1				= 0;
 
 	echo_already		= false;
@@ -3233,7 +3319,7 @@ void	MusicTrack::SetTranspose(int _no)
 	if((iTranspose != _no) || (f_opt_Key == false)){
 		f_opt_Key	= true;
 		iTranspose	= _no;
-		SetEvent(new mml_general(nsd_Transpose, iTranspose, _T("Transpose")));
+		SetEvent(new mml_general(nsd_Transpose, (char)iTranspose, _T("Transpose")));
 	}
 }
 
@@ -3248,7 +3334,7 @@ void	MusicTrack::SetTranspose(int _no)
 void	MusicTrack::SetTranspose_Relative(int _no)
 {
 	iTranspose += _no;
-	SetEvent(new mml_general(nsd_Relative_Transpose, _no, _T("Relative Transpose")));
+	SetEvent(new mml_general(nsd_Relative_Transpose, (char)_no, _T("Relative Transpose")));
 }
 
 //==============================================================
@@ -3261,7 +3347,7 @@ void	MusicTrack::SetTranspose_Relative(int _no)
 //==============================================================
 void	MusicTrack::SetOctave(MMLfile* MML)
 {
-	octave = MML->GetInt() - 1;
+	octave = (char)(MML->GetInt() - 1);
 
 	if( (octave <= 7) && (octave >=0) ){
 		if(opt_octave != octave){
@@ -3315,4 +3401,84 @@ void	MusicTrack::SetOctaveOne_Dec()
 	}
 }
 
+//==============================================================
+//		音量
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//		無し
+//==============================================================
+void	MusicTrack::SetVolume(MMLfile* MML)
+{
+	int	i = MML->GetInt();
 
+	if( (i <= 15) && (i >= 0) ){
+		if(opt_volume != i){
+			volume			= (char)i;
+			opt_volume		= volume;
+			echo_vol_ret	= false;
+			SetEvent(new mml_general(nsd_Volume + volume, _T("Volume")));
+		}
+	} else {
+		MML->Err(_T("音量は0～15の範囲で指定してください。"));
+	}
+}
+
+//------
+void	MusicTrack::SetVolumeInc(MMLfile* MML)
+{
+	unsigned	char	cData = MML->GetChar();
+				int		iValue;
+
+	if((cData >= '0') && (cData <= '9')){
+		MML->Back();
+		iValue = MML->GetInt();
+	} else {
+		MML->Back();
+		iValue = 1;
+	}
+
+	EchoVolRet();
+
+	while(iValue > 0){
+		SetEvent(new mml_general(nsd_Volume_Up, _T("Volume up")));
+		volume++;
+		iValue--;
+	}
+	if(volume>15){
+		volume = 15;
+	}
+	if(opt_volume != -1){
+		opt_volume = volume;
+	}
+}
+
+//------
+void	MusicTrack::SetVolumeDec(MMLfile* MML)
+{
+	unsigned	char	cData = MML->GetChar();
+				int		iValue;
+
+	if((cData >= '0') && (cData <= '9')){
+		MML->Back();
+		iValue = MML->GetInt();
+	} else {
+		MML->Back();
+		iValue = 1;
+	}
+
+	EchoVolRet();
+
+	while(iValue > 0){
+		SetEvent(new mml_general(nsd_Volume_Down, _T("Volume down")));
+		volume--;
+		iValue--;
+	}
+	if(volume<0){
+		volume = 0;
+	}
+	if(opt_volume != -1){
+		opt_volume = volume;
+	}
+}

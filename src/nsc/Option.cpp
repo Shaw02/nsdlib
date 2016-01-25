@@ -44,6 +44,7 @@ OPSW::OPSW(int argc, char* argv[]):
 
 	//----------------------------------
 	//■Local 変数
+	
 	int		iCount;				//whileのカウント用
 	int		iResult;			//汎用
 

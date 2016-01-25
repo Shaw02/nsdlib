@@ -71,23 +71,24 @@ int	main(int argc, char* argv[])
 	MMLfile			*cMML	= NULL;
     MusicFile		*cSND	= NULL;
 
-	try {
 
 #ifdef	_WIN32
-		locale::global(std::locale(""));
+	locale::global(std::locale(""));
 #else
-//		setlocale(LC_ALL, "ja_JP.UTF-8");
-		setlocale(LC_ALL, "");
+//	setlocale(LC_ALL, "ja_JP.UTF-8");
+	setlocale(LC_ALL, "");
 #endif
 
 
-//		locale::global(std::locale(""));	//g++ だと、ランタイム エラーになる。
+//	locale::global(std::locale(""));	//g++ だと、ランタイム エラーになる。
 
 
+	try {
 		//==================================
 		_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
-					_T("    Version 1.27\n")
+					_T("    Version 1.26\n")
 					_T("        Copyright (c) 2012-2015 S.W.\n")	<<	endl;
+
 
 
 		//==================================

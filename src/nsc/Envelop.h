@@ -34,8 +34,9 @@ private:
 public:
 				Envelop(MMLfile* MML, unsigned int _id, const _CHAR _strName[] = _T("Envelope"));
 				~Envelop(void);
+		void	SetLoop(MMLfile* MML, int LoopPoint);
 		void	setHold(int length);
-		void	sweep(MMLfile* MML);
+		int		sweep(MMLfile* MML);
 		void	setUse(void){f_Use = true;};
 		bool	chkUse(void){return(f_Use);};
 		void	getAsm(MusicFile* MUS);

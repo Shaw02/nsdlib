@@ -289,7 +289,7 @@ Detune:
 	bne	V_Envelope		;nsd_key_off()ä÷êîÇ≈Ç‚ÇÈÅB
 
 Mode1:	;-----------------------
-	;Release Mode
+	;Release Mode	(Mode 1)
 
 	cpx	#nsd::TR_BGM3
 	beq	Exit
@@ -319,6 +319,10 @@ Mode1:	;-----------------------
 
 Exit:	rts
 
+
+
+	;-----------------------
+	;Envelope mode	(Mode2&3)
 V_Envelope:
 
 	;-------------------------------

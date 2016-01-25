@@ -531,11 +531,11 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Tempo_Up):
-				SetRelativeUp();
+				TempoUp();
 				break;
 
 			case(mml_Tempo_Down):
-				SetRelativeDown();
+				TempoDown();
 				break;
 
 			case(mml_La):
@@ -702,15 +702,15 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Release_mdoe):
-				SetReleaseMode(MML);
+				nowTrack->SetReleaseMode(MML);
 				break;
 
 			case(mml_Release_Voice):
-				SetReleaseVoice(MML);
+				nowTrack->SetReleaseVoice(MML);
 				break;
 
 			case(mml_Release_Volume):
-				SetReleaseVolume(MML);
+				nowTrack->SetReleaseVolume(MML);
 				break;
 
 			case(mml_Voice):
@@ -751,7 +751,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_N163_Channel):
-				SetN163Channel(MML);
+				Set_N163_Channel(MML);
 				break;
 
 			case(mml_FME7_frequency):
@@ -795,11 +795,11 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Detune_Cent_Relative):
-				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Detune_Cent, MML->GetInt(), _T("Relative Detune Cent")));
+				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Detune_Cent, (char)MML->GetInt(), _T("Relative Detune Cent")));
 				break;
 
 			case(mml_Detune_Register_Relative):
-				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Derune_Register, MML->GetInt(), _T("Relative Detune Register")));
+				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Derune_Register, (char)MML->GetInt(), _T("Relative Detune Register")));
 				break;
 	
 			case(mml_Transpose):
@@ -829,35 +829,35 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Protament2):
-				nowTrack->SetProtament(MML, iTempo);
+				nowTrack->SetProtament(MML, (unsigned char)iTempo);
 				break;
 
 			case(mml_Sweep):
-				SetSweep(MML);
+				nowTrack->SetSweep(MML);
 				break;
 
 			case(mml_Volume):
-				SetVolume(MML);
+				nowTrack->SetVolume(MML);
 				break;
 
 			case(mml_Volume_Up):
-				SetVolumeInc(MML);
+				nowTrack->SetVolumeInc(MML);
 				break;
 
 			case(mml_Volume_Down):
-				SetVolumeDec(MML);
+				nowTrack->SetVolumeDec(MML);
 				break;
 
 			case(mml_VRC7_Write):
-				SetVRC7_Write(MML);
+				Set_VRC7_Write(MML);
 				break;
 
 			case(mml_Memory_Write):
-				SetPoke(MML);
+				Set_Poke(MML);
 				break;
 
 			case(mml_Priority):
-				SetPriority(MML);
+				Set_Priority(MML);
 				break;
 
 			case(mml_Bar):
@@ -1222,6 +1222,31 @@ void	TrackSet::SetEvent(MusicItem* _item)
 }
 
 //==============================================================
+//			効果音優先度設定
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::Set_Priority(MMLfile* MML)
+{
+	int	i = MML->GetInt();
+
+	//se?
+	if(fSE == false){
+		MML->Warning(_T("SEブロック以外では優先度指定はできません。無視します。"));
+	} else {
+		if( (i <= 3) && (i >=0) ){
+			Priority = (char)i;
+		} else {
+			MML->Err(_T("効果音の優先度は、は0～3の範囲で指定して下さい。"));
+		}
+	}
+
+}
+
+//==============================================================
 //		ジャンプ
 //--------------------------------------------------------------
 //	●引数
@@ -1243,11 +1268,10 @@ void	TrackSet::SetJumpDrv(MMLfile* MML)
 		default:
 			MML->Err(_T("jコマンドが指定可能な範囲を超えました。"));
 	}
-
 }
 
 //==============================================================
-//		オクターブ
+//		テンポ
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
@@ -1267,7 +1291,7 @@ void	TrackSet::SetTempo(MMLfile* MML)
 }
 
 //==============================================================
-//		オクターブ
+//		相対テンポ
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
@@ -1285,14 +1309,14 @@ void	TrackSet::SetRelativeTempo(MMLfile* MML)
 }
 
 //==============================================================
-//		オクターブ
+//		テンポアップ
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
 //	●返値
 //		無し
 //==============================================================
-void	TrackSet::SetRelativeUp()
+void	TrackSet::TempoUp()
 {
 	iTempo += 4;
 
@@ -1301,14 +1325,14 @@ void	TrackSet::SetRelativeUp()
 }
 
 //==============================================================
-//		オクターブ
+//		テンポダウン
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
 //	●返値
 //		無し
 //==============================================================
-void	TrackSet::SetRelativeDown()
+void	TrackSet::TempoDown()
 {
 	iTempo -= 4;
 
@@ -1317,190 +1341,17 @@ void	TrackSet::SetRelativeDown()
 }
 
 //==============================================================
-//		音量
+//		アドレス指定の書込み
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
 //	●返値
 //		無し
 //==============================================================
-void	TrackSet::SetVolume(MMLfile* MML)
+void	TrackSet::Set_Poke(MMLfile* MML)
 {
-	int	i = MML->GetInt();
-
-	if( (i <= 15) && (i >= 0) ){
-		if(nowTrack->Get_opt_volume() != i){
-			SetEvent(new mml_general(nsd_Volume + (unsigned char)i, _T("Volume")));
-			nowTrack->SetVolume((unsigned char)i);
-		}
-	} else {
-		MML->Err(_T("音量は0～15の範囲で指定してください。"));
-	}
-}
-
-//------
-void	TrackSet::SetVolumeInc(MMLfile* MML)
-{
-	unsigned	char	cData = MML->GetChar();
-				int		iValue;
-
-	if((cData >= '0') && (cData <= '9')){
-		MML->Back();
-		iValue = MML->GetInt();
-	} else {
-		MML->Back();
-		iValue = 1;
-	}
-
-	nowTrack->EchoVolRet();
-
-	while(iValue > 0){
-		SetEvent(new mml_general(nsd_Volume_Up, _T("Volume up")));
-		nowTrack->IncVolume();
-		iValue--;
-	}
-}
-
-//------
-void	TrackSet::SetVolumeDec(MMLfile* MML)
-{
-	unsigned	char	cData = MML->GetChar();
-				int		iValue;
-
-	if((cData >= '0') && (cData <= '9')){
-		MML->Back();
-		iValue = MML->GetInt();
-	} else {
-		MML->Back();
-		iValue = 1;
-	}
-
-	nowTrack->EchoVolRet();
-
-	while(iValue > 0){
-		SetEvent(new mml_general(nsd_Volume_Down, _T("Volume down")));
-		nowTrack->DecVolume();
-		iValue--;
-	}
-}
-
-//==============================================================
-//		リリースモード
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetReleaseMode(MMLfile* MML)
-{
-	mml_general*	_event;
-				int	i = MML->GetInt();
-
-	switch(i){
-		case(0):
-			_event = new mml_general(nsd_GateMode_0,  _T("GateMode 0"));
-			break;
-		case(1):
-			_event = new mml_general(nsd_GateMode_1,  _T("GateMode 1"));
-			break;
-		case(2):
-			_event = new mml_general(nsd_GateMode_2,  _T("GateMode 2"));
-			break;
-		default:
-			MML->Err(_T("リリースモードは0～2の範囲で指定してください。"));
-			break;
-	}
-	SetEvent(_event);
-}
-
-//==============================================================
-//		リリース音色
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetReleaseVoice(MMLfile* MML)
-{
-	int	i = MML->GetInt();
-
-	if( (i <= 7) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Release_Voice + (unsigned char)i, _T("Release Voice")));
-	} else {
-		MML->Err(_T("リリース音色は0～7の範囲で指定してください。"));
-	}
-}
-
-//==============================================================
-//		リリース音量
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetReleaseVolume(MMLfile* MML)
-{
-	int	i = MML->GetInt();
-
-	if( (i <= 15) && (i >= 0) ){
-		SetEvent(new mml_general(nsd_Release_Volume + (unsigned char)i, _T("Release Volume")));
-	} else {
-		MML->Err(_T("音量は0～15の範囲で指定してください。"));
-	}
-}
-
-//==============================================================
-//		スイープ
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetSweep(MMLfile* MML)
-{
-				int		iSpeed;
-				int		iDepth;
-	unsigned	char	_data;
-	unsigned	char	cData;
-
-	iSpeed = MML->GetInt();
-
-	cData = MML->GetChar();
-	if(cData != ','){
-		if( (iSpeed < 0) || (iSpeed > 255) ){
-			MML->Err(_T("sコマンドは0～255の範囲で指定してください。"));
-		}
-		MML->Back();
-		_data = (unsigned char)iSpeed;
-	} else {
-		if( (iSpeed < 0) || (iSpeed > 15) ){
-			MML->Err(_T("sコマンドの第1パラメータは0～15の範囲で指定してください。"));
-		}
-		iDepth = MML->GetInt();
-		if( (iDepth < 0) || (iDepth > 15) ){
-			MML->Err(_T("sコマンドの第2パラメータは0～15の範囲で指定してください。"));
-		}
-		_data = (unsigned char)(((iSpeed & 0x0F) << 4) | (iDepth & 0x0F));
-	}
-	nowTrack->SetSweep(_data);
-}
-
-//==============================================================
-//		
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//		無し
-//==============================================================
-void	TrackSet::SetPoke(MMLfile* MML)
-{
-	unsigned	int	addr;
-	unsigned	int	data;
+	unsigned	int		addr;
+	unsigned	int		data;
 	unsigned	char	cData;
 
 	addr = MML->GetInt();
@@ -1561,14 +1412,14 @@ void	TrackSet::Set_FDS_Volume(MMLfile* MML)
 }
 
 //==============================================================
-//		
+//		VRC7	レジスタ書き込み
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
 //	●返値
 //		無し
 //==============================================================
-void	TrackSet::SetVRC7_Write(MMLfile* MML)
+void	TrackSet::Set_VRC7_Write(MMLfile* MML)
 {
 	unsigned	char	cData;
 
@@ -1582,7 +1433,7 @@ void	TrackSet::SetVRC7_Write(MMLfile* MML)
 
 	cData = MML->GetChar();
 	if(cData != ','){
-		MML->Err(_T("P コマンドのパラメータが足りません。４つ指定してください。"));
+		MML->Err(_T("yV コマンドのパラメータが足りません。２つ指定してください。"));
 	}
 
 	_Dat = MML->GetInt();
@@ -1601,7 +1452,7 @@ void	TrackSet::SetVRC7_Write(MMLfile* MML)
 //	●返値
 //				無し
 //==============================================================
-void	TrackSet::SetN163Channel(MMLfile* MML)
+void	TrackSet::Set_N163_Channel(MMLfile* MML)
 {
 	int	i = MML->GetInt();
 
@@ -1632,29 +1483,4 @@ void	TrackSet::Set_FME7_Frequency(MMLfile* MML)
 	} else {
 		MML->Err(_T("SUNSOFT 5bのハードウェアエンベロープ周波数は0～65535の範囲で指定して下さい。"));
 	}
-}
-
-//==============================================================
-//			効果音優先度設定
-//--------------------------------------------------------------
-//	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	TrackSet::SetPriority(MMLfile* MML)
-{
-	int	i = MML->GetInt();
-
-	//se?
-	if(fSE == false){
-		MML->Warning(_T("SEブロック以外では優先度指定はできません。無視します。"));
-	} else {
-		if( (i <= 3) && (i >=0) ){
-			Priority = (char)i;
-		} else {
-			MML->Err(_T("効果音の優先度は、は0～3の範囲で指定して下さい。"));
-		}
-	}
-
 }

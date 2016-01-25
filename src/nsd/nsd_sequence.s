@@ -681,6 +681,12 @@ Calc_Note_Number:
 	and	#<~nsd_chflag::KeyOff
 	ora	__tmp
 	sta	__chflag,x
+
+	and	#$01			;●●●　最適化　●●●
+	beq	@Exit			;gatemode = 1 だったら、
+	lda	__gatemode,x		;ここでKeyOff時の音色にする。
+	shr	a, 4			; a = release voice
+	jmp	_nsd_snd_voice		;
 @Exit:
 	;0x0C		[Rest mode 3]
 	rts

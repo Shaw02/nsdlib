@@ -43,7 +43,7 @@ public:
 	unsigned	int		getOffset();
 	unsigned	int		SetOffset(unsigned	int	_offset);
 
-	unsigned	char	getCode(int n);
+	unsigned	char	getCode(unsigned int n);
 	virtual		void	getCode(string* _str);
 	virtual		void	setCode(string* _str);
 	virtual		void	getAsm(MusicFile* MUS);

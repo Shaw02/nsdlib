@@ -79,6 +79,9 @@ const	static	Command_Info	Command[] = {
 	unsigned	char	cData;
 				int		i;
 
+				int		iValue	=255;	//今の設定値
+				int		iLength	=0;		//ランレングス圧縮用
+
 	//------------------------------
 	//クラスの初期設定
 
@@ -123,12 +126,27 @@ const	static	Command_Info	Command[] = {
 				if( (i<-64) || (i>127)){
 					MML->Err(_T("エンベロープは-64～127の範囲で指定して下さい。"));
 				}
-				code.append((char)1, (char)i & 0x7F);
-				ptEnvelop++;
+
+				if(iValue == i){
+					iLength++;		//同じだったら、ランレングス圧縮する
+				} else {
+					if(iLength>0){
+						setHold(iLength-1);	//今までの時間を加算する。
+						iLength	= 0;		//ランレングス圧縮初期化
+					}
+					iValue	= i;
+
+					code.append((char)1, (char)i & 0x7F);
+					ptEnvelop++;
+				}
 				break;
 
 			case(Env_Sweep):
-				sweep(MML);
+				if(iLength>0){
+					setHold(iLength-1);
+					iLength	= 0;	//ランレングス圧縮初期化
+				}
+				iValue = sweep(MML);
 				break;
 
 			case(Env_Hold):
@@ -136,31 +154,36 @@ const	static	Command_Info	Command[] = {
 				if( (i<0) || (i>255)){
 					MML->Err(_T("維持時間は0～255の範囲で指定して下さい。"));
 				}
-				setHold(i);
+			//	setHold(i + iLength);	//今までの時間を加算する。
+				iLength += i+1;			//ランレングスに加算する。
 				break;
 
 			case(Env_Loop):
-				if(ptEnvelop > 0x3F){
-					MML->Err(_T("ループ位置を指定できる範囲を超えました。"));
+				iValue	=255;			//ランレングス圧縮初期化
+				if(iLength>0){
+					setHold(iLength-1);	//ホールド時間出力
+					iLength	= 0;		//ランレングス圧縮初期化
 				}
 				if(Release == false){
+					if(ptEnvelop > 0x3F){
+						MML->Err(_T("ループ位置を指定できる範囲(64Byte)を超えました。"));
+					}
 					Loop_Normal		= ptEnvelop;
 				} else {
+					if(ptEnvelop > 0x3F){
+						MML->Err(_T("リリース時のループ位置を指定できる範囲(64Byte)を超えました。"));
+					}
 					Loop_Release	= ptEnvelop;
 				}
 				break;
 
 			case(Env_Release):
-				if(Loop_Normal == -1){
-					MML->Warning(_T("ループポイントがありません。最後の値をループします。"));
-					code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
-				} else {
-					if(ptEnvelop == Loop_Normal){
-						MML->Err(_T("Lコマンドの直後にRコマンドを置くことはできません。"));
-					}
-					code.append((char)1, (char)(Loop_Normal | 0xC0));
+				iValue	=255;			//ランレングス圧縮初期化
+				if(iLength>0){
+					setHold(iLength-1);	//ホールド時間出力
+					iLength	= 0;		//ランレングス圧縮初期化
 				}
-				ptEnvelop++;
+				SetLoop(MML, Loop_Normal);
 				code[0] = (unsigned char)ptEnvelop;
 				Release = true;
 				break;
@@ -175,35 +198,48 @@ const	static	Command_Info	Command[] = {
 		}
 	}
 
+	iValue	=255;			//ランレングス圧縮初期化
+	if(iLength>0){
+		setHold(iLength-1);	//ホールド時間出力
+		iLength	= 0;		//ランレングス圧縮初期化
+	}
+
 	if(Release == true){
-		if(Loop_Release == -1){
-			MML->Warning(_T("リリース時のループポイントがありません。最後の値をループします。"));
-			code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
-		} else {
-			if(ptEnvelop == Loop_Release){
-				MML->Err(_T("Lコマンドでパターン定義を終わることはできません。"));
-			}
-			code.append((char)1, (char)(Loop_Release | 0xC0));
-		}
+		SetLoop(MML, Loop_Release);
 	} else {
-		if(Loop_Normal == -1){
-			MML->Warning(_T("ループポイントがありません。最後の値をループします。"));
-			code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
-		} else {
-			if(ptEnvelop == Loop_Normal){
-				MML->Err(_T("Lコマンドでパターン定義を終わることはできません。"));
-			}
-			code.append((char)1, (char)(Loop_Normal | 0xC0));
-		}
+		SetLoop(MML, Loop_Normal);
 	}
 
 	if(code.size() > 256){
-		MML->Err(_T("エンベロープの定義長が256Byteを越えました。"));
+		MML->Err(_T("エンベロープの定義長が255Byteを越えました。"));
 	}
 
 	iSize = code.size();
 }
 
+void Envelop::SetLoop(MMLfile* MML, int LoopPoint)
+{
+	if(LoopPoint == -1){
+		if(Release == true){
+			MML->Warning(_T("リリース時のループポイントがありません。最後の値をループします。"));
+			if(ptEnvelop > 0x3F){
+				MML->Err(_T("リリース時のループ位置を指定できる範囲(63Byte)を超えました。"));
+			}
+		} else {
+			MML->Warning(_T("ループポイントがありません。最後の値をループします。"));
+			if(ptEnvelop > 0x3F){
+				MML->Err(_T("ループ位置を指定できる範囲(63Byte)を超えました。"));
+			}
+		}
+		code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
+	} else {
+		if(ptEnvelop == Loop_Normal){
+			MML->Err(_T("Lコマンドでパターン定義を終わることはできません。"));
+		}
+		code.append((char)1, (char)(LoopPoint | 0xC0));
+	}
+	ptEnvelop++;
+}
 //==============================================================
 //		デストラクタ
 //--------------------------------------------------------------
@@ -243,7 +279,7 @@ void	Envelop::setHold(int length)
 //	●返値
 //				無し
 //==============================================================
-void	Envelop::sweep(MMLfile* MML)
+int	Envelop::sweep(MMLfile* MML)
 {
 	unsigned	char	cData;
 
@@ -321,7 +357,7 @@ void	Envelop::sweep(MMLfile* MML)
 	if(cnt>=1){
 		setHold(cnt-1);
 	}
-
+	return(now);
 }
 
 //==============================================================

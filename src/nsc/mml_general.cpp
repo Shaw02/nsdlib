@@ -62,7 +62,7 @@ mml_general::mml_general(unsigned char _code, MMLfile* MML, const _CHAR _strName
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-mml_general::mml_general(unsigned char _code, const char _data, const _CHAR _strName[]):
+mml_general::mml_general(unsigned char _code, char _data, const _CHAR _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 2;
@@ -82,7 +82,7 @@ mml_general::mml_general(unsigned char _code, const char _data, const _CHAR _str
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, const _CHAR _strName[]):
+mml_general::mml_general(unsigned char _code, char _n1, char _n2, const _CHAR _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 3;
@@ -105,7 +105,7 @@ mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, co
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-mml_general::mml_general(unsigned char _code, const char _n1, const char _n2, const char _n3, const char _n4, const _CHAR _strName[]):
+mml_general::mml_general(unsigned char _code, char _n1, char _n2, char _n3, char _n4, const _CHAR _strName[]):
 	MusicEvent(_strName)
 {
 	iSize = 5;

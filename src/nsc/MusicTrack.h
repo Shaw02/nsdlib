@@ -38,12 +38,12 @@ private:
 				int		opt_DefaultLength;
 	
 	//----------------------------------
-	//オクターブ
-				char	octave;					//現在のオクターブ
-				int		opt_octave;
-
-				char	octave1;				//一次オークターブ
-				char	octave1_old;			//一次オークターブ（疑似エコーのオクターブ計算用）
+	//クオンタイズ
+				int		QMax;					//QMax
+				int		gatetime_q;				//q
+				int		gatetime_Q;				//Q
+				int		opt_gatetime_q;			//
+				int		opt_gatetime_u;			//
 
 	//----------------------------------
 	//音量
@@ -51,12 +51,10 @@ private:
 				int		opt_volume;
 
 	//----------------------------------
-	//クオンタイズ
-				int		QMax;					//QMax
-				int		gatetime_q;				//q
-				int		gatetime_Q;				//Q
-				int		opt_gatetime_q;			//
-				int		opt_gatetime_u;			//
+	//オクターブ
+				char	octave;					//現在のオクターブ
+				char	octave1;				//一次的な相対オクターブ　計算用
+				int		opt_octave;
 
 	//----------------------------------
 	//ノート
@@ -92,30 +90,30 @@ private:
 				bool	f_Patch;				//パッチ処理中？
 	unsigned	int		i_Patch;
 
-	//設定数値
-	unsigned	int		iVoi;		//
-	unsigned	int		iEvoi;		//
-	unsigned	int		iEvol;		//
-	unsigned	int		iEm;		//
-	unsigned	int		iEn;		//
-	unsigned	char	iSweep;		//
-	unsigned	int		iSub;		//サブルーチン用
+	//現在の状態（設定数値）
+	unsigned	int		iVoi;			//
+	unsigned	int		iEvoi;			//
+	unsigned	int		iEvol;			//
+	unsigned	int		iEm;			//
+	unsigned	int		iEn;			//
+	unsigned	char	iSweep;			//
+	unsigned	int		iSub;			//サブルーチン用
 
-	//エンベロープのsw
-				bool	sw_Evoi;	//
-				bool	sw_Evol;	//
-				bool	sw_Em;		//
-				bool	sw_En;		//
+	//現在の状態（エンベロープのsw）
+				bool	sw_Evoi;		//
+				bool	sw_Evol;		//
+				bool	sw_Em;			//
+				bool	sw_En;			//
 
 	//設定するかどうか（defailt = false）
-				bool	f_opt_Voi;	//
-				bool	f_opt_Evoi;	//
-				bool	f_opt_Evol;	//
-				bool	f_opt_Em;	//
-				bool	f_opt_En;	//
-				bool	f_opt_Key;	//
+				bool	f_opt_Voi;		//
+				bool	f_opt_Evoi;		//
+				bool	f_opt_Evol;		//
+				bool	f_opt_Em;		//
+				bool	f_opt_En;		//
+				bool	f_opt_Key;		//
 				bool	f_opt_Sweep;	//
-				bool	f_opt_Sub;	//サブルーチン（パッチ用）
+				bool	f_opt_Sub;		//サブルーチン（パッチ用）
 
 	//----------------------------------
 	//無限ループ
@@ -170,12 +168,16 @@ public:
 				void	Fix_Address(MusicFile* MUS);
 				void	SetEvent(MusicItem* _item);		//イベントの追加
 
+				//このトラックをコンパイルするかどうか
 				bool	GetCompileFlag(void){return(compile_flag);};
 				void	SetCompileFlag(bool _flag){compile_flag = _flag;};
-				void	SetJump(MMLfile* MML);
 
-				size_t	SetEnd(MMLfile* MML);
-				void	SetLoop();
+				//----------------------------------
+				//このトラックにだけ効くＭＭＬコマンド
+				size_t	SetEnd(MMLfile* MML);			//記述ブロック終了
+				void	SetLoop();						//無限ループ
+
+				void	SetJump(MMLfile* MML);			//ジャンプ
 
 				void	SetRepeat_Start(MMLfile* MML);
 				void	SetRepeat_End(MMLfile* MML);
@@ -194,34 +196,40 @@ public:
 
 				void	SetSE(MMLfile* MML);
 				void	SetSubroutine(unsigned int _no);
-				void	SetSubWuthParch(unsigned int _no,bool _f);
-			//	void	SetEnvelop(unsigned char _opcode, MMLfile* MML, int _offset);
-				void	SetEnvelop_Evoi(unsigned int _no);
-				void	SetEnvelop_Evol(unsigned int _no);
-				void	SetEnvelop_Em(unsigned int _no);
-				void	SetEnvelop_En(unsigned int _no);
-				void	SetVoice(unsigned int _no);	//E@ off
-				void	SetEnvelop_Evol();		//Ev off
-				void	SetEnvelop_Em();		//Em off
-				void	SetEnvelop_En();		//En off
-				void	SetSweep(unsigned char c);
+				void	SetSubWithParch(unsigned int _no,bool _f);
 
 				void	SetPatch(MMLfile* MML);	
 				void	SetPatch();				//@P off
 				void	CallPatch(MMLfile* MML, char _note);
 
-				void	SetFDSC(MMLfile* MML);
-				void	SetFDSM(MMLfile* MML);
-				void	SetVRC7(MMLfile* MML);
-				void	SetN163(MMLfile* MML);
-				void	SetN163_Load(MMLfile* MML);
-				void	SetN163_Set(MMLfile* MML);
+				void	SetEnvelop_Evoi(unsigned int _no);
+				void	SetEnvelop_Evol(unsigned int _no);
+				void	SetEnvelop_Em(unsigned int _no);
+				void	SetEnvelop_En(unsigned int _no);
+				void	SetVoice(unsigned int _no);		//E@ off
+				void	SetEnvelop_Evol();				//Ev off
+				void	SetEnvelop_Em();				//Em off
+				void	SetEnvelop_En();				//En off
+
+				void	SetSweep(MMLfile* MML);
+				void	SetSweep(unsigned char _c);
+
+				void	SetFDSC(MMLfile* MML);			//@FC
+				void	SetFDSM(MMLfile* MML);			//@FM
+				void	SetVRC7(MMLfile* MML);			//@V
+				void	SetN163(MMLfile* MML);			//@N
+				void	SetN163_Load(MMLfile* MML);		//@NL
+				void	SetN163_Set(MMLfile* MML);		//@NS
 
 				void	Set_q(int i);
 				void	Set_u(int i);
 				void	SetGatetime_Q(MMLfile* MML);
 				void	SetGatetime(MMLfile* MML);
 				void	SetGatetime_u(MMLfile* MML);
+
+				void	SetReleaseMode(MMLfile* MML);
+				void	SetReleaseVoice(MMLfile* MML);
+				void	SetReleaseVolume(MMLfile* MML);
 
 				void	SetKeyFlag(char _c, char _d, char _e, char _f, char _g, char _a, char _b);
 				void	SetKey(int _key, int _scale);
@@ -264,10 +272,9 @@ public:
 				void	SetOctaveOne_Inc();
 				void	SetOctaveOne_Dec();
 		
-				void	SetVolume(char _v){volume = _v;	opt_volume = volume; echo_vol_ret=false;};
-				void	IncVolume(void){	volume++;	if(volume>15){volume = 15;}	if(opt_volume != -1){opt_volume = volume;}	};
-				void	DecVolume(void){	volume--;	if(volume<0){volume = 0;}	if(opt_volume != -1){opt_volume = volume;}	};
-				int		Get_opt_volume(void){		return(opt_volume);	};
+				void	SetVolume(MMLfile* MML);
+				void	SetVolumeInc(MMLfile* MML);
+				void	SetVolumeDec(MMLfile* MML);
 
 	unsigned	int		GetDefaultLength(void){return(DefaultLength);};
 

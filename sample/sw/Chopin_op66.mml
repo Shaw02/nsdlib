@@ -1,0 +1,418 @@
+
+#title		"Fantasie Impromptu, op.66"
+#Composer	"F.Chopin"
+#Copyright	"(C) S.W. 2014"
+
+/*
+time = 4:37
+
+《English》
+This piano sound of NSF msuic is made with the patch function of sound driver `Nsd.lib'.
+I sampled the wave-form and the envelope-form of each note range from the piano.
+This music data use the method that change the wave-form and envelope-form with the each note range.
+
+Actually, I wanted to make a narrowing a little finely piano,
+but waveform memory of n16x is not enough.
+So, I gave up.
+Number of wavefrom, sample length, etc...
+
+
+
+《日本語》
+ショパンの《幻想即興曲》作品番号66より。
+
+Nsd.libのパッチ機能を使って、ピアノを再現してみました。
+ピアノの各音域毎に波形とエンベロープをサンプリングし、
+パッチ機能により、各音域毎に音色波形、エンベロープを変えています。
+
+本当は、もうちょっと細かく作り込みたかったのですが、
+n16xの波形メモリが足りなく、断念です。
+n16xにロードする波形の数も、サンプル長にしても・・・。
+
+*/
+
+#Code		"../../bin/nsd_n163.bin"
+
+#bgm	1
+
+#timebase	24
+
+#QMax	100
+
+//======================================================================
+//	Wave table for Piano
+//======================================================================
+/*
+	f（フォルテ）位の強さで打鍵した時の、
+	各オクターブ毎のＡ（ラ）の音をサンプリングしたピアノの音色です。
+	オクターブが低いほど、倍音成分が多い波形になります。
+	以下の要領で随時切り替えて用いると、それなりにピアノっぽい演奏になります。
+	・発音が強く or オクターブが低いほど、倍音成分が多い音
+	・発音が弱く or オクターブが高いほど、倍音成分が多い音
+*/
+
+//Sampling = o0a
+N163(0	){
+	 0,13, 5, 6,11, 5,10, 8, 6,11,12, 8, 6,10, 3, 8,
+	 3, 6, 9,13, 8,12, 8,10, 6, 9, 3,10, 5,12, 4,15
+}
+
+//Sampling = o1a
+N163(1	){
+	 8,10,14,11, 8,13,12,14,10,15,14,15,11, 8, 4, 5,
+	 1, 3, 2, 6, 5,10,10,11, 8, 5, 9, 8, 5, 0, 2, 5
+}
+
+//Sampling = o2a
+N163(2	){
+	 8,11,14,12, 9, 9,10,10,14,15,13,10, 9,11, 7, 4,
+	 2, 3, 1, 0, 3, 6, 5, 8,10, 7, 4, 2, 3, 6, 7, 5
+}
+
+//Sampling = o3a
+N163(3	){
+	 9,10,10, 9,10,12,14,15,14,12,11, 9,10,10, 9, 8,
+	 6, 4, 2, 0, 1, 3, 4, 5, 6, 5, 4, 3, 5, 7, 8, 7
+}
+
+//Sampling = o4a
+N163(4	){
+	 8, 9,10,11,11,11,12,13,14,15,15,15,14,12,10, 8,
+	 6, 4, 3, 2, 1, 0, 0, 1, 2, 4, 5, 6, 6, 7, 7, 8
+}
+
+//Sampling = o5a
+N163(15	){
+	 8,10,11,13,15,14,13,14,13,11, 9, 6, 2, 0, 1, 4,
+}
+
+//Sampling = o6a
+N163(16	){
+	 8,11,13,14,15,14,15,13,11, 8, 5, 3, 1, 0, 2, 4,
+}
+
+//Sampling = o7a	（てか、ほとんど正弦波）
+N163(17	){
+	 8,11,13,14,15,14,13,10, 7, 4, 2, 1, 0, 1, 2, 4,
+}
+
+
+
+//======================================================================
+//	Envelope	for Piano
+//======================================================================
+
+E( 0){	(15,10,64)	(10, 8,64)							L	8	R	(8,4,24) (4,2,24)	2	D16	1	D20	L	0	}	//o1e
+E( 1){	(15,10,32)	(10, 8,32)	( 8,7,16)				L	7	R	(7,3,16)	3	D12	2	D16	1	D20	L	0	}	//o1
+E( 2){	(15,10,23)	(10, 8,22)	( 8,6,23)				L	6	R	(6,3,12)	3	D12	2	D16	1	D20	L	0	}	//o2e
+E( 3){	(15,10,16)	(10, 8,16)	( 8,5,24)				L	5	R	(5,3, 8)	3	D12	2	D16	1	D20	L	0	}	//o2a
+E( 4){	(15,10,12)	(10, 8,11)	( 8,4,23)				L	4	R	4	D8		3	D12	2	D16	1	D20	L	0	}
+E( 5){	(15,10,16)	(10, 8,16)	( 8,4,16)				L	4	R	4	D8		3	D12	2	D16	1	D20	L	0	}	//o3a
+E( 6){	(15,10, 6)	(10, 8, 5)	( 8,4,11)				L	4	R	4	D8		3	D12	2	D16	1	D20	L	0	}
+E( 7){	(15,10, 4)	(10, 8, 4)	( 8,4, 8)	(4,3, 8)	L	3	R				3	D12	2	D16	1	D20	L	0	}	//o4a
+E( 8){	15	13	12	11	10	9	( 8,4, 6)	(4,3, 6)	L	3	R				3	D12	2	D16	1	D20	L	0	}
+E( 9){	15		12		10	9	( 8,4, 4)	(4,3, 4)	L	3	R				3	D12	2	D16	1	D20	L	0	}	//o5a
+E(10){	15			11		9	( 8,4, 3)	4	4	3	L	2	R						2	D16	1	D20	L	0	}
+E(11){	15				10		8	6	4	3			L	2	R						2	D16	1	D20	L	0	}	//o6a
+E(12){	15					9			5	3			L	2	R						2	D16	1	D20	L	0	}
+E(13){	15						8		4		2		L	1	R								1	D20	L	0	}	//o7a
+E(14){	15								4		2		L	1	R								1	D20	L	0	}
+E(15){	15									3			L	1	R								1	D20	L	0	}	//o8a
+
+
+
+//======================================================================
+//	Patch
+//======================================================================
+
+Patch(10){
+
+		@NS  0,32	_+36	Ev0		//Range = c1 - g#1
+	a1	@NS  0,32	_+36	Ev1		//Range = a1 - d#2
+	e2	@NS  0,32	_+36	Ev2		//Range = e2 - g#2
+	a2	@NS  0,32	_+36	Ev3		//Range = a2 - d#3
+
+	e3	@NS 32,32	_+36	Ev4		//Range = e3 - g#3
+	a3	@NS 32,32	_+36	Ev5		//Range = a3 - d#4
+	e4	@NS 32,32	_+36	Ev6		//Range = e4 - g#4
+	a4	@NS 64,32	_+36	Ev7		//Range = a4 - d#5
+
+	e5	@NS 64,32	_+36	Ev8		//Range = e5 - g#5
+	a5	@NS 96,16	_+24	Ev9		//Range = a5 - d#6
+	e6	@NS 96,16	_+24	Ev10	//Range = e6 - g#6
+	a6	@NS112,16	_+24	Ev11	//Range = a6 - d#7
+
+	e7	@NS112,16	_+24	Ev12	//Range = e7 - g#7
+	a7	@NS112,16	_+24	Ev13	//Range = a7 - d#8
+	e8	@NS112,16	_+24	Ev14	//Range = e8 - g#8
+	a8	@NS112,16	_+24	Ev15	//Range = a8 - d#9
+
+}
+
+
+
+//======================================================================
+//	Sequence
+//======================================================================
+
+bgm(0)
+{
+	t96
+
+	NC8	@NL0,2	@NL32,3	@NL64,4	@NL96,15	@NL112,16		//n16x への転送はここで済ます。
+
+	//--------------
+	//	Allegro agitato
+
+	TR6,7,8,9,10,11,12,13	@P10	K{cis-moll}
+
+	TR6		v15	o5	r1^1				l12	r1^1
+	TR7		v15	o5	r1^1				l12	r1^1
+	TR8		v15	o4	r1^1				l12	[4	rrr( err(	]
+	TR9		v15	o4	r1^1				l12	[4	rrc( rcr(	]
+	TR10	v15	o3	g2&[6(:r4&]r4	v15	l12	[4	rgr( rrg(	]
+	TR11	v15	o3	r1^1				l12	[4	crr( rrr(	]
+	TR12	v15	o2	g2.&[5(:r4&]r4	v15	l12	r1^1
+	TR13	v15	o2	r1^1				l12	t64	c	t80	^	t96	^ t120	r t128	r t140	r t156		r2	r1
+
+	//--------------
+
+	TR6,7,8,9,10,11,12,13	[2
+
+	TR6		|:	v8	o5	l16	[2	r4   r rcr	rcrc r crr	]	\	rr rd rr>rd	rrrf rrrc<	|	r rrg rrer rr"b+r< rrrr		:|
+	TR7		|:	v8	o4	l16	[2	rrar r>rre	r4   r rer<	]	\	rr>cr rr>cr	rrgr rrfr<	|	r rar rarr rcr  r< arra&	:|
+	TR8		|:	v8	o4	l16	[2	rgrg r grr>	r4 < b+rrr	]	\	ra>rr ra>rr	rarr rdrr<	|	r`drr rrrd rrr  d< rgrr		:|
+	TR9		|:	v8	o4	l16	[2	r4   f+rrr>	drdr r rrg<	]	\	r4>   fr>rr	brrr errr<	|	b+rrr frrr frr  r< rrbr		:|
+	TR10		v9	o4	l12	[2	r4  err	r4  err			]	|	r4  frr	r4  arr<		|	[2	r4  b+rr	]
+	TR11		v8	o4	l12	[2	rrc rcr	rrc rcr			]	|	rrc rcr	rcr rrc<		|	[2	rrf r fr	]
+	TR12		v8	o3	l12	[2	rgr rrg	rgr rrg			]	|	rar rra>rrd rdr<		|	[2	rdr r rd	]
+	TR13 t156	v10	o3	l12	[2	crr r4	err r4			]	|	drr r4	frr r4<			|	[2	grr r4		]
+
+	TR10			o4			r4  err	r4  err		|	r4   er r	r4   cr r
+	TR11			o4			rrc rcr	rrc rcr	<	|	rra+ ra+r	rra+ ra+r
+	TR12			o3			rgr rrg	rgr rrg		|	rgr  rr g	rgr  rr g
+	TR13			o3			crr r4	err r4		|	crr  r4		err  r4	
+
+	TR6		o5	r4		rbr8 )	r>er8<)	ra+r8	|	rgr8(	rdr8<(	r br8(	rgrg
+	TR7		o5	rer8	r8a+r)	r8>dr<)	r8gr	|	r8br(	r8gr(	r8 dr<(	r8f+r
+	TR8		o5	drdr	dr8.)	f+r8. )	br8.	|	a+r8.(	er8.(	c r8.<(	a+r8.
+	TR9		o5	r8.c+	r8. g)	r>r8c<)	r8.f+	|	r8.c+<(	r8.a+(	r8.f+(	[4	t_-7	r	]	t80
+	TR10	o4	r4		drr	)	r4	)	f+rr	|<	r4	(	brr	(	r4	(	brr
+	TR11	o3	rrb		rbr>)	rr c)	rcr		|<	rrg	(	rgr	(	rrg	(	rgr
+	TR12	o3	rgr		rrg	)	ra+r)	rra+	|	rdr	(	rrd	(	rdr	(	rrd
+	TR13	o3	drr		r4	)	dr r)	r4		|<	grr	(	r4	(	grr	(	r4
+
+	//--------------
+
+	TR6		v11	o5	r8.t156c	[3		r8.c	]		|<	r8.a	r8.a	r8.b>	r8.e	|	[4		r8.c	]				|	r8.d	r8.d	r8.e	r8.e
+	TR7		v11	o4	r8t140b+r	[3		r8b+r	]		|	r8fr	r8fr	r8gr	r8br	|	[4		r8b+r	]				|	r8br	r8br	r8br	r8br
+	TR8		v12	o5	rt128gr8	rfr8	re+r8	rfr8	|	rcr8	rdr8	rer8	rgr8	|	rgr8	rfr8	re+r8	rfr8	|	re+r8	rfr8	rar8	rgr8
+	TR9		v15	o4	g4			f4		e+4		f4		|	c4		d4		e4		g4		|	g4		f4		e+4		f4		|	e+4		f4		a4		g4
+	TR10	v11	o3	r4			arr		r4		arr		|	r4		brr		r4		grr		|	r4		arr		r4		arr		|	r4		brr		r4		grr
+	TR11	v10	o3	rrf			rfr		rrf		rfr		|	rra		rar		rre		rer		|	rrf		rfr		rrf		rfr		|	rra		rar		rre		rer
+	TR12	v10	o3	rcr			rrc		rcr		rrc		|	rfr		rrf	<	rbr		rrb	>	|	rcr		rrc		rcr		rrc		|	rfr		rrf	<	rbr		rrb	>
+	TR13	v14	o2	arr			r4		arr		r4		|	brr		r4		err		r4		|	arr		r4		arr		r4		|	brr		r4		err		r4
+
+	TR6		v7	[4	r8.c	]				<	|	r8.a)	r8.a)	r8.b)>	r8.e)	|	r8.c)	r8.c)	r8.a	r8.a	|	[4	r8.f(	]
+	TR7		v7	[4	r8b+r	]					|	r8fr)	r8fr)	r8gr)	r8br)	|	r8b+r)	r8b+r)>	r8fr	r8fr	|	[4	r8dr(	]
+	TR8		v9	rg8r	rf8r	re+8r	rf8r	|	rc8r)	rd8r)	re8r)	rg8r)	|	rg8r)	rf8r)>	rd8r	rc8r	|	rc8r(<	[3	rb+8r(	]
+	TR9		v8	gr8.	fr8.	e+r8.	fr8.	|	cr8.)	dr8.)	er8.)	gr8.)	|	gr8.)	fr8.)>	dr8.	cr8.	|	cr8.(<	[3	b+r8.(	]
+	TR10	v7	r4		arr		r4		arr		|	r4	)	brr	)	r4	)	grr	)	|	r4	)	arr	)	r4		arr		|	r4	(	b+rr(	r4	(	b+rr(
+	TR11	v6	rrf		rfr		rrf		rfr		|	rra	)	rar	)	rre	)	rer	)	|	rrf	)	rfr	)	rrf		rfr		|	rrf	(	rfr	(	rrf	(	rfr	(
+	TR12	v6	rcr		rrc		rcr		rrc		|	rfr	)	rrf	)<	rbr	)	rrb	)>	|	rcr	)	rrc	)	rdr		rrd		|	rdr	(	rrd	(	rdr	(	rrd	(
+	TR13	v8	arr		r4		err		r4		|	brr	)	r4	)	err	)	r4	)	|	arr	)	r4	)	arr		r4		|	grr	(	r4	(	grr	(	r4	(
+
+	TR6			[4		r8.f(	]				|			[4		r8.f	]		|	v7	[3		r8.f	]				|	[5			r8.f	:	(	]
+	TR7			[4		r8dr(	]				|			[4		r8dr	]		|	v7	[3		r8dr	]				|	[5	t_-5	r8dr	:	(	]	t156
+	TR8			rb+8r(	rb8r(	rb8r(	ra+8r(	|	ra+8r	[3		ra8r	]		|	v8	rb+8r	rb8r	rb8r	ra+8r(	|	ra+8r(	ra8r(	ra8r(	rg8r
+	TR9			b+r8.(	br8.(	br8.(	a+r8.(	|	a+r8.	[3		ar8.	]		|	v7	b+r8.	br8.	br8.	a+r8.(	|	a+r8.(	ar8.(	ar8.(	gr8.
+	TR10		r4	(	brr	(	r4	(	a+rr(	|	r4		arr		r4		arr		|	v7	r4		brr		r4		a+rr(	|	r4	(	arr	(	r4	(	grr
+	TR11		rrf	(	rfr	(	rrf	(	rfr	(	|	rrf		rfr		rrf		rfr		|	v6	rrf		rfr		rrf		rfr	(	|	rrf	(	rfr	(	rrf	(	rfr
+	TR12		rdr	(	rrd	(	rdr	(	rrd	(	|	rdr		rrd		rdr		rrd		|	v6	rdr		rrd		rdr		rrd	(	|	rdr	(	rrd	(	rdr	(	rrd
+	TR13		arr	(	r4	(	a+rr(	r4	(	|	b+rr	r4		b+rr	r4		|	v8	arr		r4		a+rr	r4	(	|	brr	(	r4	(	b+rr(	r4
+
+	//--------------
+
+	TR6		o5	[2	r4   r rv8cr	rcrc r crr	]	|	rr rd rr>rd	rrrf rrrc<	|	r rrg rrer rr"b+r< rrrr	
+	TR7		o4	[2	rrv8ar r>rre	r4   r rer<	]	|	rr>cr rr>cr	rrgr rrfr<	|	r rar rarr rcr  r< arra&
+	TR8		o4	[2	rv8grg r grr>	r4 < b+rrr	]	|	ra>rr ra>rr	rarr rdrr<	|	r`drr rrrd rrr  d< rgrr	
+	TR9		o4	[2	r4   v8f+rrr>	drdr r rrg<	]	|	r4>   fr>rr	brrr errr<	|	b+rrr frrr frr  r< rrbr	
+	TR10	o4	[2	r4  v09err	r4  err			]	|	r4  frr	r4  arr<		|	[2	r4  b+rr	]	>
+	TR11	o4	[2	rrv08c rcr	rrc rcr			]	|	rrc rcr	rcr rrc<		|	[2	rrf r fr	]	>
+	TR12	o3	[2	rv08gr rrg	rgr rrg			]	|	rar rra>rrd rdr<		|	[2	rdr r rd	]
+	TR13	o3	[2	v10crr r4	err r4			]	|	drr r4	frr r4<			|	[2	grr r4		]	>
+
+	TR6		r4    f+rrr> drdr r rrg	|	r4   r rfr fr fr  r rr`c	|	r4    rrfr	fr fr  rrr`c	|)	r4   r rar	arar r rr`d		)
+	TR7		rrar> r rre  r4   r rer	|	erer r rra r4     r rg r	|	r4   c*rrr	re+re+ re+rr	|)	r4   e+rrr	rgrg r gr r		)
+	TR8		rgrg  r grr> r4   c*rrr	|	rdrd r drr r4     d+rr r	|	rcrc  rcrr	r4     d+rrr	|)	rfrf r frr	r4   f+rr r		)
+	TR9		r4  > r rcr  rcrc r crr	|	r4   c+rrr re+re+ r e+rr	|	rrd=r rrra	r4     rr gr	|)	grgr rrr`c	r4   r rb+r		)
+	TR10	rrr	err	rrr	err			|	rrr	arr		rrr		brr		|	rrr	arr		rrr		brr		|)	rrr	arr		rrr		drr		)
+	TR11	rrc	rcr	rrc	rcr			|	rrd	rdr		rre+	re+c	|	rrf	rfr		rre+	re+r	|)	rrf	rfr	<	rrg		rgr	>	)
+	TR12	rgr	rrg	rgr	rrg			|>	rcr	rrc		rcr		rrc		|	rcr	rrc		rcr		rrc		|)	rcr	rrc	<	rfr		rrf		)
+	TR13	crr	rrr	err	rrr			|	frr	rrr		grr		rrr		|	arr	rrr		grr		rrr		|)	arr	rrr 	c=rr	rrr		)
+
+	TR6		r4   > r))e((rr	rc=rr< rgr r	|)	rrrd> rrrd=		rr<ra+ rrr f	|)			r8>	gr			rrer	rrc=<r	r rgr	|	r4		rrc=<r	)r4		rrer
+	TR7		grgr   grrr>	cr rr< arr r	|)	erer  errr>		cr rr< arr r	|)			r8>	rg=			rrrd	rrr <b	r rrg=	|	r4		rrr <b	)r4		rrrd
+	TR8		rarr > rrdr		rr<br  rrg=r	|)	r4  > r))e((rr	rc=rr< rgr r	|)			gr>	rr			frrr	d=rr<r	a+rrr	|	r4		d=rr<r	)r4		frrr
+	TR9		rrrf+> rrrd=	rr<ra+ rrr f	|)	rfrr> rrdr		rr<br  rrg=r	|)			r8>	rr			re+rr	r cr<r	r arr	|	r4		r cr<r	)r4		re+rr
+	TR10	rrr		err		rrr		frr		|)	rrr		err		rrr		arr		|)			g8r4.			v15	a4	o5	r4	v12	l16	frrr	r4	<	)r rgr	r4
+	TR11	rrc		rcr		rrc=	rc=r	|)	rrc		rcr		rrd		rdr		|)			e8r4.			v13	e4	o5	r4	v12	l16	re+rr	r4	<	)r rrg=	r4
+	TR12	rgr		rrg		rgr		rrg		|)	rgr		rrg	>	rcr		rrc		|)			c8r4.			v13	c4	o5	r4	v12	l16	rrer	r4	<	)a+rrr	r4
+	TR13	crr		rrr		drr		rrr		|)	err		rrr		frr		rrr		|)	t_-16	g8	t_+16	r4.	v14	f+4	o5	r4	v12	l16	rrrd	r4	<	)r arr	[4	t_-5	r	]
+
+	TR6		t72			r4	v13	o6	r t112 grr	r t140 err		rcrr<	|	rgrr	rerr	rcrr<	rgrr	|	rerr	[2	rcrr	]	rcrr	|	rcrr	rcrr	rcrr	rc=rr
+	TR7					r4	v13	o7	rr t116 er	rr t148 cr<		rrgr	|	rrer	rrcr <	rrgr	rrer	|	rrcr <	[2	rrgr	]	rrar	|	rrgr	rrf+r	rrgr	rrgr
+	TR8				v15	g4,8v13	o6	rrr t120 e	rrr t156 c<		rrrg	|	rrre	rrrc <	rrrg	rrre	|	rrrc <	[2	rrrg	]	rrra	|	rrrg	rrrf+	rrrg	rrrg
+	TR9					r4	v15	o6	arrr		t132 frrr		drrr<	|	arrr	frrr	drrr<	arrr	|	frrr	[2	drrr	]	drrr	|	drrr	drrr	drrr	drrr
+	TR10	l4	o5		r	v15		e			r		<		g	(	|	r		c<		r		e		|(	r <	g	g	r	t_-5			|	g		r		g2
+	TR11	l4	o4		r	v15		e			r		<		g	(	|	r		c<		r		e		|(	r <	g	g	t_-5	r			|	g		r t_-5	g2
+	TR12	l4	o2	v15	g,8		o5	r			c		<		r	(	|	e		r<		g		r		|(	c <	r	t_-5	r	a			|	r t_-5	f+		r2
+	TR13	l4	o1	v15	g,8	t64	o4	r			c		<		r	(	|	e		r<		g		r		|(	c <	t_-5	r	r	a	t_-5		r		f+		r4	t_-5	r4
+
+	TR6,7,8,9,10,11,12,13	:
+
+	//--------------
+	//Largo
+
+	TR6,7,8,9,10,11,12,13	K{Ds-Dur}
+
+	TR6		l12	t20	r	t48	r	t64	r	t72	r	t80	r	t88	r	t64	r	t72	r	t80	r	t88	r4	r1
+	TR7		l12	o4		r2	v15		frr	r4	|		r2			v8	frr		r4	
+	TR8		l12	o4		r4	v14	rrd	rdr	r4	|		r4	v9	rrd	v8	rdr		r4	
+	TR9		l12	o3		r4	v13	rar	rra	r4	|		r4	v9	rar	v8	rra		r4	
+	TR10	l12	o3		r4	v12	frr	r4	frr	|		r4	v9	frr		r4	v7	frr
+	TR11	l12	o3	v11	rrd		r4	r4	rdr	|	v10	rrd		r4		r4	v7	rdr
+	TR12	l12	o2	v10	rar		r4	r4	rra	|	v10	rar		r4		r4	v7	rra
+	TR13	l12	o2	v15	d2,4.	r2			|	v10	drr		r4		r2	
+
+	//--------------
+	//Moderato Cantabile
+	//		- sotto voce
+
+	TR6		v9	l8	o4	a2			r			a)rr>	|)	r2	))	a2		|	r2...	((	d16		|	r1
+	TR7		v7	l8	o2	d2,8		r	v9	o5	r)dr	|)	r1				|	g4	r2.				|	"a2		r2
+	TR8		v9	l8	o5	r2			[3	c48r48] r)re	|)	r1				|	r4	f4	r4))f8.r16	|	r1	((
+	TR9		v9	l8	o4	r2			[3	r48b48] r)rr>	|)	f2		r2		|	r2		e4	r4		|<	r2	)))	b2
+	TR10	v7	l12	o4	r4		err		r4	)	grr		|)	r4	frr	r4)))a4	|	r4	f4	r4	d4		|(	r4((crr	rrr	drr
+	TR11	v6	l12	o4	rrc		rcr		rrc	)	rcr		|)	rrd	rdr	rrf	rfr	|)))g4	r4	e4	r4	(((	|<	rra	rar	rrb	rbr
+	TR12	v6	l12	o3	rar		rra		rar	)	rra		|)	rar	rra	rar	rra	|>	rer	rdr	rcr<rar		|	rer	rre	rgr	rrg
+	TR13	v7	l12	o3	"arr	r4		drr	)	r4		|)	drr	r4	drr	r4	|	rra	rra	rra	rrf	<	|	arr	r4	grr	r4
+
+	TR6		r2	[3	r48d48]	r)rr	|)	g4r2.			|	r4.c32r16.		r2			|	r2	[6	t_-5 r12]
+	TR7		r2	r			r)er	|)	r2		e4r4	|	r4.r16   e32r32	r4.((e8		|v12	e1			[3	t_+10 r12]	r4
+	TR8		r2	[3	c-48r48]r)rf	|)	r1				|	d4.r32d32r32d32	r2			|		r1
+	TR9		^2	r		(((	b)rr>	|)	r4f4	r4f4	|	r2				(f4.r8		|		r1
+	TR10	r4	d=rr	r4	)arr	|)	rgr	rfr	rer	rgr	|	r4	frr		r4((	err		v7	r4	crr	r4)))	"b4(((
+	TR11	rrb	rbr	>	rrd=)rd=r<	|)	rrb	rra=rrb	rr>c|	rrd	rdr		rr(d	r((dr<	v6	rra	rar	rrg-rg-r
+	TR12	rfr	rrf		rbr	)rrb	|)	r4	frr	r4	arr	|	rar	rra		r(g=r	rr((g=	v6	rer	rre	rer	rre	
+	TR13	brr	r4		brr	)r4	>	|)	err	r4	grr	r4	|	drr	r4		err		r4<		v7	arr	r4	arr	r4
+
+	TR6,7,8,9,10,11,12	|:
+
+	TR6		v9	l8	o4	a2			r			a)rr>	|)	r2	))	a2		|	r2		r8r16(( d32r32	r8.d16	|	r1
+	TR7		v9	l8					r		o5	r)dr	|)	r1				|	g4	r4	r4				r4		|	"a2		r2
+	TR8		v9	l8	o5	r2			[3	c48r48] r)re	|)	r1				|	r4	f4	r8f32r16.	))	f8.r16	|	r1	((
+	TR9		v9	l8	o4	r2			[3	r48b48] r)rr>	|)	f2		r2		|	r2		e8r32e32r32e32	r4		|<	r2	)))	b2
+	TR10	v7	l12	o4	r4		err		r4	)	grr		|)	r4	frr	r4)))a4	|	r4	f4	r4				d4		|(	r4((crr	rrr	drr
+	TR11	v6	l12	o4	rrc		rcr		rrc	)	rcr		|)	rrd	rdr	rrf	rfr	|)))g4	r4	e4				r4	(((	|<	rra	rar	rrb	rbr
+	TR12	v6	l12	o3	rar		rra		rar	)	rra		|)	rar	rra	rar	rra	|>	rer	rdr	rcr<			rar		|	rer	rre	rgr	rrg
+	TR13	v7	l12		arr		r4		arr	)	r4>	|:	|)	drr	r4	drr	r4	|	rra	rra	rra				rrf	<	|	arr	r4	grr	r4
+
+	TR6		r2	[3	r48d48]	r)rr	|)	g4r2.			|<	r4.g32r16.		r4.>((e8		v12	e2	r2	v9		|
+	TR7		r2	r		<	b)rr>	|)	r4f4	r4f4	|<	r4.r16   b32r32	r2>				|	r2	v9	d4r4	|
+	TR8		r2	[3	c-48r48]r)rf	|)	r1				|	d4.r8			(f4. r8			|	r1		v9		|
+	TR9		^2	r	>	(((	r)er	|)	r2		e4r4	|<	r4.r32a32r32a32	r2>				|	r2..	v9	a8	|
+	TR10	r4	d=rr	r4	)arr	|)	rgr	rfr	rer	rgr	|	r4		frr		r4	((	g-rr	v7	r4	grr	r4	frr	|
+	TR11	rrb	rbr	>	rrd=)rd=r<	|)	rrb	rra=rrb	rr>c|	rrd		rdr		rr(c	r((cr	v6	rrc	rcr	rrd	rdr	|
+	TR12	rfr	rrf		rbr	)rrb	|)	r4	frr	r4	arr	|	rar		rra		r(ar	rr((a	v6	rar	rra	rar	rra	|
+	TR13	brr	r4		brr	)r4	>	|)	err	r4	grr	r4	|drr		r4		drr		r4		v7	drr	rrr	drr	rrr	|
+
+	TR6		o5	r2	[3	r32c32])r16)r8.)c16	|)	r2			l%6	r%7r(ar r r%13(a%4	l8	|	r2		<	r8.a=16	(r4		|	r2	(	r4>d12r12r12
+	TR7		o4	r2	[3	b32r32])r16)b8.)r16	|)	r2	>		l%6	r%7b(rr r<b%13(r%4	l8	|	r2			b8.r16	(b8.r16	|	r2	(	b4 r12r12b12
+	TR8		o4	)))a2		r2				|)	a8r4.>		l%6	r%7r(rf-r<r%13(r%4	l8	|))	e2-16 r16	r2		(((		|	a4r4(	r2
+	TR9		o4	r2	r8.	)		a=16)r4	)	|)>	r4))`c4((	l%6	^%7r(rr d r%13(r%4	l8	|	r2-16 c16	r4		(r8.e16	|	r2	(	r4 r12c12r12
+	TR10	o4	r4		crr		r4		drr	|	r4		crr		 r4			f-rr		|	r4		crr		r4		drr	|	r4		crr		r4		drr
+	TR11	o3	rra		rar		rrg=	rg=r	rra		rar	>	 rrd		rdr	<		|	rra		rar		rrg=	rg=r	rra		rar		rrb		rbr
+	TR12	o3	rer		rre		rer		rre	|	rer		rre		 rar		rra			|	rer		rre		rer		rre	|	rer		rre		rg-r	rrg-
+	TR13	o2	arr		r4		arr		r4	|	arr		r4		`drr		r4			|	err		r4		err		r4	|	arr		r4		g-rr	r4
+
+	TR7						r2
+	TR13	\	v7	l12	o3	"arr	r4		err	)	r4
+
+	TR6,7,8,9,10,11,12		\
+	TR6,7,8,9,10,11,12,13	:|
+
+	TR6		v9	l8	o4	a2			r			a)rr>	|)	r2	))	a2		|	r2		r8r16(( d32r32	r8.d16	|	r1
+	TR7		v9	l8					r		o5	r)dr	|)	r1				|	g4	r4	r4				r4		|	"a2		r2
+	TR8		v9	l8	o5	r2			[3	c48r48] r)re	|)	r1				|	r4	f4	r8f32r16.	))	f8.r16	|	r1	((
+	TR9		v9	l8	o4	r2			[3	r48b48] r)rr>	|)	f2		r2		|	r2		e8r32e32r32e32	r4		|<	r2	)))	b2
+	TR10	v7	l12	o4	r4		err		r4	)	grr		|)	r4	frr	r4)))a4	|	r4	f4	r4				d4		|(	r4((crr	rrr	drr
+	TR11	v6	l12	o4	rrc		rcr		rrc	)	rcr		|)	rrd	rdr	rrf	rfr	|)))g4	r4	e4				r4	(((	|<	rra	rar	rrb	rbr
+	TR12	v6	l12	o3	rar		rra		rar	)	rra		|)	rar	rra	rar	rra	|>	rer	rdr	rcr<			rar		|	rer	rre	rgr	rrg
+	TR13	v7	l12		arr		r4		arr	)	r4>		|)	drr	r4	drr	r4	|	rra	rra	rra				rrf	<	|	arr	r4	grr	r4
+
+	TR6		r2	[3	r48d48]	r)rr	|)	g4r2.			|<	r4.g32r16.		r4.>((e8		|	r1
+	TR7		r2	r		<	b)rr>	|)	r4f4	r4f4	|<	r4.r16   b32r32	r2>			v8	|	e1
+	TR8		r2	[3	c-48r48]r)rf	|)	r1				|	d4.r8			(f4. r8			|	r1
+	TR9		^2	r	>	(((	r)er	|)	r2		e4r4	|<	r4.r32a32r32a32	r2>				|	[16	t_-3	r16	]
+	TR10	r4	d=rr	r4	)arr	|)	rgr	rfr	rer	rgr	|	r4		frr		r4	((	g-rr	v7	r4	grr	r4	grr	|
+	TR11	rrb	rbr	>	rrd=)rd=r<	|)	rrb	rra=rrb	rr>c|	rrd		rdr		rr(c	r((cr	v6	rrc	rcr	rrc	rcr	|
+	TR12	rfr	rrf		rbr	)rrb	|)	r4	frr	r4	arr	|	rar		rra		r(ar	rr((a	v6	rar	rra	rar	rra	|
+	TR13	brr	r4		brr	)r4	>	|)	err	r4	grr	r4	|drr		r4		drr		r4		v7	drr	rrr	drr	rrr	|
+
+	TR6,7,8,9,10,11,12,13	]
+
+	//--------------
+	//	Presto
+
+	TR6,7,8,9,10,11,12,13	K{cis-moll}
+
+	TR6	t156
+
+	TR6		|:	rcrr	v13	o4	rgrr	rgrr	rgrr	|	rgrr	rgrr	v8	[2	rdrr	]	\	:|
+	TR7		|:	rrgr	v15	o5	r8e4	e4		d4		|	d4		c8&	<	v10	[2	r8gr	]	\	:|
+	TR8		|:	rrrg	v13	o4	rrre	rrre	rrrd	|	rrrd	rrrc<	v8	[2	rrrg	]	\	:|
+	TR9		|:	drrr	v14	o4	arrr	arrr	arrr	|	arrr	arrr	v9	[2	errr	]	\	:|
+	TR10	[4	l8	o2	v12	rrrg		rrrg			]
+	TR11	[4	l8	o3	v12	rrcr		rrc=r			]
+	TR12	[4	l8	o3	v13	rerr		rfrr			]
+	TR13	[4	l8	o2	v14	crrr		crrr			]
+
+	TR6		[2	rcrr	v13	rgrr	rerr	rgrr	]		[4	rerr	rgrr (	]
+	TR7		[2	r8gr >	v15	rre4	c4		e8&	 <	] >	v13	[4	r8c4	c8&	 (	]
+	TR8		[2	rrrg >	v13	rrre	rrrc	rrre <	] >		[4	rrrc	rrrc (	]
+	TR9		[2	drrr	v14	arrr	frrr	arrr	]		[4	frrr	arrr (	]
+	TR10	[2	rrrg				rrrg			]		[4	rr		rg	(	]
+	TR11	[2	rrcr				rrcr			]		[4	rr		cr	(	]
+	TR12	[2	rerr				rgrr			]		[4	re		rr	(	]
+	TR13	[2	crrr				crrr			]		[4	cr		rr	(	]
+
+	TR6		[2	rcrr	]	v8	[6	rcrr			]
+	TR7	<	[2	r8gr	]	v8	[6	rrgr			]
+	TR8	<	[2	rrrg	]	v8	[6	rrrg			]
+	TR9		[2	drrr	]	v9	[6	drrr	t_-1	]
+	TR10	r1r1
+	TR11	r1r1
+	TR12	r1r1
+	TR13	c4r2.	r1
+
+	TR6		[24	rcrr	]	[4	rcrr			]	[4	rcrr			]
+	TR7		[24	rrgr	]	[4	rrgr			]	[4	rrgr			]
+	TR8		[24	rrrg	]	[4	rrre+			]	[4	rrrf			]
+	TR9		[24	drrr	]	[4	drrr	t_-2	]	[4	e+rrr	t_-5	]
+	TR10	l4	o2	v8	c1>	|	r )	r )	r )	d )	|	r1	|	r1		|	r2	e+2	|	r2	e+4r4	|	r1	|	r1
+	TR11	l4	o2	v8	g1>	|	r )	r )	c )	r )	|	r1	|	r1		|	f2	r2	|	r1		<	|	g1	|	g1
+	TR12	l4	o2	v8	r1	|	a+)	r )	r )	r )	|>	e+1	|	r1		|	r1		|	d2	r2	<	|	r1<	|	g1
+	TR13	l4	o2	v8	r1	|	r )	g )	r )	r )	|>	r1	|))	g1((	|	r1		|	r2	r4c4	|	r1	|	r1
+
+	TR6		o4	v8	r4+16	d1-4-16	|			r1		r1
+	TR7		o3	v8	r4		b+1-4	|			r1		r1
+	TR8		o3	v8	r8.		g1-8.	|	r16.	g1-16.	r1
+	TR9		o3	v8	r8		f1-8	|			r1		r1
+	TR10	o4				r1		|	r8		c1-8	r1
+	TR11	o3	t80			r1		|	r16		e+1-16	r1
+	TR12	o2	v9	r16		g1-16	|	r32		g1-32	r1
+	TR13	o2	v10			c1		|			c1		r1
+
+}
+
