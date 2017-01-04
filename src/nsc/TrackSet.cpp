@@ -932,47 +932,6 @@ void	TrackSet::clear(int _id)
 }
 
 //==============================================================
-//		カウント
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-void	TrackSet::TickCount(MusicFile* MUS)
-{
-	int		i		= 0;
-	int		iTick;
-
-	cout	<< "Track ";
-	while(i<=maxTrack){
-		i++;
-		cout << "| TR(" << setfill(' ')  << setw(2) << i << ") ";
-	}
-	cout << endl <<	"Loop  ";
-
-	i=0;
-	while(i<=maxTrack){
-		ptcTrack[i]->TickCount(MUS, 24);
-		iTick = ptcTrack[i]->GetTickLoop();
-		if(iTick == -1){
-			cout << "| no-loop";
-		} else {
-			cout << "|" << setw(8) << setfill(' ') << iTick;
-		}
-		i++;
-	}
-	cout << endl <<	"Total ";;
-
-	i=0;
-	while(i<=maxTrack){
-		cout << "|" << setw(8) << setfill(' ') << ptcTrack[i]->GetTickTotal();
-		i++;
-	}
-	cout << endl;
-}
-
-//==============================================================
 //		コードの取得
 //--------------------------------------------------------------
 //	●引数
@@ -1011,18 +970,89 @@ void	TrackSet::getAsm(MusicFile* MUS)
 }
 
 //==============================================================
-//		使う（使わない）オブジェクトの検索
+//		カウントしながら、最適化情報収集
+//--------------------------------------------------------------
+//	●引数
+//				MusicFile*	MUS
+//				int			iStart
+//				int			iEnd
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::TickCountPrint(MusicFile* MUS, int iStart, int iEnd)
+{
+	int		i		= iStart;
+	int		iTick;
+
+	cout	<< "Track ";
+	while(i < iEnd){
+		i++;
+		cout << "| TR(" << setfill(' ')  << setw(2) << i << ") ";
+	}
+
+	i = iStart;
+	cout << endl <<	"Loop  ";
+	while(i < iEnd){
+		ptcTrack[i]->nsd.init();		//エミュレータ・パラメータ初期化
+		ptcTrack[i]->TickCount(MUS);	//エミュレート
+		iTick = ptcTrack[i]->GetTickLoop();
+		if(iTick == -1){
+			cout << "| no-loop";
+		} else {
+			cout << "|" << setw(8) << setfill(' ') << iTick;
+		}
+		i++;
+	}
+
+	i = iStart;
+	cout << endl <<	"Total ";;
+	while(i < iEnd){
+		cout << "|" << setw(8) << setfill(' ') << ptcTrack[i]->GetTickTotal();
+		i++;
+	}
+	cout << endl;
+	
+}
+
+//==============================================================
+//		カウントしながら、最適化情報収集
+//--------------------------------------------------------------
+//	●引数
+//				MusicFile*	MUS
+//	●返値
+//				無し
+//==============================================================
+void	TrackSet::TickCount(MusicFile* MUS)
+{
+
+	int		iTrack = 0;
+	int		j;
+	int		_maxTrack = maxTrack + 1;
+
+	while(iTrack < _maxTrack){
+		j = iTrack + 8;
+		if(j >= _maxTrack){
+			j = _maxTrack;
+		}
+		TickCountPrint(MUS,iTrack,j);
+		cout << endl;
+		iTrack = j;
+	}
+}
+
+//==============================================================
+//		不要な定義があるか検索
 //--------------------------------------------------------------
 //	●引数
 //		MusicFile*	MUS		曲データファイル・オブジェクト
 //	●返値
 //				無し
 //==============================================================
-void	TrackSet::Optimize(MusicFile* MUS)
+void	TrackSet::OptimizeDefineCheck(MusicFile* MUS)
 {
 	iTrack = 0;
 	while(iTrack <= maxTrack){
-		ptcTrack[iTrack]->Optimize(MUS);
+		ptcTrack[iTrack]->OptimizeDefineCheck(MUS);
 		iTrack++;
 	}
 

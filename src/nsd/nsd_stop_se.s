@@ -50,7 +50,7 @@
 
 	;-----------------------
 	;Init the channel structure
-	ldx	#nsd::TR_SE1
+	ldx	#nsd::TR_SE
 Loop:
 ;	jsr	_nsd_stop
 
@@ -70,7 +70,7 @@ Loop:
 
 	inx
 	inx
-	cpx	#nsd::TR_SE1 + nsd::SE_Track * 2
+	cpx	#nsd::TR_SE + nsd::SE_Track * 2
 	bcc	Loop	
 
 	rts

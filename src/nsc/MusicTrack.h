@@ -11,6 +11,102 @@
 
 /****************************************************************/
 /*																*/
+/*			構造体定義											*/
+/*																*/
+/****************************************************************/
+class NSD_WORK{
+
+public:
+	int	gatemode;
+	int	length;
+	int	gate_q;
+	int	gate_u;
+
+	int	octave;
+	int	detune_cent;
+	int	detune_fine;
+
+	int	trans;
+
+	int	voice;
+	int	volume;
+
+	int	env_volume;
+	int	env_voice;
+	int	env_frequency;
+	int	env_note;
+
+	//APU
+	int	sweep;
+	int	apu_tri_time;
+
+	//FDS
+	int	fds_frequency;
+	int	fds_sweepbias;
+
+	//N163
+	int	n163_num;
+	int	n163_frequency;
+
+	//PSG
+	int	psg_switch;
+
+			NSD_WORK(void){};
+			~NSD_WORK(void){};
+
+	void	init(void){
+		//音源ドライバ初期値を設定
+		gatemode		= -1;
+		length			= 24;
+		gate_q			= 0;
+		gate_u			= 0;
+		octave			= -1;
+		detune_cent		= 0;
+		detune_fine		= 0;
+		trans			= 0;
+		voice			= -1;
+		volume			= 15;
+		env_volume		= -1;
+		env_voice		= -1;
+		env_frequency	= -1;
+		env_note		= -1;
+		sweep			= -1;
+		apu_tri_time	= -1;
+		fds_frequency	= -1;
+		fds_sweepbias	= -1;
+		n163_num		= -1;
+		n163_frequency	= -1;
+		psg_switch		= -1;
+	}
+
+	void	set(NSD_WORK* work){
+		gatemode		=	work->gatemode;
+		length			=	work->length;
+		gate_q			=	work->gate_q;
+		gate_u			=	work->gate_u;
+		octave			=	work->octave;
+		detune_cent		=	work->detune_cent;
+		detune_fine		=	work->detune_fine;
+		trans			=	work->trans;
+		voice			=	work->voice;
+		volume			=	work->volume;
+		env_volume		=	work->env_volume;
+		env_voice		=	work->env_voice;
+		env_frequency	=	work->env_frequency;
+		env_note		=	work->env_note;
+		sweep			=	work->sweep;
+		apu_tri_time	=	work->apu_tri_time;
+		fds_frequency	=	work->fds_frequency;
+		fds_sweepbias	=	work->fds_sweepbias;
+		n163_num		=	work->n163_num;
+		n163_frequency	=	work->n163_frequency;
+		psg_switch		=	work->psg_switch;
+	}
+
+	void	get(NSD_WORK* work){work->set(this);};
+};
+/****************************************************************/
+/*																*/
 /*			クラス定義											*/
 /*																*/
 /****************************************************************/
@@ -18,8 +114,12 @@ class MusicTrack :
 	public MusicItem
 {
 //メンバー変数
-private:
+public:
+	//----------------------------------
+	//音源ドライバ　シミュレート用WORK
+	NSD_WORK	nsd;
 
+private:
 	//----------------------------------
 	//Tick カウント用
 				int		iTickTotal;
@@ -34,7 +134,7 @@ private:
 
 	//----------------------------------
 	//音長
-				int		DefaultLength;			//l
+	//			int		DefaultLength;			//l
 				int		opt_DefaultLength;
 	
 	//----------------------------------
@@ -160,11 +260,12 @@ public:
 			MusicTrack(MMLfile* MML, const _CHAR _strName[] = _T("==== [ Music Track ]===="));
 			~MusicTrack(void);
 
-	unsigned	int		TickCount(MusicFile* MUS, unsigned int iLength);
+	unsigned	int		TickCount(MusicFile* MUS, NSD_WORK* work);
+	unsigned	int		TickCount(MusicFile* MUS);
 	unsigned	int		GetTickTotal(void){	return(iTickTotal);};
 	unsigned	int		GetTickLoop(void){	return(iTickLoop);};
 
-				void	Optimize(MusicFile* MUS);
+				void	OptimizeDefineCheck(MusicFile* MUS);
 				void	Fix_Address(MusicFile* MUS);
 				void	SetEvent(MusicItem* _item);		//イベントの追加
 
@@ -276,7 +377,7 @@ public:
 				void	SetVolumeInc(MMLfile* MML);
 				void	SetVolumeDec(MMLfile* MML);
 
-	unsigned	int		GetDefaultLength(void){return(DefaultLength);};
+//	unsigned	int		GetDefaultLength(void){return(nsd.length);};
 
 				void	Reset_opt(void){
 					opt_octave			= -1;

@@ -27,7 +27,6 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //==============================================================
 DPCM::DPCM(MMLfile* MML, const char* dmcfile, unsigned int _id, const _CHAR _strName[]):
 	MusicItem(_strName),
-	f_Use(false),
 	m_id(_id)
 {
 	//----------------------

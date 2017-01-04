@@ -209,11 +209,11 @@
 ;=======================================================================
 .proc	_nsd_snd_keyon
 .rodata
-JMPTBL:	.addr	_nsd_ch1_keyon		;BGM ch1 Pulse
-	.addr	_nsd_ch2_keyon		;BGM ch2 Pulse
-	.addr	_nsd_ch3_keyon		;BGM ch3 Triangle
-	.addr	Exit			;BGM ch4 Noize
-	.addr	_nsd_dpcm_keyon		;BGM ch5 DPCM
+JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
+	.addr	_nsd_apu_ch2_keyon		;BGM ch2 Pulse
+	.addr	_nsd_apu_ch3_keyon		;BGM ch3 Triangle
+	.addr	Exit				;BGM ch4 Noize
+	.addr	_nsd_apu_dpcm_keyon		;BGM ch5 DPCM
 .ifdef	FDS
 	.addr	_nsd_fds_keyon
 .endif
@@ -268,8 +268,19 @@ JMPTBL:	.addr	_nsd_ch1_keyon		;BGM ch1 Pulse
 .ifdef	NULL
 	.addr	Exit
 .endif
-	.addr	_nsd_se_keyon		;SE  ch1 Pulse
-	.addr	Exit			;SE  ch2 Noize
+	;-------------------------------
+	;SE
+.ifdef	SE
+	.addr	_nsd_apu_ch1_keyon_se		;SE  ch1 Pulse
+.endif
+	.addr	_nsd_apu_ch2_keyon_se		;SE  ch2 Pulse
+.ifdef	SE
+	.addr	_nsd_apu_ch3_keyon_se		;SE  ch3 Pulse
+.endif
+	.addr	Exit				;SE  ch4 Noize
+.ifdef	SE
+	.addr	_nsd_apu_dpcm_keyon_se		;BGM ch5 DPCM
+.endif
 
 ;---------------------------------------
 .code
@@ -284,20 +295,46 @@ JMPTBL:	.addr	_nsd_ch1_keyon		;BGM ch1 Pulse
 	jmp	(__ptr)			;[5]
 
 ;---------------------------------------
-_nsd_ch1_keyon:
+_nsd_apu_ch1_keyon:
+	;For hardware Key on
 	lda	#$00
 	sta	__apu_frequency1
 Exit:
 	rts
 
 ;---------------------------------------
-_nsd_ch2_keyon:
+.ifdef	SE
+_nsd_apu_ch1_keyon_se:
+	lda	#$00
+	sta	__se_frequency1
+	rts
+.endif
+
+;---------------------------------------
+_nsd_apu_ch2_keyon:
 	lda	#$00
 	sta	__apu_frequency2
 	rts
 
 ;---------------------------------------
-_nsd_ch3_keyon:
+_nsd_apu_ch2_keyon_se:
+	;For hardware Key on
+	lda	#$00
+	sta	__se_frequency2
+	rts
+
+;---------------------------------------
+_nsd_apu_ch3_keyon:
+
+	lda	#$00
+	sta	__apu_frequency3
+
+	;-------------------------------
+	;SE check
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Tri + 1
+	bne	@L
+.endif
 
 	;Hardware key on for ch3
 	lda	__env_volume + 1,x
@@ -309,19 +346,38 @@ _nsd_ch3_keyon:
 	lda	__apu_tri_time
 	sta	APU_TRICTRL1
 @L:
-	lda	#$00
-	sta	__apu_frequency3
 	rts
 
 ;---------------------------------------
-_nsd_se_keyon:
-	;For hardware Key on
-	lda	#$00
-	sta	__se_frequency
-	rts
+.ifdef	SE
+_nsd_apu_ch3_keyon_se:
 
+	lda	#$00
+	sta	__se_frequency3
+
+	;Hardware key on for ch3
+	lda	__env_volume + 1,x
+.ifdef	DPCMBank
+	ora	__env_volume,x
+.endif
+	;音量エンベロープが有効な場合、エンベロープ処理に任す
+	bne	@L
+	lda	__se_tri_time
+	sta	APU_TRICTRL1
+@L:
+	rts
+.endif
 ;---------------------------------------
-_nsd_dpcm_keyon:
+_nsd_apu_dpcm_keyon:
+
+	;-------------------------------
+	;SE check
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Dpcm + 1
+	bne	Exit
+.endif
+
+_nsd_apu_dpcm_keyon_se:
 
 	lda	#nsd_flag::Jump
 	bit	__flag
@@ -551,11 +607,11 @@ Exit:
 ;=======================================================================
 .proc	_nsd_snd_keyoff
 .rodata
-JMPTBL:	.addr	Exit			;BGM ch1 Pulse
-	.addr	Exit			;BGM ch2 Pulse
-	.addr	_nsd_ch3_keyoff		;BGM ch3 Triangle	-- no process --
+JMPTBL:	.addr	Exit			;BGM ch1 Pulse		-- no process --
+	.addr	Exit			;BGM ch2 Pulse		-- no process --
+	.addr	_nsd_apu_ch3_keyoff	;BGM ch3 Triangle
 	.addr	Exit			;BGM ch4 Noize		-- no process --
-	.addr	_nsd_dpcm_keyoff	;BGM ch5 DPCM		-- no process --
+	.addr	_nsd_apu_dpcm_keyoff	;BGM ch5 DPCM
 .ifdef	FDS
 	.addr	Exit
 .endif
@@ -610,8 +666,18 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 .ifdef	NULL
 	.addr	Exit
 .endif
-	.addr	Exit			;SE  ch1 Pulse
-	.addr	Exit			;SE  ch2 Noize		-- no process --
+
+.ifdef	SE
+	.addr	Exit			;SE  ch1 Pulse		-- no process --
+.endif
+	.addr	Exit			;SE  ch2 Pulse		-- no process --
+.ifdef	SE
+	.addr	_nsd_apu_ch3_keyoff_se
+.endif
+	.addr	Exit
+.ifdef	SE
+	.addr	_nsd_apu_dpcm_keyoff_se
+.endif
 
 ;---------------------------------------
 .code
@@ -622,7 +688,16 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse
 	jmp	(__ptr)			;[5]
 
 ;---------------------------------------
-_nsd_ch3_keyoff:
+_nsd_apu_ch3_keyoff:
+
+	;-------------------------------
+	;SE check
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Tri + 1
+	bne	Exit
+.endif
+
+_nsd_apu_ch3_keyoff_se:
 
 	;Hardware key off for ch3
 
@@ -645,7 +720,16 @@ Exit:
 	rts
 
 ;---------------------------------------
-_nsd_dpcm_keyoff:
+_nsd_apu_dpcm_keyoff:
+
+	;-------------------------------
+	;SE check
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Dpcm + 1
+	bne	Exit
+.endif
+
+_nsd_apu_dpcm_keyoff_se:
 
 	;r- ?
 	lda	__chflag,x
@@ -737,37 +821,37 @@ _nsd_OPLL_keyoff_exit:
 ;=======================================================================
 .proc	_nsd_snd_voice
 .rodata
-JMPTBL:	.addr	_nsd_ch1_voice		;BGM ch1 Pulse
-	.addr	_nsd_ch2_voice		;BGM ch2 Pulse
+JMPTBL:	.addr	_nsd_apu_ch1_voice	;BGM ch1 Pulse
+	.addr	_nsd_apu_ch2_voice	;BGM ch2 Pulse
 	.addr	Exit			;BGM ch3 Triangle	-- no process --
-	.addr	_nsd_noise_voice	;BGM ch4 Noize
-	.addr	Exit			;BGM ch5 DPCM
+	.addr	_nsd_apu_noise_voice	;BGM ch4 Noize
+	.addr	Exit			;BGM ch5 DPCM		-- no process --
 .ifdef	FDS
 	.addr	_nsd_fds_GainMod
 .endif
 .ifdef	VRC6
-	.addr	_nes_vrc6_ch1_voice
-	.addr	_nes_vrc6_ch2_voice
+	.addr	_nsd_vrc6_ch1_voice
+	.addr	_nsd_vrc6_ch2_voice
 	.addr	Exit			;Saw
 .endif
 .ifdef	VRC7
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
-	.addr	_nes_vrc7_voice
+	.addr	_nsd_vrc7_voice
+	.addr	_nsd_vrc7_voice
+	.addr	_nsd_vrc7_voice
+	.addr	_nsd_vrc7_voice
+	.addr	_nsd_vrc7_voice
+	.addr	_nsd_vrc7_voice
 .endif
 .ifdef	OPLL
-	.addr	_nes_opll_voice
-	.addr	_nes_opll_voice
-	.addr	_nes_opll_voice
-	.addr	_nes_opll_voice
-	.addr	_nes_opll_voice
-	.addr	_nes_opll_voice
-	.addr	_nes_opll_voice
-	.addr	_nes_opll_voice
-	.addr	_nes_opll_voice
+	.addr	_nsd_opll_voice
+	.addr	_nsd_opll_voice
+	.addr	_nsd_opll_voice
+	.addr	_nsd_opll_voice
+	.addr	_nsd_opll_voice
+	.addr	_nsd_opll_voice
+	.addr	_nsd_opll_voice
+	.addr	_nsd_opll_voice
+	.addr	_nsd_opll_voice
 	.addr	Exit
 	.addr	Exit
 	.addr	Exit
@@ -796,8 +880,18 @@ JMPTBL:	.addr	_nsd_ch1_voice		;BGM ch1 Pulse
 .ifdef	NULL
 	.addr	Exit
 .endif
-	.addr	_nsd_noise_voice_se1	;SE  ch1 Pulse
-	.addr	_nsd_noise_voice_se2	;SE  ch2 Noize
+
+.ifdef	SE
+	.addr	_nsd_apu_ch1_voice_se		;SE  ch1 Pulse
+.endif
+	.addr	_nsd_apu_ch2_voice_se		;SE  ch1 Pulse
+.ifdef	SE
+	.addr	Exit				;SE  ch3 Tri
+.endif
+	.addr	_nsd_apu_noise_voice_se		;SE  ch4 Noize
+.ifdef	SE
+	.addr	Exit				;SE  ch5 DPCM
+.endif
 
 ;---------------------------------------
 .code
@@ -808,7 +902,7 @@ JMPTBL:	.addr	_nsd_ch1_voice		;BGM ch1 Pulse
 	jmp	(__ptr)
 
 ;---------------------------------------
-_nsd_ch1_voice:
+_nsd_apu_ch1_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
@@ -828,7 +922,26 @@ Exit:
 	rts
 
 ;---------------------------------------
-_nsd_ch2_voice:
+.ifdef	SE
+_nsd_apu_ch1_voice_se:
+
+	;-------------------------------
+	; *** Calculate the voice
+;	shl	a, 6	;a <<= 6
+	ror	a
+	ror	a
+	ror	a
+	and	#$C0	;a &= 0xF0	;for OR to volume(lower 4bit)
+
+	;-------------------------------
+	; *** Set the voice to work
+	sta	__se_voice_set1
+
+	rts
+.endif
+
+;---------------------------------------
+_nsd_apu_ch2_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
@@ -845,7 +958,7 @@ _nsd_ch2_voice:
 	rts
 
 ;---------------------------------------
-_nsd_noise_voice_se1:
+_nsd_apu_ch2_voice_se:
 
 	;-------------------------------
 	; *** Calculate the voice
@@ -857,12 +970,12 @@ _nsd_noise_voice_se1:
 
 	;-------------------------------
 	; *** Set the voice to work
-	sta	__se_voice_set1
+	sta	__se_voice_set2
 
 	rts
 
 ;---------------------------------------
-_nsd_noise_voice:
+_nsd_apu_noise_voice:
 
 	;-------------------------------
 	; *** Calculate the voice
@@ -879,12 +992,12 @@ _nsd_noise_voice:
 	; *** Exit
 
 	lda	__frequency,x		;下位8bitだけあればいい。
-	jmp	_nsd_nes_ch4_frequency
+	jmp	_nsd_apu_ch4_frequency
 
 ;	rts
 
 ;---------------------------------------
-_nsd_noise_voice_se2:
+_nsd_apu_noise_voice_se:
 
 	;-------------------------------
 	; *** Calculate the voice
@@ -895,13 +1008,13 @@ _nsd_noise_voice_se2:
 
 	;-------------------------------
 	; *** Set the voice to work
-	sta	__se_voice_set2
+	sta	__se_voice_set4
 
 	;-------------------------------
 	; *** Exit
 
 	lda	__frequency,x		;下位8bitだけあればいい。
-	jmp	_nsd_nes_se2_frequency
+	jmp	_nsd_apu_ch4_frequency_se
 
 ;	rts
 
@@ -965,7 +1078,7 @@ _nsd_fds_GainMod:
 
 ;---------------------------------------
 .ifdef	VRC6
-_nes_vrc6_ch1_voice:
+_nsd_vrc6_ch1_voice:
 	;-------------------------------
 	; *** Calculate the voice
 	shl	a, 4	;a <<= 6
@@ -980,7 +1093,7 @@ _nes_vrc6_ch1_voice:
 	rts
 
 ;---------------------------------------
-_nes_vrc6_ch2_voice:
+_nsd_vrc6_ch2_voice:
 	;-------------------------------
 	; *** Calculate the voice
 	shl	a, 4	;a <<= 6
@@ -998,7 +1111,7 @@ _nes_vrc6_ch2_voice:
 
 ;---------------------------------------
 .ifdef	VRC7
-_nes_vrc7_voice:
+_nsd_vrc7_voice:
 
 ;	 CSV
 ;	000x xxxx	val
@@ -1089,7 +1202,7 @@ _nes_vrc7_voice:
 
 ;---------------------------------------
 .ifdef	OPLL
-_nes_opll_voice:
+_nsd_opll_voice:
 
 ;	 CSV
 ;	000x xxxx	val
@@ -1365,10 +1478,10 @@ _nsd_psg_ch3_voice:
 ;=======================================================================
 .proc	_nsd_snd_volume
 .rodata
-JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
-	.addr	_nsd_ch2_volume		;BGM ch2 Pulse
-	.addr	_nsd_ch3_volume		;BGM ch3 Triangle
-	.addr	_nsd_ch4_volume		;BGM ch4 Noize
+JMPTBL:	.addr	_nsd_apu_ch1_volume	;BGM ch1 Pulse
+	.addr	_nsd_apu_ch2_volume	;BGM ch2 Pulse
+	.addr	_nsd_apu_ch3_volume	;BGM ch3 Triangle
+	.addr	_nsd_apu_ch4_volume	;BGM ch4 Noize
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
 .ifdef	FDS
 	.addr	_nsd_fds_volume
@@ -1424,8 +1537,18 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 .ifdef	NULL
 	.addr	Exit
 .endif
-	.addr	_nsd_se1_volume		;SE  ch1 Pulse
-	.addr	_nsd_se2_volume		;SE  ch2 Noize
+
+.ifdef	SE
+	.addr	_nsd_apu_ch1_volume_se	;SE  ch1 Pulse
+.endif
+	.addr	_nsd_apu_ch2_volume_se	;SE  ch2 Pulse
+.ifdef	SE
+	.addr	_nsd_apu_ch3_volume_se	;SE  ch3 Tri
+.endif
+	.addr	_nsd_apu_ch4_volume_se	;SE  ch4 Noize
+.ifdef	SE
+	.addr	Exit
+.endif
 
 ;---------------------------------------
 .code
@@ -1447,7 +1570,13 @@ JMPTBL:	.addr	_nsd_ch1_volume		;BGM ch1 Pulse
 	jmp	(__ptr)			;[5]
 
 ;---------------------------------------
-_nsd_ch1_volume:
+_nsd_apu_ch1_volume:
+	;-------------------------------
+	;SE check
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Pluse1 + 1
+	bne	Exit
+.endif
 
 	;-------------------------------
 	; *** Mix voice and volume
@@ -1467,10 +1596,31 @@ Exit:
 	rts
 
 ;---------------------------------------
-_nsd_ch2_volume:
+.ifdef	SE
+_nsd_apu_ch1_volume_se:
+
+	;-------------------------------
+	; *** Mix voice and volume
+	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
+	and	#$0F
+	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
+	ora	__se_voice_set1
+
+	;-------------------------------
+	; *** Output to NES sound device
+	;y = x << 1
+	sta	APU_PULSE1CTRL
+
+	;-------------------------------
+	; *** Exit
+	rts
+.endif
+
+;---------------------------------------
+_nsd_apu_ch2_volume:
 	;-------------------------------
 	;SE check
-	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+	ldy	__Sequence_ptr + nsd::TR_SE_Pluse2 + 1
 	bne	Exit
 
 	;-------------------------------
@@ -1490,32 +1640,14 @@ _nsd_ch2_volume:
 	rts
 
 ;---------------------------------------
-_nsd_ch3_volume:
-
-	cmp	#0
-	beq	@L0
-	cmp	#4
-	bcc	@L
-	lda	#$FF
-
-@L:	sta	APU_TRICTRL1
-	lda	__apu_frequency3
-	sta	APU_TRIFREQ2
-	rts
-
-@L0:	lda	#$80
-	sta	APU_TRICTRL1
-	rts
-
-;---------------------------------------
-_nsd_se1_volume:
+_nsd_apu_ch2_volume_se:
 
 	;-------------------------------
 	; *** Mix voice and volume
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
 	ora	#$30	;a |= 0x30	;counter on / hard-envelop off
-	ora	__se_voice_set1
+	ora	__se_voice_set2
 
 	;-------------------------------
 	; *** Output to NES sound device
@@ -1527,13 +1659,56 @@ _nsd_se1_volume:
 	rts
 
 ;---------------------------------------
-_nsd_ch4_volume:
+_nsd_apu_ch3_volume:
+
 	;-------------------------------
 	;SE check
-	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Tri + 1
+	bne	Exit
+.endif
+
+	cmp	#0
+	beq	_nsd_apu_ch3_Counter_Set
+	cmp	#4
+	bcc	@L
+	lda	#$FF
+
+@L:	sta	APU_TRICTRL1
+	lda	__apu_frequency3
+	sta	APU_TRIFREQ2
+	rts
+
+_nsd_apu_ch3_Counter_Set:
+	lda	#$80
+	sta	APU_TRICTRL1
+	rts
+
+;---------------------------------------
+.ifdef	SE
+_nsd_apu_ch3_volume_se:
+
+	cmp	#0
+	beq	_nsd_apu_ch3_Counter_Set
+	cmp	#4
+	bcc	@L
+	lda	#$FF
+
+@L:	sta	APU_TRICTRL1
+	lda	__se_frequency3
+	sta	APU_TRIFREQ2
+	rts
+
+.endif
+
+;---------------------------------------
+_nsd_apu_ch4_volume:
+	;-------------------------------
+	;SE check
+	ldy	__Sequence_ptr + nsd::TR_SE_Noise + 1
 	bne	Exit
 
-_nsd_se2_volume:
+_nsd_apu_ch4_volume_se:
 
 	;-------------------------------
 	; *** Mix voice and volume
@@ -1959,9 +2134,9 @@ _nsd_psg_ch3_volume:
 ;=======================================================================
 .proc	_nsd_snd_sweep
 .rodata
-JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
-	.addr	_nsd_ch2_sweep		;BGM ch2 Pulse
-	.addr	_nsd_ch3_time		;BGM ch3 Triangle	-- no process --
+JMPTBL:	.addr	_nsd_apu_ch1_sweep	;BGM ch1 Pulse
+	.addr	_nsd_apu_ch2_sweep	;BGM ch2 Pulse
+	.addr	_nsd_apu_ch3_time	;BGM ch3 Triangle
 	.addr	Exit			;BGM ch4 Noize		-- no process --
 	.addr	Exit			;BGM ch5 DPCM		-- no process --
 .ifdef	FDS
@@ -2018,8 +2193,18 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 .ifdef	NULL
 	.addr	Exit
 .endif
-	.addr	_nsd_se2_sweep		;SE  ch1 Pulse
-	.addr	Exit			;SE  ch2 Noize		-- no process --
+
+.ifdef	SE
+	.addr	_nsd_apu_ch1_sweep_se	;SE  ch1 Pulse
+.endif
+	.addr	_nsd_apu_ch2_sweep_se	;SE  ch2 Pulse
+.ifdef	SE
+	.addr	_nsd_apu_ch3_time_se	;SE  ch3 Tri
+.endif
+	.addr	Exit			;SE  ch4 Noize		-- no process --
+.ifdef	SE
+	.addr	Exit			;SE  ch5 DPCM		-- no process --
+.endif
 
 ;---------------------------------------
 .code
@@ -2030,30 +2215,48 @@ JMPTBL:	.addr	_nsd_ch1_sweep		;BGM ch1 Pulse
 	jmp	(__ptr)
 
 ;---------------------------------------
-_nsd_ch1_sweep:
-	sta	__sweep_ch1
+_nsd_apu_ch1_sweep:
+
+	sta	__sweep_ch1		;効果音からの復帰用
+
+	;-------------------------------
+	;SE check
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Pluse1 + 1
+	bne	Exit
+.endif
+
+_nsd_apu_ch1_sweep_se:
 	sta	APU_PULSE1RAMP
 Exit:
 	rts
 
 ;---------------------------------------
-_nsd_ch2_sweep:
+_nsd_apu_ch2_sweep:
 
-	sta	__sweep_ch2
+	sta	__sweep_ch2		;効果音からの復帰用
 
 	;-------------------------------
 	;SE check
-	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+	ldy	__Sequence_ptr + nsd::TR_SE_Pluse2 + 1
 	bne	Exit
 
-_nsd_se2_sweep:
+_nsd_apu_ch2_sweep_se:
 	sta	APU_PULSE2RAMP
 	rts
 
 ;---------------------------------------
-_nsd_ch3_time:
+_nsd_apu_ch3_time:
 	sta	__apu_tri_time
 	rts
+
+;---------------------------------------
+.ifdef	SE
+_nsd_apu_ch3_time_se:
+	sta	__se_tri_time
+	rts
+.endif
+
 .endproc
 ;---------------------------------------
 .ifdef	FDS
@@ -2087,14 +2290,6 @@ _nsd_ch3_time:
 @NoKeyOff:
 	and	#<~nsd_chflag::NoKeyOff
 @NoKeyOff_E:
-
-;	tay
-;	lda	__chflag,x
-;	cpy	#0
-;	bne	@L
-;	and	#<~nsd_chflag::Sustain
-;	jmp	@Set
-;@L:	ora	#nsd_chflag::Sustain
 
 @Set:	sta	__chflag,x
 
@@ -2844,11 +3039,11 @@ Freq_N163_50:
 
 .rodata
 
-JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
-	.addr	_nsd_nes_ch2_frequency	;BGM ch2 Pulse
-	.addr	_nsd_nes_ch3_frequency	;BGM ch3 Triangle
-	.addr	_nsd_nes_ch4_frequency	;BGM ch4 Noise
-	.addr	Exit			;BGM ch5 DPCM
+JMPTBL:	.addr	_nsd_apu_ch1_frequency		;BGM ch1 Pulse
+	.addr	_nsd_apu_ch2_frequency		;BGM ch2 Pulse
+	.addr	_nsd_apu_ch3_frequency		;BGM ch3 Triangle
+	.addr	_nsd_apu_ch4_frequency		;BGM ch4 Noise
+	.addr	Exit				;BGM ch5 DPCM
 .ifdef	FDS
 	.addr	_nsd_fds_frequency
 .endif
@@ -2903,8 +3098,18 @@ JMPTBL:	.addr	_nsd_nes_ch1_frequency	;BGM ch1 Pulse
 .ifdef	NULL
 	.addr	Exit
 .endif
-	.addr	_nsd_nes_se1_frequency	;SE  ch1 Pulse
-	.addr	_nsd_nes_se2_frequency	;SE  ch2 Noise
+
+.ifdef	SE
+	.addr	_nsd_apu_ch1_frequency_se	;SE  ch1 Pulse
+.endif
+	.addr	_nsd_apu_ch2_frequency_se	;SE  ch2 Pulse
+.ifdef	SE
+	.addr	_nsd_apu_ch3_frequency_se	;SE  ch3 Pulse
+.endif
+	.addr	_nsd_apu_ch4_frequency_se	;SE  ch4 Noise
+.ifdef	SE
+	.addr	Exit			;SE  ch5 Pulse
+.endif
 
 ;---------------------------------------
 .code
@@ -2938,7 +3143,13 @@ Exit:
 .endproc
 
 ;---------------------------------------
-.proc	_nsd_nes_ch1_frequency
+.proc	_nsd_apu_ch1_frequency
+	;-------------------------------
+	;SE check
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Pluse1 + 1
+	bne	Exit
+.endif
 
 	jsr	Normal_frequency
 
@@ -2956,10 +3167,30 @@ Exit:
 .endproc
 
 ;---------------------------------------
-.proc	_nsd_nes_ch2_frequency
+.ifdef	SE
+.proc	_nsd_apu_ch1_frequency_se
+
+	jsr	Normal_frequency
+
+	lda	__tmp
+	sta	APU_PULSE1FTUNE
+	lda	__tmp + 1
+	ora	#$08
+	cmp	__se_frequency1
+	beq	Exit
+	sta	APU_PULSE1CTUNE
+	sta	__se_frequency1
+
+Exit:
+	rts
+.endproc
+.endif
+
+;---------------------------------------
+.proc	_nsd_apu_ch2_frequency
 	;-------------------------------
 	;SE check
-	ldy	__Sequence_ptr + nsd::TR_SE1 + 1
+	ldy	__Sequence_ptr + nsd::TR_SE_Pluse2 + 1
 	bne	Exit
 
 	jsr	Normal_frequency
@@ -2976,7 +3207,8 @@ Exit:
 	rts
 .endproc
 
-.proc	_nsd_nes_se1_frequency
+;---------------------------------------
+.proc	_nsd_apu_ch2_frequency_se
 
 	jsr	Normal_frequency
 
@@ -2984,17 +3216,23 @@ Exit:
 	sta	APU_PULSE2FTUNE
 	lda	__tmp + 1
 	ora	#$08
-	cmp	__se_frequency
+	cmp	__se_frequency2
 	beq	Exit
 	sta	APU_PULSE2STUNE		;nes.inc 間違えてる。
-	sta	__se_frequency
+	sta	__se_frequency2
 
 Exit:
 	rts
 .endproc
 
 ;---------------------------------------
-.proc	_nsd_nes_ch3_frequency
+.proc	_nsd_apu_ch3_frequency
+	;-------------------------------
+	;SE check
+.ifdef	SE
+	ldy	__Sequence_ptr + nsd::TR_SE_Tri + 1
+	bne	Exit
+.endif
 
 	jsr	Normal_frequency
 
@@ -3012,10 +3250,30 @@ Exit:
 .endproc
 
 ;---------------------------------------
-.proc	_nsd_nes_ch4_frequency
+.ifdef	SE
+.proc	_nsd_apu_ch3_frequency_se
+
+	jsr	Normal_frequency
+
+	lda	__tmp
+	sta	APU_TRIFREQ1
+	lda	__tmp + 1
+	ora	#$08
+	cmp	__se_frequency3
+	beq	Exit
+	sta	APU_TRIFREQ2
+	sta	__se_frequency3
+
+Exit:
+	rts
+.endproc
+.endif
+
+;---------------------------------------
+.proc	_nsd_apu_ch4_frequency
 	;-------------------------------
 	;SE check
-	ldy	__Sequence_ptr + nsd::TR_SE2 + 1
+	ldy	__Sequence_ptr + nsd::TR_SE_Noise + 1
 	bne	Exit
 
 	;-------------------------------
@@ -3044,8 +3302,8 @@ Exit:
 
 .endproc
 
-.proc	_nsd_nes_se2_frequency
 ;---------------------------------------
+.proc	_nsd_apu_ch4_frequency_se
 
 	;-------------------------------
 	; *** Get the note number lower 4bit
@@ -3057,7 +3315,7 @@ Exit:
 	; *** Mix voice and frequency
 	;a = (a & 0x0F) | (nsd_word.Voice.voice_set & 0xF0)
 	and	#$0F
-	ora	__se_voice_set2
+	ora	__se_voice_set4
 	
 	;-------------------------------
 	; *** Output to NES sound device

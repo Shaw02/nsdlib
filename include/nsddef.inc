@@ -224,7 +224,11 @@ PSG_Envelope_Form	= $0D
 	.endif
 
 	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + OPLL_Track + MMC5_Track + N163_Track + PSG_Track + NULL_Track
-	SE_Track	= 2		;
+	.ifdef	SE
+	  SE_Track	= 5		;
+	.else
+	  SE_Track	= 2		;
+	.endif
 
 	Track		= BGM_Track + SE_Track
 
@@ -233,8 +237,17 @@ PSG_Envelope_Form	= $0D
 	TR_BGM3		= 4
 	TR_BGM4		= 6
 	TR_BGM5		= 8
-	TR_SE1		= BGM_Track * 2 + 0
-	TR_SE2		= BGM_Track * 2 + 2
+	TR_SE		= BGM_Track * 2
+	.ifdef	SE
+	TR_SE_Pluse1	= TR_SE + 0
+	TR_SE_Pluse2	= TR_SE + 2
+	TR_SE_Tri	= TR_SE + 4
+	TR_SE_Noise	= TR_SE + 6
+	TR_SE_Dpcm	= TR_SE + 8
+	.else
+	TR_SE_Pluse2	= TR_SE + 0
+	TR_SE_Noise	= TR_SE + 2
+	.endif
 
 .endscope
 
@@ -278,11 +291,11 @@ PSG_Envelope_Form	= $0D
 ;	Defines for work structures
 
 .scope	nsd_flag
-	BGM		= $01
-	SE		= $02
-	Jump		= $10
-	Priority	= $0C
-	Disable		= $80
+	BGM		= $01	;Playing BGM
+	SE		= $02	;Playing SE
+	Jump		= $10	;
+	Priority	= $0C	;Priority of now SE
+	Disable		= $80	;Disable of sound driver
 .endscope
 
 ;Zero Page Works
@@ -388,7 +401,7 @@ PSG_Envelope_Form	= $0D
 	Detune		.tag	NSD_Detune	nsd::Track	;detune
 	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento / TR5: BGM1 & BGM2 frequency
 	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento / TR5: BGM3 & SE1  frequency
-	Por_now		.word			nsd::Track	;Portamento
+	Por_now		.word			nsd::Track	;Portamento / TR5: SE2  & SE3  frequency
 	Trans		.tag	NSD_Trans	nsd::Track	;Transpose
 	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat
 	Volume		.tag	NSD_volume	nsd::Track	;volume	/ TR3: BGM1 sweep / TR5: BGM2 sweep
@@ -410,6 +423,11 @@ PSG_Envelope_Form	= $0D
 .ifdef	FDS
 	FDS_Frequency	.byte					;FDS frequency
 	FDS_SweepBias	.byte					;FDS Sweep bias
+.endif
+
+.ifdef	MMC5
+	MMC5_VoiceSet	.byte			nsd::MMC5_Track
+	MMC5_Frequency	.byte			nsd::MMC5_Track	;MMC5 frequecny
 .endif
 
 .ifdef	VRC7
@@ -522,23 +540,35 @@ PSG_Envelope_Form	= $0D
 
 
 ;Voice
-.define	__apu_voice_set1	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5
-.define	__apu_voice_set2	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5 + 1
-.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5	;.byte
-.define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1	;.byte
-.define	__se_voice_set1		nsd_work + NSD_work::Frequency      + nsd::TR_BGM5
-.define	__se_voice_set2		nsd_work + NSD_work::Frequency      + nsd::TR_BGM5 + 1
 ;.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
 ;.define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
 ;.define	__se_voice_set1		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency  + nsd::TR_BGM5
 ;.define	__se_voice_set2		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note       + nsd::TR_BGM5
+.define	__apu_voice_set1	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5
+.define	__apu_voice_set2	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5 + 1
+.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5
+.define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1
 
-;Frequency
+.ifdef	SE
+.define	__se_voice_set1		nsd_work + NSD_work::Frequency      + nsd::TR_BGM5
+.endif
+.define	__se_voice_set2		nsd_work + NSD_work::Frequency      + nsd::TR_BGM5 + 1
+.ifdef	SE
+.define	__se_tri_time		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
+.endif
+.define	__se_voice_set4		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
+
+;Frequency	ÅiÉvÉ`ÉmÉCÉYñhé~Åj
 .define	__apu_frequency1	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5		;.byte
 .define	__apu_frequency2	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5 + 1	;.byte
 .define	__apu_frequency3	nsd_work + NSD_work::Por_Co    + nsd::TR_BGM5		;.byte
-.define	__se_frequency		nsd_work + NSD_work::Por_Co    + nsd::TR_BGM5 + 1	;.byte
-
+.ifdef	SE
+.define	__se_frequency1		nsd_work + NSD_work::Por_Co    + nsd::TR_BGM5 + 1	;.byte
+.endif
+.define	__se_frequency2		nsd_work + NSD_work::Por_now   + nsd::TR_BGM5		;.byte
+.ifdef	SE
+.define	__se_frequency3		nsd_work + NSD_work::Por_now   + nsd::TR_BGM5 + 1	;.byte
+.endif
 
 .ifdef	FDS
 .define	__fds_frequency		nsd_work + NSD_work::FDS_Frequency
@@ -548,10 +578,10 @@ PSG_Envelope_Form	= $0D
 .ifdef	MMC5
 ;.define	__mmc5_voice_set1	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5	;.byte
 ;.define	__mmc5_voice_set2	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1	;.byte
-.define	__mmc5_voice_set1	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
-.define	__mmc5_voice_set2	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
-.define	__mmc5_frequency1	nsd_work + NSD_work::Por_now        + nsd::TR_BGM5	;.byte
-.define	__mmc5_frequency2	nsd_work + NSD_work::Por_now        + nsd::TR_BGM5 + 1	;.byte
+.define	__mmc5_voice_set1	nsd_work + NSD_work::MMC5_VoiceSet
+.define	__mmc5_voice_set2	nsd_work + NSD_work::MMC5_VoiceSet + 1
+.define	__mmc5_frequency1	nsd_work + NSD_work::MMC5_Frequency
+.define	__mmc5_frequency2	nsd_work + NSD_work::MMC5_Frequency + 1
 .endif
 
 .ifdef	VRC6
@@ -680,44 +710,135 @@ BGM_Exit:
 ;	none
 ;=======================================================================
 .macro	NSD_MAIN_SE
-	.local	SE0
 	.local	SE1
+	.local	SE2
+	.local	SE3
+	.local	SE4
+	.local	SE5
 	.local	SE_Exit
 
 	lda	#nsd_flag::SE
 	bit	__flag
 	bne	SE_Exit			;SE disable ?
 
-	ldx	#nsd::TR_SE1
-	lda	__Sequence_ptr + 1,x
-.ifdef	DPCMBank
-	ora	__Sequence_ptr,x
-.endif
-	beq	SE0
-	jsr	nsd_sequence
-	jsr	nsd_envelop
-SE0:
-	ldx	#nsd::TR_SE2
-	lda	__Sequence_ptr + 1,x
-.ifdef	DPCMBank
-	ora	__Sequence_ptr,x
-.endif
-	beq	SE1
-	jsr	nsd_sequence
-	jsr	nsd_envelop
-	jmp	SE_Exit
+;---------------------------------------
+.ifdef	SE
 SE1:
-	ora	__Sequence_ptr + nsd::TR_SE1 + 1
+	ldx	#nsd::TR_SE_Pluse1
+	lda	__Sequence_ptr + 1,x
 .ifdef	DPCMBank
-	ora	__Sequence_ptr + nsd::TR_SE1
+	ora	__Sequence_ptr,x
 .endif
+	beq	@L
+	jsr	nsd_sequence
+	jsr	nsd_envelop
+@L:
+.endif
+
+;---------------------------------------
+SE2:
+	ldx	#nsd::TR_SE_Pluse2
+	lda	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	ora	__Sequence_ptr,x
+.endif
+	beq	@L
+	jsr	nsd_sequence
+	jsr	nsd_envelop
+@L:
+
+;---------------------------------------
+.ifdef	SE
+SE3:
+	ldx	#nsd::TR_SE_Tri
+	lda	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	ora	__Sequence_ptr,x
+.endif
+	beq	@L
+	jsr	nsd_sequence
+	jsr	nsd_envelop
+@L:
+.endif
+
+;---------------------------------------
+SE4:
+	ldx	#nsd::TR_SE_Noise
+	lda	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	ora	__Sequence_ptr,x
+.endif
+	beq	@L
+	jsr	nsd_sequence
+	jsr	nsd_envelop
+@L:
+
+;---------------------------------------
+.ifdef	SE
+SE5:
+	ldx	#nsd::TR_SE_Dpcm
+	lda	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	ora	__Sequence_ptr,x
+.endif
+	beq	@L
+	jsr	nsd_sequence
+@L:
+.endif
+;---------------------------------------
+
+	lda	__Sequence_ptr + 1 + nsd::TR_SE_Pluse2
+	ora	__Sequence_ptr + 1 + nsd::TR_SE_Noise
+.ifdef	SE
+	ora	__Sequence_ptr + 1 + nsd::TR_SE_Pluse1
+	ora	__Sequence_ptr + 1 + nsd::TR_SE_Tri
+	ora	__Sequence_ptr + 1 + nsd::TR_SE_Dpcm
+.endif
+.ifdef	DPCMBank
+	ora	__Sequence_ptr + nsd::TR_SE_Pluse2
+	ora	__Sequence_ptr + nsd::TR_SE_Noise
+.ifdef	SE
+	ora	__Sequence_ptr + nsd::TR_SE_Pluse1
+	ora	__Sequence_ptr + nsd::TR_SE_Tri
+	ora	__Sequence_ptr + nsd::TR_SE_Dpcm
+.endif
+.endif
+
 	bne	SE_Exit
+
+;-----------------------------------------------------------
+;
+;	ldx	#nsd::TR_SE_Pluse2
+;	lda	__Sequence_ptr + 1,x
+;.ifdef	DPCMBank
+;	ora	__Sequence_ptr,x
+;.endif
+;	beq	SE0
+;	jsr	nsd_sequence
+;	jsr	nsd_envelop
+;SE0:
+;	ldx	#nsd::TR_SE_Noise
+;	lda	__Sequence_ptr + 1,x
+;.ifdef	DPCMBank
+;	ora	__Sequence_ptr,x
+;.endif
+;	beq	SE1
+;	jsr	nsd_sequence
+;	jsr	nsd_envelop
+;	jmp	SE_Exit
+;SE1:
+;	ora	__Sequence_ptr + nsd::TR_SE_Pluse2 + 1
+;.ifdef	DPCMBank
+;	ora	__Sequence_ptr + nsd::TR_SE_Pluse2
+;.endif
+;	bne	SE_Exit
+;
+;-----------------------------------------------------------
 
 	;SE Disable
 	lda	#nsd_flag::SE
 	ora	__flag
 	sta	__flag
 SE_Exit:
-
 
 .endmacro

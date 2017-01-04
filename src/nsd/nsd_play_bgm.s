@@ -67,10 +67,14 @@
 	ldy	#0
 
 	;-----------------------
+Channel:
 	lda	(__ptr),y		; a = number of track
+	iny
 	shl	a, 1
 	sta	__channel
-	iny
+
+	;-----------------------
+Reserve:
 	iny
 
 	;-----------------------
@@ -106,22 +110,33 @@ Loop_End:
 	lda	#$08
 	sta	__sweep_ch1
 	sta	__sweep_ch2
-	sta	APU_PULSE1RAMP
 
-	lda	__Sequence_ptr + 1 + nsd::TR_SE1
+.ifdef	SE
+	lda	__Sequence_ptr + 1 + nsd::TR_SE_Pluse1
 .ifdef	DPCMBank
-	ora	__Sequence_ptr + 0 + nsd::TR_SE1
+	ora	__Sequence_ptr + 0 + nsd::TR_SE_Pluse1
 .endif
-	bne	@L
+	bne	@L1
+	lda	#$08
+.endif
+	sta	APU_PULSE1RAMP
+@L1:
+
+	lda	__Sequence_ptr + 1 + nsd::TR_SE_Pluse2
+.ifdef	DPCMBank
+	ora	__Sequence_ptr + 0 + nsd::TR_SE_Pluse2
+.endif
+	bne	@L2
 	lda	#$08
 	sta	APU_PULSE2RAMP
-@L:
+@L2:
 	lda	#120
 	sta	__Tempo
 
 	lda	#$FF
 	sta	__Tempo_ctr
 	sta	__apu_tri_time		;ŽOŠp”g ŽžŠÔ
+@L3:
 
 .ifdef	FDS
 	lda	#$00
@@ -223,6 +238,10 @@ Loop_End:
 	;Ch5(DPCM) ?
 	cpx	#nsd::TR_BGM5
 	beq	Step5
+.ifdef	SE
+	cpx	#nsd::TR_SE_Dpcm
+	beq	Step5
+.endif
 
 	sta	__env_volume,x
 	sta	__env_volume + 1,x
@@ -231,6 +250,10 @@ Loop_End:
 	;Ch3(Tri) ?
 	cpx	#nsd::TR_BGM3
 	beq	Step3
+.ifdef	SE
+	cpx	#nsd::TR_SE_Tri
+	beq	Step5
+.endif
 
 	sta	__env_voice + 1,x
 	sta	__env_voi_ptr,x

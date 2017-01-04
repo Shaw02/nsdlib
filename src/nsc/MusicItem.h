@@ -29,7 +29,8 @@ protected:
 				string		code;
 				size_t		iSize;
 	unsigned	int			iOffset;		//SNDファイルポインタ
-	
+				bool		f_Optimize;		//最適化フラグ
+
 
 //メンバー関数
 public:
@@ -47,4 +48,7 @@ public:
 	virtual		void	getCode(string* _str);
 	virtual		void	setCode(string* _str);
 	virtual		void	getAsm(MusicFile* MUS);
+
+				void	setUse(void){f_Optimize = true;};	//最適化：不可
+				bool	chkUse(void){return(f_Optimize);};	//最適化フラグの取得
 };

@@ -22,7 +22,6 @@
 //==============================================================
 FDSM::FDSM(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
-	f_Use(false),
 	m_id(_id)
 {
 	//----------------------

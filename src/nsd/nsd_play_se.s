@@ -52,7 +52,7 @@
 	stx	__ptr + 1
 
 .ifdef	DPCMBank
-	stx	__tmp + 1	;保存
+	stx	__tmp + 1		;保存
 	jsr	_nsd_ptr_bank
 .endif
 
@@ -63,85 +63,98 @@
 	ldy	#0
 
 	;-----------------------
+Channel:
 	lda	(__ptr),y		; a = number of track
 	iny
 	shl	a, 1
-	add	#nsd::TR_SE1
+	add	#nsd::TR_SE
 	sta	__channel
 
 	;-----------------------
+Priority:
 	lda	(__ptr),y		;
 	iny
 	and	#$03
 	shl	a,2
 	sta	__tmp			; __tmp  = 優先度
-	pha
 
-	;-----------------------
-	;Init the channel structure
-SE1:	ldx	#nsd::TR_SE1
-	cpx	__channel
-	bcs	Exit
-
-	lda	__Sequence_ptr + 1,x
-	beq	@Done			;トラックが使われてなかったら無条件で再生
-
+	ldx	#0
 	lda	__flag
 	and	#nsd_flag::Priority	; 0000-1100<2>
 	cmp	__tmp
-	bcc	SE2			;優先度判定
+	bcc	@L			;優先度判定
 
-@Done:
 	lda	__flag
 	and	#<~nsd_flag::Priority
 	ora	__tmp
 	sta	__flag			;優先度更新
-
-	lda	(__ptr),y
-	sta	__tmp
-	iny
-	ora	(__ptr),y
-	bne	@L			;ポインターが0だったら、トラック無し。
-	iny
-	jmp	SE2
+	ldx	#1			;今回の効果音を優先する
 @L:
-	jsr	_nsd_play
-	iny
-
-	lda	#$08
-	sta	APU_PULSE2RAMP		;ch 2 only
+	stx	__tmp			; ＝ 0 だったら前回の方が優先度高い。
 
 	;-----------------------
-SE2:	
-	pla
-	sta	__tmp
-	ldx	#nsd::TR_SE2
+	;Init the channel structure
+	ldx	#nsd::TR_SE
+
+Loop:
 	cpx	__channel
-	bcs	Exit
+	bcs	Loop_End
+
+	lda	__tmp
+	bne	@Done			;優先度が高かったら無条件で再生
 
 	lda	__Sequence_ptr + 1,x
-	beq	@Done			;トラックが使われてなかったら無条件で再生
+	beq	@Done1			;トラックが使われてなかったら無条件で再生
 
-	lda	__flag
-	and	#nsd_flag::Priority
-	cmp	__tmp
-	bcc	Exit			;優先度判定
+	iny
+	iny
+	jmp	@None
 
+@Done1:
+	lda	__tmp
 @Done:
+	pha				;効果音優先度情報の保存
 	lda	(__ptr),y
+	iny
 	sta	__tmp
-	iny
 	ora	(__ptr),y
-	bne	@L			;ポインターが0だったら、トラック無し。
-	iny
-	jmp	Exit
-@L:
+	beq	@L
 	jsr	_nsd_play
+
+.ifdef	SE
+	lda	#$08
+	cpx	#nsd::TR_SE_Pluse1
+	bne	@L0
+	sta	APU_PULSE1RAMP
+@L0:
+	cpx	#nsd::TR_SE_Pluse2
+	bne	@L1
+	sta	APU_PULSE1RAMP
+@L1:
+.endif
+
+@L:
 	iny
+	pla
+	sta	__tmp			;効果音優先度情報の復帰
+
+@None:
+	inx
+	inx
+	cpx	#nsd::TR_SE + nsd::SE_Track * 2
+	bcc	Loop
+Loop_End:
+
 
 	;-----------------------
-Exit:
-	;Tempo is none
+	;無条件初期化
+
+.ifdef	SE
+	lda	#$FF
+	sta	__se_tri_time		;三角波 時間
+.endif
+
+	;-----------------------
 
 	pla
 	sta	__channel

@@ -25,7 +25,6 @@ class Sub : public TrackSet
 
 //メンバー変数
 private:
-	bool	f_Use;				//MML中で使われるか？
 
 public:
 
@@ -34,10 +33,7 @@ public:
 
 	void				getAsm(MusicFile* MUS);
 
-	unsigned	int		TickCount(MusicFile* MUS, unsigned int iLength);
-	unsigned	int		GetDefaultLength(void);
-				void	setUse(void){f_Use = true;};
-				bool	chkUse(void){return(f_Use);};
+	unsigned	int		TickCount(MusicFile* MUS, NSD_WORK* work);
 
 };// END CLASS DEFINITION Sub
 

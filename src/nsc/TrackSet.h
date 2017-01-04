@@ -40,9 +40,10 @@ public:
 				~TrackSet(void);
 
 		void	TickCount(MusicFile* MUS);
+		void	TickCountPrint(MusicFile* MUS, int iStart, int iEnd);
 		void	getAsm(MusicFile* MUS);
 
-		void	Optimize(MusicFile* MUS);
+		void	OptimizeDefineCheck(MusicFile* MUS);
 		void	clear(int _id);
 		void	Fix_Address(MusicFile* MUS);
 

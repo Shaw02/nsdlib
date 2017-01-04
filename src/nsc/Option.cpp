@@ -35,9 +35,10 @@ OPSW::OPSW(int argc, char* argv[]):
 	fHelp(0),		//ヘルプは、デフォルトは表示しない。
 	saveNSF(false),
 	saveASM(false),
-	opt(false),
+	flag_Optimize(false),
+	flag_OptObj(true),
+	flag_OptSeq(true),
 	fErr(false),
-	flag_TickCount(true),
 	flag_SearchPass(false),
 	cDebug(0)
 {
@@ -81,8 +82,41 @@ OPSW::OPSW(int argc, char* argv[]):
 				//アセンブリ言語へ
 				case 'o' :
 				case 'O' :
-					opt = true;
-					break;
+					{
+						bool fTemp;
+						switch(argv[iCount][3]){
+							case '0' :
+							case '+' :
+								fTemp = false;
+								break;
+							case '1' :
+							case '-' :
+								fTemp = true;
+								break;
+							default :
+								opError(_T("-o"));
+								break;
+						}
+						switch(argv[iCount][2]){
+							case 'd' :
+							case 'D' :
+								flag_Optimize = fTemp;
+								break;
+							case 'o' :
+							case 'O' :
+								flag_OptObj = fTemp;
+								break;
+							case 's' :
+							case 'S' :
+								flag_OptSeq = fTemp;
+								break;
+							default :
+								opError(_T("-o"));
+								break;
+						}
+						flag_Optimize = true;
+						break;
+					}
 				//--------
 				//アセンブリ言語へ
 				case 'a' :
@@ -103,10 +137,10 @@ OPSW::OPSW(int argc, char* argv[]):
 					break;
 				//--------
 				//Tick Count
-				case 't' :
-				case 'T' :
-					flag_TickCount = false;
-					break;
+		//		case 't' :
+		//		case 'T' :
+		//			flag_TickCount = false;
+		//			break;
 				//--------
 				//Search Pass
 				case 's' :
@@ -373,7 +407,10 @@ void	OPSW::print_help(){
 				_T("  -A			Compile to assembly langage.\n")
 				_T("  -N			Compile to NSF music format.\n")
 				_T("  -E			Error/Warning messages out the stadard error.\n")
-				_T("  -T			Disable tick counting.\n")
+			//	_T("  -T			Disable to output the tick counting result.\n")
+				_T("  -Od			Optimize the NSF bank struct of the delta-PCM.\n")
+				_T("  -Oo			Optimize the object data.\n")
+				_T("  -Os			Optimize the sequence data.\n")
 				_T("  -S			Enable outout the search pass result.\n")
 				_T("  -L[file(.bin)]	Filename of the rom code for NSF.\n")
 				_T("  -FA[file(.s  )]	Filename of the output assembly langage file.\n")

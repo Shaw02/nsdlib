@@ -724,8 +724,25 @@ nsd_op00:
 ;
 ;	Sweepの状態を元に戻す。
 ;
-@SE1:	cpx	#nsd::TR_SE1
-	bne	@SE2
+
+.ifdef	SE
+@SE1:	
+	cpx	#nsd::TR_SE_Pluse1
+	bne	@SE1_E
+	lda	__sweep_ch1
+	jsr	_nsd_snd_sweep
+	;周波数設定を必ず呼ぶように。
+	lda	#$FF
+	sta	__frequency + nsd::TR_BGM1
+	sta	__frequency + nsd::TR_BGM1 + 1
+	sta	__apu_frequency2
+	jmp	@Exit
+@SE1_E:
+.endif
+
+@SE2:	
+	cpx	#nsd::TR_SE_Pluse2
+	bne	@SE2_E
 	lda	__sweep_ch2
 	jsr	_nsd_snd_sweep
 	;周波数設定を必ず呼ぶように。
@@ -734,14 +751,37 @@ nsd_op00:
 	sta	__frequency + nsd::TR_BGM2 + 1
 	sta	__apu_frequency2
 	jmp	@Exit
+@SE2_E:
 
-@SE2:	;SE2は無い。
-	cpx	#nsd::TR_SE2
-	bne	@Exit
+.ifdef	SE
+@SE3:	;SE2は無い。
+	cpx	#nsd::TR_SE_Tri
+	bne	@SE3_E
+	;周波数設定を必ず呼ぶように。
+	lda	#$FF
+	sta	__frequency + nsd::TR_BGM3
+	sta	__frequency + nsd::TR_BGM3 + 1
+	sta	__apu_frequency3
+@SE3_E:
+.endif
+
+@SE4:	;SE2は無い。
+	cpx	#nsd::TR_SE_Noise
+	bne	@SE4_E
 	;周波数設定を必ず呼ぶように。
 	lda	#$FF
 	sta	__frequency + nsd::TR_BGM4
 	sta	__frequency + nsd::TR_BGM4 + 1
+@SE4_E:
+
+
+.ifdef	SE
+@SE5:	;SE2は無い。
+	cpx	#nsd::TR_SE_Dpcm
+	bne	@SE5_E
+@SE5_E:
+.endif
+
 
 @Exit:
 	rts
@@ -891,10 +931,12 @@ nsd_op07:
 ;-----------------------------------------------------------------------
 nsd_op08:
 	jsr	nsd_load_sequence
-	cpx	#nsd::TR_SE1
-	beq	Set_Tempo_SE
-	cpx	#nsd::TR_SE2
-	beq	Set_Tempo_SE
+
+	;---------------------
+	;SEかチェック
+	cpx	#nsd::TR_SE
+	bcs	Set_Tempo_SE
+
 Set_Tempo:
 	sta	__Tempo
 Set_Tempo_SE:
@@ -905,10 +947,12 @@ Set_Tempo_SE:
 ;-----------------------------------------------------------------------
 nsd_op0C:
 	jsr	nsd_load_sequence
-	cpx	#nsd::TR_SE1
-	beq	Set_Tempo_SE
-	cpx	#nsd::TR_SE2
-	beq	Set_Tempo_SE
+
+	;---------------------
+	;SEかチェック
+	cpx	#nsd::TR_SE
+	bcs	Set_Tempo_SE
+
 	add	__Tempo
 	jmp	Set_Tempo
 

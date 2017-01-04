@@ -22,7 +22,6 @@
 //==============================================================
 Envelop::Envelop(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
-	f_Use(false),
 	m_id(_id)
 {
 	//----------------------
@@ -166,12 +165,12 @@ const	static	Command_Info	Command[] = {
 				}
 				if(Release == false){
 					if(ptEnvelop > 0x3F){
-						MML->Err(_T("ループ位置を指定できる範囲(64Byte)を超えました。"));
+						MML->Warning(_T("ループ位置を指定できる範囲(64Byte)を超えました。"));
 					}
 					Loop_Normal		= ptEnvelop;
 				} else {
 					if(ptEnvelop > 0x3F){
-						MML->Err(_T("リリース時のループ位置を指定できる範囲(64Byte)を超えました。"));
+						MML->Warning(_T("リリース時のループ位置を指定できる範囲(64Byte)を超えました。"));
 					}
 					Loop_Release	= ptEnvelop;
 				}
@@ -223,12 +222,12 @@ void Envelop::SetLoop(MMLfile* MML, int LoopPoint)
 		if(Release == true){
 			MML->Warning(_T("リリース時のループポイントがありません。最後の値をループします。"));
 			if(ptEnvelop > 0x3F){
-				MML->Err(_T("リリース時のループ位置を指定できる範囲(63Byte)を超えました。"));
+				MML->Warning(_T("リリース時のループ位置を指定できる範囲(63Byte)を超えました。"));
 			}
 		} else {
 			MML->Warning(_T("ループポイントがありません。最後の値をループします。"));
 			if(ptEnvelop > 0x3F){
-				MML->Err(_T("ループ位置を指定できる範囲(63Byte)を超えました。"));
+				MML->Warning(_T("ループ位置を指定できる範囲(63Byte)を超えました。"));
 			}
 		}
 		code.append((char)1, (char)(ptEnvelop-1 | 0xC0));

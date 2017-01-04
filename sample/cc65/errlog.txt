@@ -1,4 +1,0 @@
-[Compile] : test.c 		
-[Compile] : testmus.mml 		
-[Link] : test.nes 		
-ld65: Warning: Segment `PCMDATA' is not aligned properly. Resulting executable may not be functional.

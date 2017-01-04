@@ -515,7 +515,8 @@ MusicFile::~MusicFile(void)
 }
 
 //==============================================================
-//		デストラクタ
+//		使用しないオブジェクトの検索＆削除
+//		しながら、Tickをカウント
 //--------------------------------------------------------------
 //	●引数
 //				無し
@@ -524,22 +525,122 @@ MusicFile::~MusicFile(void)
 //==============================================================
 void	MusicFile::TickCount(void)
 {
+	map<	int, FDSC*		>::iterator	itFDSC;		//FDS  wave table (career)
+	map<	int, FDSM*		>::iterator	itFDSM;		//FDS  wave table (modulator)
+	map<	int, VRC7*		>::iterator	itVRC7;		//VRC7 User Instrument
+	map<	int, N163*		>::iterator	itN163;		//N163 wave table
+	map<	int, Envelop*	>::iterator	itEnv;		//Envelop
+	map<	int, Sub*		>::iterator	itSub;		//Subroutine
+
 	unsigned	int			iBGM	= 0;
 	unsigned	int			iSE		= 0;
 
+	//----------------------
+	//Tick Count & 最適化のための情報収集
+
 	while(iBGM < Header.iBGM){
 		cout << "---- BGM(" << iBGM << ") ----" <<endl;
-		ptcBGM[iBGM]->TickCount(this);
+		ptcBGM[iBGM]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
+		ptcBGM[iBGM]->OptimizeDefineCheck(this);	//使ている定義をチェック
 		iBGM++;
 	}
 
 	while(iSE < Header.iSE){
 		cout << "---- SE(" << iSE << ") ----" <<endl;
-		ptcSE[iSE]->TickCount(this);
+		ptcSE[iSE]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
+		ptcSE[iSE]->OptimizeDefineCheck(this);		//使ている定義をチェック
 		iSE++;
 	}
 
+	//----------------------
+	//不要なコマンドの削除
 
+	if(cOptionSW->flag_OptSeq == false){		//コマンドの最適化が無効だったら、最適化しない。
+
+		//	to do	■■■■■■	不要なコマンド・オブジェクトを削除する	■■■■■■
+
+	}
+
+	//----------------------
+	//使っていない定義の削除
+
+	if(cOptionSW->flag_OptObj == false){		//定義の最適化が無効だったら、最適化しない。
+
+		//サブルーチン
+		if(!ptcSub.empty()){
+			itSub = ptcSub.begin();
+			while(itSub != ptcSub.end()){
+				if(itSub->second->chkUse() == true){
+					//使うサブルーチンであれば、その中で使ってる定義をチェック
+					itSub->second->OptimizeDefineCheck(this);
+				} else {
+					//使わないサブルーチンであれば、オブジェクト削除。
+					itSub->second->clear(itSub->first);
+				}
+				itSub++;
+			}
+		}
+
+		//エンベロープ
+		if(!ptcEnv.empty()){
+			itEnv = ptcEnv.begin();
+			while(itEnv != ptcEnv.end()){
+				if(itEnv->second->chkUse() == false){
+					//使わないサブルーチンであれば、オブジェクト削除。
+					itEnv->second->clear(itEnv->first);
+				}
+				itEnv++;
+			}
+		}
+
+		//FDSC
+		if(!ptcFDSC.empty()){
+			itFDSC = ptcFDSC.begin();
+			while(itFDSC != ptcFDSC.end()){
+				if(itFDSC->second->chkUse() == false){
+					//使わないサブルーチンであれば、オブジェクト削除。
+					itFDSC->second->clear(itFDSC->first);
+				}
+				itFDSC++;
+			}
+		}
+
+		//FDSM
+		if(!ptcFDSM.empty()){
+			itFDSM = ptcFDSM.begin();
+			while(itFDSM != ptcFDSM.end()){
+				if(itFDSM->second->chkUse() == false){
+					//使わないサブルーチンであれば、オブジェクト削除。
+					itFDSM->second->clear(itFDSM->first);
+				}
+				itFDSM++;
+			}
+		}
+
+		//VRC7
+		if(!ptcVRC7.empty()){
+			itVRC7 = ptcVRC7.begin();
+			while(itVRC7 != ptcVRC7.end()){
+				if(itVRC7->second->chkUse() == false){
+					//使わないサブルーチンであれば、オブジェクト削除。
+					itVRC7->second->clear(itVRC7->first);
+				}
+				itVRC7++;
+			}
+		}
+
+		//N163
+		if(!ptcN163.empty()){
+			itN163 = ptcN163.begin();
+			while(itN163 != ptcN163.end()){
+				if(itN163->second->chkUse() == false){
+					//使わないサブルーチンであれば、オブジェクト削除。
+					itN163->second->clear(itN163->first);
+				}
+				itN163++;
+			}
+		}
+	}
 }
 
 //==============================================================
@@ -568,118 +669,6 @@ unsigned	int		MusicFile::SetDPCMOffset(unsigned int iMusSize)
 		i = Header.offsetPCM;
 	}
 	return(i - Header.offsetPCM);
-}
-
-//==============================================================
-//		使用しないオブジェクトの検索＆削除
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-void	MusicFile::Optimize(void)
-{
-	map<	int, FDSC*		>::iterator	itFDSC;		//FDS  wave table (career)
-	map<	int, FDSM*		>::iterator	itFDSM;		//FDS  wave table (modulator)
-	map<	int, VRC7*		>::iterator	itVRC7;		//VRC7 User Instrument
-	map<	int, N163*		>::iterator	itN163;		//N163 wave table
-	map<	int, Envelop*	>::iterator	itEnv;		//Envelop
-	map<	int, Sub*		>::iterator	itSub;		//Subroutine
-
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
-
-	//----------------------
-	//使う（使わない）オブジェクトの検索
-	while(iBGM < Header.iBGM){
-		ptcBGM[iBGM]->Optimize(this);
-		iBGM++;
-	}
-
-	while(iSE < Header.iSE){
-		ptcSE[iSE]->Optimize(this);
-		iSE++;
-	}
-
-	//----------------------
-	//使わないオブジェクトの削除
-
-	//サブルーチン
-	if(!ptcSub.empty()){
-		itSub = ptcSub.begin();
-		while(itSub != ptcSub.end()){
-			if(itSub->second->chkUse() == true){
-				//使うサブルーチンであれば、その中で使ってるオブジェクトをチェック
-				itSub->second->Optimize(this);
-			} else {
-				//使わないサブルーチンであれば、オブジェクト削除。
-				itSub->second->clear(itSub->first);
-			}
-			itSub++;
-		}
-	}
-
-	//エンベロープ
-	if(!ptcEnv.empty()){
-		itEnv = ptcEnv.begin();
-		while(itEnv != ptcEnv.end()){
-			if(itEnv->second->chkUse() == false){
-				//使わないサブルーチンであれば、オブジェクト削除。
-				itEnv->second->clear(itEnv->first);
-			}
-			itEnv++;
-		}
-	}
-
-	//FDSC
-	if(!ptcFDSC.empty()){
-		itFDSC = ptcFDSC.begin();
-		while(itFDSC != ptcFDSC.end()){
-			if(itFDSC->second->chkUse() == false){
-				//使わないサブルーチンであれば、オブジェクト削除。
-				itFDSC->second->clear(itFDSC->first);
-			}
-			itFDSC++;
-		}
-	}
-
-	//FDSM
-	if(!ptcFDSM.empty()){
-		itFDSM = ptcFDSM.begin();
-		while(itFDSM != ptcFDSM.end()){
-			if(itFDSM->second->chkUse() == false){
-				//使わないサブルーチンであれば、オブジェクト削除。
-				itFDSM->second->clear(itFDSM->first);
-			}
-			itFDSM++;
-		}
-	}
-
-	//VRC7
-	if(!ptcVRC7.empty()){
-		itVRC7 = ptcVRC7.begin();
-		while(itVRC7 != ptcVRC7.end()){
-			if(itVRC7->second->chkUse() == false){
-				//使わないサブルーチンであれば、オブジェクト削除。
-				itVRC7->second->clear(itVRC7->first);
-			}
-			itVRC7++;
-		}
-	}
-
-	//N163
-	if(!ptcN163.empty()){
-		itN163 = ptcN163.begin();
-		while(itN163 != ptcN163.end()){
-			if(itN163->second->chkUse() == false){
-				//使わないサブルーチンであれば、オブジェクト削除。
-				itN163->second->clear(itN163->first);
-			}
-			itN163++;
-		}
-	}
-
 }
 
 //==============================================================
@@ -828,11 +817,11 @@ void	MusicFile::saveNSF(const char*	strFileName)
 				size_t	pcm_size;
 	unsigned	char	mus_bank;
 	unsigned	char	pcm_bank;
-				char*	romimg		= new char[0xC000+0x80];
-	NSF_Header*			nsf			= (NSF_Header*)romimg;
-	FileInput*			_romcode	= new FileInput();
-				bool	dpcm_bank	= false;
-				bool	opt			= cOptionSW->opt;
+				char*	romimg			= new char[0xC000+0x80];
+	NSF_Header*			nsf				= (NSF_Header*)romimg;
+	FileInput*			_romcode		= new FileInput();
+				bool	dpcm_bank		= false;
+				bool	flag_Optimize	= cOptionSW->flag_Optimize;
 
 	//NSF用コードの転送
 	_romcode->fileopen(Header.romcode.c_str(), &(cOptionSW->m_pass_code));
@@ -959,7 +948,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 		} else {
 			//⊿PCMを使う場合
-			if(opt == true){
+			if(flag_Optimize == true){
 				//最適化が有効であれば、ヘッダーにバンク情報を書く。
 				i = 0;
 				while(i < mus_bank){
@@ -986,7 +975,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 			write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
 			write(code.c_str(), code.size());	//シーケンスの書き込み
 
-			if(opt == true){
+			if(flag_Optimize == true){
 				//GAP
 				while(mus_size < ((unsigned int)mus_bank<<12)){
 					put(0);		//0 padding
@@ -1031,7 +1020,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 			pcm_size++;
 		}
 
-		if(opt != true){
+		if(flag_Optimize != true){
 			//GAP（必ず、32kByte以上にする。）
 			i = (mus_bank + pcm_bank + 3) << 12;
 			while(i < 0x8000){

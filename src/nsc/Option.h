@@ -21,8 +21,10 @@ public:
 				bool		fErr;			//エラー出力先	true:標準エラー出力／false:標準出力
 				bool		saveNSF;		//.nsf を出力するか
 				bool		saveASM;		//.s   を出力するか
-				bool		opt;			//最適化を有効にするか？
-				bool		flag_TickCount;	//TickCountを無効にするか？
+				bool		flag_Optimize;	//最適化を有効にするか？
+				bool		flag_OptObj;	//最適化を有効にするか？
+				bool		flag_OptSeq;	//最適化を有効にするか？
+		//		bool		flag_TickCount;	//TickCountを無効にするか？
 				bool		flag_SearchPass;//SearchPassの処理結果を出力するか
 				char		fHelp;			//ヘルプを指定したか？
 				string		strMMLname;		//指定したMMLファイル名

@@ -293,6 +293,10 @@ Mode1:	;-----------------------
 
 	cpx	#nsd::TR_BGM3
 	beq	Exit
+.ifdef	SE
+	cpx	#nsd::TR_SE_Tri
+	beq	Exit
+.endif
 
 	lda	__volume,x
 
@@ -333,6 +337,10 @@ Voice:
 	beq	Voice_Exit		;Ch3 は必ずLow になっている。
 ;	cpx	#nsd::TR_BGM3		;ので、コメントアウト
 ;	beq	Voice_Exit		;
+;.ifdef	SE
+;	cpx	#nsd::TR_SE_Tri
+;	beq	Voice_Exit
+;.endif
 
 @Envelop:
 	lda	__Envelop_V,x
@@ -399,6 +407,10 @@ Volume:
 
 	cpx	#nsd::TR_BGM3		;
 	beq	@S			;ch3 はリニアカウンタなので、v コマンド値との乗算はしない。
+.ifdef	SE
+	cpx	#nsd::TR_SE_Tri
+	beq	@S
+.endif
 	sta	__tmp
 	lda	__volume,x
 	ldx	__tmp
@@ -409,6 +421,10 @@ Volume:
 @No_Envelop:
 	cpx	#nsd::TR_BGM3
 	beq	Exit2
+.ifdef	SE
+	cpx	#nsd::TR_SE_Tri
+	beq	Exit2
+.endif
 
 	lda	__chflag,x
 	and	#nsd_chflag::KeyOff

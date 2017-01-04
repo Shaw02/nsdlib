@@ -26,8 +26,6 @@ private:
 				bool	Release;			//リリースパターンがあるかどうか
 				int		ptEnvelop;			//処理ポインタ
 
-				bool	f_Use;				//MML中で使われるか？
-
 //static	const	Command_Info	Command[];	//コマンドの情報
 
 //メンバー関数
@@ -37,7 +35,5 @@ public:
 		void	SetLoop(MMLfile* MML, int LoopPoint);
 		void	setHold(int length);
 		int		sweep(MMLfile* MML);
-		void	setUse(void){f_Use = true;};
-		bool	chkUse(void){return(f_Use);};
 		void	getAsm(MusicFile* MUS);
 };

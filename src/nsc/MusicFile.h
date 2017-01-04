@@ -69,9 +69,9 @@ public:
 	~MusicFile(void);
 
 	void				TickCount(void);
+
 	unsigned	int		SetDPCMOffset(unsigned int iMusSize);
 
-	void	Optimize(void);
 	void	Fix_Address(void);
 
 	//バイナリーを作る

@@ -87,50 +87,54 @@ int	main(int argc, char* argv[])
 		//==================================
 		_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
 					_T("    Version 1.27\n")
-					_T("        Copyright (c) 2012-2015 S.W.\n")	<<	endl;
+					_T("        Copyright (c) 2012-2016 S.W.\n")	<<	endl;
 
 
 		//==================================
 		//クラスの作成
 		cOptionSW	= new OPSW(argc,argv);							//オプション処理
-		if(cOptionSW->cDebug & 0x01){
-			_COUT << _T("\n============ [ 1st phase : Object Creating ] ============") << endl;
-		}
-		_COUT << _T("----------------------------------------") << endl;
+		_COUT << _T("------------------------------------------------------------") << endl;
 		_COUT << _T("*Object creating process") << endl;
 
 		cMML = new MMLfile(cOptionSW->strMMLname.c_str());
 		cSND = new MusicFile(cMML, cOptionSW->strCodeName);
 
+		_COUT << endl;
+
+
+
+		//==================================
+		//Optimize & Tick Count
+		_COUT << _T("------------------------------------------------------------") << endl;
+		_COUT << _T("*Optimize & Tick counting process") << endl;
+
+		cSND->TickCount();
+
+		_COUT << endl;
+
 
 
 		//==================================
 		//アドレスの解決
-		if(cOptionSW->cDebug & 0x02){
-			_COUT << _T("\n============ [ 2nd phase : Address Setting ] ============") << endl;
-		}
-		_COUT << _T("----------------------------------------") << endl;
+		_COUT << _T("------------------------------------------------------------") << endl;
 		_COUT << _T("*Address settlement process") << endl;
 
-
-		//ＭＭＬから呼ばれるオブジェクトの検索 ＆ 呼ばれないオブジェクトの削除
-		cSND->Optimize();
-
-		//アドレスの計算
+		//アドレスの計算 ＆ サイズの出力
 		i = cSND->SetOffset(0);
 		cout << "  Music Size = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
+
 		i = cSND->SetDPCMOffset(i);
 		cout << "  DPCM Size  = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
 
 		//アドレスを引数にもつオペコードのアドレス解決
 		cSND->Fix_Address();
 
+		_COUT << endl;
+
+
+
 		//==================================
 		//保存
-		if(cOptionSW->cDebug & 0x04){
-			_COUT << _T("\n============ [ 3rd phase : Music File Outputing ] ============") << endl;
-		}
-
 		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveASM == false))){
 			cSND->saveNSF(cOptionSW->strNSFname.c_str());
 		}
@@ -139,21 +143,11 @@ int	main(int argc, char* argv[])
 			cSND->saveASM(cOptionSW->strASMname.c_str());
 		}
 
+		_COUT << endl;
+
 
 
 		//==================================
-		//Tick Count
-		if(cOptionSW->cDebug & 0x04){
-			_COUT << _T("\n============ [ 4th phase : Tick Counting ] ============") << endl;
-		}
-
-		if(cOptionSW->flag_TickCount == true){
-			_COUT << _T("----------------------------------------") << endl;
-			_COUT << _T("*Tick counting process") << endl;
-			cSND->TickCount();
-		} else {
-			_COUT	<<	_T("tickのカウントは無効化されました。")	<<	endl;
-		}
 
 	} catch (int no) {
 		if (no != EXIT_SUCCESS){
