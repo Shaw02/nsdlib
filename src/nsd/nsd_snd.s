@@ -212,15 +212,15 @@
 JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 	.addr	_nsd_apu_ch2_keyon		;BGM ch2 Pulse
 	.addr	_nsd_apu_ch3_keyon		;BGM ch3 Triangle
-	.addr	Exit				;BGM ch4 Noize
+	.addr	_nsd_keyon_exit			;BGM ch4 Noize
 	.addr	_nsd_apu_dpcm_keyon		;BGM ch5 DPCM
 .ifdef	FDS
 	.addr	_nsd_fds_keyon
 .endif
 .ifdef	VRC6
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
 .endif
 .ifdef	VRC7
 	.addr	_nsd_vrc7_keyon		;取りあえず、処理しない。
@@ -251,22 +251,22 @@ JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 	.addr	_nsd_mmc5_ch2_keyon		;
 .endif
 .ifdef	N163
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
 .endif
 .ifdef	PSG
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
+	.addr	_nsd_keyon_exit
 .endif
 .ifdef	NULL
-	.addr	Exit
+	.addr	_nsd_keyon_exit
 .endif
 	;-------------------------------
 	;SE
@@ -277,7 +277,7 @@ JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 .ifdef	SE
 	.addr	_nsd_apu_ch3_keyon_se		;SE  ch3 Pulse
 .endif
-	.addr	Exit				;SE  ch4 Noize
+	.addr	_nsd_keyon_exit			;SE  ch4 Noize
 .ifdef	SE
 	.addr	_nsd_apu_dpcm_keyon_se		;BGM ch5 DPCM
 .endif
@@ -293,38 +293,44 @@ JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 	ldy	JMPTBL + 1,x		;
 	sty	__ptr + 1		;
 	jmp	(__ptr)			;[5]
-
+.endproc
 ;---------------------------------------
-_nsd_apu_ch1_keyon:
+.proc	_nsd_apu_ch1_keyon
 	;For hardware Key on
 	lda	#$00
 	sta	__apu_frequency1
+.endproc
+
+.proc	_nsd_keyon_exit
 Exit:
 	rts
-
+.endproc
 ;---------------------------------------
 .ifdef	SE
-_nsd_apu_ch1_keyon_se:
+.proc	_nsd_apu_ch1_keyon_se
 	lda	#$00
 	sta	__se_frequency1
 	rts
+.endproc
 .endif
 
 ;---------------------------------------
-_nsd_apu_ch2_keyon:
+.proc	_nsd_apu_ch2_keyon
 	lda	#$00
 	sta	__apu_frequency2
 	rts
+.endproc
 
 ;---------------------------------------
-_nsd_apu_ch2_keyon_se:
+.proc	_nsd_apu_ch2_keyon_se
 	;For hardware Key on
 	lda	#$00
 	sta	__se_frequency2
 	rts
+.endproc
 
 ;---------------------------------------
-_nsd_apu_ch3_keyon:
+.proc	_nsd_apu_ch3_keyon
 
 	lda	#$00
 	sta	__apu_frequency3
@@ -347,10 +353,11 @@ _nsd_apu_ch3_keyon:
 	sta	APU_TRICTRL1
 @L:
 	rts
+.endproc
 
 ;---------------------------------------
 .ifdef	SE
-_nsd_apu_ch3_keyon_se:
+.proc	_nsd_apu_ch3_keyon_se
 
 	lda	#$00
 	sta	__se_frequency3
@@ -366,18 +373,20 @@ _nsd_apu_ch3_keyon_se:
 	sta	APU_TRICTRL1
 @L:
 	rts
+.endproc
 .endif
 ;---------------------------------------
-_nsd_apu_dpcm_keyon:
+.proc	_nsd_apu_dpcm_keyon
 
 	;-------------------------------
 	;SE check
 .ifdef	SE
 	ldy	__Sequence_ptr + nsd::TR_SE_Dpcm + 1
-	bne	Exit
+	bne	_nsd_keyon_exit
 .endif
 
-_nsd_apu_dpcm_keyon_se:
+.endproc
+.proc	_nsd_apu_dpcm_keyon_se
 
 	lda	#nsd_flag::Jump
 	bit	__flag
@@ -423,30 +432,34 @@ _nsd_apu_dpcm_keyon_se:
 @E:
 	rts
 
+.endproc
 ;---------------------------------------
 .ifdef	FDS
-_nsd_fds_keyon:
+.proc	_nsd_fds_keyon
 	lda	__fds_sweepbias
 	sta	FDS_Sweep_Bias
 	rts
+.endproc
 .endif
 ;---------------------------------------
 .ifdef	MMC5
 
-_nsd_mmc5_ch1_keyon:
+.proc	_nsd_mmc5_ch1_keyon
 	lda	#$00
 	sta	__mmc5_frequency1
 	rts
+.endproc
 
-_nsd_mmc5_ch2_keyon:
+.proc	_nsd_mmc5_ch2_keyon
 	lda	#$00
 	sta	__mmc5_frequency2
 	rts
 
+.endproc
 .endif
 ;---------------------------------------
 .ifdef	VRC7
-_nsd_vrc7_keyon:
+.proc	_nsd_vrc7_keyon
 
 	lda	__chflag,x		;[4]4
 	and	#nsd_chflag::NoKeyOff
@@ -473,17 +486,19 @@ _nsd_vrc7_keyon:
 
 _nsd_vrc7_keyon_exit:
 	rts
+.endproc
 .endif
 ;---------------------------------------
 .ifdef	OPLL
-_nsd_opll_keyon_R:
+.proc	_nsd_opll_keyon_R
 
 	;OPLL_Rhythm check
 	lda	__opll_ryhthm
 	cmp	#$20
 	bcs	_nsd_opll_keyon_exit
+.endproc
 
-_nsd_opll_keyon:
+.proc	_nsd_opll_keyon
 
 	lda	__chflag,x		;[4]4
 	and	#nsd_chflag::NoKeyOff
@@ -506,11 +521,12 @@ _nsd_opll_keyon:
 	lda	__chflag,x
 	ora	#nsd_chflag::KeyOn
 	sta	__chflag,x
-
-_nsd_opll_keyon_exit:
-	rts
-.endif
 .endproc
+
+.proc	_nsd_opll_keyon_exit
+	rts
+.endproc
+.endif
 
 
 ;---------------------------------------
@@ -708,6 +724,7 @@ _nsd_apu_ch3_keyoff_se:
 .endif
 	beq	@S
 
+	;エンベロープが有効時
 	;発音mode == 2 or 3 では無い？
 	lda	__chflag,x
 	and	#$02
@@ -3235,6 +3252,23 @@ Exit:
 .endif
 
 	jsr	Normal_frequency
+
+.ifdef	SE
+	;効果音から復帰したときの処理
+	lda	#nsd_mode::RetSE
+	bit	__gatemode + nsd::TR_BGM3
+	beq	@L
+	eor	#$FF
+	and	__gatemode + nsd::TR_BGM3
+	sta	__gatemode + nsd::TR_BGM3
+	lda	__chflag + nsd::TR_BGM3
+	and	#nsd_chflag::KeyOff
+	cmp	#nsd_chflag::KeyOff
+	bne	@L			;Key On(=3)の時のみ、処理。
+	lda	__apu_tri_time
+	sta	APU_TRICTRL1
+@L:
+.endif
 
 	lda	__tmp
 	sta	APU_TRIFREQ1

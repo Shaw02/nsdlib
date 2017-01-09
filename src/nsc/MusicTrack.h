@@ -23,6 +23,7 @@ public:
 	int	gate_u;
 
 	int	octave;
+	int	octave1;		//One time octave
 	int	detune_cent;
 	int	detune_fine;
 
@@ -60,7 +61,8 @@ public:
 		length			= 24;
 		gate_q			= 0;
 		gate_u			= 0;
-		octave			= -1;
+		octave			= 3;
+		octave1			= 0;
 		detune_cent		= 0;
 		detune_fine		= 0;
 		trans			= 0;
@@ -85,6 +87,7 @@ public:
 		gate_q			=	work->gate_q;
 		gate_u			=	work->gate_u;
 		octave			=	work->octave;
+		octave1			=	work->octave1;
 		detune_cent		=	work->detune_cent;
 		detune_fine		=	work->detune_fine;
 		trans			=	work->trans;
@@ -147,13 +150,13 @@ private:
 
 	//----------------------------------
 	//音量
-				char	volume;					//現在の音量
+//				char	volume;					//現在の音量
 				int		opt_volume;
 
 	//----------------------------------
 	//オクターブ
-				char	octave;					//現在のオクターブ
-				char	octave1;				//一次的な相対オクターブ　計算用
+//				char	octave;					//現在のオクターブ
+//				char	octave1;				//一次的な相対オクターブ　計算用
 				int		opt_octave;
 
 	//----------------------------------
@@ -170,7 +173,7 @@ private:
 	//移調
 				int		iKeyShift;				//k
 				
-				int		iTranspose;				//_
+//				int		iTranspose;				//_
 
 	//----------------------------------
 	//疑似エコー
@@ -191,11 +194,11 @@ private:
 	unsigned	int		i_Patch;
 
 	//現在の状態（設定数値）
-	unsigned	int		iVoi;			//
-	unsigned	int		iEvoi;			//
-	unsigned	int		iEvol;			//
-	unsigned	int		iEm;			//
-	unsigned	int		iEn;			//
+//	unsigned	int		iVoi;			//
+//	unsigned	int		iEvoi;			//
+//	unsigned	int		iEvol;			//
+//	unsigned	int		iEm;			//
+//	unsigned	int		iEn;			//
 	unsigned	char	iSweep;			//
 	unsigned	int		iSub;			//サブルーチン用
 

@@ -477,9 +477,10 @@ PSG_Envelope_Form	= $0D
 .endscope
 
 .scope	nsd_mode
-	voiceR		= $F0
-	voice		= $08
-	gatemode	= $03
+	voiceR		= $F0	;1111 0000	Release Volume
+	voice		= $08	;0000 1000	
+	RetSE		= $04	;0000 0100	Key On (Ch.3)
+	gatemode	= $03	;0000 0011	Gate mode
 .endscope
 
 

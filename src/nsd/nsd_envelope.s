@@ -120,7 +120,16 @@ Frequency:
 	lda	__note,x
 	cmp	#$FF
 	bne	@L
-@V0:	lda	#0			; if (rest with vol=0){
+@V0:	
+
+;.ifdef	SE
+;	cpx	#nsd::TR_SE_Tri
+;	bne	@V0S
+;	rts
+;@V0S:
+;.endif
+
+	lda	#0			; if (rest with vol=0){
 	jmp	_nsd_snd_volume		;	volume = 0
 @L:					; } else {
 
@@ -333,7 +342,7 @@ V_Envelope:
 	;Envelop of Voice
 Voice:
 	lda	__gatemode,x		;
-	and	#nsd_mode::voice	;
+	and	#nsd_mode::voice	;Envelope有効？
 	beq	Voice_Exit		;Ch3 は必ずLow になっている。
 ;	cpx	#nsd::TR_BGM3		;ので、コメントアウト
 ;	beq	Voice_Exit		;
@@ -418,6 +427,9 @@ Volume:
 	ldx	__channel
 @S:	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
 
+
+	;-----------------------
+	;Envelope 無効時の処理
 @No_Envelop:
 	cpx	#nsd::TR_BGM3
 	beq	Exit2
@@ -432,6 +444,7 @@ Volume:
 	bne	Mode3
 
 Mode2:	;-----------------------
+	;Key Off時
 .ifdef	VRC7
 	;VRC7は、mode 2の時はリリース処理しない。
 	cpx	#nsd::TR_VRC7
@@ -456,7 +469,7 @@ Mode2:	;-----------------------
 	jmp	Mode1
 
 Mode3:	;-----------------------
-	;Envelope 無効時の処理
+	;Key On時
 	lda	__volume,x
 
 .ifdef	VRC6

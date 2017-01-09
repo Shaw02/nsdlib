@@ -555,7 +555,7 @@ void	MusicFile::TickCount(void)
 	//----------------------
 	//不要なコマンドの削除
 
-	if(cOptionSW->flag_OptSeq == false){		//コマンドの最適化が無効だったら、最適化しない。
+	if(cOptionSW->flag_OptSeq == true){		//コマンドの最適化が無効だったら、最適化しない。
 
 		//	to do	■■■■■■	不要なコマンド・オブジェクトを削除する	■■■■■■
 
@@ -564,7 +564,7 @@ void	MusicFile::TickCount(void)
 	//----------------------
 	//使っていない定義の削除
 
-	if(cOptionSW->flag_OptObj == false){		//定義の最適化が無効だったら、最適化しない。
+	if(cOptionSW->flag_OptObj == true){		//定義の最適化が無効だったら、最適化しない。
 
 		//サブルーチン
 		if(!ptcSub.empty()){

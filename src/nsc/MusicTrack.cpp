@@ -32,9 +32,9 @@ MusicTrack::MusicTrack(MMLfile* MML, const _CHAR _strName[]):
 	offset_repeat_b_s(0),		//リピートＢ
 	offset_repeat_b_b(0),		//リピートＢ
 	sp_repeat_c(0),
-	volume(15),
-	octave(5),
-	octave1(0),
+//	volume(15),
+//	octave(5),
+//	octave1(0),
 	echo_length(-1),
 	echo_already(false),
 	echo_vol_ret(false),
@@ -43,12 +43,13 @@ MusicTrack::MusicTrack(MMLfile* MML, const _CHAR _strName[]):
 	compile_flag(false),
 	pt_oldNote(0),
 	iKeyShift(0),
-	iTranspose(0),
+//	iTranspose(0),
 	f_Patch(false),
 	jump_flag(false)
 {
 	unsigned	int	i = 0;
 
+	nsd.init();
 	nsd.length = -1;
 
 	while(i < 256){
@@ -253,10 +254,10 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 					//----------
 					//Event
 					case(nsd_GateTime_q):
-						nsd.gate_q = (*itItem)->getCode(1);
+			//			nsd.gate_q = (*itItem)->getCode(1);
 						break;
 					case(nsd_GateTime_u):
-						nsd.gate_u = (*itItem)->getCode(1);
+			//			nsd.gate_u = (*itItem)->getCode(1);
 						break;
 
 					case(nsd_GateMode_0):
@@ -1416,11 +1417,11 @@ void	MusicTrack::SetEnvelop_Evoi(unsigned int _no)
 {
 	mml_Address*		_event;
 
-	if((_no != iEvoi) || (f_opt_Evoi == false) || (sw_Evoi == false)){
-		iEvoi		= _no;
-		sw_Evoi		= true;
-		f_opt_Evoi	= true;		//最適化フラグ
-		_event		= new mml_Address(nsd_Envelop_Voice, _T("Voice Envelope"));
+	if((_no != nsd.env_volume) || (f_opt_Evoi == false) || (sw_Evoi == false)){
+		nsd.env_volume		= _no;
+		sw_Evoi				= true;
+		f_opt_Evoi			= true;		//最適化フラグ
+		_event				= new mml_Address(nsd_Envelop_Voice, _T("Voice Envelope"));
 
 		_event->set_id(_no);
 		SetEvent(_event);
@@ -1433,11 +1434,11 @@ void	MusicTrack::SetEnvelop_Evol(unsigned int _no)
 {
 	mml_Address*		_event;
 
-	if((_no != iEvol) || (f_opt_Evol == false) || (sw_Evol == false)){
-		iEvol		= _no;
-		sw_Evol		= true;
-		f_opt_Evol	= true;		//最適化フラグ
-		_event		= new mml_Address(nsd_Envelop_Volume, _T("Volume Envelope"));
+	if((_no != nsd.env_voice) || (f_opt_Evol == false) || (sw_Evol == false)){
+		nsd.env_voice		= _no;
+		sw_Evol				= true;
+		f_opt_Evol			= true;		//最適化フラグ
+		_event				= new mml_Address(nsd_Envelop_Volume, _T("Volume Envelope"));
 
 		_event->set_id(_no);
 		SetEvent(_event);
@@ -1450,11 +1451,11 @@ void	MusicTrack::SetEnvelop_Em(unsigned int _no)
 {
 	mml_Address*		_event;
 
-	if((_no != iEm) || (f_opt_Em == false) || (sw_Em == false)){
-		iEm			= _no;
-		sw_Em		= true;
-		f_opt_Em	= true;		//最適化フラグ
-		_event		= new mml_Address(nsd_Envelop_Frequency, _T("Frequency Envelope"));
+	if((_no != nsd.env_frequency) || (f_opt_Em == false) || (sw_Em == false)){
+		nsd.env_frequency	= _no;
+		sw_Em				= true;
+		f_opt_Em			= true;		//最適化フラグ
+		_event				= new mml_Address(nsd_Envelop_Frequency, _T("Frequency Envelope"));
 
 		_event->set_id(_no);
 		SetEvent(_event);
@@ -1467,11 +1468,11 @@ void	MusicTrack::SetEnvelop_En(unsigned int _no)
 {
 	mml_Address*		_event;
 
-	if((_no != iEn) || (f_opt_En == false) || (sw_En == false)){
-		iEn			= _no;
-		sw_En		= true;
-		f_opt_En	= true;		//最適化フラグ
-		_event		= new mml_Address(nsd_Envelop_Note, _T("Note Envelope"));
+	if((_no != nsd.env_note) || (f_opt_En == false) || (sw_En == false)){
+		nsd.env_note		= _no;
+		sw_En				= true;
+		f_opt_En			= true;		//最適化フラグ
+		_event				= new mml_Address(nsd_Envelop_Note, _T("Note Envelope"));
 
 		_event->set_id(_no);
 		SetEvent(_event);
@@ -1482,10 +1483,10 @@ void	MusicTrack::SetEnvelop_En(unsigned int _no)
 //--------------------------------------------------------------
 void	MusicTrack::SetVoice(unsigned int _no)
 {
-	if((_no != iVoi) || (f_opt_Evoi == false) || (sw_Evoi == true)){
-		iVoi = _no;
-		sw_Evoi		= false;
-		f_opt_Evoi	= true;		//最適化フラグ
+	if((_no != nsd.voice) || (f_opt_Evoi == false) || (sw_Evoi == true)){
+		nsd.voice			= _no;
+		sw_Evoi				= false;
+		f_opt_Evoi			= true;		//最適化フラグ
 		SetEvent(new mml_general(nsd_Voice, (unsigned char)_no, _T("Voice")));
 	}
 }
@@ -2782,7 +2783,7 @@ void	MusicTrack::SetEchoBuffer(MMLfile* MML,int note)
 		if((cData >= '0') && (cData <= '9')){
 			iOctave = MML->GetInt() - 1;
 		} else {
-			iOctave = octave;
+			iOctave = nsd.octave;
 		}
 		iEchoNote += iKeyShift;
 		iEchoNote += iOctave*12;
@@ -2830,7 +2831,7 @@ void	MusicTrack::GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur)
 	char	old_note = oldNote[(pt_oldNote - echo_value) & 0xFF];
 //	char	now_note = oldNote[pt_oldNote];
 
-	char	now_octave = octave;
+	char	now_octave = nsd.octave;
 	char	old_octave = (old_note / 12);
 
 //	int		i = 0;
@@ -2886,7 +2887,7 @@ void	MusicTrack::EchoVolRet()
 	//ここで音量を戻す。
 	if(echo_vol_ret == true){
 		//volume return
-		SetEvent(new mml_general(nsd_Volume + volume, _T("Volume")));
+		SetEvent(new mml_general(nsd_Volume + nsd.volume, _T("Volume")));
 		echo_vol_ret = false;
 	}
 }
@@ -2919,12 +2920,12 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 
 	//移調
 	_key	+= iKeyShift;
-	_note_no = ((char)_key + (octave + octave1)*12) & 0xFF;
+	_note_no = ((char)_key + (nsd.octave + nsd.octave1)*12) & 0xFF;
 
 	//疑似エコーのバッファ書き込み
 	pt_oldNote++;
 	oldNote[pt_oldNote]	= _note_no;
-	octave1				= 0;
+	nsd.octave1			= 0;
 
 	echo_already		= false;
 
@@ -3187,7 +3188,7 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 	Slur		= calc_slur(MML);
 
 	//ノートナンバーの取得
-	iNote=		((char)_key + (octave + octave1)*12) & 0xFF;
+	iNote=		((char)_key + (nsd.octave + nsd.octave1)*12) & 0xFF;
 
 	//------
 	//オクターブ処理
@@ -3245,7 +3246,7 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 	}
 
 	_key_2		= calc_note(MML, note_2);
-	iNote_2		= ((char)_key_2 + (octave + octave1 + o_rel + o_rel2)*12) & 0xFF;
+	iNote_2		= ((char)_key_2 + (nsd.octave + nsd.octave1 + o_rel + o_rel2)*12) & 0xFF;
 
 	//------
 	//ポルタメント終了
@@ -3452,10 +3453,10 @@ void	MusicTrack::SetKeyShift_Relative(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetTranspose(int _no)
 {
-	if((iTranspose != _no) || (f_opt_Key == false)){
+	if((nsd.trans != _no) || (f_opt_Key == false)){
 		f_opt_Key	= true;
-		iTranspose	= _no;
-		SetEvent(new mml_general(nsd_Transpose, (char)iTranspose, _T("Transpose")));
+		nsd.trans	= _no;
+		SetEvent(new mml_general(nsd_Transpose, (char)nsd.trans, _T("Transpose")));
 	}
 }
 
@@ -3469,7 +3470,7 @@ void	MusicTrack::SetTranspose(int _no)
 //==============================================================
 void	MusicTrack::SetTranspose_Relative(int _no)
 {
-	iTranspose += _no;
+	nsd.trans += _no;
 	SetEvent(new mml_general(nsd_Relative_Transpose, (char)_no, _T("Relative Transpose")));
 }
 
@@ -3483,12 +3484,12 @@ void	MusicTrack::SetTranspose_Relative(int _no)
 //==============================================================
 void	MusicTrack::SetOctave(MMLfile* MML)
 {
-	octave = (char)(MML->GetInt() - 1);
+	nsd.octave = (char)(MML->GetInt() - 1);
 
-	if( (octave <= 7) && (octave >=0) ){
-		if(opt_octave != octave){
-			SetEvent(new mml_general(nsd_Octave + (unsigned char)octave, _T("Octave")));
-			opt_octave = octave;
+	if( (nsd.octave <= 7) && (nsd.octave >=0) ){
+		if(opt_octave != nsd.octave){
+			SetEvent(new mml_general(nsd_Octave + (unsigned char)nsd.octave, _T("Octave")));
+			opt_octave = nsd.octave;
 		}
 	} else {
 		MML->Err(_T("オクターブは1～8の範囲で指定してください。"));
@@ -3499,10 +3500,10 @@ void	MusicTrack::SetOctave(MMLfile* MML)
 void	MusicTrack::SetOctaveInc()
 {
 	SetEvent(new mml_general(nsd_Octave_Up, _T("Octave Up")));
-	if(octave<10){
-		octave++;
+	if(nsd.octave<10){
+		nsd.octave++;
 		if(opt_octave != -1){
-			opt_octave = octave;
+			opt_octave = nsd.octave;
 		}
 	}
 }
@@ -3511,10 +3512,10 @@ void	MusicTrack::SetOctaveInc()
 void	MusicTrack::SetOctaveDec()
 {
 	SetEvent(new mml_general(nsd_Octave_Down, _T("Octave Down")));
-	if(octave>0){
-		octave--;
+	if(nsd.octave>0){
+		nsd.octave--;
 		if(opt_octave != -1){
-			opt_octave = octave;
+			opt_octave = nsd.octave;
 		}
 	}
 }
@@ -3524,7 +3525,7 @@ void	MusicTrack::SetOctaveOne_Inc()
 {
 	if(jump_flag == false){
 		SetEvent(new mml_general(nsd_Octave_Up_1, _T("One time octave up")));
-		octave1++;
+		nsd.octave1++;
 	}
 }
 
@@ -3533,7 +3534,7 @@ void	MusicTrack::SetOctaveOne_Dec()
 {
 	if(jump_flag == false){
 		SetEvent(new mml_general(nsd_Octave_Down_1, _T("One time octave down")));
-		octave1--;
+		nsd.octave1--;
 	}
 }
 
@@ -3551,10 +3552,10 @@ void	MusicTrack::SetVolume(MMLfile* MML)
 
 	if( (i <= 15) && (i >= 0) ){
 		if(opt_volume != i){
-			volume			= (char)i;
-			opt_volume		= volume;
+			nsd.volume		= (char)i;
+			opt_volume		= nsd.volume;
 			echo_vol_ret	= false;
-			SetEvent(new mml_general(nsd_Volume + volume, _T("Volume")));
+			SetEvent(new mml_general(nsd_Volume + nsd.volume, _T("Volume")));
 		}
 	} else {
 		MML->Err(_T("音量は0～15の範囲で指定してください。"));
@@ -3579,14 +3580,14 @@ void	MusicTrack::SetVolumeInc(MMLfile* MML)
 
 	while(iValue > 0){
 		SetEvent(new mml_general(nsd_Volume_Up, _T("Volume up")));
-		volume++;
+		nsd.volume++;
 		iValue--;
 	}
-	if(volume>15){
-		volume = 15;
+	if(nsd.volume>15){
+		nsd.volume = 15;
 	}
 	if(opt_volume != -1){
-		opt_volume = volume;
+		opt_volume = nsd.volume;
 	}
 }
 
@@ -3608,13 +3609,13 @@ void	MusicTrack::SetVolumeDec(MMLfile* MML)
 
 	while(iValue > 0){
 		SetEvent(new mml_general(nsd_Volume_Down, _T("Volume down")));
-		volume--;
+		nsd.volume--;
 		iValue--;
 	}
-	if(volume<0){
-		volume = 0;
+	if(nsd.volume<0){
+		nsd.volume = 0;
 	}
 	if(opt_volume != -1){
-		opt_volume = volume;
+		opt_volume = nsd.volume;
 	}
 }

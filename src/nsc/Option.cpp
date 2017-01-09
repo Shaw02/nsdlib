@@ -87,11 +87,11 @@ OPSW::OPSW(int argc, char* argv[]):
 						switch(argv[iCount][3]){
 							case '0' :
 							case '+' :
-								fTemp = false;
+								fTemp = true;
 								break;
 							case '1' :
 							case '-' :
-								fTemp = true;
+								fTemp = false;
 								break;
 							default :
 								opError(_T("-o"));
@@ -114,7 +114,6 @@ OPSW::OPSW(int argc, char* argv[]):
 								opError(_T("-o"));
 								break;
 						}
-						flag_Optimize = true;
 						break;
 					}
 				//--------
@@ -408,9 +407,9 @@ void	OPSW::print_help(){
 				_T("  -N			Compile to NSF music format.\n")
 				_T("  -E			Error/Warning messages out the stadard error.\n")
 			//	_T("  -T			Disable to output the tick counting result.\n")
-				_T("  -Od			Optimize the NSF bank struct of the delta-PCM.\n")
-				_T("  -Oo			Optimize the object data.\n")
-				_T("  -Os			Optimize the sequence data.\n")
+				_T("  -Od[+/-]		Optimize the NSF bank struct of the delta-PCM.\n")
+				_T("  -Oo[+/-]		Optimize the object data.\n")
+			//	_T("  -Os[+/-]		Optimize the sequence data.\n")
 				_T("  -S			Enable outout the search pass result.\n")
 				_T("  -L[file(.bin)]	Filename of the rom code for NSF.\n")
 				_T("  -FA[file(.s  )]	Filename of the output assembly langage file.\n")

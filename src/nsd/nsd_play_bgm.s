@@ -273,7 +273,7 @@ Step5:
 	lda	#24
 	sta	__length,x
 
-	lda	#48
+	lda	#36
 	sta	__octave,x
 
 	lda	#$FF

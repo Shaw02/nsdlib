@@ -241,7 +241,7 @@ void	MMLfile::SetMacro(int i_Lv)
 //	●返値
 //				無し
 //	●処理
-//			現在のファイルポインタに書いてあるマクロを定義する。
+//			該当レベルのマクロを削除する
 //==============================================================
 void	MMLfile::DeleteMacro(int i_Lv)
 {
@@ -535,6 +535,12 @@ char	MMLfile::cRead(void)
 			cDataMSB = read_char();
 			f_2to1 = true;
 			switch(cDataMSB){
+				case(0x67):
+					cData = '"';
+					break;
+				case(0x68):
+					cData = '"';
+					break;
 				case(0x69):
 					cData = '(';
 					break;
@@ -657,8 +663,11 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 		//アセンブリ言語タイプのコメント？
 		} else if(cData == ';'){
 			do{
+				if( eof() ){
+					break;
+				}
 				cData = cRead();		//次のバイトを読み込み
-			} while((cData != 0x0A)||eof());
+			} while(cData != 0x0A);
 		
 		//Ｃ言語タイプのコメント？
 		} else 	if(cData == '/'){
@@ -668,8 +677,11 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 				//１行コメント
 				case('/'):
 					do{
+						if( eof() ){
+							break;
+						}
 						cData = cRead();		//次のバイトを読み込み
-					}while((cData != 0x0A)||eof());
+					}while(cData != 0x0A);
 					break;
 
 				//範囲コメント

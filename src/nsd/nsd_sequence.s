@@ -708,6 +708,9 @@ NoteSet:
 nsd_op00:
 	lda	__subroutine + 1,x
 	sta	__Sequence_ptr + 1,x
+.ifdef	DPCMBank
+	ora	__subroutine,x
+.endif
 	beq	@L	;if (a == 0)
 	lda	__subroutine,x
 	sta	__Sequence_ptr,x	;戻るときは代入
@@ -716,7 +719,7 @@ nsd_op00:
 	sta	__subroutine + 1,x
 	jmp	Sequence
 @L:
-	sta	__Sequence_ptr,x
+	sta	__Sequence_ptr,x	;__Sequence_ptr = 0
 
 	lda	__chflag,x
 	and	#<~nsd_chflag::KeyOff
@@ -735,7 +738,7 @@ nsd_op00:
 	lda	#$FF
 	sta	__frequency + nsd::TR_BGM1
 	sta	__frequency + nsd::TR_BGM1 + 1
-	sta	__apu_frequency2
+	sta	__apu_frequency1
 	jmp	@Exit
 @SE1_E:
 .endif
@@ -754,18 +757,34 @@ nsd_op00:
 @SE2_E:
 
 .ifdef	SE
-@SE3:	;SE2は無い。
+@SE3:
 	cpx	#nsd::TR_SE_Tri
 	bne	@SE3_E
+
 	;周波数設定を必ず呼ぶように。
 	lda	#$FF
 	sta	__frequency + nsd::TR_BGM3
 	sta	__frequency + nsd::TR_BGM3 + 1
 	sta	__apu_frequency3
+
+	;Hardware key on for ch3
+	lda	__env_volume + nsd::TR_BGM3 + 1
+.ifdef	DPCMBank
+	ora	__env_volume + nsd::TR_BGM3
+.endif
+	;音量エンベロープが有効な場合、エンベロープ処理に任す
+	bne	@Exit
+
+	lda	__gatemode + nsd::TR_BGM3
+	ora	#nsd_mode::RetSE
+	sta	__gatemode + nsd::TR_BGM3
+
+	jmp	@Exit
+
 @SE3_E:
 .endif
 
-@SE4:	;SE2は無い。
+@SE4:
 	cpx	#nsd::TR_SE_Noise
 	bne	@SE4_E
 	;周波数設定を必ず呼ぶように。
@@ -776,7 +795,7 @@ nsd_op00:
 
 
 .ifdef	SE
-@SE5:	;SE2は無い。
+@SE5:
 	cpx	#nsd::TR_SE_Dpcm
 	bne	@SE5_E
 @SE5_E:

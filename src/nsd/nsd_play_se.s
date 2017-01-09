@@ -78,12 +78,17 @@ Priority:
 	shl	a,2
 	sta	__tmp			; __tmp  = —Dæ“x
 
-	ldx	#0
+	lda	#nsd_flag::SE
+	bit	__flag			;
+	bne	@S			;1(SEÄ¶–³‚µ)‚¾‚Á‚½‚çAÄ¶‰Â
+
+	ldx	#0			;0(SEÄ¶’†)‚¾‚Á‚½‚çA—Dæ“x”äŠr
 	lda	__flag
 	and	#nsd_flag::Priority	; 0000-1100<2>
 	cmp	__tmp
 	bcc	@L			;—Dæ“x”»’è
 
+@S:
 	lda	__flag
 	and	#<~nsd_flag::Priority
 	ora	__tmp
@@ -121,17 +126,17 @@ Loop:
 	beq	@L
 	jsr	_nsd_play
 
-.ifdef	SE
 	lda	#$08
+.ifdef	SE
 	cpx	#nsd::TR_SE_Pluse1
 	bne	@L0
 	sta	APU_PULSE1RAMP
 @L0:
+.endif
 	cpx	#nsd::TR_SE_Pluse2
 	bne	@L1
-	sta	APU_PULSE1RAMP
+	sta	APU_PULSE2RAMP
 @L1:
-.endif
 
 @L:
 	iny

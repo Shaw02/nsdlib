@@ -33,6 +33,9 @@ Patch::Patch(MMLfile* MML, int _id):
 
 //	定数定義
 enum	Command_ID_mml {
+	Patch_MacroSet,
+	Patch_Macro,
+
 	Patch_C,
 	Patch_Cis,
 	Patch_D,
@@ -70,6 +73,9 @@ enum	Command_ID_mml {
 
 //	これらは、MML構文で使えるコマンド。
 const	static	Command_Info	Command[] = {
+		{	"$$",	Patch_MacroSet	},
+		{	"$",	Patch_Macro		},
+
 		{	"c#",	Patch_Cis	},
 		{	"d#",	Patch_Dis	},
 		{	"f#",	Patch_Fis	},
@@ -196,6 +202,14 @@ const	static	Command_Info	Command[] = {
 
 		//各コマンド毎の処理
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
+
+			case(Patch_Macro):
+				MML->CallMacro();
+				break;
+
+			case(Patch_MacroSet):
+				MML->SetMacro(1);
+				break;
 
 			case(Patch_C):
 				setKey(MML, 0);
@@ -462,6 +476,9 @@ const	static	Command_Info	Command[] = {
 				break;
 		}
 	}
+
+	//Local Macroの解放
+	MML->DeleteMacro(1);
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){

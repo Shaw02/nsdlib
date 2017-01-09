@@ -25,7 +25,7 @@ This is developed as object library, and user application can control it.
 ●連絡先
 ・E-mail	sha_w@nifty.com
 ・URL		http://shaw.la.coocan.jp/
-・mixi		http://mixi.jp/show_profile.pl?id=16558
+・twitter	https://twitter.com/sha_w_
 ========================================================================
 
 製作のファイルは【NSDL127.ZIP】です。
