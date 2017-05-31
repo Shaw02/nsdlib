@@ -1,0 +1,42 @@
+MML Compiler for NES Sound Driver & Library (NSD.Lib)
+    Version 1.27
+        Copyright (c) 2012-2016 S.W.
+
+------------------------------------------------------------
+*Object creating process
+
+------------------------------------------------------------
+*Optimize & Tick counting process
+---- BGM(0) ----
+Track | TR( 1) | TR( 2) | TR( 3) | TR( 4) | TR( 5) 
+Loop  | no-loop| no-loop| no-loop| no-loop| no-loop
+Total |     264|     282|       0|       0|     288
+
+
+------------------------------------------------------------
+*Address settlement process
+  Music Size =   223 [Byte]
+  DPCM Size  =  5120 [Byte]
+
+
+Opened `test.nes'...
+  Dumping `ZP'
+    Writing `ZEROPAGE'
+  Dumping `SRAM'
+    Writing `BSS'
+  Dumping `RAM'
+    Writing `DATA'
+  Dumping `HEADER'
+    Writing `HEADER'
+  Dumping `ROM0'
+    Writing `MUSDATA'
+  Dumping `ROMD'
+    Writing `PCMDATA'
+  Dumping `ROMP'
+    Writing `STARTUP'
+    Writing `CODE'
+    Writing `RODATA'
+    Writing `DATA'
+  Dumping `ROMV'
+    Writing `VECTORS'
+  Dumping `ROMC'

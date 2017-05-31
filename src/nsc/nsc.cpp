@@ -86,8 +86,8 @@ int	main(int argc, char* argv[])
 
 		//==================================
 		_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
-					_T("    Version 1.27\n")
-					_T("        Copyright (c) 2012-2016 S.W.\n")	<<	endl;
+					_T("    Version 1.28\n")
+					_T("        Copyright (c) 2012-2017 S.W.\n")	<<	endl;
 
 
 		//==================================
