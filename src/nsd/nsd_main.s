@@ -56,8 +56,8 @@
 	pha
 .endif
 
-	NSD_MAIN_BGM
 	NSD_MAIN_SE
+	NSD_MAIN_BGM
 
 .ifdef	DPCMBank
 	;register pop back

@@ -75,6 +75,10 @@
 ＢＧＭと効果音を同一のバンクに配置する場合は、
 <a href="func_nsd_main.html">nsd_main()</a>関数を用いる事で、関数呼出しのクロック数を１つ削減できます。<br>
 </p>
+<p>
+本関数を<a href="func_nsd_main_bgm.html">nsd_main_bgm()</a>関数より先に呼び出すことにより、
+ＳＥ発音終了後、無音期間無しにＢＧＭ処理に復帰できます。<br>
+</p>
 
 <h4>nsd_main_se(void)関数の呼び出し例</h4>
 <code><pre>
@@ -93,19 +97,19 @@ NMI_Start:
         <span style="color:green;">;       通常、画面処理は、サウンド処理より先に行います。</span>
         <span style="color:green;">; </span>
 
-        <span style="color:green;">; Bank change for BGM. （曲データをメモリ空間にマッピングします。）</span>
-        lda     #BGM_bank
-        jsr     _bank_change            <span style="color:green;">;   bank_change(BGM_bank);</span>
-
-        <span style="color:green;">; Play BGM. （曲の再生。）</span>
-        jsr     _nsd_main_bgm           <span style="color:green;">;   nsd_main_bgm();</span>
-
         <span style="color:green;">; Bank change for SE. （効果音データをメモリ空間にマッピングします。）</span>
         lda     #SE_bank
         jsr     _bank_change            <span style="color:green;">;   bank_change(SE_bank);</span>
 
         <span style="color:green;">; Play BGM & SE. （効果音の再生。）</span>
         jsr     _nsd_main_se            <span style="color:green;">;   nsd_main_se();</span>
+
+        <span style="color:green;">; Bank change for BGM. （曲データをメモリ空間にマッピングします。）</span>
+        lda     #BGM_bank
+        jsr     _bank_change            <span style="color:green;">;   bank_change(BGM_bank);</span>
+
+        <span style="color:green;">; Play BGM. （曲の再生。）</span>
+        jsr     _nsd_main_bgm           <span style="color:green;">;   nsd_main_bgm();</span>
 
         <span style="color:green;">; Return the bank number. （バンクを元に戻します。）</span>
         lda     #prog_bank

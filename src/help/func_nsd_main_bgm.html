@@ -93,19 +93,19 @@ NMI_Start:
         <span style="color:green;">;       通常、画面処理は、サウンド処理より先に行います。</span>
         <span style="color:green;">; </span>
 
-        <span style="color:green;">; Bank change for BGM. （曲データをメモリ空間にマッピングします。）</span>
-        lda     #BGM_bank
-        jsr     _bank_change            <span style="color:green;">;   bank_change(BGM_bank);</span>
-
-        <span style="color:green;">; Play BGM. （曲の再生。）</span>
-        jsr     _nsd_main_bgm           <span style="color:green;">;   nsd_main_bgm();</span>
-
         <span style="color:green;">; Bank change for SE. （効果音データをメモリ空間にマッピングします。）</span>
         lda     #SE_bank
         jsr     _bank_change            <span style="color:green;">;   bank_change(SE_bank);</span>
 
         <span style="color:green;">; Play BGM & SE. （効果音の再生。）</span>
         jsr     _nsd_main_se            <span style="color:green;">;   nsd_main_se();</span>
+
+        <span style="color:green;">; Bank change for BGM. （曲データをメモリ空間にマッピングします。）</span>
+        lda     #BGM_bank
+        jsr     _bank_change            <span style="color:green;">;   bank_change(BGM_bank);</span>
+
+        <span style="color:green;">; Play BGM. （曲の再生。）</span>
+        jsr     _nsd_main_bgm           <span style="color:green;">;   nsd_main_bgm();</span>
 
         <span style="color:green;">; Return the bank number. （バンクを元に戻します。）</span>
         lda     #prog_bank

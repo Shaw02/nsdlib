@@ -190,7 +190,7 @@ void	main()
 		nsd_main();					//V-Blank毎に呼び出す。（ここに書かなくても、NMI割り込みでやっても良い。）
 
 		//垂直同期待ち
-		waitvblank();
+		waitvsync();
 
 	}
 

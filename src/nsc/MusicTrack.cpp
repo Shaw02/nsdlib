@@ -950,6 +950,9 @@ void	MusicTrack::SetRepeat_C_Start(MMLfile* MML)
 		}
 	}
 
+	//一旦最適化をリセット
+	Reset_opt();
+
 	//スタックの作成
 	pt_itMusic--;
 	st_ct_repeat_c.push_back(repeat_cnt);

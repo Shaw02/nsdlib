@@ -1,4 +1,0 @@
-[Compile] : test.c 		
-[Compile] : testmus.mml 		
-[Link] : test.nes 		
-ld65: Warning: nesc.cfg(47): Segment `PCMDATA' isn't aligned properly; the resulting executable might not be functional.

@@ -29,8 +29,12 @@ MAP_FILE   =	test.map
 
 #---------------
 #; ソースファイル
-MAIN_FILES =	crt0.o			\
-		main.o			\
+MAIN_FILES =	ines.o			\
+		crt0.o			\
+		work.o			\
+		nmi_main.o		\
+		irq_main.o		\
+		main.o
 
 CHR_FILRS  =	neschar.o
 
@@ -47,7 +51,11 @@ MML_FILES  =	testmus.o
 
 #---------------
 #; アセンブリ言語用ヘッダー
-INC_FILES =	nsd.inc
+INC_FILES =	sample.inc		\
+		nsd.inc			\
+		macro.inc		\
+		struct.inc		\
+		work.inc
 
 #---------------
 #; Ｃ言語用ヘッダー

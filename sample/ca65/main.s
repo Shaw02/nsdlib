@@ -4,8 +4,7 @@
 	.import		_Test_DPCMinfo
 	.import		_Test_BGM0
 
-	.include	"nes.inc"
-	.include	"..\..\include\nsd.inc"
+	.include	"sample.inc"
 
 ; ------------------------------------------------------------------------
 ; play
@@ -49,15 +48,31 @@ bgm_00:		.addr	_Test_BGM0
 	lda	#$0
 	jsr	_bgm_play
 
-@loop:
+
+
+LOOP:
+	lda	__cc			;←この変数は、フレーム毎にカウントアップする。
+	pha				;現在のフレームを取得
+					;（ある程度だけ、フレームオーバーを回避する）
+
+
+
+
+
+
+
+
+
+
+	pla				;ループ開始時のフレームカウント値を取得
+
 	;---------------
-	; Wait for vblank
-@wait:	lda	PPU_STATUS
-	bpl	@wait
+	;フレーム更新待ち
+Wait_Next_Flame:
+	cmp	__cc
+	bne	LOOP			;次のフレームになったら先頭へ
+	beq	Wait_Next_Flame
 
-
-
-	jmp	@loop
 
 	rts
 
