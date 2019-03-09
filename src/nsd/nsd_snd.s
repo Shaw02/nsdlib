@@ -2513,7 +2513,7 @@ Freq:
 	.word	$0833
 	.word	$0824
 	.word	$0815
-	.word	$0806
+	.word	$0803	;$0806	o4A のLFOの幅を増やすために
 	.word	$07F8
 	.word	$07E9	;A
 	.word	$07DA
@@ -3413,9 +3413,14 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
+	ror	__ptr + 1
 	inx			; octave--;
 	cpx	#7
 	bne	Octave_Loop
+	rol	__ptr + 1
+	adc	#0
+	bcc	Octave_Exit
+	inc	__tmp + 1
 	; } }
 Octave_Exit:
 	sta	__tmp
@@ -3502,8 +3507,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
+	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
+	rol	__ptr + 1
+	adc	#0
+	bcc	DEC_Freq
+	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
@@ -3987,8 +3997,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
+	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
+	rol	__ptr + 1
+	adc	#0
+	bcc	DEC_Freq
+	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
@@ -4065,8 +4080,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
+	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
+	rol	__ptr + 1
+	adc	#0
+	bcc	DEC_Freq
+	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
@@ -4155,9 +4175,16 @@ Octave_Loop:
 	lsr	__ptr		;高速化のため、
 	ror	__tmp + 1	;ゼロページとaレジスターで
 	ror	a		;シフト演算する。
+;	ror	__ptr + 1
 	inx
 	cpx	#$08
 	bne	Octave_Loop
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	Octave_Exit
+;	inc	__tmp + 1
+;	bne	Octave_Exit
+;	inc	__ptr		;n16xは、精度高いから、四捨五入しなくていいよね。
 Octave_Exit:
 	sta	__tmp
 
