@@ -3413,14 +3413,14 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
-	ror	__ptr + 1
+;	ror	__ptr + 1
 	inx			; octave--;
 	cpx	#7
 	bne	Octave_Loop
-	rol	__ptr + 1
-	adc	#0
-	bcc	Octave_Exit
-	inc	__tmp + 1
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	Octave_Exit
+;	inc	__tmp + 1
 	; } }
 Octave_Exit:
 	sta	__tmp
@@ -3507,13 +3507,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
-	ror	__ptr + 1
+;	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
-	rol	__ptr + 1
-	adc	#0
-	bcc	DEC_Freq
-	inc	__tmp + 1
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	DEC_Freq
+;	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
@@ -3997,13 +3997,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
-	ror	__ptr + 1
+;	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
-	rol	__ptr + 1
-	adc	#0
-	bcc	DEC_Freq
-	inc	__tmp + 1
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	DEC_Freq
+;	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
@@ -4080,13 +4080,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
-	ror	__ptr + 1
+;	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
-	rol	__ptr + 1
-	adc	#0
-	bcc	DEC_Freq
-	inc	__tmp + 1
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	DEC_Freq
+;	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
