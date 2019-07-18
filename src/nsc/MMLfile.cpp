@@ -193,11 +193,11 @@ void	MMLfile::SetMacro(int i_Lv)
 	//マクロ名の取得
 	while((cData = cRead()) > 0x20){
 		if(cData == '{'){
+			Back();
 			break;
 		}
 		macro_name += cData;
 	};
-	Back();
 
 	//------------------
 	//マクロ名の重複チェック
@@ -205,15 +205,15 @@ void	MMLfile::SetMacro(int i_Lv)
 		Err(_T("既にそのマクロ名は存在しています。"));
 	}
 
+
 	//------------------
 	//マクロ内容の取得
-	while(cRead() != '{'){
-		if(eof()){
-			Err(_T("文字列開始を示す{が見つかりません。"));
-		}
+	cData = GetChar();
+	if(cData != '{'){
+		Err(_T("マクロ定義開始を示す{が見つかりません。"));
 	}
 
-	while(('}' != (cData = cRead())) || (iKakko != 0)){
+	while(('}' != (cData = GetChar())) || (iKakko != 0)){
 		if(eof()){
 			Err(_T("文字列終了を示す}が見つかりません。"));
 		}
