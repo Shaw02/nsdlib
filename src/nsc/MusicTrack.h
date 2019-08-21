@@ -247,6 +247,17 @@ private:
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_b;
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_e;
 
+
+
+	map<	unsigned int, MusicEvent*	>	ptc_Loop;		//Loop
+	map<	unsigned int, mml_repeat*	>	ptc_Repert_A;	//Repert(A) Start poiont
+	map<	unsigned int, mml_Address*	>	ptc_Repert_A_E;	//Repert(A) End   point
+	map<	unsigned int, mml_repeat*	>	ptc_Repert_B;	//Repert(B) Start poiont
+
+			unsigned int	cnt_Loop;						// L コマンドのID番号をどこまでふったか
+			unsigned int	cnt_Repert_A;					// [ コマンドのID番号をどこまでふったか
+			unsigned int	cnt_Repert_B;					// |:コマンドのID番号をどこまでふったか
+
 	//----------------------------------
 	//オブジェクト
 	vector<	mml_Address*	>	ptcFDSC;		//FDS Carrer
@@ -260,7 +271,7 @@ private:
 
 //メンバー関数
 public:
-			MusicTrack(MMLfile* MML, const _CHAR _strName[] = _T("==== [ Music Track ]===="));
+			MusicTrack(MMLfile* MML, const _CHAR _strName[] = _T("---- [ Music Track ] ----"));
 			~MusicTrack(void);
 
 	unsigned	int		TickCount(MusicFile* MUS, NSD_WORK* work);

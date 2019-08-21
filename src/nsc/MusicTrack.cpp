@@ -32,6 +32,9 @@ MusicTrack::MusicTrack(MMLfile* MML, const _CHAR _strName[]):
 	offset_repeat_b_s(0),		//リピートＢ
 	offset_repeat_b_b(0),		//リピートＢ
 	sp_repeat_c(0),
+	cnt_Loop(0),
+	cnt_Repert_A(0),
+	cnt_Repert_B(0),
 //	volume(15),
 //	octave(5),
 //	octave1(0),
@@ -767,7 +770,8 @@ size_t	MusicTrack::SetEnd(MMLfile* MML)
 			SetEvent(new mml_general(nsd_EndOfTrack,_T("End of Track")));
 		} else {
 			EchoVolRet();	//疑似エコーの復帰
-			_event = new mml_Address(nsd_Jump, _T("End of Track with LOOP"));
+			_event = new mml_Address(cnt_Loop - 1, nsd_Jump, _T("End of Track with LOOP"));
+			// to do ■■■アドレス解決ルーチンへ移動
 			_event->set_Address(offset_loop - offset_now - 1);
 			SetEvent(_event);
 		}
@@ -787,9 +791,19 @@ size_t	MusicTrack::SetEnd(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetLoop()
 {
+	//オブジェクトの作成
+	MusicEvent*	_loop = new MusicEvent(cnt_Loop, _T("Loop Point"));
+
+	//オブジェクトを保存
+	SetEvent(_loop);
+	ptc_Loop[cnt_Loop] = _loop;
+	cnt_Loop++;		//ID番号用カウンタのインクリメント
+
+	//アドレス計算（to do ■■■今後、アドレス解決部に処理を以降する）
 	offset_loop = offset_now;
 	loop_flag	= true;
 
+	//最適化フラグ
 	Reset_opt();
 }
 
@@ -803,10 +817,19 @@ void	MusicTrack::SetLoop()
 //==============================================================
 void	MusicTrack::SetRepeat_B_Start()
 {
-	SetEvent(new mml_general(nsd_Repeat_B_Start, _T("Repeat(B) Start")));
+	//オブジェクトの作成
+	mml_repeat*	_repeat = new mml_repeat(cnt_Repert_B);
+
+	//オブジェクトを保存
+	SetEvent(_repeat);
+	ptc_Repert_B[cnt_Repert_B] = _repeat;
+	cnt_Repert_B++;		//ID番号用カウンタのインクリメント
+
+	//アドレス計算（to do ■■■今後、アドレス解決部に処理を以降する）
 	offset_repeat_b_s = offset_now;	// :| コマンドでは、次のコマンドに戻る。
 	offset_repeat_b_b = 0;
 
+	//最適化フラグ
 	Reset_opt();
 }
 
@@ -853,7 +876,8 @@ void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 			if(offset_repeat_b_s < offset_repeat_a_s){
 				MML->Err(_T("リピート(A)の区間の途中です。"));
 			}
-			_event = new mml_Address(nsd_Repeat_B_End, _T("Repeat(B) End"));
+			_event = new mml_Address(cnt_Repert_B - 1, nsd_Repeat_B_End, _T("Repeat(B) End"));
+			// to do ■■■アドレス解決ルーチンへ移動
 			_event->set_Address(offset_repeat_b_s - offset_now - 1);
 			SetEvent(_event);
 		} else {
@@ -909,9 +933,16 @@ void	MusicTrack::SetRepeat_A_Start(MMLfile* MML)
 	if(offset_repeat_a_s != 0){
 		MML->Err(_T("リピート(A)のネストはできません。"));
 	} else {
-		_old_repeat = new mml_repeat();
 
+		//オブジェクトの作成
+		_old_repeat = new mml_repeat(cnt_Repert_A, (unsigned char)count_repeat_a);
+
+		//オブジェクトを保存
 		SetEvent(_old_repeat);
+		ptc_Repert_A[cnt_Repert_A] = _old_repeat;
+		cnt_Repert_A++;		//ID番号用カウンタのインクリメント
+
+		//アドレス計算（to do ■■■今後、アドレス解決部に処理を以降する）
 		offset_repeat_a_s = offset_now;	// ] コマンドでは、次のコマンドに戻る。
 		offset_repeat_a_b = 0;
 
@@ -998,7 +1029,7 @@ void	MusicTrack::SetRepeat_Branch(MMLfile* MML)
 			if(offset_repeat_a_s != 0){
 				if(offset_repeat_a_b == 0){
 					offset_repeat_a_b = offset_now + 1;	//引数の位置
-					_old_repeatA_Branch = new mml_Address(nsd_Repeat_A_Branch, _T("Repeat(A) Branch"));
+					_old_repeatA_Branch = new mml_Address(cnt_Repert_A - 1, nsd_Repeat_A_Branch, _T("Repeat(A) Branch"));
 					SetEvent(_old_repeatA_Branch);
 				} else {
 					MML->Err(_T("リピート(A)内で : コマンドが重複しています。"));
@@ -1091,9 +1122,12 @@ void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 
 		_old_repeat->set_count((unsigned char)count_repeat_a);
 
-		_event = new mml_Address(nsd_Repeat_A_End, _T("Repeat(A) End"));
+		_event = new mml_Address(cnt_Repert_A - 1, nsd_Repeat_A_End, _T("Repeat(A) End"));
+		// to do ■■■アドレス解決ルーチンへ移動
 		_event->set_Address(offset_repeat_a_s - offset_now - 1);
 		SetEvent(_event);
+		ptc_Repert_A_E[cnt_Repert_A - 1] = _event;
+
 		//条件分岐があったら。
 		if(offset_repeat_a_b != 0){
 			_old_repeatA_Branch->set_Address(offset_now - offset_repeat_a_b);
@@ -1192,6 +1226,21 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 							case(nsd_FDS_Modlator):
 								ptcFDSM.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
 								break;
+/*
+							case(nsd_Repeat_A_Start):
+								break;
+							case(nsd_Repeat_A_Branch):
+								break;
+							case(nsd_Repeat_A_End):
+								break;
+
+							case(nsd_Repeat_B_Start):
+								break;
+							case(nsd_Repeat_B_Branch):
+								break;
+							case(nsd_Repeat_B_End):
+								break;
+*/
 							default:
 								{
 									mml_general*	_event	=	new	mml_general(cOpCode);
@@ -1201,6 +1250,7 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 								break;
 						}
 
+						//最後のリピートで、分岐コマンドがあった場合
 						if((iRepeatCount == 1) && (pt_itMusic == *it_it_repeat_c_b)){
 							pt_itMusic = *it_it_repeat_c_e;
 						}
@@ -1237,23 +1287,25 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 
 mml_Address*	MusicTrack::CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
 {
-	mml_Address*	_event		=	new mml_Address(cOpCode);
 	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
+	mml_Address*	_event		=	new mml_Address(ptAdrItem->get_id(), cOpCode);
 	_event->setCode(sOpCode);
-	_event->set_id(ptAdrItem->get_id());
 	SetEvent(_event);
 	return(_event);
 }
 
 void	MusicTrack::CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
 {
-	mml_Address*	_event		=	new mml_Address(cOpCode);
 	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
-	_event->setCode(sOpCode);
+	mml_Address*	_event;
+
 	if(ptAdrItem->get_flag() == true){
-		_event->set_id(ptAdrItem->get_id());
+		_event		=	new mml_Address(ptAdrItem->get_id(), cOpCode);
 		ptcEnv.push_back(_event);
+	} else {
+		_event		=	new mml_Address(cOpCode);
 	}
+	_event->setCode(sOpCode);
 	SetEvent(_event);
 }
 
@@ -1269,8 +1321,7 @@ void	MusicTrack::SetSE(MMLfile* MML)
 {
 	unsigned	int		_no = MML->GetInt();
 	if(jump_flag==false){
-		mml_Address*		_event = new mml_Address(nsd_Call_SE, _T("Call SE"));
-		_event->set_id(_no);
+		mml_Address*		_event = new mml_Address(_no, nsd_Call_SE, _T("Call SE"));
 		SetEvent(_event);
 		ptcSE.push_back(_event);
 	}
@@ -1287,8 +1338,7 @@ void	MusicTrack::SetSE(MMLfile* MML)
 void	MusicTrack::SetSubroutine(unsigned int _no)
 {
 	if(jump_flag==false){
-		mml_Address*		_event = new mml_Address(nsd_Call, _T("Subroutine"));
-		_event->set_id(_no);
+		mml_Address*		_event = new mml_Address(_no, nsd_Call, _T("Subroutine"));
 		SetEvent(_event);
 		ptcSub.push_back(_event);
 	};
@@ -1304,8 +1354,7 @@ void	MusicTrack::SetSubWithParch(unsigned int _no,bool _f)
 		iSub = _no;
 		f_opt_Sub	= true;
 		if(jump_flag==false){
-			mml_Address*		_event = new mml_Address(nsd_Call, _T("Subroutine for Patch"));
-			_event->set_id(_no);
+			mml_Address*		_event = new mml_Address(_no, nsd_Call, _T("Subroutine for Patch"));
 			SetEvent(_event);
 			ptcSub.push_back(_event);
 		};
@@ -1424,9 +1473,7 @@ void	MusicTrack::SetEnvelop_Evoi(unsigned int _no)
 		nsd.env_volume		= _no;
 		sw_Evoi				= true;
 		f_opt_Evoi			= true;		//最適化フラグ
-		_event				= new mml_Address(nsd_Envelop_Voice, _T("Voice Envelope"));
-
-		_event->set_id(_no);
+		_event				= new mml_Address(_no, nsd_Envelop_Voice, _T("Voice Envelope"));
 		SetEvent(_event);
 		ptcEnv.push_back(_event);
 	}
@@ -1441,9 +1488,7 @@ void	MusicTrack::SetEnvelop_Evol(unsigned int _no)
 		nsd.env_voice		= _no;
 		sw_Evol				= true;
 		f_opt_Evol			= true;		//最適化フラグ
-		_event				= new mml_Address(nsd_Envelop_Volume, _T("Volume Envelope"));
-
-		_event->set_id(_no);
+		_event				= new mml_Address(_no, nsd_Envelop_Volume, _T("Volume Envelope"));
 		SetEvent(_event);
 		ptcEnv.push_back(_event);
 	}
@@ -1458,9 +1503,7 @@ void	MusicTrack::SetEnvelop_Em(unsigned int _no)
 		nsd.env_frequency	= _no;
 		sw_Em				= true;
 		f_opt_Em			= true;		//最適化フラグ
-		_event				= new mml_Address(nsd_Envelop_Frequency, _T("Frequency Envelope"));
-
-		_event->set_id(_no);
+		_event				= new mml_Address(_no, nsd_Envelop_Frequency, _T("Frequency Envelope"));
 		SetEvent(_event);
 		ptcEnv.push_back(_event);
 	}
@@ -1475,9 +1518,7 @@ void	MusicTrack::SetEnvelop_En(unsigned int _no)
 		nsd.env_note		= _no;
 		sw_En				= true;
 		f_opt_En			= true;		//最適化フラグ
-		_event				= new mml_Address(nsd_Envelop_Note, _T("Note Envelope"));
-
-		_event->set_id(_no);
+		_event				= new mml_Address(_no, nsd_Envelop_Note, _T("Note Envelope"));
 		SetEvent(_event);
 		ptcEnv.push_back(_event);
 	}
@@ -1579,10 +1620,9 @@ void	MusicTrack::SetSweep(unsigned char _c)
 //==============================================================
 void	MusicTrack::SetFDSC(MMLfile* MML)
 {
-	mml_Address*		_event = new mml_Address(nsd_FDS_Career, _T("FDS career wave table"));
 	unsigned	int		_no = MML->GetInt();
+	mml_Address*		_event = new mml_Address(_no, nsd_FDS_Career, _T("FDS career wave table"));
 
-	_event->set_id(_no);
 	SetEvent(_event);
 	ptcFDSC.push_back(_event);
 }
@@ -1597,10 +1637,9 @@ void	MusicTrack::SetFDSC(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetFDSM(MMLfile* MML)
 {
-	mml_Address*		_event = new mml_Address(nsd_FDS_Modlator, _T("FDS modulator wave table"));
 	unsigned	int		_no = MML->GetInt();
+	mml_Address*		_event = new mml_Address(_no, nsd_FDS_Modlator, _T("FDS modulator wave table"));
 
-	_event->set_id(_no);
 	SetEvent(_event);
 	ptcFDSM.push_back(_event);
 }
@@ -1615,10 +1654,9 @@ void	MusicTrack::SetFDSM(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetVRC7(MMLfile* MML)
 {
-	mml_Address*		_event = new mml_Address(nsc_VRC7, _T("VRC7 user instruments"));
 	unsigned	int		_no = MML->GetInt();
+	mml_Address*		_event = new mml_Address(_no, nsc_VRC7, _T("VRC7 user instruments"));
 
-	_event->set_id(_no);
 	SetEvent(_event);
 	ptcOPLL.push_back(_event);
 }
@@ -1633,15 +1671,17 @@ void	MusicTrack::SetVRC7(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetN163(MMLfile* MML)
 {
-	unsigned	char	cData;
-	mml_Address*		_event = new mml_Address(nsc_N163,(unsigned char)MML->GetInt(),_T("n163 wave table"));
+	unsigned	char	cNum	= (unsigned char)MML->GetInt();		//音色番号
+	unsigned	char	cData	= MML->GetChar();
+	unsigned	int		_no;
+	mml_Address*		_event;
 
-	cData = MML->GetChar();
 	if(cData != ','){
 		MML->Err(_T("@N コマンドのパラメータが足りません。２つ指定してください。"));
 	}
 
-	_event->set_id(MML->GetInt());
+	_no = MML->GetInt();
+	_event	= new mml_Address(_no, (unsigned char)nsc_N163, cNum, _T("n163 wave table"));
 	SetEvent(_event);
 	ptcWave.push_back(_event);
 }
@@ -1653,6 +1693,7 @@ void	MusicTrack::SetN163_Load(MMLfile* MML)
 {
 				int		i		= MML->GetInt();
 	unsigned	char	cData	= MML->GetChar();
+	unsigned	int		_no;
 	mml_Address*		_event;
 
 	if(cData != ','){
@@ -1666,8 +1707,8 @@ void	MusicTrack::SetN163_Load(MMLfile* MML)
 		MML->Err(_T("n16xの波形開始点は4の倍数で指定してください。"));
 	}
 
-	_event = new mml_Address(nsc_N163,(unsigned char)(i/4),_T("n163 wave table"));
-	_event->set_id(MML->GetInt());
+	_no = MML->GetInt();
+	_event = new mml_Address(_no, (unsigned char)nsc_N163,(unsigned char)(i/4),_T("n163 wave table"));
 	SetEvent(_event);
 	ptcWave.push_back(_event);
 }

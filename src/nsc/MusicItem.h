@@ -35,11 +35,11 @@ protected:
 //ƒƒ“ƒo[ŠÖ”
 public:
 	MusicItem(const _CHAR _strName[]=_T(""));
-	MusicItem(int _id, const _CHAR _strName[]=_T(""));
+	MusicItem(unsigned int _id, const _CHAR _strName[]=_T(""));
 	~MusicItem(void);
 
 				void	clear(void);
-				void	clear(int _id);
+				void	clear(unsigned int _id);
 				size_t	getSize();
 	unsigned	int		getOffset();
 	unsigned	int		SetOffset(unsigned	int	_offset);

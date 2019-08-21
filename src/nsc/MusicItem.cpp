@@ -35,7 +35,7 @@ MusicItem::MusicItem(const _CHAR _strName[]):
 	}
 }
 
-MusicItem::MusicItem(int _id, const _CHAR _strName[]):
+MusicItem::MusicItem(unsigned int _id, const _CHAR _strName[]):
 	iOffset(0),
 	iSize(0),
 	f_Optimize(false),
@@ -43,9 +43,9 @@ MusicItem::MusicItem(int _id, const _CHAR _strName[]):
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){
-		_COUT << _T("Create Music Object : ====[ ") << strName << _T("(");
+		_COUT << _T("Create Music Object : ") << strName << _T("(");
 		cout << _id;
-		_COUT << _T(") ]====") << endl;
+		_COUT << _T(")") << endl;
 	}
 }
 
@@ -97,7 +97,7 @@ void	MusicItem::clear(void)
 	}
 }
 
-void	MusicItem::clear(int _id)
+void	MusicItem::clear(unsigned int _id)
 {
 
 	//Debug message　（うざい程出力するので注意。）

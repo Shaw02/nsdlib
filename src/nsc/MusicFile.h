@@ -47,6 +47,7 @@ class MusicFile :
 //メンバー変数
 public:
 			MusicHeader			Header;		//Header
+			DPCMinfo*			cDPCMinfo;	//⊿PCM
 
 	map<	int, FDSC*		>	ptcFDSC;	//FDS  wave table (career)
 	map<	int, FDSM*		>	ptcFDSM;	//FDS  wave table (modulator)
@@ -56,7 +57,6 @@ public:
 	map<	int, BGM*		>	ptcBGM;		//BGM
 	map<	int, SE*		>	ptcSE;		//SE 
 	map<	int, Sub*		>	ptcSub;		//Subroutine Sequence
-				DPCMinfo*		cDPCMinfo;
 
 private:
 //static	const	Command_Info	Command[];
@@ -65,7 +65,7 @@ private:
 
 //メンバー関数
 public:
-	MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]=_T("==== [ Music ] ===="));
+	MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]=_T("================ [ Music ] ================"));
 	~MusicFile(void);
 
 	void				TickCount(void);

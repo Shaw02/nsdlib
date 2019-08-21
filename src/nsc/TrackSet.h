@@ -20,7 +20,7 @@ class TrackSet :
 {
 //ƒƒ“ƒo[•Ï”
 protected:
-	unsigned	int				m_id;		//ID
+	unsigned	int				m_id;		//ID”Ô†
 				int				iTempo;
 
 protected:

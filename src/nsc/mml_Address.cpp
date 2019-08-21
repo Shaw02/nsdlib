@@ -36,13 +36,35 @@ mml_Address::mml_Address(unsigned char _code, const _CHAR _strName[]):
 //--------------------------------------------------------------
 //	●引数
 //		unsigned	char 	_code		コード
+//		const		char	_strName[]	クラスの名前
+//	●返値
+//				無し
+//==============================================================
+mml_Address::mml_Address(unsigned int _id, unsigned char _code, const _CHAR _strName[]):
+	f_id(true),
+	m_id(_id),
+	MusicEvent(_id, _strName)
+{
+	iSize = 3;
+	code.resize(iSize);
+	code[0] = _code;
+	code[1] = 0;
+	code[2] = 0;
+}
+
+//==============================================================
+//		コンストラクタ
+//--------------------------------------------------------------
+//	●引数
+//		unsigned	char 	_code		コード
 //		unsigned	char 	_data		引数1
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
 //==============================================================
-mml_Address::mml_Address(unsigned char _code, unsigned char _data, const _CHAR _strName[]):
-	f_id(false),
+mml_Address::mml_Address(unsigned int _id, unsigned char _code, unsigned char _data, const _CHAR _strName[]):
+	f_id(true),
+	m_id(_id),
 	MusicEvent(_strName)
 {
 	iSize = 4;
@@ -135,7 +157,7 @@ unsigned int	mml_Address::get_id(void)
 	return(m_id);
 }
 //==============================================================
-//		idの取得
+//		flagの取得
 //--------------------------------------------------------------
 //	●引数
 //				無し

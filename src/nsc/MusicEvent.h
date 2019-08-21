@@ -106,5 +106,6 @@ class MusicEvent:
 //ƒƒ“ƒo[ŠÖ”
 public:
 	MusicEvent(const _CHAR _strName[]=_T("Event"));
+	MusicEvent(unsigned int _id, const _CHAR _strName[]=_T("Event"));
 	~MusicEvent(void);
 };

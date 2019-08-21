@@ -886,6 +886,7 @@ const	static	Command_Info	Command[] = {
 		code[0] = (unsigned char)maxTrack + 1;				//トラック数
 		code[1] = Priority;									//各種フラグ
 
+		// to do ■■■アドレス解決ルーチンへ移動
 		//各トラックに終端を書いて、曲データのアドレス情報を作成
 		iTrack = 0;
 		while(iTrack <= maxTrack){

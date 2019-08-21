@@ -11,19 +11,37 @@
 #include "mml_repeat.h"
 
 //==============================================================
-//		コンストラクタ（引数0Byte）
+//		コンストラクタ（for Repert A）
+//--------------------------------------------------------------
+//	●引数
+//		const		char	_strName[]	クラスの名前
+//		unsigned	char	count		リピート回数
+//	●返値
+//				無し
+//==============================================================
+mml_repeat::mml_repeat(unsigned int _id, unsigned char count, const _CHAR _strName[]):
+	MusicEvent(_id, _strName)
+{
+	iSize = 2;
+	code.resize(iSize);
+	code[0] = nsd_Repeat_A_Start;
+	code[1] = count;
+}
+
+//==============================================================
+//		コンストラクタ（for Repert B）
 //--------------------------------------------------------------
 //	●引数
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
 //==============================================================
-mml_repeat::mml_repeat(const _CHAR _strName[]):
-	MusicEvent(_strName)
+mml_repeat::mml_repeat(unsigned int _id, const _CHAR _strName[]):
+	MusicEvent(_id, _strName)
 {
-	iSize = 2;
+	iSize = 1;
 	code.resize(iSize);
-	code[0] = nsd_Repeat_A_Start;
+	code[0] = nsd_Repeat_B_Start;
 }
 
 //==============================================================
@@ -48,5 +66,10 @@ mml_repeat::~mml_repeat(void)
 //==============================================================
 void	mml_repeat::set_count(unsigned char count)
 {
-	code[1] = count;
+	if(	iSize == 2){
+		code[1] = count;
+	} else {
+		_CERR << _T("mml_repeat::set_count()関数で、エラーが発生しました。") << endl;
+		nsc_exit(EXIT_FAILURE);
+	}
 }
