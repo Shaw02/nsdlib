@@ -23,8 +23,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //	●返値
 //					無し
 //==============================================================
-MusicTrack::MusicTrack(MMLfile* MML, const _CHAR _strName[]):
-	MusicItem(_strName),
+MusicTrack::MusicTrack(unsigned int _id, MMLfile* MML, const _CHAR _strName[]):
+	MusicItem(_id, _strName),
 	offset_now(0),
 	offset_loop(0),				//無限ループ
 	offset_repeat_a_s(0),		//リピートＡ
@@ -774,6 +774,7 @@ size_t	MusicTrack::SetEnd(MMLfile* MML)
 			// to do ■■■アドレス解決ルーチンへ移動
 			_event->set_Address(offset_loop - offset_now - 1);
 			SetEvent(_event);
+			ptc_Loop_End.push_back(_event);
 		}
 	}
 	iSize = offset_now;
@@ -880,6 +881,7 @@ void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 			// to do ■■■アドレス解決ルーチンへ移動
 			_event->set_Address(offset_repeat_b_s - offset_now - 1);
 			SetEvent(_event);
+			ptc_Repert_B_End.push_back(_event);
 		} else {
 			MML->Err(_T("リピート(B)内で \\ コマンドがありませんでした。必ず分岐点 \\ は指定してください。"));
 		}
@@ -1031,6 +1033,7 @@ void	MusicTrack::SetRepeat_Branch(MMLfile* MML)
 					offset_repeat_a_b = offset_now + 1;	//引数の位置
 					_old_repeatA_Branch = new mml_Address(cnt_Repert_A - 1, nsd_Repeat_A_Branch, _T("Repeat(A) Branch"));
 					SetEvent(_old_repeatA_Branch);
+					ptc_Repert_A_Branch.push_back(_old_repeatA_Branch);
 				} else {
 					MML->Err(_T("リピート(A)内で : コマンドが重複しています。"));
 				}
@@ -1126,6 +1129,7 @@ void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 		// to do ■■■アドレス解決ルーチンへ移動
 		_event->set_Address(offset_repeat_a_s - offset_now - 1);
 		SetEvent(_event);
+		ptc_Repert_A_End.push_back(_event);
 		ptc_Repert_A_E[cnt_Repert_A - 1] = _event;
 
 		//条件分岐があったら。

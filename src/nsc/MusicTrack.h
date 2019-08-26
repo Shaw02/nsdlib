@@ -249,17 +249,10 @@ private:
 
 
 
-	map<	unsigned int, MusicEvent*	>	ptc_Loop;		//Loop
-	map<	unsigned int, mml_repeat*	>	ptc_Repert_A;	//Repert(A) Start poiont
-	map<	unsigned int, mml_Address*	>	ptc_Repert_A_E;	//Repert(A) End   point
-	map<	unsigned int, mml_repeat*	>	ptc_Repert_B;	//Repert(B) Start poiont
-
-			unsigned int	cnt_Loop;						// L コマンドのID番号をどこまでふったか
-			unsigned int	cnt_Repert_A;					// [ コマンドのID番号をどこまでふったか
-			unsigned int	cnt_Repert_B;					// |:コマンドのID番号をどこまでふったか
-
 	//----------------------------------
 	//オブジェクト
+
+	//アドレス情報を持つイベントオブジェクトのポインタの一覧
 	vector<	mml_Address*	>	ptcFDSC;		//FDS Carrer
 	vector<	mml_Address*	>	ptcFDSM;		//FDS Modlator
 	vector<	mml_Address*	>	ptcOPLL;		//VRC7, OPLL
@@ -268,10 +261,26 @@ private:
 	vector<	mml_Address*	>	ptcSub;			//サブルーチンコマンド一覧
 	vector<	mml_Address*	>	ptcEnv;			//エンベロープコマンド一覧
 
+	vector<	mml_Address*	>	ptc_Loop_End;			//End of Track with LOOP
+	vector<	mml_Address*	>	ptc_Repert_A_End;		//Repert(A) End    poiont
+	vector<	mml_Address*	>	ptc_Repert_A_Branch;	//Repert(A) Branch poiont
+	vector<	mml_Address*	>	ptc_Repert_B_End;		//Repert(B) End    poiont
+
+	//各ID番号毎の参照先するイベントオブジェクトのポインタの一覧
+	map<	unsigned int, MusicEvent*	>	ptc_Loop;		//Loop
+	map<	unsigned int, mml_repeat*	>	ptc_Repert_A;	//Repert(A) Start poiont
+	map<	unsigned int, mml_Address*	>	ptc_Repert_A_E;	//Repert(A) End   point
+	map<	unsigned int, mml_repeat*	>	ptc_Repert_B;	//Repert(B) Start poiont
+
+	//ID番号をどこまでふったか
+			unsigned int	cnt_Loop;						// L コマンド
+			unsigned int	cnt_Repert_A;					// [ コマンド
+			unsigned int	cnt_Repert_B;					// |:コマンド
+
 
 //メンバー関数
 public:
-			MusicTrack(MMLfile* MML, const _CHAR _strName[] = _T("---- [ Music Track ] ----"));
+			MusicTrack(unsigned int _id, MMLfile* MML, const _CHAR _strName[] = _T("---- [ Music Track ] ----"));
 			~MusicTrack(void);
 
 	unsigned	int		TickCount(MusicFile* MUS, NSD_WORK* work);

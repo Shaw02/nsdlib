@@ -23,8 +23,7 @@
 //==============================================================
 TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
-	iTempo(120),
-	m_id(_id)
+	iTempo(120)
 {
 	//----------------------
 	//Local変数
@@ -926,10 +925,10 @@ TrackSet::~TrackSet(void)
 //	●返値
 //				無し
 //==============================================================
-void	TrackSet::clear(int _id)
+void	TrackSet::clear_Optimize()
 {
 	maxTrack = -1;
-	MusicItem::clear(_id);
+	MusicItem::clear_Optimize();
 }
 
 //==============================================================
@@ -1189,7 +1188,7 @@ void	TrackSet::TrackProc(MMLfile* MML)
 MusicTrack*	TrackSet::makeTrack(MMLfile* MML, int _track)
 {
 	//トラックのオブジェクトを生成。
-	MusicTrack*	newTrack	= new MusicTrack(MML);
+	MusicTrack*	newTrack	= new MusicTrack(_track, MML);
 
 	//生成したアイテムは保存
 	ptcItem.push_back(newTrack);		//基底クラス"MusicItem"側で開放する。

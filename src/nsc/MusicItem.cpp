@@ -26,6 +26,7 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 MusicItem::MusicItem(const _CHAR _strName[]):
 	iOffset(0),
 	iSize(0),
+	f_id(false),
 	f_Optimize(false),
 	strName(_strName)
 {
@@ -38,13 +39,15 @@ MusicItem::MusicItem(const _CHAR _strName[]):
 MusicItem::MusicItem(unsigned int _id, const _CHAR _strName[]):
 	iOffset(0),
 	iSize(0),
+	f_id(true),
+	m_id(_id),
 	f_Optimize(false),
 	strName(_strName)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){
 		_COUT << _T("Create Music Object : ") << strName << _T("(");
-		cout << _id;
+		cout << m_id;
 		_COUT << _T(")") << endl;
 	}
 }
@@ -63,7 +66,11 @@ MusicItem::~MusicItem(void)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x80){
-		_COUT << _T("Delete Music Object : ") << strName << endl;
+		_COUT << _T("Delete Music Object : ") << strName;
+		if(f_id == true){
+			_COUT << _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
 	}
 }
 
@@ -97,12 +104,16 @@ void	MusicItem::clear(void)
 	}
 }
 
-void	MusicItem::clear(unsigned int _id)
+void	MusicItem::clear_Optimize()
 {
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x40){
-		_COUT << _T("Clear Music Object : ====[ ") << strName << _T("(") << _id << _T(") ]====") << endl;
+		_COUT << _T("Optimized Object : ") << strName;
+		if(f_id == true){
+			_COUT	<< _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
 	}
 
 	clear();
@@ -156,7 +167,11 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 			_COUT	<<	hex	<<	setw(2)	<<	setfill(_T('0'))	<<	(unsigned int)(code[i] & 0xFF)	<<	_T(" ");
 			i++;
 		}
-		_COUT  << dec	<< _T(": ") << strName << endl;
+		_COUT  << dec	<< _T(": ") << strName;
+		if(f_id == true){
+			_COUT	<< _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
 	}
 
 	iOffset = _offset;
@@ -269,4 +284,43 @@ void	MusicItem::getAsm(MusicFile* MUS)
 			itItem++;
 		}
 	}
+}
+
+//==============================================================
+//		idの設定
+//--------------------------------------------------------------
+//	●引数
+//		unsigned	int		_id		番号
+//	●返値
+//				無し
+//==============================================================
+void	MusicItem::set_id(unsigned int _id)
+{
+	f_id = true;
+	m_id = _id;
+}
+
+//==============================================================
+//		idの取得
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		unsigned	int		番号
+//==============================================================
+unsigned int	MusicItem::get_id(void)
+{
+	return(m_id);
+}
+//==============================================================
+//		flagの取得
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		unsigned	int		番号
+//==============================================================
+bool	MusicItem::get_flag(void)
+{
+	return(f_id);
 }

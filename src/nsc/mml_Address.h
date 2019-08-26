@@ -19,8 +19,7 @@ class mml_Address :
 	public MusicEvent
 {
 //メンバー変数
-	unsigned	int		m_id;		//ID番号
-				bool	f_id;		//ID番号がセットされた事を示すflag
+
 //メンバー関数
 public:
 	mml_Address(unsigned char _code, const _CHAR _strName[]=_T("Address"));
@@ -30,7 +29,4 @@ public:
 
 				void	set_Address(unsigned int _addr);
 //	unsigned	int		get_Address(void);
-				void	set_id(unsigned int _id);
-	unsigned	int		get_id(void);
-				bool	get_flag(void);
 };

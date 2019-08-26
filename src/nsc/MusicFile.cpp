@@ -575,7 +575,7 @@ void	MusicFile::TickCount(void)
 					itSub->second->OptimizeDefineCheck(this);
 				} else {
 					//使わないサブルーチンであれば、オブジェクト削除。
-					itSub->second->clear(itSub->first);
+					itSub->second->clear_Optimize();
 				}
 				itSub++;
 			}
@@ -587,7 +587,7 @@ void	MusicFile::TickCount(void)
 			while(itEnv != ptcEnv.end()){
 				if(itEnv->second->chkUse() == false){
 					//使わないサブルーチンであれば、オブジェクト削除。
-					itEnv->second->clear(itEnv->first);
+					itEnv->second->clear_Optimize();
 				}
 				itEnv++;
 			}
@@ -599,7 +599,7 @@ void	MusicFile::TickCount(void)
 			while(itFDSC != ptcFDSC.end()){
 				if(itFDSC->second->chkUse() == false){
 					//使わないサブルーチンであれば、オブジェクト削除。
-					itFDSC->second->clear(itFDSC->first);
+					itFDSC->second->clear_Optimize();
 				}
 				itFDSC++;
 			}
@@ -611,7 +611,7 @@ void	MusicFile::TickCount(void)
 			while(itFDSM != ptcFDSM.end()){
 				if(itFDSM->second->chkUse() == false){
 					//使わないサブルーチンであれば、オブジェクト削除。
-					itFDSM->second->clear(itFDSM->first);
+					itFDSM->second->clear_Optimize();
 				}
 				itFDSM++;
 			}
@@ -623,7 +623,7 @@ void	MusicFile::TickCount(void)
 			while(itVRC7 != ptcVRC7.end()){
 				if(itVRC7->second->chkUse() == false){
 					//使わないサブルーチンであれば、オブジェクト削除。
-					itVRC7->second->clear(itVRC7->first);
+					itVRC7->second->clear_Optimize();
 				}
 				itVRC7++;
 			}
@@ -635,7 +635,7 @@ void	MusicFile::TickCount(void)
 			while(itN163 != ptcN163.end()){
 				if(itN163->second->chkUse() == false){
 					//使わないサブルーチンであれば、オブジェクト削除。
-					itN163->second->clear(itN163->first);
+					itN163->second->clear_Optimize();
 				}
 				itN163++;
 			}

@@ -28,6 +28,10 @@ protected:
 	list<MusicItem*>		ptcItem;		//構造化
 				string		code;
 				size_t		iSize;
+
+	unsigned	int			m_id;			//ID番号
+				bool		f_id;			//ID番号がセットされた事を示すflag
+
 	unsigned	int			iOffset;		//SNDファイルポインタ
 				bool		f_Optimize;		//最適化フラグ
 
@@ -39,7 +43,7 @@ public:
 	~MusicItem(void);
 
 				void	clear(void);
-				void	clear(unsigned int _id);
+				void	clear_Optimize();
 				size_t	getSize();
 	unsigned	int		getOffset();
 	unsigned	int		SetOffset(unsigned	int	_offset);
@@ -48,6 +52,10 @@ public:
 	virtual		void	getCode(string* _str);
 	virtual		void	setCode(string* _str);
 	virtual		void	getAsm(MusicFile* MUS);
+
+				void	set_id(unsigned int _id);
+	unsigned	int		get_id(void);
+				bool	get_flag(void);
 
 				void	setUse(void){f_Optimize = true;};	//最適化：不可
 				bool	chkUse(void){return(f_Optimize);};	//最適化フラグの取得

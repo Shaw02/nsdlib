@@ -20,7 +20,6 @@
 //				–³‚µ
 //==============================================================
 mml_Address::mml_Address(unsigned char _code, const _CHAR _strName[]):
-	f_id(false),
 	MusicEvent(_strName)
 {
 
@@ -41,8 +40,6 @@ mml_Address::mml_Address(unsigned char _code, const _CHAR _strName[]):
 //				–³‚µ
 //==============================================================
 mml_Address::mml_Address(unsigned int _id, unsigned char _code, const _CHAR _strName[]):
-	f_id(true),
-	m_id(_id),
 	MusicEvent(_id, _strName)
 {
 	iSize = 3;
@@ -63,9 +60,7 @@ mml_Address::mml_Address(unsigned int _id, unsigned char _code, const _CHAR _str
 //				–³‚µ
 //==============================================================
 mml_Address::mml_Address(unsigned int _id, unsigned char _code, unsigned char _data, const _CHAR _strName[]):
-	f_id(true),
-	m_id(_id),
-	MusicEvent(_strName)
+	MusicEvent(_id, _strName)
 {
 	iSize = 4;
 	code.resize(iSize);
@@ -129,43 +124,4 @@ unsigned	int	mml_Address::get_Address(void)
 	return((unsigned char)code[1] + ((unsigned char)code[2]<<8) );
 }
 */
-
-//==============================================================
-//		id‚ÌÝ’è
-//--------------------------------------------------------------
-//	œˆø”
-//		unsigned	int		_id		”Ô†
-//	œ•Ô’l
-//				–³‚µ
-//==============================================================
-void	mml_Address::set_id(unsigned int _id)
-{
-	f_id = true;
-	m_id = _id;
-}
-
-//==============================================================
-//		id‚ÌŽæ“¾
-//--------------------------------------------------------------
-//	œˆø”
-//				–³‚µ
-//	œ•Ô’l
-//		unsigned	int		”Ô†
-//==============================================================
-unsigned int	mml_Address::get_id(void)
-{
-	return(m_id);
-}
-//==============================================================
-//		flag‚ÌŽæ“¾
-//--------------------------------------------------------------
-//	œˆø”
-//				–³‚µ
-//	œ•Ô’l
-//		unsigned	int		”Ô†
-//==============================================================
-bool	mml_Address::get_flag(void)
-{
-	return(f_id);
-}
 
