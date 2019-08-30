@@ -436,9 +436,9 @@ void	MusicTrack::OptimizeDefineCheck(MusicFile* MUS)
 	//----------------------
 	//Surbortine
 
-	if(!ptcSub.empty()){
-		itSub = ptcSub.begin();
-		while(itSub != ptcSub.end()){
+	if(!vec_ptc_Sub.empty()){
+		itSub = vec_ptc_Sub.begin();
+		while(itSub != vec_ptc_Sub.end()){
 			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
 			if( MUS->ptcSub.count(_no) == 0){
 				if(cOptionSW->fErr == true){
@@ -455,9 +455,9 @@ void	MusicTrack::OptimizeDefineCheck(MusicFile* MUS)
 
 	//----------------------
 	//Envelope
-	if(!ptcEnv.empty()){
-		itEnv = ptcEnv.begin();
-		while(itEnv != ptcEnv.end()){
+	if(!vec_ptc_Env.empty()){
+		itEnv = vec_ptc_Env.begin();
+		while(itEnv != vec_ptc_Env.end()){
 			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcEnv.count(_no) == 0){
 				if(cOptionSW->fErr == true){
@@ -474,9 +474,9 @@ void	MusicTrack::OptimizeDefineCheck(MusicFile* MUS)
 
 	//----------------------
 	//FDSC
-	if(!ptcFDSC.empty()){
-		itFDSC = ptcFDSC.begin();
-		while(itFDSC != ptcFDSC.end()){
+	if(!vec_ptc_FDSC.empty()){
+		itFDSC = vec_ptc_FDSC.begin();
+		while(itFDSC != vec_ptc_FDSC.end()){
 			_no			= (*itFDSC)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcFDSC.count(_no) == 0){
 				if(cOptionSW->fErr == true){
@@ -493,9 +493,9 @@ void	MusicTrack::OptimizeDefineCheck(MusicFile* MUS)
 
 	//----------------------
 	//FDSM
-	if(!ptcFDSM.empty()){
-		itFDSM = ptcFDSM.begin();
-		while(itFDSM != ptcFDSM.end()){
+	if(!vec_ptc_FDSM.empty()){
+		itFDSM = vec_ptc_FDSM.begin();
+		while(itFDSM != vec_ptc_FDSM.end()){
 			_no			= (*itFDSM)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcFDSM.count(_no) == 0){
 				if(cOptionSW->fErr == true){
@@ -512,9 +512,9 @@ void	MusicTrack::OptimizeDefineCheck(MusicFile* MUS)
 
 	//----------------------
 	//OPLL
-	if(!ptcOPLL.empty()){
-		itVRC7 = ptcOPLL.begin();
-		while(itVRC7 != ptcOPLL.end()){
+	if(!vec_ptc_OPLL.empty()){
+		itVRC7 = vec_ptc_OPLL.begin();
+		while(itVRC7 != vec_ptc_OPLL.end()){
 			_no			= (*itVRC7)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcVRC7.count(_no) == 0){
 				if(cOptionSW->fErr == true){
@@ -531,9 +531,9 @@ void	MusicTrack::OptimizeDefineCheck(MusicFile* MUS)
 
 	//----------------------
 	//N163
-	if(!ptcWave.empty()){
-		itN163 = ptcWave.begin();
-		while(itN163 != ptcWave.end()){
+	if(!vec_ptc_Wave.empty()){
+		itN163 = vec_ptc_Wave.begin();
+		while(itN163 != vec_ptc_Wave.end()){
 			_no			= (*itN163)->get_id();		//エンベロープNo.の取得
 			if( MUS->ptcN163.count(_no) == 0){
 				if(cOptionSW->fErr == true){
@@ -579,9 +579,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 
 	//----------------------
 	//SE
-	if(!ptcSE.empty()){
-		itSE = ptcSE.begin();
-		while(itSE != ptcSE.end()){
+	if(!vec_ptc_SE.empty()){
+		itSE = vec_ptc_SE.begin();
+		while(itSE != vec_ptc_SE.end()){
 			_no			= (*itSE)->get_id();		//サブルーチンNo.の取得
 			_com_offset	= (*itSE)->getOffset();
 			if( MUS->ptcSE.count(_no) == 0){
@@ -600,9 +600,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 
 	//----------------------
 	//Surbortine
-	if(!ptcSub.empty()){
-		itSub = ptcSub.begin();
-		while(itSub != ptcSub.end()){
+	if(!vec_ptc_Sub.empty()){
+		itSub = vec_ptc_Sub.begin();
+		while(itSub != vec_ptc_Sub.end()){
 			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
 			_com_offset	= (*itSub)->getOffset();
 			if( MUS->ptcSub.count(_no) == 0){
@@ -621,9 +621,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 
 	//----------------------
 	//Envelope
-	if(!ptcEnv.empty()){
-		itEnv = ptcEnv.begin();
-		while(itEnv != ptcEnv.end()){
+	if(!vec_ptc_Env.empty()){
+		itEnv = vec_ptc_Env.begin();
+		while(itEnv != vec_ptc_Env.end()){
 			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itEnv)->getOffset();
 			if( MUS->ptcEnv.count(_no) == 0){
@@ -642,9 +642,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 
 	//----------------------
 	//FDSC
-	if(!ptcFDSC.empty()){
-		itFDSC = ptcFDSC.begin();
-		while(itFDSC != ptcFDSC.end()){
+	if(!vec_ptc_FDSC.empty()){
+		itFDSC = vec_ptc_FDSC.begin();
+		while(itFDSC != vec_ptc_FDSC.end()){
 			_no			= (*itFDSC)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itFDSC)->getOffset();
 			if( MUS->ptcFDSC.count(_no) == 0){
@@ -663,9 +663,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 
 	//----------------------
 	//FDSM
-	if(!ptcFDSM.empty()){
-		itFDSM = ptcFDSM.begin();
-		while(itFDSM != ptcFDSM.end()){
+	if(!vec_ptc_FDSM.empty()){
+		itFDSM = vec_ptc_FDSM.begin();
+		while(itFDSM != vec_ptc_FDSM.end()){
 			_no			= (*itFDSM)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itFDSM)->getOffset();
 			if( MUS->ptcFDSM.count(_no) == 0){
@@ -684,9 +684,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 
 	//----------------------
 	//OPLL
-	if(!ptcOPLL.empty()){
-		itVRC7 = ptcOPLL.begin();
-		while(itVRC7 != ptcOPLL.end()){
+	if(!vec_ptc_OPLL.empty()){
+		itVRC7 = vec_ptc_OPLL.begin();
+		while(itVRC7 != vec_ptc_OPLL.end()){
 			_no			= (*itVRC7)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itVRC7)->getOffset();
 			if( MUS->ptcVRC7.count(_no) == 0){
@@ -705,9 +705,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 
 	//----------------------
 	//N163
-	if(!ptcWave.empty()){
-		itN163 = ptcWave.begin();
-		while(itN163 != ptcWave.end()){
+	if(!vec_ptc_Wave.empty()){
+		itN163 = vec_ptc_Wave.begin();
+		while(itN163 != vec_ptc_Wave.end()){
 			_no			= (*itN163)->get_id();		//エンベロープNo.の取得
 			_com_offset	= (*itN163)->getOffset();
 			if( MUS->ptcN163.count(_no) == 0){
@@ -774,7 +774,7 @@ size_t	MusicTrack::SetEnd(MMLfile* MML)
 			// to do ■■■アドレス解決ルーチンへ移動
 			_event->set_Address(offset_loop - offset_now - 1);
 			SetEvent(_event);
-			ptc_Loop_End.push_back(_event);
+			vec_ptc_Loop_End.push_back(_event);
 		}
 	}
 	iSize = offset_now;
@@ -881,7 +881,7 @@ void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 			// to do ■■■アドレス解決ルーチンへ移動
 			_event->set_Address(offset_repeat_b_s - offset_now - 1);
 			SetEvent(_event);
-			ptc_Repert_B_End.push_back(_event);
+			vec_ptc_Repert_B_End.push_back(_event);
 		} else {
 			MML->Err(_T("リピート(B)内で \\ コマンドがありませんでした。必ず分岐点 \\ は指定してください。"));
 		}
@@ -1033,7 +1033,7 @@ void	MusicTrack::SetRepeat_Branch(MMLfile* MML)
 					offset_repeat_a_b = offset_now + 1;	//引数の位置
 					_old_repeatA_Branch = new mml_Address(cnt_Repert_A - 1, nsd_Repeat_A_Branch, _T("Repeat(A) Branch"));
 					SetEvent(_old_repeatA_Branch);
-					ptc_Repert_A_Branch.push_back(_old_repeatA_Branch);
+					vec_ptc_Repert_A_Branch.push_back(_old_repeatA_Branch);
 				} else {
 					MML->Err(_T("リピート(A)内で : コマンドが重複しています。"));
 				}
@@ -1129,7 +1129,7 @@ void	MusicTrack::SetRepeat_A_End(MMLfile* MML)
 		// to do ■■■アドレス解決ルーチンへ移動
 		_event->set_Address(offset_repeat_a_s - offset_now - 1);
 		SetEvent(_event);
-		ptc_Repert_A_End.push_back(_event);
+		vec_ptc_Repert_A_End.push_back(_event);
 		ptc_Repert_A_E[cnt_Repert_A - 1] = _event;
 
 		//条件分岐があったら。
@@ -1207,10 +1207,10 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 										(*pt_itMusic)->getCode(&sOpCode);
 						switch(cOpCode){
 							case(nsd_Call):
-								ptcSub.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								vec_ptc_Sub.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
 								break;
 							case(nsd_Call_SE):
-								ptcSE.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								vec_ptc_SE.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
 								break;
 							case(nsd_Envelop_Voice):
 							case(nsd_Envelop_Volume):
@@ -1219,16 +1219,16 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 								CopyEnvEvent(cOpCode, &sOpCode, pt_itMusic);
 								break;
 							case(nsc_VRC7):
-								ptcOPLL.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								vec_ptc_OPLL.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
 								break;
 							case(nsc_N163):
-								ptcWave.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								vec_ptc_Wave.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
 								break;
 							case(nsd_FDS_Career):
-								ptcFDSC.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								vec_ptc_FDSC.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
 								break;
 							case(nsd_FDS_Modlator):
-								ptcFDSM.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
+								vec_ptc_FDSM.push_back(CopyAddressEvent(cOpCode, &sOpCode, pt_itMusic));
 								break;
 /*
 							case(nsd_Repeat_A_Start):
@@ -1305,7 +1305,7 @@ void	MusicTrack::CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<Music
 
 	if(ptAdrItem->get_flag() == true){
 		_event		=	new mml_Address(ptAdrItem->get_id(), cOpCode);
-		ptcEnv.push_back(_event);
+		vec_ptc_Env.push_back(_event);
 	} else {
 		_event		=	new mml_Address(cOpCode);
 	}
@@ -1327,7 +1327,7 @@ void	MusicTrack::SetSE(MMLfile* MML)
 	if(jump_flag==false){
 		mml_Address*		_event = new mml_Address(_no, nsd_Call_SE, _T("Call SE"));
 		SetEvent(_event);
-		ptcSE.push_back(_event);
+		vec_ptc_SE.push_back(_event);
 	}
 }
 
@@ -1344,7 +1344,7 @@ void	MusicTrack::SetSubroutine(unsigned int _no)
 	if(jump_flag==false){
 		mml_Address*		_event = new mml_Address(_no, nsd_Call, _T("Subroutine"));
 		SetEvent(_event);
-		ptcSub.push_back(_event);
+		vec_ptc_Sub.push_back(_event);
 	};
 	Reset_opt();
 }
@@ -1360,7 +1360,7 @@ void	MusicTrack::SetSubWithParch(unsigned int _no,bool _f)
 		if(jump_flag==false){
 			mml_Address*		_event = new mml_Address(_no, nsd_Call, _T("Subroutine for Patch"));
 			SetEvent(_event);
-			ptcSub.push_back(_event);
+			vec_ptc_Sub.push_back(_event);
 		};
 	}
 }
@@ -1479,7 +1479,7 @@ void	MusicTrack::SetEnvelop_Evoi(unsigned int _no)
 		f_opt_Evoi			= true;		//最適化フラグ
 		_event				= new mml_Address(_no, nsd_Envelop_Voice, _T("Voice Envelope"));
 		SetEvent(_event);
-		ptcEnv.push_back(_event);
+		vec_ptc_Env.push_back(_event);
 	}
 }
 
@@ -1494,7 +1494,7 @@ void	MusicTrack::SetEnvelop_Evol(unsigned int _no)
 		f_opt_Evol			= true;		//最適化フラグ
 		_event				= new mml_Address(_no, nsd_Envelop_Volume, _T("Volume Envelope"));
 		SetEvent(_event);
-		ptcEnv.push_back(_event);
+		vec_ptc_Env.push_back(_event);
 	}
 }
 
@@ -1509,7 +1509,7 @@ void	MusicTrack::SetEnvelop_Em(unsigned int _no)
 		f_opt_Em			= true;		//最適化フラグ
 		_event				= new mml_Address(_no, nsd_Envelop_Frequency, _T("Frequency Envelope"));
 		SetEvent(_event);
-		ptcEnv.push_back(_event);
+		vec_ptc_Env.push_back(_event);
 	}
 }
 
@@ -1524,7 +1524,7 @@ void	MusicTrack::SetEnvelop_En(unsigned int _no)
 		f_opt_En			= true;		//最適化フラグ
 		_event				= new mml_Address(_no, nsd_Envelop_Note, _T("Note Envelope"));
 		SetEvent(_event);
-		ptcEnv.push_back(_event);
+		vec_ptc_Env.push_back(_event);
 	}
 }
 
@@ -1628,7 +1628,7 @@ void	MusicTrack::SetFDSC(MMLfile* MML)
 	mml_Address*		_event = new mml_Address(_no, nsd_FDS_Career, _T("FDS career wave table"));
 
 	SetEvent(_event);
-	ptcFDSC.push_back(_event);
+	vec_ptc_FDSC.push_back(_event);
 }
 
 //==============================================================
@@ -1645,7 +1645,7 @@ void	MusicTrack::SetFDSM(MMLfile* MML)
 	mml_Address*		_event = new mml_Address(_no, nsd_FDS_Modlator, _T("FDS modulator wave table"));
 
 	SetEvent(_event);
-	ptcFDSM.push_back(_event);
+	vec_ptc_FDSM.push_back(_event);
 }
 
 //==============================================================
@@ -1662,7 +1662,7 @@ void	MusicTrack::SetVRC7(MMLfile* MML)
 	mml_Address*		_event = new mml_Address(_no, nsc_VRC7, _T("VRC7 user instruments"));
 
 	SetEvent(_event);
-	ptcOPLL.push_back(_event);
+	vec_ptc_OPLL.push_back(_event);
 }
 
 //==============================================================
@@ -1687,7 +1687,7 @@ void	MusicTrack::SetN163(MMLfile* MML)
 	_no = MML->GetInt();
 	_event	= new mml_Address(_no, (unsigned char)nsc_N163, cNum, _T("n163 wave table"));
 	SetEvent(_event);
-	ptcWave.push_back(_event);
+	vec_ptc_Wave.push_back(_event);
 }
 
 //--------------------------------------------------------------
@@ -1714,7 +1714,7 @@ void	MusicTrack::SetN163_Load(MMLfile* MML)
 	_no = MML->GetInt();
 	_event = new mml_Address(_no, (unsigned char)nsc_N163,(unsigned char)(i/4),_T("n163 wave table"));
 	SetEvent(_event);
-	ptcWave.push_back(_event);
+	vec_ptc_Wave.push_back(_event);
 }
 
 //==============================================================

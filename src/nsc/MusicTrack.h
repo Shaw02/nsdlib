@@ -237,11 +237,12 @@ private:
 			vector<	int			>			repeat_type;		//どのリピートを使っているか？
 			vector<	int			>::iterator	it_repeat_type;
 
-			unsigned	int					sp_repeat_c;		//リピート(C)のスタックポインタ
-	list<	unsigned	int				>	st_ct_repeat_c;
-	list<	list<	MusicItem*>::iterator>	st_it_repeat_c_s;
-	list<	list<	MusicItem*>::iterator>	st_it_repeat_c_b;
-	list<	list<	MusicItem*>::iterator>	st_it_repeat_c_e;
+	//To control of the Repert(C)
+			unsigned	int								sp_repeat_c;		//スタックポインタ（ネスト）
+	list<	unsigned	int				>				st_ct_repeat_c;		//リピート回数
+	list<	list<	MusicItem*>::iterator>				st_it_repeat_c_s;	//リピート開始点
+	list<	list<	MusicItem*>::iterator>				st_it_repeat_c_b;	//リピート分岐点
+	list<	list<	MusicItem*>::iterator>				st_it_repeat_c_e;	//リピート終了点
 	list<	unsigned	int				>::iterator		it_ct_repeat_c;
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_s;
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_b;
@@ -253,18 +254,18 @@ private:
 	//オブジェクト
 
 	//アドレス情報を持つイベントオブジェクトのポインタの一覧
-	vector<	mml_Address*	>	ptcFDSC;		//FDS Carrer
-	vector<	mml_Address*	>	ptcFDSM;		//FDS Modlator
-	vector<	mml_Address*	>	ptcOPLL;		//VRC7, OPLL
-	vector<	mml_Address*	>	ptcWave;		//N163
-	vector<	mml_Address*	>	ptcSE;			//効果音コマンド一覧
-	vector<	mml_Address*	>	ptcSub;			//サブルーチンコマンド一覧
-	vector<	mml_Address*	>	ptcEnv;			//エンベロープコマンド一覧
+	vector<	mml_Address*	>	vec_ptc_FDSC;		//FDS Carrer
+	vector<	mml_Address*	>	vec_ptc_FDSM;		//FDS Modlator
+	vector<	mml_Address*	>	vec_ptc_OPLL;		//VRC7, OPLL
+	vector<	mml_Address*	>	vec_ptc_Wave;		//N163
+	vector<	mml_Address*	>	vec_ptc_SE;			//効果音コマンド一覧
+	vector<	mml_Address*	>	vec_ptc_Sub;		//サブルーチンコマンド一覧
+	vector<	mml_Address*	>	vec_ptc_Env;		//エンベロープコマンド一覧
 
-	vector<	mml_Address*	>	ptc_Loop_End;			//End of Track with LOOP
-	vector<	mml_Address*	>	ptc_Repert_A_End;		//Repert(A) End    poiont
-	vector<	mml_Address*	>	ptc_Repert_A_Branch;	//Repert(A) Branch poiont
-	vector<	mml_Address*	>	ptc_Repert_B_End;		//Repert(B) End    poiont
+	vector<	mml_Address*	>	vec_ptc_Loop_End;			//End of Track with LOOP
+	vector<	mml_Address*	>	vec_ptc_Repert_A_End;		//Repert(A) End    poiont
+	vector<	mml_Address*	>	vec_ptc_Repert_A_Branch;	//Repert(A) Branch poiont
+	vector<	mml_Address*	>	vec_ptc_Repert_B_End;		//Repert(B) End    poiont
 
 	//各ID番号毎の参照先するイベントオブジェクトのポインタの一覧
 	map<	unsigned int, MusicEvent*	>	ptc_Loop;		//Loop
