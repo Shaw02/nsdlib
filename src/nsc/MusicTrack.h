@@ -220,18 +220,16 @@ private:
 
 	//----------------------------------
 	//無限ループ
-				bool	loop_flag;				// L コマンド出現したか？
-	unsigned	int		offset_loop;			// L コマンドのオフセット
+				bool	is_loop;				//	L	コマンド出現したか？
 
 	//----------------------------------
 	//リピート関係
-	mml_Address*		_old_repeatA_Branch;
 	mml_repeat*			_old_repeat;
 
-	unsigned	int		offset_repeat_a_s;		//前回の [  コマンドのオフセット
-	unsigned	int		offset_repeat_a_b;		//前回の :  コマンドのオフセット
-	unsigned	int		offset_repeat_b_s;		//前回の |: コマンドのオフセット
-	unsigned	int		offset_repeat_b_b;		//前回の \  コマンドのオフセット
+				bool	is_repeat_a_s;			//	[	コマンドが出現したか？
+				bool	is_repeat_a_b;			//	:	コマンドが出現したか？
+				bool	is_repeat_b_s;			//	|:	コマンドが出現したか？
+				bool	is_repeat_b_b;			//	\	コマンドが出現したか？
 				int		count_repeat_a;
 
 			vector<	int			>			repeat_type;		//どのリピートを使っているか？
@@ -300,9 +298,15 @@ public:
 				//----------------------------------
 				//このトラックにだけ効くＭＭＬコマンド
 				size_t	SetEnd(MMLfile* MML);			//記述ブロック終了
-				void	SetLoop();						//無限ループ
+				void	SetLoop(MMLfile* MML);			//無限ループ
 
-				void	SetJump(MMLfile* MML);			//ジャンプ
+				void	SetRepeat_B_Start();
+				void	SetRepeat_B_Branch(MMLfile* MML);
+				void	SetRepeat_B_End(MMLfile* MML);
+
+				void	SetEvent_Repeat_B_Start();
+				void	SetEvent_Repeat_B_Branch();
+				void	SetEvent_Repeat_B_End();
 
 				void	SetRepeat_Start(MMLfile* MML);
 				void	SetRepeat_End(MMLfile* MML);
@@ -310,12 +314,14 @@ public:
 
 				void	SetRepeat_A_Start(MMLfile* MML);
 				void	SetRepeat_A_End(MMLfile* MML);
+
+				void	SetEvent_Repeat_A_Start(unsigned char _cnt);
+				void	SetEvent_Repeat_A_Branch();
+				void	SetEvent_Repeat_A_End();
+
 				void	SetRepeat_C_Start(MMLfile* MML);
 				void	SetRepeat_C_End(MMLfile* MML);
 
-				void	SetRepeat_B_Start();
-				void	SetRepeat_B_Branch(MMLfile* MML);
-				void	SetRepeat_B_End(MMLfile* MML);
 		mml_Address*	CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 				void	CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 
@@ -327,11 +333,11 @@ public:
 				void	SetPatch();				//@P off
 				void	CallPatch(MMLfile* MML, char _note);
 
-				void	SetEnvelop_Evoi(unsigned int _no);
-				void	SetEnvelop_Evol(unsigned int _no);
-				void	SetEnvelop_Em(unsigned int _no);
-				void	SetEnvelop_En(unsigned int _no);
-				void	SetVoice(unsigned int _no);		//E@ off
+				void	SetEnvelop_Evoi(int _no);
+				void	SetEnvelop_Evol(int _no);
+				void	SetEnvelop_Em(int _no);
+				void	SetEnvelop_En(int _no);
+				void	SetVoice(int _no);				//E@ off
 				void	SetEnvelop_Evol();				//Ev off
 				void	SetEnvelop_Em();				//Em off
 				void	SetEnvelop_En();				//En off
@@ -345,6 +351,8 @@ public:
 				void	SetN163(MMLfile* MML);			//@N
 				void	SetN163_Load(MMLfile* MML);		//@NL
 				void	SetN163_Set(MMLfile* MML);		//@NS
+
+				void	SetJump(MMLfile* MML);			//ジャンプ
 
 				void	Set_q(int i);
 				void	Set_u(int i);

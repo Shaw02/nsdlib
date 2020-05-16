@@ -80,6 +80,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
+				OptimizeForProcessor="0"
 				OptimizeForWindowsApplication="TRUE"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
@@ -101,7 +102,7 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				OptimizeForWindows98="2"
+				OptimizeForWindows98="0"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>

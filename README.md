@@ -28,6 +28,10 @@ This is a sound driver for the Nintendo Entertainment System (NES) and other com
 
 For further documentation, explore the site all of these links lead to.
 
+## Application Manual
+- [Wiki Home](https://github.com/Shaw02/nsdlib/wiki)
+  - [Developers Guide](https://github.com/Shaw02/nsdlib/wiki/DevelopersGuide)
+
 ## License
 Copyright © 2012 S.W.
 

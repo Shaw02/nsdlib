@@ -332,7 +332,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	//MMLのディレクトリを取得
 	iCount	= 0;
 	iResult	= 0;
-	while(iCount < strMMLname.size()){
+	while(iCount < (int)strMMLname.size()){
 		if((strMMLname[iCount] == '\\') || (strMMLname[iCount] == '/')){
 			iResult = iCount;
 		}

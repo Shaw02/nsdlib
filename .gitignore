@@ -7,6 +7,16 @@ src/nsd/*.lib
 src/rom/*.bin
 
 
+# Not Add & Commit
+_document/
+_music/
+_support/
+_old/
+
+
+# VSCODE
+.vscode/
+
 
 ## ---------------------------------------------------------------------
 ## Ignore cc65 temporary files, build results

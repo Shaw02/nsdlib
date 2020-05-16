@@ -185,6 +185,9 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 		}
 	}
 
+	//このオブジェクトのサイズ（最適化後）
+	iSize = _offset - iOffset;
+
 	return(_offset);
 }
 

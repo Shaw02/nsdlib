@@ -57,7 +57,7 @@ mml_repeat::~mml_repeat(void)
 }
 
 //==============================================================
-//		デストラクタ
+//		回数設定
 //--------------------------------------------------------------
 //	●引数
 //		unsigned	char	count	リピート回数
@@ -72,4 +72,24 @@ void	mml_repeat::set_count(unsigned char count)
 		_CERR << _T("mml_repeat::set_count()関数で、エラーが発生しました。") << endl;
 		nsc_exit(EXIT_FAILURE);
 	}
+}
+//==============================================================
+//		回数設定
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		unsigned	char	count	リピート回数
+//==============================================================
+unsigned	char	mml_repeat::get_count(void)
+{
+	unsigned	char	count;
+
+	if(	iSize == 2){
+		count = code[1];
+	} else {
+		_CERR << _T("mml_repeat::set_count()関数で、エラーが発生しました。") << endl;
+		nsc_exit(EXIT_FAILURE);
+	}
+	return(count);
 }

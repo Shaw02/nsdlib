@@ -461,7 +461,7 @@ const	static	Command_Info	Command[] = {
 				if(fSub == true){
 					MML->Warning(_T("Subブロック内では無限ループはできません。無視します。"));
 				} else {
-					nowTrack->SetLoop();
+					nowTrack->SetLoop(MML);
 				}
 				break;
 

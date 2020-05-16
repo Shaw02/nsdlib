@@ -121,7 +121,26 @@ void	mml_Address::set_Address(unsigned int _addr)
 /*
 unsigned	int	mml_Address::get_Address(void)
 {
-	return((unsigned char)code[1] + ((unsigned char)code[2]<<8) );
+	unsigned	int	i;
+
+	switch(iSize){
+		case(3):
+			i = (unsigned char)code[1] + ((unsigned char)code[2]<<8);
+			break;
+		case(4):
+			i = (unsigned char)code[2] + ((unsigned char)code[3]<<8);
+			break;
+		default:
+			_CERR << _T("mml_Address::set_Address()ŠÖ”‚ÅƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B") << endl;
+			nsc_exit(EXIT_FAILURE);
+			break;
+	}
+	if (i & 0x8000){
+		i |= 0xFFFF0000;
+	}
+	return(i);
 }
 */
+
+
 
