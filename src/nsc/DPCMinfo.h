@@ -43,7 +43,6 @@ class DPCMinfo :
 private:
 	bool				bank;
 	unsigned	char	max_number;
-	unsigned	char	m_id;
 	nsd_dpcm_info		infoDPCM[256];
 	map< string, DPCM*>	ptcDPCM;	//‡™PCM
 //static	const	Command_Info	Command[];	//ƒRƒ}ƒ“ƒh‚Ìî•ñ
@@ -54,7 +53,7 @@ public:
 						~DPCMinfo(void);
 				void	setKey(MMLfile* MML, int key);
 				void	setNote(MMLfile* MML, int note);
-	unsigned	int		setDPCMoffset(unsigned	int _offset, unsigned char _MusBank);
+				size_t	setDPCMoffset(size_t _offset, unsigned char _MusBank);
 				void	getDPCMCode(string* _str);
 				void	getAsm(MusicFile* MUS);
 };

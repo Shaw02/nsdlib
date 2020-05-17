@@ -18,13 +18,13 @@ typedef	struct{
 
 	//設定数値
 	unsigned	int		iVoi;		//
-	unsigned	int		iEvoi;		//
-	unsigned	int		iEvol;		//
-	unsigned	int		iEm;		//
-	unsigned	int		iEn;		//
+				size_t	iEvoi;		//
+				size_t	iEvol;		//
+				size_t	iEm;		//
+				size_t	iEn;		//
 	unsigned	int		iKey;		//KeyShift
 	unsigned	char	iSweep;		//
-	unsigned	int		iSub;		//
+				size_t	iSub;		//
 	unsigned	int		iGate_q;	//
 	unsigned	int		iGate_u;	//
 
@@ -59,17 +59,16 @@ class Patch
 //メンバー変数
 protected:
 
-		unsigned	int					m_id;			//パッチ番号
-	map<unsigned	int, patch_scrap*>	m_Patch;		//パッチの情報
+					size_t		m_id;			//パッチ番号
+	map<size_t, patch_scrap*>	m_Patch;		//パッチの情報
+					size_t		m_kn;			//処理中のノート番号
 
-		unsigned	int					m_kn;			//処理中のノート番号
-
-		patch_scrap*					m_now_Patch;	//処理中のパッチのポインタ
+		patch_scrap*			m_now_Patch;	//処理中のパッチのポインタ
 
 
 //メンバー関数
 public:
-						Patch(	MMLfile* MML, int _id);		
+						Patch(	MMLfile* MML, size_t _id);		
 						~Patch(void);					
 
 	//Patch オブジェクト生成部
@@ -82,13 +81,13 @@ public:
 				void	setNote(int i);		//ノート番号のセット
 
 	unsigned	int		get_iVoi(void){		return(m_now_Patch->iVoi);};
-	unsigned	int		get_iEvoi(void){	return(m_now_Patch->iEvoi);};
-	unsigned	int		get_iEvol(void){	return(m_now_Patch->iEvol);};
-	unsigned	int		get_iEm(void){		return(m_now_Patch->iEm);};
-	unsigned	int		get_iEn(void){		return(m_now_Patch->iEn);};
+				size_t	get_iEvoi(void){	return(m_now_Patch->iEvoi);};
+				size_t	get_iEvol(void){	return(m_now_Patch->iEvol);};
+				size_t	get_iEm(void){		return(m_now_Patch->iEm);};
+				size_t	get_iEn(void){		return(m_now_Patch->iEn);};
 	unsigned	int		get_iKey(void){		return(m_now_Patch->iKey);};
 	unsigned	char	get_iSweep(void){	return(m_now_Patch->iSweep);};
-	unsigned	int		get_iSub(void){		return(m_now_Patch->iSub);};
+				size_t	get_iSub(void){		return(m_now_Patch->iSub);};
 	unsigned	int		get_iGate_q(void){	return(m_now_Patch->iGate_q);};
 	unsigned	int		get_iGate_u(void){	return(m_now_Patch->iGate_u);};
 

@@ -34,7 +34,7 @@ protected:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const _CHAR _strName[] = _T("==== [ Track Set ]===="));
+				TrackSet(MMLfile* MML, size_t _id, bool _sub, bool _se, const _CHAR _strName[] = _T("==== [ Track Set ]===="));
 				~TrackSet(void);
 
 		void	TickCount(MusicFile* MUS);

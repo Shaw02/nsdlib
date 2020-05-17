@@ -43,12 +43,12 @@ private:
 				bool				f_macro;			//マクロ処理を終えた時に立つフラグ
 				bool				f_2to1;				//マルチバイト文字を変換した？
 public:
-	map		<unsigned int,	Patch*>	ptcPatch;			//Patch
+	map		<size_t,	Patch*>	ptcPatch;			//Patch
 
-				int					offset_Ei;			//
-				int					offset_Ev;			//
-				int					offset_En;			//
-				int					offset_Em;			//
+				size_t				offset_Ei;			//
+				size_t				offset_Ev;			//
+				size_t				offset_En;			//
+				size_t				offset_Em;			//
 				int					iReleaseVolume;		//
 				int					iRepeatMode;		//
 				int					iTieMode;			//
@@ -76,7 +76,7 @@ public:
 				int		GetMacroNest(void){return(p_macro);};
 
 				void	SetPatch(void);
-				bool	ChkPatch(unsigned int _no);
+				bool	ChkPatch(size_t _no);
 
 				int		tellg(void);					//現在のファイルのポインタ取得
 				void	StreamPointerMove(long iSize);	//現在のファイルのポインタ移動
@@ -92,7 +92,7 @@ public:
 				int		GetLength(int DefaultLength);	//音長読み込み（演算付き）
 				int		readLength(int DefaultLength);	//音長読み込み
 
-				int		GetCommandID(const Command_Info _command[], unsigned int _size);	//コマンドIDを取得
+				int		GetCommandID(const Command_Info _command[], size_t _size);	//コマンドIDを取得
 
 	unsigned	int		GetLine(void){return(nowFile->GetLine());};
 				void	SetLine(unsigned int i){nowFile->SetLine(i);};

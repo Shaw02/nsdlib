@@ -181,7 +181,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 				}
 			}
 
-			iCode		=	(*itItem)->getCode((unsigned int)0);
+			iCode		=	(*itItem)->getCode((size_t)0);
 			if((f_RepeatA == false) && (f_RepeatB == false)){
 				offset_now	+=	(*itItem)->getSize();
 			}
@@ -421,7 +421,7 @@ void	MusicTrack::OptimizeDefineCheck(MusicFile* MUS)
 	vector<	mml_Address*	>::iterator	itFDSM;
 	vector<	mml_Address*	>::iterator	itVRC7;
 	vector<	mml_Address*	>::iterator	itN163;
-	unsigned	int		_no;
+				size_t	_no;
 
 				bool	f_ERR = false;
 
@@ -571,9 +571,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 	vector<	mml_Address*	>::iterator	itVRC7;
 	vector<	mml_Address*	>::iterator	itN163;
 
-	unsigned	int	_no;			//参照先コマンドのID番号
-	unsigned	int	_sub_offset;	//参照先コマンドの配置アドレス
-	unsigned	int	_com_offset;	//参照元コマンドの配置アドレス
+	size_t	_no;			//参照先コマンドのID番号
+	size_t	_sub_offset;	//参照先コマンドの配置アドレス
+	size_t	_com_offset;	//参照元コマンドの配置アドレス
 
 	//----------------------
 	//LOOP
@@ -836,9 +836,9 @@ void	MusicTrack::SetEvent(MusicItem* _item)
 //	●引数
 //		無し
 //	●返値
-//		size_t
+//		無し
 //==============================================================
-size_t	MusicTrack::SetEnd(MMLfile* MML)
+void	MusicTrack::SetEnd(MMLfile* MML)
 {
 	mml_Address*	_event;
 
@@ -862,8 +862,6 @@ size_t	MusicTrack::SetEnd(MMLfile* MML)
 		}
 	}
 	iSize = offset_now;
-
-	return(iSize);
 }
 
 //==============================================================
@@ -1331,7 +1329,7 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 				if(pt_itMusic != *it_it_repeat_c_e){
 					do{
 						pt_itMusic++;
-						cOpCode		=	(*pt_itMusic)->getCode((unsigned int)0);
+						cOpCode		=	(*pt_itMusic)->getCode((size_t)0);
 						sOpCode.clear();
 										(*pt_itMusic)->getCode(&sOpCode);
 						switch(cOpCode){
@@ -1458,7 +1456,7 @@ void	MusicTrack::CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<Music
 //==============================================================
 void	MusicTrack::SetSE(MMLfile* MML)
 {
-	unsigned	int		_no = MML->GetInt();
+	size_t	_no = MML->GetInt();
 	if(jump_flag==false){
 		mml_Address*		_event = new mml_Address(_no, nsd_Call_SE, _T("Call SE"));
 		SetEvent(_event);
@@ -1474,7 +1472,7 @@ void	MusicTrack::SetSE(MMLfile* MML)
 //	●返値
 //				無し
 //==============================================================
-void	MusicTrack::SetSubroutine(unsigned int _no)
+void	MusicTrack::SetSubroutine(size_t _no)
 {
 	if(jump_flag==false){
 		mml_Address*		_event = new mml_Address(_no, nsd_Call, _T("Subroutine"));
@@ -1487,7 +1485,7 @@ void	MusicTrack::SetSubroutine(unsigned int _no)
 //==============================================================
 //		S	サブルーチン呼び出し（パッチから）
 //--------------------------------------------------------------
-void	MusicTrack::SetSubWithParch(unsigned int _no,bool _f)
+void	MusicTrack::SetSubWithParch(size_t _no,bool _f)
 {
 	if((_no != iSub) || (f_opt_Sub == false) || (_f == true)){
 		iSub = _no;
@@ -1604,13 +1602,13 @@ void	MusicTrack::CallPatch(MMLfile* MML, char _note)
 //	●返値
 //				無し
 //==============================================================
-void	MusicTrack::SetEnvelop_Evoi(int _no)
+void	MusicTrack::SetEnvelop_Evoi(size_t _no)
 {
 	mml_Address*		_event;
 
-	if((_no != nsd.env_volume) || (f_opt_Evoi == false) || (sw_Evoi == false)){
+	if((_no != nsd.env_volume) || (f_opt_Evoi == false) || (nsd.sw_Evoi == false)){
 		nsd.env_volume		= _no;
-		sw_Evoi				= true;
+		nsd.sw_Evoi			= true;
 		f_opt_Evoi			= true;		//最適化フラグ
 		_event				= new mml_Address(_no, nsd_Envelop_Voice, _T("Voice Envelope"));
 		SetEvent(_event);
@@ -1619,13 +1617,13 @@ void	MusicTrack::SetEnvelop_Evoi(int _no)
 }
 
 //--------------------------------------------------------------
-void	MusicTrack::SetEnvelop_Evol(int _no)
+void	MusicTrack::SetEnvelop_Evol(size_t _no)
 {
 	mml_Address*		_event;
 
-	if((_no != nsd.env_voice) || (f_opt_Evol == false) || (sw_Evol == false)){
+	if((_no != nsd.env_voice) || (f_opt_Evol == false) || (nsd.sw_Evol == false)){
 		nsd.env_voice		= _no;
-		sw_Evol				= true;
+		nsd.sw_Evol			= true;
 		f_opt_Evol			= true;		//最適化フラグ
 		_event				= new mml_Address(_no, nsd_Envelop_Volume, _T("Volume Envelope"));
 		SetEvent(_event);
@@ -1634,13 +1632,13 @@ void	MusicTrack::SetEnvelop_Evol(int _no)
 }
 
 //--------------------------------------------------------------
-void	MusicTrack::SetEnvelop_Em(int _no)
+void	MusicTrack::SetEnvelop_Em(size_t _no)
 {
 	mml_Address*		_event;
 
-	if((_no != nsd.env_frequency) || (f_opt_Em == false) || (sw_Em == false)){
+	if((_no != nsd.env_frequency) || (f_opt_Em == false) || (nsd.sw_Em == false)){
 		nsd.env_frequency	= _no;
-		sw_Em				= true;
+		nsd.sw_Em			= true;
 		f_opt_Em			= true;		//最適化フラグ
 		_event				= new mml_Address(_no, nsd_Envelop_Frequency, _T("Frequency Envelope"));
 		SetEvent(_event);
@@ -1649,13 +1647,13 @@ void	MusicTrack::SetEnvelop_Em(int _no)
 }
 
 //--------------------------------------------------------------
-void	MusicTrack::SetEnvelop_En(int _no)
+void	MusicTrack::SetEnvelop_En(size_t _no)
 {
 	mml_Address*		_event;
 
-	if((_no != nsd.env_note) || (f_opt_En == false) || (sw_En == false)){
+	if((_no != nsd.env_note) || (f_opt_En == false) || (nsd.sw_En == false)){
 		nsd.env_note		= _no;
-		sw_En				= true;
+		nsd.sw_En			= true;
 		f_opt_En			= true;		//最適化フラグ
 		_event				= new mml_Address(_no, nsd_Envelop_Note, _T("Note Envelope"));
 		SetEvent(_event);
@@ -1666,9 +1664,9 @@ void	MusicTrack::SetEnvelop_En(int _no)
 //--------------------------------------------------------------
 void	MusicTrack::SetVoice(int _no)
 {
-	if((_no != nsd.voice) || (f_opt_Evoi == false) || (sw_Evoi == true)){
+	if((_no != nsd.voice) || (f_opt_Evoi == false) || (nsd.sw_Evoi == true)){
 		nsd.voice			= _no;
-		sw_Evoi				= false;
+		nsd.sw_Evoi			= false;
 		f_opt_Evoi			= true;		//最適化フラグ
 		SetEvent(new mml_general(nsd_Voice, (unsigned char)_no, _T("Voice")));
 	}
@@ -1677,8 +1675,8 @@ void	MusicTrack::SetVoice(int _no)
 //--------------------------------------------------------------
 void	MusicTrack::SetEnvelop_Evol()
 {
-	if((f_opt_Evol == false) || (sw_Evol == true)){
-		sw_Evol		= false;
+	if((f_opt_Evol == false) || (nsd.sw_Evol == true)){
+		nsd.sw_Evol	= false;
 		f_opt_Evol	= true;		//最適化フラグ
 		SetEvent(new mml_Address(nsd_Envelop_Volume, _T("Volume Envelope Off")));
 	}
@@ -1687,8 +1685,8 @@ void	MusicTrack::SetEnvelop_Evol()
 //--------------------------------------------------------------
 void	MusicTrack::SetEnvelop_Em()
 {
-	if((f_opt_Em == false) || (sw_Em == true)){
-		sw_Em		= false;
+	if((f_opt_Em == false) || (nsd.sw_Em == true)){
+		nsd.sw_Em	= false;
 		f_opt_Em	= true;		//最適化フラグ
 		SetEvent(new mml_Address(nsd_Envelop_Frequency, _T("Frequency Envelope Off")));
 	}
@@ -1697,8 +1695,8 @@ void	MusicTrack::SetEnvelop_Em()
 //--------------------------------------------------------------
 void	MusicTrack::SetEnvelop_En()
 {
-	if((f_opt_En == false) || (sw_En == true)){
-		sw_En		= false;
+	if((f_opt_En == false) || (nsd.sw_En == true)){
+		nsd.sw_En	= false;
 		f_opt_En	= true;		//最適化フラグ
 		SetEvent(new mml_Address(nsd_Envelop_Note, _T("Note Envelope Off")));
 	}
@@ -1759,8 +1757,8 @@ void	MusicTrack::SetSweep(unsigned char _c)
 //==============================================================
 void	MusicTrack::SetFDSC(MMLfile* MML)
 {
-	unsigned	int		_no = MML->GetInt();
-	mml_Address*		_event = new mml_Address(_no, nsd_FDS_Career, _T("FDS career wave table"));
+	size_t			_no		= MML->GetInt();
+	mml_Address*	_event	= new mml_Address(_no, nsd_FDS_Career, _T("FDS career wave table"));
 
 	SetEvent(_event);
 	vec_ptc_FDSC.push_back(_event);
@@ -1776,8 +1774,8 @@ void	MusicTrack::SetFDSC(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetFDSM(MMLfile* MML)
 {
-	unsigned	int		_no = MML->GetInt();
-	mml_Address*		_event = new mml_Address(_no, nsd_FDS_Modlator, _T("FDS modulator wave table"));
+	size_t			_no		= MML->GetInt();
+	mml_Address*	_event	= new mml_Address(_no, nsd_FDS_Modlator, _T("FDS modulator wave table"));
 
 	SetEvent(_event);
 	vec_ptc_FDSM.push_back(_event);
@@ -1793,8 +1791,8 @@ void	MusicTrack::SetFDSM(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetVRC7(MMLfile* MML)
 {
-	unsigned	int		_no = MML->GetInt();
-	mml_Address*		_event = new mml_Address(_no, nsc_VRC7, _T("VRC7 user instruments"));
+	size_t			_no		= MML->GetInt();
+	mml_Address*	_event	= new mml_Address(_no, nsc_VRC7, _T("VRC7 user instruments"));
 
 	SetEvent(_event);
 	vec_ptc_OPLL.push_back(_event);
@@ -1812,7 +1810,7 @@ void	MusicTrack::SetN163(MMLfile* MML)
 {
 	unsigned	char	cNum	= (unsigned char)MML->GetInt();		//音色番号
 	unsigned	char	cData	= MML->GetChar();
-	unsigned	int		_no;
+				size_t	_no;
 	mml_Address*		_event;
 
 	if(cData != ','){
@@ -1832,7 +1830,7 @@ void	MusicTrack::SetN163_Load(MMLfile* MML)
 {
 				int		i		= MML->GetInt();
 	unsigned	char	cData	= MML->GetChar();
-	unsigned	int		_no;
+				size_t	_no;
 	mml_Address*		_event;
 
 	if(cData != ','){

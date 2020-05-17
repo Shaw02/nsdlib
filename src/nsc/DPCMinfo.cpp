@@ -414,21 +414,21 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 //		ΔPCMinfo構造体の生成（配置アドレスの解決）
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		_offset		ΔPCM配置アドレス
+//					size_t	_offset		ΔPCM配置アドレス
 //		unsigned	char	_MusBank	シーケンスのバンク数
 //	●返値
-//		unsigned	int					ΔPCM配置終了アドレス
+//					size_t				ΔPCM配置終了アドレス
 //	●処理
 //		コードを取得しながら、各ΔPCMのバイナリを得る。
 //		（得たコードは、NSF出力の時しか使わないが。。。）
 //==============================================================
-unsigned	int	DPCMinfo::setDPCMoffset(unsigned	int _offset, unsigned char _MusBank)
+size_t	DPCMinfo::setDPCMoffset(size_t _offset, unsigned char _MusBank)
 {
 	map<string, DPCM*>::iterator	itDPCM;
 	DPCM*	_DPCM;
 	size_t	_size;
 
-	unsigned	int	i=0;
+	size_t	i=0;
 
 	//⊿PCMの配置アドレスを解決。しながらNSF出力用の⊿PCM実体を作成。
 	if(m_id > 0){

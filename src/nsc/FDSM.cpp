@@ -20,9 +20,8 @@
 //	Åúï‘íl
 //					ñ≥Çµ
 //==============================================================
-FDSM::FDSM(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
-	MusicItem(_id, _strName),
-	m_id(_id)
+FDSM::FDSM(MMLfile* MML, size_t _id, const _CHAR _strName[]):
+	MusicItem(_id, _strName)
 {
 	//----------------------
 	//Localïœêî

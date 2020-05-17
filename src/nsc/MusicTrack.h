@@ -32,10 +32,16 @@ public:
 	int	voice;
 	int	volume;
 
-	int	env_volume;
-	int	env_voice;
-	int	env_frequency;
-	int	env_note;
+	size_t	env_volume;
+	size_t	env_voice;
+	size_t	env_frequency;
+	size_t	env_note;
+
+	//現在の状態（エンベロープのsw）
+	bool	sw_Evoi;		//
+	bool	sw_Evol;		//
+	bool	sw_Em;			//
+	bool	sw_En;			//
 
 	//APU
 	int	sweep;
@@ -68,10 +74,14 @@ public:
 		trans			= 0;
 		voice			= -1;
 		volume			= 15;
-		env_volume		= -1;
-		env_voice		= -1;
-		env_frequency	= -1;
-		env_note		= -1;
+	//	env_volume		= -1;
+	//	env_voice		= -1;
+	//	env_frequency	= -1;
+	//	env_note		= -1;
+		sw_Evoi			= false;
+		sw_Evol			= false;
+		sw_Em			= false;
+		sw_En			= false;
 		sweep			= -1;
 		apu_tri_time	= -1;
 		fds_frequency	= -1;
@@ -97,6 +107,10 @@ public:
 		env_voice		=	work->env_voice;
 		env_frequency	=	work->env_frequency;
 		env_note		=	work->env_note;
+		sw_Evoi			=	work->sw_Evoi;
+		sw_Evol			=	work->sw_Evol;
+		sw_Em			=	work->sw_Em;
+		sw_En			=	work->sw_En;
 		sweep			=	work->sweep;
 		apu_tri_time	=	work->apu_tri_time;
 		fds_frequency	=	work->fds_frequency;
@@ -130,7 +144,7 @@ private:
 
 	//----------------------------------
 	//コンパイル制御
-	unsigned	int		offset_now;				//現在のオフセット
+				size_t	offset_now;				//現在のオフセット
 				bool	compile_flag;			//現在コンパイル中？
 
 				bool	jump_flag;				// J
@@ -202,12 +216,6 @@ private:
 	unsigned	char	iSweep;			//
 	unsigned	int		iSub;			//サブルーチン用
 
-	//現在の状態（エンベロープのsw）
-				bool	sw_Evoi;		//
-				bool	sw_Evol;		//
-				bool	sw_Em;			//
-				bool	sw_En;			//
-
 	//設定するかどうか（defailt = false）
 				bool	f_opt_Voi;		//
 				bool	f_opt_Evoi;		//
@@ -266,15 +274,15 @@ private:
 	vector<	mml_Address*	>	vec_ptc_Repert_B_End;		//Repert(B) End    poiont
 
 	//各ID番号毎の参照先するイベントオブジェクトのポインタの一覧
-	map<	unsigned int, MusicEvent*	>	ptc_Loop;		//Loop
-	map<	unsigned int, mml_repeat*	>	ptc_Repert_A;	//Repert(A) Start poiont
-	map<	unsigned int, mml_Address*	>	ptc_Repert_A_E;	//Repert(A) End   point
-	map<	unsigned int, mml_repeat*	>	ptc_Repert_B;	//Repert(B) Start poiont
+	map<	size_t, MusicEvent*	>	ptc_Loop;		//Loop
+	map<	size_t, mml_repeat*	>	ptc_Repert_A;	//Repert(A) Start poiont
+	map<	size_t, mml_Address*>	ptc_Repert_A_E;	//Repert(A) End   point
+	map<	size_t, mml_repeat*	>	ptc_Repert_B;	//Repert(B) Start poiont
 
 	//ID番号をどこまでふったか
-			unsigned int	cnt_Loop;						// L コマンド
-			unsigned int	cnt_Repert_A;					// [ コマンド
-			unsigned int	cnt_Repert_B;					// |:コマンド
+			size_t	cnt_Loop;						// L コマンド
+			size_t	cnt_Repert_A;					// [ コマンド
+			size_t	cnt_Repert_B;					// |:コマンド
 
 
 //メンバー関数
@@ -297,7 +305,7 @@ public:
 
 				//----------------------------------
 				//このトラックにだけ効くＭＭＬコマンド
-				size_t	SetEnd(MMLfile* MML);			//記述ブロック終了
+				void	SetEnd(MMLfile* MML);			//記述ブロック終了
 				void	SetLoop(MMLfile* MML);			//無限ループ
 
 				void	SetRepeat_B_Start();
@@ -326,17 +334,17 @@ public:
 				void	CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 
 				void	SetSE(MMLfile* MML);
-				void	SetSubroutine(unsigned int _no);
-				void	SetSubWithParch(unsigned int _no,bool _f);
+				void	SetSubroutine(size_t _no);
+				void	SetSubWithParch(size_t _no,bool _f);
 
 				void	SetPatch(MMLfile* MML);	
 				void	SetPatch();				//@P off
 				void	CallPatch(MMLfile* MML, char _note);
 
-				void	SetEnvelop_Evoi(int _no);
-				void	SetEnvelop_Evol(int _no);
-				void	SetEnvelop_Em(int _no);
-				void	SetEnvelop_En(int _no);
+				void	SetEnvelop_Evoi(size_t _no);
+				void	SetEnvelop_Evol(size_t _no);
+				void	SetEnvelop_Em(size_t _no);
+				void	SetEnvelop_En(size_t _no);
 				void	SetVoice(int _no);				//E@ off
 				void	SetEnvelop_Evol();				//Ev off
 				void	SetEnvelop_Em();				//Em off

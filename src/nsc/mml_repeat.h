@@ -20,8 +20,8 @@ class mml_repeat :
 {
 //ƒƒ“ƒo[ŠÖ”
 public:
-	mml_repeat(unsigned int _id, unsigned char count, const _CHAR _strName[]=_T("Repeat(A) Start"));
-	mml_repeat(unsigned int _id, const _CHAR _strName[]=_T("Repeat(B) Start"));
+	mml_repeat(size_t _id, unsigned char count, const _CHAR _strName[]=_T("Repeat(A) Start"));
+	mml_repeat(size_t _id, const _CHAR _strName[]=_T("Repeat(B) Start"));
 	~mml_repeat(void);
 				void	set_count(unsigned char count);
 	unsigned	char	get_count(void);

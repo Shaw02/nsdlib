@@ -66,10 +66,10 @@ void nsc_exit(int no)
 //==============================================================
 int	main(int argc, char* argv[])
 {
-	unsigned	int	i;
-				int	iResult	= EXIT_SUCCESS;
-	MMLfile			*cMML	= NULL;
-	MusicFile		*cSND	= NULL;
+		size_t	i;
+		int		iResult	= EXIT_SUCCESS;
+	MMLfile		*cMML	= NULL;
+	MusicFile	*cSND	= NULL;
 
 	try {
 

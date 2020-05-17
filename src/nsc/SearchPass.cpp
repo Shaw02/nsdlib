@@ -49,7 +49,7 @@ void		SearchPass::clear()
 {
 	//----------------------
 	//Local•Ï”
-	map		<int, string>::iterator	itPass;
+	map		<size_t, string>::iterator	itPass;
 
 	//----------------------
 	//Delete Class
@@ -78,7 +78,7 @@ void		SearchPass::debug()
 {
 	//----------------------
 	//Local•Ï”
-	map		<int, string>::iterator	itPass;
+	map		<size_t, string>::iterator	itPass;
 
 	//----------------------
 	//Delete Class
@@ -103,7 +103,7 @@ void		SearchPass::debug()
 //==============================================================
 void		SearchPass::add_one(string* _str)
 {
-	unsigned	int		i	= _str->size();
+	size_t	i	= _str->size();
 	char	c;
 
 	if(_str->empty() == false){
@@ -129,7 +129,7 @@ void		SearchPass::add(char*	_str)
 {
 	//----------------------
 	//Local•Ï”
-	unsigned	int		i = 0;
+	size_t	i = 0;
 	string	strTemp;
 
 	if(_str != NULL){
@@ -163,7 +163,7 @@ void		SearchPass::add(string*	_str)
 
 	//----------------------
 	//Local•Ï”
-	unsigned	int		i = 0;
+	size_t	i = 0;
 	string	strTemp;
 
 	strTemp.clear();
@@ -186,13 +186,13 @@ void		SearchPass::add(string*	_str)
 //		ŒŸõƒpƒX‚Ìæ“¾
 //--------------------------------------------------------------
 //	œˆø”
-//		int id			“o˜^”Ô†
+//		size_t id		“o˜^”Ô†
 //		string*			ŒŸõƒpƒX
 //	œ•Ô’l
 //		int				0			³í
 //						‚»‚êˆÈŠO	ˆÙí
 //==============================================================
-const char*	SearchPass::get(int id)
+const char*	SearchPass::get(size_t id)
 {
 	return(m_ptcPass[id].c_str());
 }

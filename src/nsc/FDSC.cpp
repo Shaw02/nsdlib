@@ -15,14 +15,13 @@
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
-//		unsigned	int		_id			FDSC番号
+//					size_t	_id			FDSC番号
 //		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-FDSC::FDSC(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
-	MusicItem(_id, _strName),
-	m_id(_id)
+FDSC::FDSC(MMLfile* MML, size_t _id, const _CHAR _strName[]):
+	MusicItem(_id, _strName)
 {
 	//----------------------
 	//Local変数

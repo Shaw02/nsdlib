@@ -19,7 +19,7 @@
 //	œ•Ô’l
 //				–³‚µ
 //==============================================================
-mml_repeat::mml_repeat(unsigned int _id, unsigned char count, const _CHAR _strName[]):
+mml_repeat::mml_repeat(size_t _id, unsigned char count, const _CHAR _strName[]):
 	MusicEvent(_id, _strName)
 {
 	iSize = 2;
@@ -36,7 +36,7 @@ mml_repeat::mml_repeat(unsigned int _id, unsigned char count, const _CHAR _strNa
 //	œ•Ô’l
 //				–³‚µ
 //==============================================================
-mml_repeat::mml_repeat(unsigned int _id, const _CHAR _strName[]):
+mml_repeat::mml_repeat(size_t _id, const _CHAR _strName[]):
 	MusicEvent(_id, _strName)
 {
 	iSize = 1;

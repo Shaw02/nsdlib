@@ -32,7 +32,7 @@ MusicEvent::MusicEvent(const _CHAR _strName[]):
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-MusicEvent::MusicEvent(unsigned int _id, const _CHAR _strName[]):
+MusicEvent::MusicEvent(size_t _id, const _CHAR _strName[]):
 	MusicItem(_id, _strName)
 {
 }

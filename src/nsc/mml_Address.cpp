@@ -39,7 +39,7 @@ mml_Address::mml_Address(unsigned char _code, const _CHAR _strName[]):
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-mml_Address::mml_Address(unsigned int _id, unsigned char _code, const _CHAR _strName[]):
+mml_Address::mml_Address(size_t _id, unsigned char _code, const _CHAR _strName[]):
 	MusicEvent(_id, _strName)
 {
 	iSize = 3;
@@ -59,7 +59,7 @@ mml_Address::mml_Address(unsigned int _id, unsigned char _code, const _CHAR _str
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-mml_Address::mml_Address(unsigned int _id, unsigned char _code, unsigned char _data, const _CHAR _strName[]):
+mml_Address::mml_Address(size_t _id, unsigned char _code, unsigned char _data, const _CHAR _strName[]):
 	MusicEvent(_id, _strName)
 {
 	iSize = 4;
@@ -90,7 +90,7 @@ mml_Address::~mml_Address(void)
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-void	mml_Address::set_Address(unsigned int _addr)
+void	mml_Address::set_Address(size_t _addr)
 {
 	switch(iSize){
 		case(3):
@@ -119,9 +119,9 @@ void	mml_Address::set_Address(unsigned int _addr)
 //				ñ≥Çµ
 //==============================================================
 /*
-unsigned	int	mml_Address::get_Address(void)
+size_t	mml_Address::get_Address(void)
 {
-	unsigned	int	i;
+	size_t	i;
 
 	switch(iSize){
 		case(3):

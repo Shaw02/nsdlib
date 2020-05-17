@@ -15,13 +15,13 @@
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
-//		unsigned	int		_id			BGM番号
+//					size_t	_id			BGM番号
 //		bool				_sub		このオブジェクトは、サブルーチン？
 //		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const _CHAR _strName[]):
+TrackSet::TrackSet(MMLfile* MML, size_t _id, bool _sub, bool _se, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
 	iTempo(120)
 {
@@ -875,34 +875,23 @@ const	static	Command_Info	Command[] = {
 	if(fSub == true){
 		//サブルーチンブロックの場合
 		code.resize(0);
-		i = (int)ptcTrack[iTrack]->SetEnd(MML);
+		ptcTrack[0]->SetEnd(MML);
 
 	} else {
 		//それ以外の場合
-		i = 2 + ((maxTrack + 1) * 2);		//トラック情報を書くヘッダーのサイズを計算。
-		code.resize(i);						//ヘッダ用にコードサイズを確保
+		iSize = 2 + ((maxTrack + 1) * 2);		//トラック情報を書くヘッダーのサイズを計算。
+		code.resize(iSize);						//ヘッダ用にコードサイズを確保
 
 		code[0] = (unsigned char)maxTrack + 1;				//トラック数
 		code[1] = Priority;									//各種フラグ
 
-		// to do ■■■アドレス解決ルーチンへ移動
 		//各トラックに終端を書いて、曲データのアドレス情報を作成
 		iTrack = 0;
 		while(iTrack <= maxTrack){
-			unsigned	int	n	= (int)ptcTrack[iTrack]->SetEnd(MML);
-			if(n==0){
-				code[iTrack *2 + 2]	= 0;
-				code[iTrack *2 + 3]	= 0;
-			} else {
-				code[iTrack *2 + 2]	= (unsigned char)((i   ) & 0xFF);
-				code[iTrack *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
-			}
-			i += n;
+			ptcTrack[iTrack]->SetEnd(MML);
 			iTrack++;
 		}
 	}
-	iSize = i;
-
 }
 
 //==============================================================
@@ -1068,12 +1057,33 @@ void	TrackSet::OptimizeDefineCheck(MusicFile* MUS)
 //==============================================================
 void	TrackSet::Fix_Address(MusicFile* MUS)
 {
-	iTrack = 0;
-	while(iTrack <= maxTrack){
-		ptcTrack[iTrack]->Fix_Address(MUS);
-		iTrack++;
-	}
+	size_t	i;
+	size_t	n;
 
+	if(fSub == true){
+		//サブルーチンブロックの場合
+		ptcTrack[0]->Fix_Address(MUS);
+
+	} else {
+		//それ以外の場合
+		i = code.size();
+
+		//各トラックのアドレス情報を作成
+		iTrack = 0;
+		while(iTrack <= maxTrack){
+			ptcTrack[iTrack]->Fix_Address(MUS);
+			n = ptcTrack[iTrack]->getSize();
+			if(n==0){
+				code[iTrack *2 + 2]	= 0;
+				code[iTrack *2 + 3]	= 0;
+			} else {
+				code[iTrack *2 + 2]	= (unsigned char)((i   ) & 0xFF);
+				code[iTrack *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
+			}
+			i += n;
+			iTrack++;
+		}
+	}
 }
 
 //==============================================================

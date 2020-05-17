@@ -36,7 +36,7 @@ MusicItem::MusicItem(const _CHAR _strName[]):
 	}
 }
 
-MusicItem::MusicItem(unsigned int _id, const _CHAR _strName[]):
+MusicItem::MusicItem(size_t _id, const _CHAR _strName[]):
 	iOffset(0),
 	iSize(0),
 	f_id(true),
@@ -140,7 +140,7 @@ size_t		MusicItem::getSize()
 //	●返値
 //		unsigned	int	
 //==============================================================
-unsigned	int		MusicItem::getOffset()
+size_t	MusicItem::getOffset()
 {
 	return(iOffset);
 }
@@ -149,16 +149,16 @@ unsigned	int		MusicItem::getOffset()
 //		オフセットアドレスの設定
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		_offset
+//		size_t	_offset
 //	●返値
 //				無し
 //==============================================================
-unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
+size_t	MusicItem::SetOffset(size_t _offset)
 {
 	//----------------------
 	//Local変数
 	list<	MusicItem*>::iterator	itItem;
-	unsigned	int		i	=	0;
+	size_t	i = 0;
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x02){
@@ -175,7 +175,7 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 	}
 
 	iOffset = _offset;
-	_offset	+= (unsigned int)code.size();
+	_offset	+= code.size();
 
 	if(!ptcItem.empty()){
 		itItem = ptcItem.begin();
@@ -199,7 +199,7 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 //	●返値
 //		unsigned	char	内容
 //==============================================================
-unsigned	char	MusicItem::getCode(unsigned int n)
+unsigned	char	MusicItem::getCode(size_t n)
 {
 	unsigned	char	iCode;
 	
@@ -264,7 +264,7 @@ void	MusicItem::getAsm(MusicFile* MUS)
 {
 	//----------------------
 	//Local変数
-	unsigned	int	i = 0;
+	size_t	i = 0;
 	list<	MusicItem*>::iterator	itItem;
 
 	if(code.size() > 0){
@@ -293,11 +293,11 @@ void	MusicItem::getAsm(MusicFile* MUS)
 //		idの設定
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		_id		番号
+//		size_t	_id		番号
 //	●返値
 //				無し
 //==============================================================
-void	MusicItem::set_id(unsigned int _id)
+void	MusicItem::set_id(size_t _id)
 {
 	f_id = true;
 	m_id = _id;
@@ -311,7 +311,7 @@ void	MusicItem::set_id(unsigned int _id)
 //	●返値
 //		unsigned	int		番号
 //==============================================================
-unsigned int	MusicItem::get_id(void)
+size_t	MusicItem::get_id(void)
 {
 	return(m_id);
 }

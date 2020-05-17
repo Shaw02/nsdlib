@@ -20,7 +20,6 @@ class Envelop :
 {
 //メンバー変数
 private:
-	unsigned	int		m_id;				//エンベロープ番号
 				int		Loop_Normal;		//ループ位置（発音中）
 				int		Loop_Release;		//ループ位置（リリース中）
 				bool	Release;			//リリースパターンがあるかどうか
@@ -30,7 +29,7 @@ private:
 
 //メンバー関数
 public:
-				Envelop(MMLfile* MML, unsigned int _id, const _CHAR _strName[] = _T("Envelope"));
+				Envelop(MMLfile* MML, size_t _id, const _CHAR _strName[] = _T("Envelope"));
 				~Envelop(void);
 		void	SetLoop(MMLfile* MML, int LoopPoint);
 		void	setHold(int length);

@@ -64,9 +64,9 @@ MMLfile::~MMLfile(void)
 
 	//----------------------
 	//Local変数
-	vector	<FileInput*				>::iterator	itFiles;
-	map		<string,		string	>::iterator	itMac;
-	map		<unsigned int,	Patch*	>::iterator	itPatch;
+	vector	<FileInput*			>::iterator	itFiles;
+	map		<string,	string	>::iterator	itMac;
+	map		<size_t,	Patch*	>::iterator	itPatch;
 
 	//----------------------
 	//Delete Class
@@ -364,7 +364,7 @@ void	MMLfile::CallMacro(void)
 void	MMLfile::SetPatch(void)
 {
 
-	int			i		= GetNum();
+	size_t			i		= GetNum();
 
 	//重複チェック
 	if(ptcPatch.count(i) != 0){
@@ -379,13 +379,13 @@ void	MMLfile::SetPatch(void)
 //		パッチの有無チェック
 //--------------------------------------------------------------
 //	●引数
-//			unsigned int _no	パッチ番号
+//			size_t _no	パッチ番号
 //	●返値
 //			bool				あるかどうか
 //	●処理
 //			
 //==============================================================
-bool	MMLfile::ChkPatch(unsigned int _no)
+bool	MMLfile::ChkPatch(size_t _no)
 {
 	bool	result;
 
@@ -1021,11 +1021,11 @@ int		MMLfile::GetLength(int DefaultLength)	//
 //	●返値
 //		int			コマンドコード　（-1でunknown command）
 //==============================================================
-int	MMLfile::GetCommandID(const Command_Info _command[], unsigned int _size)
+int	MMLfile::GetCommandID(const Command_Info _command[], size_t _size)
 {
 	unsigned	int		ptCommand	= tellg();	//現在のファイルポインタを保持しておく。
-	unsigned	int		i			= 0;		//走査用
-	unsigned	int		j;						//文字列チェック用
+				size_t	i = 0;					//走査用
+				size_t	j;						//文字列チェック用
 
 	//コマンド文字列のチェック
 	while(i < _size){

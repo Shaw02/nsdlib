@@ -20,11 +20,11 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
-//					int		_id			パッチ番号
+//					size_t	_id			パッチ番号
 //	●返値
 //					無し
 //==============================================================
-Patch::Patch(MMLfile* MML, int _id):
+Patch::Patch(MMLfile* MML, size_t _id):
 	m_id(_id)
 {
 	//----------------------
@@ -498,7 +498,7 @@ Patch::~Patch(void)
 {
 	//----------------------
 	//Local変数
-	map<unsigned int, patch_scrap*>::iterator	itPatch;
+	map<size_t, patch_scrap*>::iterator	itPatch;
 	
 	//----------------------
 	//Delete Class
@@ -524,7 +524,7 @@ void	Patch::DebugMsg(void)
 {
 	//----------------------
 	//Local変数
-	map<unsigned int, patch_scrap*>::iterator	itPatch;
+	map<size_t, patch_scrap*>::iterator	itPatch;
 	
 	//----------------------
 	//Delete Class

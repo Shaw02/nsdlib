@@ -15,14 +15,13 @@
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
-//		unsigned	int		_id			エンベロープ番号
+//					size_t	_id			エンベロープ番号
 //		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-Envelop::Envelop(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
-	MusicItem(_id, _strName),
-	m_id(_id)
+Envelop::Envelop(MMLfile* MML, size_t _id, const _CHAR _strName[]):
+	MusicItem(_id, _strName)
 {
 	//----------------------
 	//Local変数

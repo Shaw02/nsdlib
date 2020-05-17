@@ -204,7 +204,7 @@ const	static	Command_Info	Command[] = {
 		{	"　",				id_Null			},
 	};
 
-	unsigned	int			i;
+				size_t		i;
 	unsigned	char		cData;
 				FDSC*		_fdsc;
 				FDSM*		_fdsm;
@@ -216,10 +216,10 @@ const	static	Command_Info	Command[] = {
 				Sub*		_sub;
 	string		msg;
 
-	map<	int,	Envelop*	>::iterator	itEnvelop;
-	map<	int,	BGM*		>::iterator	itBGM;
-	map<	int,	SE*			>::iterator	itSE;
-	map<	int,	Sub*		>::iterator	itSub;
+	map<size_t,	Envelop*	>::iterator	itEnvelop;
+	map<size_t,	BGM*		>::iterator	itBGM;
+	map<size_t,	SE*			>::iterator	itSE;
+	map<size_t,	Sub*		>::iterator	itSub;
 
 	iSize = 0;
 
@@ -525,12 +525,12 @@ MusicFile::~MusicFile(void)
 //==============================================================
 void	MusicFile::TickCount(void)
 {
-	map<	int, FDSC*		>::iterator	itFDSC;		//FDS  wave table (career)
-	map<	int, FDSM*		>::iterator	itFDSM;		//FDS  wave table (modulator)
-	map<	int, VRC7*		>::iterator	itVRC7;		//VRC7 User Instrument
-	map<	int, N163*		>::iterator	itN163;		//N163 wave table
-	map<	int, Envelop*	>::iterator	itEnv;		//Envelop
-	map<	int, Sub*		>::iterator	itSub;		//Subroutine
+	map<size_t, FDSC*		>::iterator	itFDSC;		//FDS  wave table (career)
+	map<size_t, FDSM*		>::iterator	itFDSM;		//FDS  wave table (modulator)
+	map<size_t, VRC7*		>::iterator	itVRC7;		//VRC7 User Instrument
+	map<size_t, N163*		>::iterator	itN163;		//N163 wave table
+	map<size_t, Envelop*	>::iterator	itEnv;		//Envelop
+	map<size_t, Sub*		>::iterator	itSub;		//Subroutine
 
 	unsigned	int			iBGM	= 0;
 	unsigned	int			iSE		= 0;
@@ -651,9 +651,9 @@ void	MusicFile::TickCount(void)
 //	●返値
 //		unsigned	int	ΔPCMの合計サイズ
 //==============================================================
-unsigned	int		MusicFile::SetDPCMOffset(unsigned int iMusSize)
+size_t	MusicFile::SetDPCMOffset(size_t iMusSize)
 {
-	unsigned	int		i;
+				size_t	i;
 	unsigned	char	mus_bank = (unsigned char)(iMusSize >> 12);
 
 	if((iMusSize & 0x0FFF) != 0){
@@ -681,10 +681,10 @@ unsigned	int		MusicFile::SetDPCMOffset(unsigned int iMusSize)
 //==============================================================
 void	MusicFile::Fix_Address(void)
 {
-	map<int,Sub*	>::iterator	itSub;
+	map<size_t,Sub*	>::iterator	itSub;
 
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
+	size_t	iBGM	= 0;
+	size_t	iSE		= 0;
 
 
 	while(iBGM < Header.iBGM){
