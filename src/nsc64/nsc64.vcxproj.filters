@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\Music">
+      <UniqueIdentifier>{9c8f984b-e781-434a-96c7-ef3c8a2c0cdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\MML">
+      <UniqueIdentifier>{26d0b5e6-faf4-43f7-9bd7-5a1582addbbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\File">
+      <UniqueIdentifier>{68501f2b-aff9-4100-befd-9a51e8e01564}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Music\Track">
+      <UniqueIdentifier>{c7b8a435-7575-430b-bfb4-c72f2a3033dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Music\Event">
+      <UniqueIdentifier>{1da4e2d4-db17-4dca-86cd-b56a02e71734}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="nsc64.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\nsc\icon1.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\nsc\BGM.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\DPCM.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\DPCMinfo.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Envelop.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\FDSC.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\FDSM.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\FileInput.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\FileOutput.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\mml_Address.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\mml_general.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\mml_note.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\mml_poke.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\mml_repeat.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\MMLfile.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\MusicEvent.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\MusicFile.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\MusicHeader.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\MusicItem.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\MusicTrack.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\N163.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Option.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Patch.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\SE.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\SearchPass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\stdafx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Sub.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\TrackSet.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\VRC7.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\nsc\nsc.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Option.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\SearchPass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\stdafx.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\FileInput.cpp">
+      <Filter>ソース ファイル\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\FileOutput.cpp">
+      <Filter>ソース ファイル\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\MMLfile.cpp">
+      <Filter>ソース ファイル\MML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\mml_Address.cpp">
+      <Filter>ソース ファイル\Music\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\mml_general.cpp">
+      <Filter>ソース ファイル\Music\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\mml_note.cpp">
+      <Filter>ソース ファイル\Music\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\mml_poke.cpp">
+      <Filter>ソース ファイル\Music\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\mml_repeat.cpp">
+      <Filter>ソース ファイル\Music\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\MusicEvent.cpp">
+      <Filter>ソース ファイル\Music\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\BGM.cpp">
+      <Filter>ソース ファイル\Music\Track</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\MusicTrack.cpp">
+      <Filter>ソース ファイル\Music\Track</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\SE.cpp">
+      <Filter>ソース ファイル\Music\Track</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Sub.cpp">
+      <Filter>ソース ファイル\Music\Track</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\TrackSet.cpp">
+      <Filter>ソース ファイル\Music\Track</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\DPCM.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\DPCMinfo.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Envelop.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\FDSC.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\FDSM.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\MusicFile.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\MusicHeader.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\MusicItem.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\N163.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Patch.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\VRC7.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

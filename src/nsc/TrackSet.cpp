@@ -1014,9 +1014,10 @@ void	TrackSet::TickCountPrint(MusicFile* MUS, int iStart, int iEnd)
 void	TrackSet::TickCount(MusicFile* MUS)
 {
 
-	int		iTrack = 0;
 	int		j;
 	int		_maxTrack = maxTrack + 1;
+
+	iTrack = 0;
 
 	while(iTrack < _maxTrack){
 		j = iTrack + 8;

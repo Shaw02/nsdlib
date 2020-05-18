@@ -12,6 +12,12 @@ copy *.exe ..\..\..\bin\
 cd..
 cd..
 
+cd nsc64\x64\Release
+copy *.exe ..\..\..\..\bin\
+cd..
+cd..
+cd..
+
 rem --- rom.bin ---
 cd rom
 call _make
