@@ -131,8 +131,6 @@ int	main(int argc, char* argv[])
 
 		_COUT << endl;
 
-
-
 		//==================================
 		//•Û‘¶
 		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveASM == false))){

@@ -102,6 +102,8 @@ void	MusicItem::clear(void)
 		}
 		ptcItem.clear();
 	}
+
+	iSize = 0;
 }
 
 void	MusicItem::clear_Optimize()

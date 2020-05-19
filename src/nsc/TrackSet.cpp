@@ -1063,8 +1063,10 @@ void	TrackSet::Fix_Address(MusicFile* MUS)
 
 	if(fSub == true){
 		//サブルーチンブロックの場合
-		ptcTrack[0]->Fix_Address(MUS);
-
+		if (iSize > 0) {
+			//且つ、最適化で消されていなかったら。
+			ptcTrack[0]->Fix_Address(MUS);
+		}
 	} else {
 		//それ以外の場合
 		i = code.size();
