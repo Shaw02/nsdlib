@@ -27,8 +27,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //==============================================================
 MusicFile::MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]):
 	MusicItem(_strName),
-	cDPCMinfo(NULL),
-	Header(_code)
+	Header(_code),
+	cDPCMinfo(NULL)
 {
 	//----------------------
 	//Local変数
@@ -205,7 +205,7 @@ const	static	Command_Info	Command[] = {
 	};
 
 				size_t		i;
-	unsigned	char		cData;
+//	unsigned	char		cData;
 				FDSC*		_fdsc;
 				FDSM*		_fdsm;
 				VRC7*		_vrc7;
@@ -226,7 +226,8 @@ const	static	Command_Info	Command[] = {
 	do{
 		
 		//１文字読み込み（コメントチェック、includeファイルの終端チェックもあり）
-		cData = MML->GetChar();
+//		cData = MML->GetChar();
+		MML->GetChar();
 
 		//[EOF]チェック
 		if( MML->eom() ){
@@ -532,8 +533,8 @@ void	MusicFile::TickCount(void)
 	map<size_t, Envelop*	>::iterator	itEnv;		//Envelop
 	map<size_t, Sub*		>::iterator	itSub;		//Subroutine
 
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
+				size_t		iBGM	= 0;
+				size_t		iSE		= 0;
 
 	//----------------------
 	//Tick Count & 最適化のための情報収集
@@ -728,12 +729,12 @@ void	MusicFile::make_binary(void)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::make_bin(size_t rom_size, int ptOffset)
+void	MusicFile::make_bin(size_t rom_size, size_t ptOffset)
 {
 				string		_str;
 	unsigned	int			i		= 2;
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
+				size_t		iBGM	= 0;
+				size_t		iSE		= 0;
 	unsigned	short*		pt;
 
 				size_t		_size	= 4 + (Header.iBGM + Header.iSE)*2;
@@ -745,8 +746,8 @@ void	MusicFile::make_bin(size_t rom_size, int ptOffset)
 
 	pt = (unsigned short*)_str.c_str();
 
-	_str[0] = Header.iBGM;
-	_str[1] = Header.iSE;
+	_str[0] = (char)(Header.iBGM & 0xFF);
+	_str[1] = (char)(Header.iSE  & 0xFF);
 
 	if(Header.bank == false){
 
@@ -834,7 +835,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	memcpy(&nsf->Title, Header.title.c_str(), 32);
 	memcpy(&nsf->Composer, Header.composer.c_str(), 32);
 	memcpy(&nsf->Copyright, Header.copyright.c_str(), 32);
-	nsf->MusicNumber	= Header.iBGM + Header.iSE;
+	nsf->MusicNumber	= (unsigned char)((Header.iBGM + Header.iSE) & 0xFF);
 	if(Header.iExternal != -1){
 		nsf->External	= (unsigned char)Header.iExternal;
 	}
@@ -875,7 +876,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		//------------------------------
 		//Bank対応bin？
 
-		unsigned	int	iSizeLimit = 0x10000;	//拡張RAMへの転送有り
+		size_t	iSizeLimit = 0x10000;	//拡張RAMへの転送有り
 
 		//シーケンスのバイナリを生成
 		make_bin(bin_size, 0x0000);
@@ -918,8 +919,8 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	if(dpcm_bank == false){
 		//⊿PCMサイズチェック
-		_COUT << _T("  Bank = ") << (unsigned int)pcm_bank << endl;
-		_COUT << _T("  Size = ") << (unsigned int)pcm_size << _T(" [Byte] / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
+		_COUT << _T("  Bank = ") << (size_t)pcm_bank << endl;
+		_COUT << _T("  Size = ") << (size_t)pcm_size << _T(" [Byte] / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
 
 		if(	(Header.offsetPCM + pcm_size) > 0x10000	){
 			Err(_T("⊿PCMのサイズが許容値を越えました。"));
@@ -927,8 +928,8 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	} else {
 		//⊿PCMサイズチェック
-		_COUT << _T("  Bank = ") << (unsigned int)pcm_bank << endl;
-		_COUT << _T("  Size = ") << (unsigned int)pcm_size << _T(" [Byte]") << endl;
+		_COUT << _T("  Bank = ") << (size_t)pcm_bank << endl;
+		_COUT << _T("  Size = ") << (size_t)pcm_size << _T(" [Byte]") << endl;
 
 		i = mus_bank + pcm_bank + 3;
 		if(i > 255){
@@ -1048,8 +1049,8 @@ void	MusicFile::saveNSF(const char*	strFileName)
 //==============================================================
 void	MusicFile::saveASM(const char*	strFileName)
 {
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
+	size_t	iBGM	= 0;
+	size_t	iSE		= 0;
 
 	//----------------------
 	//File open

@@ -21,7 +21,7 @@
 //	Åúï‘íl
 //					ñ≥Çµ
 //==============================================================
-Sub::Sub(MMLfile* MML, size_t _id, _CHAR _strName[]/* = "==== [ Sub ]===="*/):
+Sub::Sub(MMLfile* MML, size_t _id, const _CHAR _strName[]/* = "==== [ Sub ]===="*/):
 	TrackSet(MML, _id, true, false, _strName)
 {
 	

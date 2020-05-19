@@ -28,7 +28,7 @@ protected:
 				int				maxTrack;	//トラック番号の最大値
 				bool			fSub;		//サブルーチン記述ブロックかどうかのフラグ
 				bool			fSE;		//SEかどうかのフラグ
-	unsigned	int				TrackPt;	//
+				std::streamoff	TrackPt;	//
 	unsigned	int				TrackLine;	//
 	unsigned	char			Priority;	//効果音優先順位
 

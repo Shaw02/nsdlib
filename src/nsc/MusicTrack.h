@@ -214,7 +214,7 @@ private:
 //	unsigned	int		iEm;			//
 //	unsigned	int		iEn;			//
 	unsigned	char	iSweep;			//
-	unsigned	int		iSub;			//サブルーチン用
+				size_t	iSub;			//サブルーチン用
 
 	//設定するかどうか（defailt = false）
 				bool	f_opt_Voi;		//
@@ -287,7 +287,7 @@ private:
 
 //メンバー関数
 public:
-			MusicTrack(unsigned int _id, MMLfile* MML, const _CHAR _strName[] = _T("---- [ Music Track ] ----"));
+			MusicTrack(size_t _id, MMLfile* MML, const _CHAR _strName[] = _T("---- [ Music Track ] ----"));
 			~MusicTrack(void);
 
 	unsigned	int		TickCount(MusicFile* MUS, NSD_WORK* work);

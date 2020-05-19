@@ -645,13 +645,10 @@ void	Patch::setN(MMLfile* MML, int note)
 //==============================================================
 void	Patch::setNote(int i)
 {
-	bool	f_set = false;
-
 	m_kn = i;
 
 	while(m_kn > 0){
 		if(m_Patch.count(m_kn) != 0){
-			f_set = true;
 			break;
 		} else {
 			m_kn--;

@@ -23,9 +23,22 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //	●返値
 //					無し
 //==============================================================
-MusicTrack::MusicTrack(unsigned int _id, MMLfile* MML, const _CHAR _strName[]):
+MusicTrack::MusicTrack(size_t _id, MMLfile* MML, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
 	offset_now(0),
+	compile_flag(false),
+	jump_flag(false),
+//	volume(15),
+//	octave(5),
+//	octave1(0),
+	iKeyShift(0),
+//	iTranspose(0),
+	echo_already(false),
+	echo_vol_ret(false),
+	echo_flag(false),
+	echo_length(-1),
+	pt_oldNote(0),
+	f_Patch(false),
 	is_loop(false),				//ループ
 	is_repeat_a_s(false),		//リピートＡ
 	is_repeat_a_b(false),		//リピートＡ
@@ -34,20 +47,8 @@ MusicTrack::MusicTrack(unsigned int _id, MMLfile* MML, const _CHAR _strName[]):
 	sp_repeat_c(0),
 	cnt_Loop(0),
 	cnt_Repert_A(0),
-	cnt_Repert_B(0),
-//	volume(15),
-//	octave(5),
-//	octave1(0),
-	echo_length(-1),
-	echo_already(false),
-	echo_vol_ret(false),
-	echo_flag(false),
-	compile_flag(false),
-	pt_oldNote(0),
-	iKeyShift(0),
-//	iTranspose(0),
-	f_Patch(false),
-	jump_flag(false)
+	cnt_Repert_B(0)
+
 {
 	unsigned	int	i = 0;
 
@@ -154,7 +155,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 		■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 	*/
 
-	unsigned	int					_no;
+				size_t				_no;
 	//			int					i;
 				mml_Address*		adrObj;
 
@@ -2761,7 +2762,7 @@ void	MusicTrack::SetLength(MMLfile* MML)
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
-//		int			note	ノート（0:C 1:D 2:E … 7:B）
+//		int			nn		ノート（0:C 1:D 2:E … 7:B）
 //	●返値
 //		char
 //==============================================================

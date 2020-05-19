@@ -24,11 +24,11 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //				無し
 //==============================================================
 MusicItem::MusicItem(const _CHAR _strName[]):
-	iOffset(0),
+	strName(_strName),
 	iSize(0),
+	iOffset(0),
 	f_id(false),
-	f_Optimize(false),
-	strName(_strName)
+	f_Optimize(false)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){
@@ -37,12 +37,12 @@ MusicItem::MusicItem(const _CHAR _strName[]):
 }
 
 MusicItem::MusicItem(size_t _id, const _CHAR _strName[]):
-	iOffset(0),
+	strName(_strName),
 	iSize(0),
-	f_id(true),
+	iOffset(0),
 	m_id(_id),
-	f_Optimize(false),
-	strName(_strName)
+	f_id(true),
+	f_Optimize(false)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){

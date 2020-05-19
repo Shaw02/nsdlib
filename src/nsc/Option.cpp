@@ -32,15 +32,15 @@
 //==============================================================
 OPSW::OPSW(int argc, char* argv[]):
 	//初期化設定
-	fHelp(0),		//ヘルプは、デフォルトは表示しない。
+	cDebug(0),
+	fErr(false),
 	saveNSF(false),
 	saveASM(false),
 	flag_Optimize(false),
 	flag_OptObj(true),
 	flag_OptSeq(true),
-	fErr(false),
 	flag_SearchPass(false),
-	cDebug(0)
+	fHelp(0)		//ヘルプは、デフォルトは表示しない。
 {
 
 	//----------------------------------

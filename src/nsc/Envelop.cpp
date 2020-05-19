@@ -229,7 +229,7 @@ void Envelop::SetLoop(MMLfile* MML, int LoopPoint)
 				MML->Warning(_T("ループ位置を指定できる範囲(63Byte)を超えました。"));
 			}
 		}
-		code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
+		code.append((char)1, (char)((ptEnvelop-1) | 0xC0));
 	} else {
 		if(ptEnvelop == Loop_Normal){
 			MML->Err(_T("Lコマンドでパターン定義を終わることはできません。"));

@@ -66,8 +66,8 @@ class	MMLfile;
 class	Sub;
 
 typedef struct {
-	char*	str;
-	int		id;
+	const char*	str;
+	int			id;
 } Command_Info;
 
 #include "SearchPass.h"			//ŒŸõƒpƒX
