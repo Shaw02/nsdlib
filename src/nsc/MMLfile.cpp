@@ -187,6 +187,11 @@ void	MMLfile::SetMacro(int i_Lv)
 	string	macro_name		="";
 	string	macro_contents	="";
 
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "Set Macro (Lv=" << i_Lv << ") : ";
+	}
+
 	int		iKakko	= 0;
 
 	//------------------
@@ -231,6 +236,10 @@ void	MMLfile::SetMacro(int i_Lv)
 	ptcMac[macro_name] = macro_contents;
 	lv_Mac[macro_name] = i_Lv;
 
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "SetMacro ptcMac[" << macro_name << "] = \"" << macro_contents << "\"" << endl;
+	}
 }
 
 //==============================================================
@@ -252,6 +261,11 @@ void	MMLfile::DeleteMacro(int i_Lv)
 	string	macro_name;
 	int		macro_lv;
 
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "Delete Macro (Lv=" << i_Lv << ") : " << endl;
+	}
+		
 	//----------------------
 	//当該Lvのマクロを解放する。
 	if(!ptcMac.empty()){
@@ -263,10 +277,13 @@ void	MMLfile::DeleteMacro(int i_Lv)
 			if(i_Lv == macro_lv){
 				ptcMac.erase(macro_name);
 				lv_Mac.erase(macro_name);
+				//Debug用
+				if(cOptionSW->cDebug & DEBUG_Macros){
+					cout << "	ptcMac[" << macro_name << "]" << endl;
+				}
 			}
 		}
 	}
-
 }
 
 //==============================================================
@@ -289,8 +306,13 @@ void	MMLfile::CallMacro(void)
 	string*							strMac	= new	string[iSize];
 	map<string,string>::iterator	itMac	= ptcMac.begin();
 
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "Call Macro : ";
+	}
+
 	//------------------
-	//全マクロ名の取得
+	//定義された全マクロの取得
 	if(!ptcMac.empty()){
 		do{
 			strMac[n] = itMac->first;
@@ -308,7 +330,7 @@ void	MMLfile::CallMacro(void)
 		n = 0;			//ループ用
 		i = 0;			//ヒット数
 		if(cData > 0x20){
-			while(i<iSize){
+			while(n<iSize){
 				if(strMac[n].find(_name.c_str()) == 0){
 					i++;		//マクロ名先頭文字列ヒット
 				}
@@ -341,6 +363,11 @@ void	MMLfile::CallMacro(void)
 	if(p_macro > 0){
 		s_macro[p_macro-1].name = nowMacro.name;
 		s_macro[p_macro-1].line = nowMacro.line;
+	}
+
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "ptcMac[" << _name << "]　(nest = " << p_macro << " )" << endl;
 	}
 
 	nowMacro.name = _name;

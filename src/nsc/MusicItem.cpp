@@ -31,7 +31,7 @@ MusicItem::MusicItem(const _CHAR _strName[]):
 	f_Optimize(false)
 {
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x01){
+	if(cOptionSW->cDebug & DEBUG_Create){
 		_COUT << _T("Create Music Object : ") << strName << endl;
 	}
 }
@@ -45,7 +45,7 @@ MusicItem::MusicItem(size_t _id, const _CHAR _strName[]):
 	f_Optimize(false)
 {
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x01){
+	if(cOptionSW->cDebug & DEBUG_Create){
 		_COUT << _T("Create Music Object : ") << strName << _T("(");
 		cout << m_id;
 		_COUT << _T(")") << endl;
@@ -65,7 +65,7 @@ MusicItem::~MusicItem(void)
 	clear();
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x80){
+	if(cOptionSW->cDebug & DEBUG_Delete){
 		_COUT << _T("Delete Music Object : ") << strName;
 		if(f_id == true){
 			_COUT << _T("(") << m_id << _T(")");
@@ -110,7 +110,7 @@ void	MusicItem::clear_Optimize()
 {
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x40){
+	if(cOptionSW->cDebug & DEBUG_Optimize){
 		_COUT << _T("Optimized Object : ") << strName;
 		if(f_id == true){
 			_COUT	<< _T("(") << m_id << _T(")");
@@ -163,7 +163,7 @@ size_t	MusicItem::SetOffset(size_t _offset)
 	size_t	i = 0;
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x02){
+	if(cOptionSW->cDebug & DEBUG_SetAddress){
 		_COUT << _T("Object Address [0x") << hex << setw(4) << setfill(_T('0')) << _offset << _T("]: ");
 		while(i < code.size()){
 			_COUT	<<	hex	<<	setw(2)	<<	setfill(_T('0'))	<<	(unsigned int)(code[i] & 0xFF)	<<	_T(" ");

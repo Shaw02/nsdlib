@@ -149,11 +149,11 @@ OPSW::OPSW(int argc, char* argv[]):
 				//--------
 				//Debug‚ÌŽw’è
 				case 'D' :
-					//0x01:	Class Object Creat
-					//0x02:	Address settlement
-					//0x04:	Music File Outputing
-					//0x40:	Class Object Clear	
-					//0x80:	Class Object Delete
+					//0x01:	Phase [1] : Creating Class Object process
+					//0x10:	Phase [2] : Optimizing process
+					//0x20:	Phase [3] : Setting Address
+					//0x40:	Phase [4] : Outputing Music File
+					//0x80:	Phase [5] : Delete Class Object
 					int	i;
 					iResult=sscanf(argv[iCount],"-D%d",&i);
 					cDebug = (char)i;
