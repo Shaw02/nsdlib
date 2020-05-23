@@ -25,12 +25,14 @@ public:
 	int	octave;
 	int	octave1;		//One time octave
 	int	detune_cent;
-	int	detune_fine;
+	int	detune_reg;
 
 	int	trans;
 
 	int	voice;
+	int	voice_rel;
 	int	volume;
+	int	volume_rel;
 
 	size_t	env_volume;
 	size_t	env_voice;
@@ -70,10 +72,12 @@ public:
 		octave			= 3;
 		octave1			= 0;
 		detune_cent		= 0;
-		detune_fine		= 0;
+		detune_reg		= 0;
 		trans			= 0;
 		voice			= -1;
+		voice_rel		= -1;
 		volume			= 15;
+		volume_rel		=  2;
 	//	env_volume		= -1;
 	//	env_voice		= -1;
 	//	env_frequency	= -1;
@@ -99,10 +103,12 @@ public:
 		octave			=	work->octave;
 		octave1			=	work->octave1;
 		detune_cent		=	work->detune_cent;
-		detune_fine		=	work->detune_fine;
+		detune_reg		=	work->detune_reg;
 		trans			=	work->trans;
 		voice			=	work->voice;
+		voice_rel		=	work->voice_rel;
 		volume			=	work->volume;
+		volume_rel		=	work->volume_rel;
 		env_volume		=	work->env_volume;
 		env_voice		=	work->env_voice;
 		env_frequency	=	work->env_frequency;
