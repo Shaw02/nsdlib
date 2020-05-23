@@ -136,8 +136,6 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 	//Local変数
 	list<	MusicItem*>::iterator	itItem;
 	unsigned	char				iCode;
-	unsigned	char				iCodeType;
-				size_t				iCodeDate;		//※配列のアクセスに使う。
 
 	list<	MusicItem*>::iterator	itLoop_start;
 				int					iLoop_count	= 0;
@@ -145,12 +143,10 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 	list<	MusicItem*>::iterator	itRepeatA_start;
 	list<	MusicItem*>::iterator	itRepeatA_end;
 				int					iRepeatA_count	= 0;
-	//			bool				f_RepeatA	=	false;	//リピートが２回目以降か？
 
 	list<	MusicItem*>::iterator	itRepeatB_start;
 	list<	MusicItem*>::iterator	itRepeatB_end;
 				int					iRepeatB_count	= 0;
-	//			bool				f_RepeatB	=	false;	//リピートが２回目以降か？
 
 	const unsigned int				TBL_length[] = {96, 72, 48, 36, 32, 24, 18, 16, 12, 9, 8, 6, 4, 3, 2, 1};
 
@@ -164,10 +160,9 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 
 				mml_Address*		adrObj;
 
-	offset_now	=	0;		//バイナリー上のオフセット
+	//Tick 初期化
 	iTickTotal	=	0;		//
 	iTickLoop	=	0;
-
 
 	//----------------------
 	//プリ演奏
@@ -190,225 +185,226 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 				}
 			}
 
-			iCode		=	(*itItem)->getCode((size_t)0);
+			//各コマンド処理
+			iCode		= (*itItem)->getCode((size_t)0);
 
-		//	要らないハズ
-		//	if((f_RepeatA == false) && (f_RepeatB == false)){
-		//		offset_now	+=	(*itItem)->getSize();
-		//	}
+			//0x00 - 0x2F
+			if(iCode < 0x30){
 
-			if(iCode < 0x80){
+				//command
+				adrObj = (mml_Address*)(*itItem);
+				switch(iCode){
+					case(nsd_Jump):					//0x01
+						//■■■ To Do:　最適化の情報収集のため、2回ループする
+						iLoop_count++;
+						break;
 
-				iCodeType	= iCode >> 4;
-				iCodeDate	= iCode & 0x0F;
-				switch(iCodeType){
-					case(3):								//0x30 - 0x3F
-						if(iCodeDate < 8){
-							nsd.voice_rel = (int)iCodeDate;
-						} else {
-							nsd.octave = (int)iCodeDate;
+					case(nsd_Call):					//0x02
+						{
+							mml_Address*	ptAdd	= (mml_Address*)(*itItem);
+							Sub*			cSub	= MUS->ptcSub[ptAdd->get_id()];
+										iTickTotal	+= cSub->TickCount(MUS, &nsd);
 						}
 						break;
-					case(4):								//0x40 - 0x4F
-						nsd.length = TBL_length[iCodeDate];
-						break;
-					case(5):								//0x50 - 0x5F
-						nsd.gate_q = (int)iCodeDate;
-						break;
-					case(6):								//0x60 - 0x6F
-						nsd.volume = (int)iCodeDate;
-						break;
-					case(7):								//0x70 - 0x7F
-						nsd.volume_rel = (int)iCodeDate;
-						break;
-					default:	//0-2
-						//command
-						adrObj = (mml_Address*)(*itItem);
-						switch(iCode){
-							case(nsd_Jump):					//0x01
-								//■■■ To Do:　最適化の情報収集のため、2回ループする
-								break;
-							case(nsd_Call):					//0x02
-								{
-									mml_Address*	ptAdd	= (mml_Address*)(*itItem);
-									Sub*			cSub	= MUS->ptcSub[ptAdd->get_id()];
-									iTickTotal		+= cSub->TickCount(MUS, &nsd);
-								}
-								break;
 
-							//----------
-							//Repeat A
-							case(nsd_Repeat_A_Start):		//0x03
-								{
-								mml_repeat*	_event = (mml_repeat*)(*itItem);
-								iRepeatA_count	= _event->get_count();
-								itRepeatA_start	= itItem;	//覚えるのは現時点で良い
-								}
-								break;
-
-							case(nsd_Repeat_A_Branch):		//0x04
-								if(iRepeatA_count == 1){
-									itItem = itRepeatA_end;	//終了点に行く
-						//			f_RepeatA = false;
-								}
-								break;
-
-							case(nsd_Repeat_A_End):			//0x05
-								itRepeatA_end = itItem;		//終了点を記憶
-								iRepeatA_count--;
-								if(iRepeatA_count != 0){
-									itItem = itRepeatA_start;
-						//			f_RepeatA = true;
-						//		} else {
-						//			f_RepeatA = false;
-								}
-								break;
-
-							//----------
-							//Repeat B
-							case(nsd_Repeat_B_Start):		//0x18
-								itRepeatB_start = itItem;	//覚えるのは現時点で良い
-								iRepeatB_count	= 0;
-								break;
-
-							case(nsd_Repeat_B_Branch):		//0x19
-								if(iRepeatB_count != 0){
-									itItem = itRepeatB_end;	//分岐先へ
-								}
-						//		f_RepeatB = false;
-								break;
-
-							case(nsd_Repeat_B_End):			//0x1A
-								itRepeatB_end = itItem;		//分岐先を記憶
-								itItem = itRepeatB_start;
-								iRepeatB_count++;
-						//		f_RepeatB = true;
-								break;
-
-							//----------
-							//Length
-							case(nsd_Length):				//0x09
-								nsd.length = (*itItem)->getCode(1);
-								break;
-
-							//----------
-							//Gate
-							case(nsd_GateTime_q):			//0x0A
-								nsd.gate_q = (*itItem)->getCode(1);
-								break;
-							case(nsd_GateTime_u):			//0x0B
-								nsd.gate_u = (*itItem)->getCode(1);
-								break;
-
-							case(nsd_GateMode_0):			//0x0D
-								nsd.gatemode = 0;
-								break;
-							case(nsd_GateMode_1):			//0x0E
-								nsd.gatemode = 1;
-								break;
-							case(nsd_GateMode_2):			//0x0F
-								nsd.gatemode = 2;
-								break;
-
-							//----------
-							//Define
-							case(nsd_Voice):				//0x1B
-								nsd.sw_Evoi = false;
-								nsd.voice = (*itItem)->getCode(1);
-								break;
-							case(nsd_Envelop_Voice):		//0x10
-								nsd.sw_Evoi = adrObj->get_flag();
-								if(nsd.sw_Evoi == true){
-									nsd.env_voice = adrObj->get_id();
-								}
-								break;
-							case(nsd_Envelop_Volume):		//0x11
-								nsd.sw_Evol = adrObj->get_flag();
-								if(nsd.sw_Evol == true){
-									nsd.env_volume = adrObj->get_id();
-								}
-								break;
-							case(nsd_Envelop_Frequency):	//0x12
-								nsd.sw_Em = adrObj->get_flag();
-								if(nsd.sw_Em == true){
-									nsd.env_frequency = adrObj->get_id();
-								}
-								break;
-							case(nsd_Envelop_Note):			//0x13
-								nsd.sw_En = adrObj->get_flag();
-								if(nsd.sw_En == true){
-									nsd.env_note = adrObj->get_id();
-								}
-								break;
-
-							//----------
-							//Event
-							case(nsd_Detune_Cent):			//0x14
-								nsd.detune_cent = (*itItem)->getCode(1);
-								break;
-							case(nsd_Derune_Register):		//0x15
-								nsd.detune_reg = (*itItem)->getCode(1);
-								break;
-
-							case(nsc_VRC7):					//0x1C
-								break;
-							case(nsc_N163):					//0x1E
-								break;
-							case(nsc_N163_Channel):			//0x1F
-								break;
-
-							case(nsd_Volume_Down):			//0x20
-								nsd.env_volume--;
-								if(nsd.env_volume < 0){
-									nsd.env_volume = 0;
-								}
-								break;
-							case(nsd_Volume_Up):			//0x21
-								nsd.env_volume++;
-								if(nsd.env_volume > 15){
-									nsd.env_volume = 15;
-								}
-								break;
-
-							case(nsd_FDS_Career):			//0x22
-								break;
-							case(nsd_FDS_Modlator):			//0x23
-								break;
-							case(nsd_FDS_Frequency):		//0x24
-								break;
-							case(nsd_FDS_Volume):			//0x25
-								break;
-							case(nsc_FME7_frequency):		//0x26
-								break;
-
-							case(nsd_Octave_Down):			//0x28
-								nsd.octave--;
-								if(nsd.octave < 0){
-									nsd.octave = 0;
-								}
-								break;
-							case(nsd_Octave_Up):			//0x29
-								nsd.octave++;
-								if(nsd.octave*12 >= 128){
-									nsd.octave--;
-								}
-								break;
-
-							case(nsd_Transpose):			//0x2A
-								break;
-							case(nsd_Relative_Transpose):	//0x2B
-								break;
-
-							case(nsd_SubCommand):			//0x2F
-								break;
-
-							default:
-								(*itItem)->setUse();
-								break;
+					//----------
+					//Repeat A
+					case(nsd_Repeat_A_Start):		//0x03
+						{
+						mml_repeat*	_event = (mml_repeat*)(*itItem);
+						iRepeatA_count	= _event->get_count();
+						itRepeatA_start	= itItem;	//覚えるのは現時点で良い
 						}
+						break;
+
+					case(nsd_Repeat_A_Branch):		//0x04
+						if(iRepeatA_count == 1){
+							itItem = itRepeatA_end;	//終了点に行く
+						}
+						break;
+
+					case(nsd_Repeat_A_End):			//0x05
+						itRepeatA_end = itItem;		//終了点を記憶
+						iRepeatA_count--;
+						if(iRepeatA_count != 0){
+							itItem = itRepeatA_start;
+						}
+						break;
+
+					//----------
+					//Repeat B
+					case(nsd_Repeat_B_Start):		//0x18
+						itRepeatB_start = itItem;	//覚えるのは現時点で良い
+						iRepeatB_count	= 0;
+						break;
+
+					case(nsd_Repeat_B_Branch):		//0x19
+						if(iRepeatB_count != 0){
+							itItem = itRepeatB_end;	//分岐先へ
+						}
+						break;
+
+					case(nsd_Repeat_B_End):			//0x1A
+						itRepeatB_end = itItem;		//分岐先を記憶
+						itItem = itRepeatB_start;
+						iRepeatB_count++;
+						break;
+
+					//----------
+					//Length
+					case(nsd_Length):				//0x09
+						nsd.length = (*itItem)->getCode(1);
+						break;
+
+					//----------
+					//Gate
+					case(nsd_GateTime_q):			//0x0A
+						nsd.gate_q = (*itItem)->getCode(1);
+						break;
+					case(nsd_GateTime_u):			//0x0B
+						nsd.gate_u = (*itItem)->getCode(1);
+						break;
+
+					case(nsd_GateMode_0):			//0x0D
+						nsd.gatemode = 0;
+						break;
+					case(nsd_GateMode_1):			//0x0E
+						nsd.gatemode = 1;
+						break;
+					case(nsd_GateMode_2):			//0x0F
+						nsd.gatemode = 2;
+						break;
+
+					//----------
+					//Define
+					case(nsd_Voice):				//0x1B
+						nsd.sw_Evoi = false;
+						nsd.voice = (*itItem)->getCode(1);
+						break;
+					case(nsd_Envelop_Voice):		//0x10
+						nsd.sw_Evoi = adrObj->get_flag();
+						if(nsd.sw_Evoi == true){
+							nsd.env_voice = adrObj->get_id();
+						}
+						break;
+					case(nsd_Envelop_Volume):		//0x11
+						nsd.sw_Evol = adrObj->get_flag();
+						if(nsd.sw_Evol == true){
+							nsd.env_volume = adrObj->get_id();
+						}
+						break;
+					case(nsd_Envelop_Frequency):	//0x12
+						nsd.sw_Em = adrObj->get_flag();
+						if(nsd.sw_Em == true){
+							nsd.env_frequency = adrObj->get_id();
+						}
+						break;
+					case(nsd_Envelop_Note):			//0x13
+						nsd.sw_En = adrObj->get_flag();
+						if(nsd.sw_En == true){
+							nsd.env_note = adrObj->get_id();
+						}
+						break;
+
+					//----------
+					//Event
+					case(nsd_Detune_Cent):			//0x14
+						nsd.detune_cent = (char)((*itItem)->getCode(1));
+						break;
+					case(nsd_Derune_Register):		//0x15
+						nsd.detune_reg = (char)((*itItem)->getCode(1));
+						break;
+
+					case(nsc_VRC7):					//0x1C
+						nsd.vrc7_voice = adrObj->get_id();
+						nsd.sw_vrc7_voice = true;
+						break;
+					case(nsc_N163):					//0x1E
+						nsd.n163_voice = adrObj->get_id();
+						nsd.sw_n163_voice = true;
+						break;
+					case(nsc_N163_Channel):			//0x1F
+						nsd.n163_num = (*itItem)->getCode(1);
+						break;
+
+					case(nsd_Volume_Down):			//0x20
+						nsd.env_volume--;
+						if(nsd.env_volume < 0){
+							nsd.env_volume = 0;
+						}
+						break;
+					case(nsd_Volume_Up):			//0x21
+						nsd.env_volume++;
+						if(nsd.env_volume > 15){
+							nsd.env_volume = 15;
+						}
+						break;
+
+					case(nsd_FDS_Career):			//0x22
+						nsd.fds_career = adrObj->get_id();
+						nsd.sw_fds_career = true;
+						break;
+					case(nsd_FDS_Modlator):			//0x23
+						nsd.fds_modlator = adrObj->get_id();
+						nsd.sw_fds_modlator = true;
+						break;
+					case(nsd_FDS_Frequency):		//0x24
+						nsd.fds_frequency = ((*itItem)->getCode(1)) + (((*itItem)->getCode(2)) << 8);
+						break;
+					case(nsd_FDS_Volume):			//0x25
+						nsd.fds_volume = (*itItem)->getCode(1);
+						break;
+					case(nsc_FME7_frequency):		//0x26
+						nsd.psg_frequency = ((*itItem)->getCode(1)) + (((*itItem)->getCode(2)) << 8);
+						break;
+
+					case(nsd_Octave_Down):			//0x28
+						nsd.octave--;
+						if(nsd.octave < 0){
+							nsd.octave = 0;
+						}
+						break;
+					case(nsd_Octave_Up):			//0x29
+						nsd.octave++;
+						if(nsd.octave*12 >= 128){
+							nsd.octave--;
+						}
+						break;
+
+					case(nsd_Transpose):			//0x2A
+						nsd.trans = (char)((*itItem)->getCode(1));
+						break;
+					case(nsd_Relative_Transpose):	//0x2B
+						nsd.trans += (char)((*itItem)->getCode(1));
+						break;
+
+				//	case(nsd_SubCommand):			//0x2F
+				//		break;
+
+					default:
+						(*itItem)->setUse();
 						break;
 				}
-			} else {
+
+			} else if(iCode < 0x38){				//0x30 - 0x37
+				nsd.voice_rel = (int)iCode & 0x07;
+
+			} else if(iCode < 0x40){				//0x38 - 0x3F
+				nsd.octave = (int)iCode & 0x07;
+
+			} else if(iCode < 0x50){				//0x40 - 0x4F
+				nsd.length = TBL_length[iCode & 0x0F];
+
+			} else if(iCode < 0x60){				//0x50 - 0x5F
+				nsd.gate_q = (int)iCode & 0x0F;
+
+			} else if(iCode < 0x70){				//0x60 - 0x6F
+				nsd.volume = (int)iCode & 0x0F;
+
+			} else if(iCode < 0x80){				//0x70 - 0x7F
+				nsd.volume_rel = (int)iCode & 0x0F;
+
+			} else {								//0x80 - 0xFF
 				//note
 				iCode &= 0x7F;
 				if(iCode & nsd_Note_Length){

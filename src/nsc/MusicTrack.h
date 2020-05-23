@@ -50,15 +50,26 @@ public:
 	int	apu_tri_time;
 
 	//FDS
-	int	fds_frequency;
-	int	fds_sweepbias;
+	size_t	fds_career;
+	size_t	fds_modlator;
+	bool	sw_fds_career;
+	bool	sw_fds_modlator;
+	int		fds_volume;
+	int		fds_frequency;
+	int		fds_sweepbias;
+
+	//VRC7
+	size_t	vrc7_voice;
+	bool	sw_vrc7_voice;
 
 	//N163
-	int	n163_num;
-	int	n163_frequency;
+	size_t	n163_voice;
+	bool	sw_n163_voice;
+	int		n163_num;
 
 	//PSG
-	int	psg_switch;
+	int		psg_switch;
+	int		psg_frequency;
 
 			NSD_WORK(void){};
 			~NSD_WORK(void){};
@@ -88,11 +99,20 @@ public:
 		sw_En			= false;
 		sweep			= -1;
 		apu_tri_time	= -1;
+	//	fds_career		= -1;
+	//	fds_modlator	= -1;
+		sw_fds_career	= false;
+		sw_fds_modlator	= false;
+		fds_volume		= -1;
 		fds_frequency	= -1;
-		fds_sweepbias	= -1;
+		fds_sweepbias	= 0;
+	//	vrc7_voice		= -1;
+		sw_vrc7_voice	= false;
+	//	n163_voice		= -1;
+		sw_n163_voice	= false;
 		n163_num		= -1;
-		n163_frequency	= -1;
 		psg_switch		= -1;
+		psg_frequency	= -1;
 	}
 
 	void	set(NSD_WORK* work){
@@ -119,11 +139,22 @@ public:
 		sw_En			=	work->sw_En;
 		sweep			=	work->sweep;
 		apu_tri_time	=	work->apu_tri_time;
+		fds_career		=	work->fds_career;
+		fds_modlator	=	work->fds_modlator;
+		sw_fds_career	=	work->sw_fds_career;
+		sw_fds_modlator	=	work->sw_fds_modlator;
+		fds_volume		=	work->fds_volume;
 		fds_frequency	=	work->fds_frequency;
-		fds_sweepbias	=	work->fds_sweepbias;
+		fds_sweepbias	=	fds_sweepbias;
+		vrc7_voice		=	work->vrc7_voice;
+		sw_vrc7_voice	=	work->sw_vrc7_voice;
+		n163_voice		=	work->n163_voice;
+		sw_n163_voice	=	work->sw_n163_voice;
 		n163_num		=	work->n163_num;
-		n163_frequency	=	work->n163_frequency;
 		psg_switch		=	work->psg_switch;
+		psg_frequency	=	work->psg_frequency;
+
+
 	}
 
 	void	get(NSD_WORK* work){work->set(this);};

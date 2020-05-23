@@ -540,14 +540,14 @@ void	MusicFile::TickCount(void)
 	//Tick Count & 最適化のための情報収集
 
 	while(iBGM < Header.iBGM){
-		cout << "---- BGM(" << iBGM << ") ----" <<endl;
+		_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
 		ptcBGM[iBGM]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
 		ptcBGM[iBGM]->OptimizeDefineCheck(this);	//使ている定義をチェック
 		iBGM++;
 	}
 
 	while(iSE < Header.iSE){
-		cout << "---- SE(" << iSE << ") ----" <<endl;
+		_COUT << _T("---- SE(") << iSE << _T(") ----") <<endl;
 		ptcSE[iSE]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
 		ptcSE[iSE]->OptimizeDefineCheck(this);		//使ている定義をチェック
 		iSE++;
