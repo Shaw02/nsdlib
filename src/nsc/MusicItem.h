@@ -33,7 +33,7 @@ protected:
 				size_t		m_id;			//ID番号
 				bool		f_id;			//ID番号がセットされた事を示すflag
 
-				bool		f_Optimize;		//最適化フラグ
+				bool		f_necessary;	//最適化フラグ
 
 
 //メンバー関数
@@ -57,6 +57,6 @@ public:
 				size_t	get_id(void);
 				bool	get_flag(void);
 
-				void	setUse(void){f_Optimize = true;};	//最適化：不可
-				bool	chkUse(void){return(f_Optimize);};	//最適化フラグの取得
+				void	setUse(void){f_necessary = true;};	//最適化：不可
+				bool	chkUse(void){return(f_necessary);};	//最適化フラグの取得
 };

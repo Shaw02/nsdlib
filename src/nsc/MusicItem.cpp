@@ -28,7 +28,7 @@ MusicItem::MusicItem(const _CHAR _strName[]):
 	iSize(0),
 	iOffset(0),
 	f_id(false),
-	f_Optimize(false)
+	f_necessary(false)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & DEBUG_Create){
@@ -42,7 +42,7 @@ MusicItem::MusicItem(size_t _id, const _CHAR _strName[]):
 	iOffset(0),
 	m_id(_id),
 	f_id(true),
-	f_Optimize(false)
+	f_necessary(false)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & DEBUG_Create){

@@ -542,14 +542,12 @@ void	MusicFile::TickCount(void)
 	while(iBGM < Header.iBGM){
 		_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
 		ptcBGM[iBGM]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
-		ptcBGM[iBGM]->OptimizeDefineCheck(this);	//使ている定義をチェック
 		iBGM++;
 	}
 
 	while(iSE < Header.iSE){
 		_COUT << _T("---- SE(") << iSE << _T(") ----") <<endl;
 		ptcSE[iSE]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
-		ptcSE[iSE]->OptimizeDefineCheck(this);		//使ている定義をチェック
 		iSE++;
 	}
 
@@ -571,10 +569,7 @@ void	MusicFile::TickCount(void)
 		if(!ptcSub.empty()){
 			itSub = ptcSub.begin();
 			while(itSub != ptcSub.end()){
-				if(itSub->second->chkUse() == true){
-					//使うサブルーチンであれば、その中で使ってる定義をチェック
-					itSub->second->OptimizeDefineCheck(this);
-				} else {
+				if(itSub->second->chkUse() == false){
 					//使わないサブルーチンであれば、オブジェクト削除。
 					itSub->second->clear_Optimize();
 				}

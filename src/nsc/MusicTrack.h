@@ -145,7 +145,7 @@ public:
 		sw_fds_modlator	=	work->sw_fds_modlator;
 		fds_volume		=	work->fds_volume;
 		fds_frequency	=	work->fds_frequency;
-		fds_sweepbias	=	fds_sweepbias;
+		fds_sweepbias	=	work->fds_sweepbias;
 		vrc7_voice		=	work->vrc7_voice;
 		sw_vrc7_voice	=	work->sw_vrc7_voice;
 		n163_voice		=	work->n163_voice;
@@ -329,10 +329,10 @@ public:
 
 	unsigned	int		TickCount(MusicFile* MUS, NSD_WORK* work);
 	unsigned	int		TickCount(MusicFile* MUS);
+				void	TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t _no, bool* f_ERR);
 	unsigned	int		GetTickTotal(void){	return(iTickTotal);};
 	unsigned	int		GetTickLoop(void){	return(iTickLoop);};
 
-				void	OptimizeDefineCheck(MusicFile* MUS);
 				void	Fix_Address(MusicFile* MUS);
 				void	SetEvent(MusicItem* _item);		//ƒCƒxƒ“ƒg‚Ì’Ç‰Á
 
@@ -367,7 +367,7 @@ public:
 				void	SetRepeat_C_Start(MMLfile* MML);
 				void	SetRepeat_C_End(MMLfile* MML);
 
-		mml_Address*	CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
+				void	CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 				void	CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 
 				void	SetSE(MMLfile* MML);
