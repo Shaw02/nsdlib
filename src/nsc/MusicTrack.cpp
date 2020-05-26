@@ -423,15 +423,6 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						break;
 
 					//----------------------------------------------
-					//Event
-					case(nsd_Detune_Cent):			//0x14
-						nsd.detune_cent = (char)((*itItem)->getCode(1));
-						break;
-					case(nsd_Derune_Register):		//0x15
-						nsd.detune_reg = (char)((*itItem)->getCode(1));
-						break;
-
-					//----------------------------------------------
 					case(nsc_VRC7):					//0x1C
 						_no = adrObj->get_id();
 						nsd.vrc7_voice = _no;
@@ -570,9 +561,34 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						nsd.trans += (char)((*itItem)->getCode(1));
 						break;
 
-				//	case(nsd_SubCommand):			//0x2F
-				//		break;
+					//----------------------------------------------
+					//Detune
+					case(nsd_Detune_Cent):			//0x14
+						nsd.detune_cent = (char)((*itItem)->getCode(1));
+						break;
+					case(nsd_Derune_Register):		//0x15
+						nsd.detune_reg = (char)((*itItem)->getCode(1));
+						break;
 
+					//----------------------------------------------
+					//Sub Command
+					case(nsd_SubCommand):			//0x2F
+						switch((*itItem)->getCode(1))
+						{
+							case(nsd_sub_Detune_Cent):		//0x2F-02
+								nsd.detune_cent += (char)((*itItem)->getCode(2));
+								break;
+							case(nsd_sub_Derune_Register):	//0x2F-03
+								nsd.detune_reg += (char)((*itItem)->getCode(2));
+								break;
+							default:
+								(*itItem)->setUse();
+								break;
+						}
+						break;
+
+					//----------------------------------------------
+					//Default
 					default:
 						(*itItem)->setUse();
 						break;
