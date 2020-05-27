@@ -23,6 +23,8 @@
 BGM::BGM(MMLfile* MML, size_t _id, const _CHAR _strName[]):
 	TrackSet(MML, _id, false, false, _strName)
 {
+	//このオブジェクトは必ず使う（最適化対象外）。
+	setUse();
 }
 
 //==============================================================

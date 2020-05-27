@@ -10,6 +10,11 @@
 #include "StdAfx.h"
 #include "mml_Address.h"
 
+/****************************************************************/
+/*					グローバル変数（クラスだけど・・・）		*/
+/****************************************************************/
+extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -93,6 +98,14 @@ mml_Address::~mml_Address(void)
 void	mml_Address::set_Address(size_t _addr)
 {
 	switch(iSize){
+		case(0):
+			if(cOptionSW->cDebug & DEBUG_Optimize){
+				_COUT << _T("This Object has cleared : ") << strName;
+				if(f_id == true){
+					_COUT	<< _T("(") << m_id << _T(")");
+				}
+				_COUT << endl;
+			}
 		case(3):
 			code[1] = (unsigned char)((_addr     ) & 0xFF);
 			code[2] = (unsigned char)((_addr >> 8) & 0xFF);

@@ -223,6 +223,9 @@ const	static	Command_Info	Command[] = {
 
 	iSize = 0;
 
+	//このオブジェクトは必ず使う（最適化対象外）。
+	setUse();
+
 	do{
 		
 		//１文字読み込み（コメントチェック、includeファイルの終端チェックもあり）
@@ -556,8 +559,25 @@ void	MusicFile::TickCount(void)
 
 	if(cOptionSW->flag_OptSeq == true){		//コマンドの最適化が無効だったら、最適化しない。
 
-		//	to do	■■■■■■	不要なコマンド・オブジェクトを削除する	■■■■■■
+		iBGM	= 0;
+		while(iBGM < Header.iBGM){
+			ptcBGM[iBGM]->clear_Optimize();
+			iBGM++;
+		}
 
+		iSE		= 0;
+		while(iSE < Header.iSE){
+			ptcSE[iSE]->clear_Optimize();
+			iSE++;
+		}
+
+		if(!ptcSub.empty()){
+			itSub = ptcSub.begin();
+			while(itSub != ptcSub.end()){
+				itSub->second->clear_Optimize();
+				itSub++;
+			}
+		}
 	}
 
 	//----------------------
@@ -565,26 +585,24 @@ void	MusicFile::TickCount(void)
 
 	if(cOptionSW->flag_OptObj == true){		//定義の最適化が無効だったら、最適化しない。
 
-		//サブルーチン
-		if(!ptcSub.empty()){
-			itSub = ptcSub.begin();
-			while(itSub != ptcSub.end()){
-				if(itSub->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
-					itSub->second->clear_Optimize();
-				}
-				itSub++;
-			}
-		}
+	//	//サブルーチン
+	//	if(!ptcSub.empty()){
+	//		itSub = ptcSub.begin();
+	//		while(itSub != ptcSub.end()){
+	//		//	if(itSub->second->chkUse() == false){
+	//				itSub->second->clear_Optimize();
+	//		//	}
+	//			itSub++;
+	//		}
+	//	}
 
 		//エンベロープ
 		if(!ptcEnv.empty()){
 			itEnv = ptcEnv.begin();
 			while(itEnv != ptcEnv.end()){
-				if(itEnv->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
+			//	if(itEnv->second->chkUse() == false){
 					itEnv->second->clear_Optimize();
-				}
+			//	}
 				itEnv++;
 			}
 		}
@@ -593,10 +611,9 @@ void	MusicFile::TickCount(void)
 		if(!ptcFDSC.empty()){
 			itFDSC = ptcFDSC.begin();
 			while(itFDSC != ptcFDSC.end()){
-				if(itFDSC->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
+			//	if(itFDSC->second->chkUse() == false){
 					itFDSC->second->clear_Optimize();
-				}
+			//	}
 				itFDSC++;
 			}
 		}
@@ -605,10 +622,9 @@ void	MusicFile::TickCount(void)
 		if(!ptcFDSM.empty()){
 			itFDSM = ptcFDSM.begin();
 			while(itFDSM != ptcFDSM.end()){
-				if(itFDSM->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
+			//	if(itFDSM->second->chkUse() == false){
 					itFDSM->second->clear_Optimize();
-				}
+			//	}
 				itFDSM++;
 			}
 		}
@@ -617,10 +633,9 @@ void	MusicFile::TickCount(void)
 		if(!ptcVRC7.empty()){
 			itVRC7 = ptcVRC7.begin();
 			while(itVRC7 != ptcVRC7.end()){
-				if(itVRC7->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
+			//	if(itVRC7->second->chkUse() == false){
 					itVRC7->second->clear_Optimize();
-				}
+			//	}
 				itVRC7++;
 			}
 		}
@@ -629,10 +644,9 @@ void	MusicFile::TickCount(void)
 		if(!ptcN163.empty()){
 			itN163 = ptcN163.begin();
 			while(itN163 != ptcN163.end()){
-				if(itN163->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
+			//	if(itN163->second->chkUse() == false){
 					itN163->second->clear_Optimize();
-				}
+			//	}
 				itN163++;
 			}
 		}

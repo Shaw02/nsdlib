@@ -108,17 +108,33 @@ void	MusicItem::clear(void)
 
 void	MusicItem::clear_Optimize()
 {
+	//----------------------
+	//Local変数
+	list<	MusicItem*>::iterator	itItem;
 
-	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & DEBUG_Optimize){
-		_COUT << _T("Optimized Object : ") << strName;
-		if(f_id == true){
-			_COUT	<< _T("(") << m_id << _T(")");
+	if(chkUse() == false){
+		//----------------------
+		//このオブジェクトごと、ごっそりクリアする。
+		//Debug message　（うざい程出力するので注意。）
+		if(cOptionSW->cDebug & DEBUG_Optimize){
+			_COUT << _T("Optimizing : ") << strName;
+			if(f_id == true){
+				_COUT	<< _T("(") << m_id << _T(")");
+			}
+			_COUT << endl;
 		}
-		_COUT << endl;
+		clear();
+	} else {
+		//----------------------
+		//子オブジェクトを最適化するか評価する。
+		if(!ptcItem.empty()){
+			itItem = ptcItem.begin();
+			while(itItem != ptcItem.end()){
+				(*itItem)->clear_Optimize();
+				itItem++;
+			}
+		}
 	}
-
-	clear();
 }
 
 //==============================================================
@@ -205,7 +221,7 @@ unsigned	char	MusicItem::getCode(size_t n)
 {
 	unsigned	char	iCode;
 	
-	if((n<0) || (n>iSize)){
+	if((n<0) || (n>=iSize)){
 		iCode = 0xFF;
 	} else {
 		iCode = code[n];

@@ -70,6 +70,9 @@ MusicTrack::MusicTrack(size_t _id, MMLfile* MML, const _CHAR _strName[]):
 	nowScale	=0;
 	SetKey(nowKey, nowScale);
 
+	//このオブジェクトは必ず使う（最適化対象外）。
+	setUse();
+
 	//保護外のメモリアクセスによる例外発生対策（MMLコンパイラ展開のリピートの為）
 	//Visual C++.net 2008 では、こうしておかないと、例外が発生する模様。
 	//つまり、ぬるぽ対策
@@ -148,7 +151,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 	list<	MusicItem*>::iterator	itRepeatB_end;
 				int					iRepeatB_count	= 0;
 
-	const unsigned int				TBL_length[] = {96, 72, 48, 36, 32, 24, 18, 16, 12, 9, 8, 6, 4, 3, 2, 1};
+	static	const	int				TBL_length[] = {96, 72, 48, 36, 32, 24, 18, 16, 12, 9, 8, 6, 4, 3, 2, 1};
 
 	/*
 		■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -160,7 +163,11 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 
 				mml_Address*		adrObj;
 				size_t				_no;
-				bool				f_ERR = false;
+				int					i;
+				bool				_f;
+				bool				f_ERR		= false;
+
+				int					iTickCount	= 0;
 
 	//Tick 初期化
 	iTickTotal	=	0;		//
@@ -180,11 +187,19 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 				if( (*itItem) == ptc_Loop[0]){
 					itLoop_start = itItem;
 					if(iLoop_count == 0){
-						iTickLoop = iTickTotal;
+						iTickLoop = iTickCount;
 					}
+					(*itItem)->setUse();
 					itItem++;
 					continue;
 				}
+			}
+
+			//コンパイル用の擬似Command の場合
+			if((*itItem)->getSize() == 0){
+				(*itItem)->setUse();
+				itItem++;
+				continue;
 			}
 
 			//各コマンド処理
@@ -197,6 +212,10 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 				adrObj = (mml_Address*)(*itItem);
 				switch(iCode){
 					//----------------------------------------------
+					case(nsd_EndOfTrack):			//0x00
+						iTickTotal = iTickCount;
+						adrObj->setUse();
+						break;
 					case(nsd_Jump):					//0x01
 						_no = adrObj->get_id();
 						if(adrObj->chkUse() == false){
@@ -212,8 +231,12 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 								vec_ptc_Loop_End.push_back(adrObj);		//アドレス解決するオブジェクトとして登録
 							}
 						}
-						//■■■ To Do:　最適化の情報収集のため、2回ループする
-						iLoop_count++;
+						//初回ループの場合、戻る。
+						if((iLoop_count == 0) && (is_loop == true)){
+							iTickTotal = iTickCount;
+							itItem = itLoop_start;
+							iLoop_count++;
+						}
 						break;
 
 					//----------------------------------------------
@@ -227,7 +250,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							}
 							f_ERR = true;
 						} else {
-							iTickTotal += MUS->ptcSub[_no]->TickCount(MUS, &nsd);	//サブルーチン先をシミュレート
+							iTickCount += MUS->ptcSub[_no]->TickCount(MUS, &nsd);	//サブルーチン先をシミュレート
 							if(adrObj->chkUse() == false){
 								MUS->ptcSub[_no]->setUse();			//使うフラグを立てる
 								adrObj->setUse();
@@ -261,6 +284,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						mml_repeat*	_event = (mml_repeat*)(*itItem);
 						iRepeatA_count	= _event->get_count();
 						itRepeatA_start	= itItem;	//覚えるのは現時点で良い
+						(*itItem)->setUse();
 						}
 						break;
 
@@ -313,12 +337,15 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 					case(nsd_Repeat_B_Start):		//0x18
 						itRepeatB_start = itItem;	//覚えるのは現時点で良い
 						iRepeatB_count	= 0;
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
 					case(nsd_Repeat_B_Branch):		//0x19
 						if(iRepeatB_count != 0){
 							itItem = itRepeatB_end;	//分岐先へ
+						} else {
+							(*itItem)->setUse();
 						}
 						break;
 
@@ -346,80 +373,125 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 					//----------------------------------------------
 					//Length
 					case(nsd_Length):				//0x09
-						nsd.length = (*itItem)->getCode(1);
+						i = (*itItem)->getCode(1);
+						nsd.length = i;
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
 					//Gate
 					case(nsd_GateTime_q):			//0x0A
-						nsd.gate_q = (*itItem)->getCode(1);
+						i = (*itItem)->getCode(1);
+						nsd.gate_q = i;
+						(*itItem)->setUse();
 						break;
+
 					case(nsd_GateTime_u):			//0x0B
-						nsd.gate_u = (*itItem)->getCode(1);
+						i = (*itItem)->getCode(1);
+						nsd.gate_u = i;
+						(*itItem)->setUse();
 						break;
+
 					case(nsd_GateMode_0):			//0x0D
 						nsd.gatemode = 0;
+						(*itItem)->setUse();
 						break;
+
 					case(nsd_GateMode_1):			//0x0E
 						nsd.gatemode = 1;
+						(*itItem)->setUse();
 						break;
+
 					case(nsd_GateMode_2):			//0x0F
 						nsd.gatemode = 2;
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
 					//Define
 					case(nsd_Voice):				//0x1B
+						i = (*itItem)->getCode(1);
+						if((nsd.voice != i) || (nsd.sw_Evoi == true)){
+							(*itItem)->setUse();
+						}
 						nsd.sw_Evoi = false;
-						nsd.voice = (*itItem)->getCode(1);
+						nsd.voice = i;
 						break;
 
 					//----------------------------------------------
 					case(nsd_Envelop_Voice):		//0x10
-						nsd.sw_Evoi = adrObj->get_flag();
-						if(nsd.sw_Evoi == true){
-							//■■■ To Do	番号が現在と違ったら、最適化しない。
-							nsd.env_voice = adrObj->get_id();
-							TickCount_Envelope(MUS, adrObj, nsd.env_voice, &f_ERR);
+						_f = adrObj->get_flag();
+						if(_f == true){
+							_no = adrObj->get_id();
+							//番号が現在と違ったら、最適化しない。
+							if((nsd.env_voice != _no) || (nsd.sw_Evoi == false) || (cOptionSW->flag_OptSeq == false)){
+								nsd.env_voice = _no;
+								TickCount_Envelope(MUS, adrObj, _no, &f_ERR);
+							}
 						} else {
-							// ■■■ To Do: フラグが現在と違ったら、最適化しない。
+							//フラグが現在と違ったら、最適化しない。
+							if(nsd.sw_Evoi == true){
+								adrObj->setUse();
+							}
 						}
+						nsd.sw_Evoi = _f;
 						break;
 
 					//----------------------------------------------
 					case(nsd_Envelop_Volume):		//0x11
-						nsd.sw_Evol = adrObj->get_flag();
-						if(nsd.sw_Evol == true){
-							//■■■ To Do	番号が現在と違ったら、最適化しない。
-							nsd.env_volume = adrObj->get_id();
-							TickCount_Envelope(MUS, adrObj, nsd.env_volume, &f_ERR);
+						_f = adrObj->get_flag();
+						if(_f == true){
+							_no = adrObj->get_id();
+							//番号が現在と違ったら、最適化しない。
+							if((nsd.env_volume != _no) || (nsd.sw_Evol == false) || (cOptionSW->flag_OptSeq == false)){
+								nsd.env_volume = _no;
+								TickCount_Envelope(MUS, adrObj, _no, &f_ERR);
+							}
 						} else {
-							// ■■■ To Do: フラグが現在と違ったら、最適化しない。
+							//フラグが現在と違ったら、最適化しない。
+							if(nsd.sw_Evol == true){
+								adrObj->setUse();
+							}
 						}
+						nsd.sw_Evol = _f;
 						break;
 
 					//----------------------------------------------
 					case(nsd_Envelop_Frequency):	//0x12
-						nsd.sw_Em = adrObj->get_flag();
-						if(nsd.sw_Em == true){
-							//■■■ To Do	番号が現在と違ったら、最適化しない。
-							nsd.env_frequency = adrObj->get_id();
-							TickCount_Envelope(MUS, adrObj, nsd.env_frequency, &f_ERR);
+						_f = adrObj->get_flag();
+						if(_f == true){
+							_no = adrObj->get_id();
+							//番号が現在と違ったら、最適化しない。
+							if((nsd.env_frequency != _no) || (nsd.sw_Em == false) || (cOptionSW->flag_OptSeq == false)){
+								nsd.env_frequency = _no;
+								TickCount_Envelope(MUS, adrObj, _no, &f_ERR);
+							}
 						} else {
-							// ■■■ To Do: フラグが現在と違ったら、最適化しない。
+							//フラグが現在と違ったら、最適化しない。
+							if(nsd.sw_Em == true){
+								adrObj->setUse();
+							}
 						}
+						nsd.sw_Em = _f;
 						break;
 
 					//----------------------------------------------
 					case(nsd_Envelop_Note):			//0x13
-						nsd.sw_En = adrObj->get_flag();
-						if(nsd.sw_En == true){
-							//■■■ To Do	番号が現在と違ったら、最適化しない。
-							nsd.env_note = adrObj->get_id();
-							TickCount_Envelope(MUS, adrObj, nsd.env_note, &f_ERR);
+						_f = adrObj->get_flag();
+						if(_f == true){
+							_no = adrObj->get_id();
+							//番号が現在と違ったら、最適化しない。
+							if((nsd.env_note != _no) || (nsd.sw_En == false) || (cOptionSW->flag_OptSeq == false)){
+								nsd.env_note = _no;
+								TickCount_Envelope(MUS, adrObj, _no, &f_ERR);
+							}
 						} else {
-							// ■■■ To Do: フラグが現在と違ったら、最適化しない。
+							//フラグが現在と違ったら、最適化しない。
+							if(nsd.sw_En == true){
+								adrObj->setUse();
+							}
 						}
+						nsd.sw_En = _f;
 						break;
 
 					//----------------------------------------------
@@ -466,21 +538,26 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 
 					//----------------------------------------------
 					case(nsc_N163_Channel):			//0x1F
-						nsd.n163_num = (*itItem)->getCode(1);
+						i = (*itItem)->getCode(1);
+						nsd.n163_num = i;
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
 					case(nsd_Volume_Down):			//0x20
-						nsd.env_volume--;
-						if(nsd.env_volume < 0){
-							nsd.env_volume = 0;
+						nsd.volume--;
+						if(nsd.volume < 0){
+							nsd.volume = 0;
 						}
+						(*itItem)->setUse();
 						break;
+
 					case(nsd_Volume_Up):			//0x21
-						nsd.env_volume++;
-						if(nsd.env_volume > 15){
-							nsd.env_volume = 15;
+						nsd.volume++;
+						if(nsd.volume > 15){
+							nsd.volume = 15;
 						}
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
@@ -527,17 +604,23 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 
 					//----------------------------------------------
 					case(nsd_FDS_Frequency):		//0x24
-						nsd.fds_frequency = ((*itItem)->getCode(1)) + (((*itItem)->getCode(2)) << 8);
+						i = ((*itItem)->getCode(1)) + (((*itItem)->getCode(2)) << 8);
+						nsd.fds_frequency = i;
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
 					case(nsd_FDS_Volume):			//0x25
-						nsd.fds_volume = (*itItem)->getCode(1);
+						i = (*itItem)->getCode(1);
+						nsd.fds_volume = i;
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
 					case(nsc_FME7_frequency):		//0x26
-						nsd.psg_frequency = ((*itItem)->getCode(1)) + (((*itItem)->getCode(2)) << 8);
+						i = ((*itItem)->getCode(1)) + (((*itItem)->getCode(2)) << 8);
+						nsd.psg_frequency = i;
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
@@ -546,28 +629,41 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						if(nsd.octave < 0){
 							nsd.octave = 0;
 						}
+						(*itItem)->setUse();
 						break;
+
 					case(nsd_Octave_Up):			//0x29
 						nsd.octave++;
 						if(nsd.octave*12 >= 128){
 							nsd.octave--;
 						}
+						(*itItem)->setUse();
 						break;
 
+					//----------------------------------------------
 					case(nsd_Transpose):			//0x2A
-						nsd.trans = (char)((*itItem)->getCode(1));
+						i = (char)((*itItem)->getCode(1));
+						nsd.trans = i;
+						(*itItem)->setUse();
 						break;
+
 					case(nsd_Relative_Transpose):	//0x2B
 						nsd.trans += (char)((*itItem)->getCode(1));
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
 					//Detune
 					case(nsd_Detune_Cent):			//0x14
-						nsd.detune_cent = (char)((*itItem)->getCode(1));
+						i = (char)((*itItem)->getCode(1));
+						nsd.detune_cent = i;
+						(*itItem)->setUse();
 						break;
+
 					case(nsd_Derune_Register):		//0x15
-						nsd.detune_reg = (char)((*itItem)->getCode(1));
+						i = (char)((*itItem)->getCode(1));
+						nsd.detune_reg = i;
+						(*itItem)->setUse();
 						break;
 
 					//----------------------------------------------
@@ -577,9 +673,11 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						{
 							case(nsd_sub_Detune_Cent):		//0x2F-02
 								nsd.detune_cent += (char)((*itItem)->getCode(2));
+								(*itItem)->setUse();
 								break;
 							case(nsd_sub_Derune_Register):	//0x2F-03
 								nsd.detune_reg += (char)((*itItem)->getCode(2));
+								(*itItem)->setUse();
 								break;
 							default:
 								(*itItem)->setUse();
@@ -595,31 +693,44 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 				}
 
 			} else if(iCode < 0x38){				//0x30 - 0x37
-				nsd.voice_rel = (int)iCode & 0x07;
+				i = (int)iCode & 0x07;
+				nsd.voice_rel = i;
+				(*itItem)->setUse();
 
 			} else if(iCode < 0x40){				//0x38 - 0x3F
-				nsd.octave = (int)iCode & 0x07;
+				i = (int)iCode & 0x07;
+				nsd.octave = i;
+				(*itItem)->setUse();
 
 			} else if(iCode < 0x50){				//0x40 - 0x4F
-				nsd.length = TBL_length[iCode & 0x0F];
+				i = TBL_length[iCode & 0x0F];
+				nsd.length = i;
+				(*itItem)->setUse();
 
 			} else if(iCode < 0x60){				//0x50 - 0x5F
-				nsd.gate_q = (int)iCode & 0x0F;
+				i = (int)iCode & 0x0F;
+				nsd.gate_q = i;
+				(*itItem)->setUse();
 
 			} else if(iCode < 0x70){				//0x60 - 0x6F
-				nsd.volume = (int)iCode & 0x0F;
+				i = (int)iCode & 0x0F;
+				nsd.volume = i;
+				(*itItem)->setUse();
 
 			} else if(iCode < 0x80){				//0x70 - 0x7F
-				nsd.volume_rel = (int)iCode & 0x0F;
+				i = (int)iCode & 0x0F;
+				nsd.volume_rel = i;
+				(*itItem)->setUse();
 
 			} else {								//0x80 - 0xFF
 				//note
 				iCode &= 0x7F;
 				if(iCode & nsd_Note_Length){
-					iTickTotal += (int)(*itItem)->getCode(1);
+					iTickCount += (int)(*itItem)->getCode(1);
 				} else {
-					iTickTotal += nsd.length;
+					iTickCount += nsd.length;
 				}
+				(*itItem)->setUse();
 			}
 			itItem++;
 		}

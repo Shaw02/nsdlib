@@ -409,7 +409,7 @@ void	OPSW::print_help(){
 			//	_T("  -T			Disable to output the tick counting result.\n")
 				_T("  -Od[+/-]		Optimize the NSF bank struct of the delta-PCM.\n")
 				_T("  -Oo[+/-]		Optimize the object data.\n")
-			//	_T("  -Os[+/-]		Optimize the sequence data.\n")
+				_T("  -Os[+/-]		Optimize the sequence data.\n")
 				_T("  -S			Enable outout the search pass result.\n")
 				_T("  -L[file(.bin)]	Filename of the rom code for NSF.\n")
 				_T("  -FA[file(.s  )]	Filename of the output assembly langage file.\n")

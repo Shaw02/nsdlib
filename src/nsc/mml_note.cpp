@@ -35,6 +35,9 @@ mml_note::mml_note(int _code, int length, int gatetime, bool slur, const _CHAR _
 
 	iSize = 1;
 
+	//このオブジェクトは必ず使う（最適化対象外）。
+	setUse();
+
 	if(slur == true){
 		opcode |= nsd_Note_Slur;
 	}
