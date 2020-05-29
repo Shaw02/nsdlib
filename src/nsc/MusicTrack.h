@@ -65,7 +65,6 @@ public:
 	//N163
 	size_t	n163_voice;
 	bool	sw_n163_voice;
-	int		n163_num;
 
 	//PSG
 	int		psg_switch;
@@ -110,7 +109,6 @@ public:
 		sw_vrc7_voice	= false;
 	//	n163_voice		= -1;
 		sw_n163_voice	= false;
-		n163_num		= -1;
 		psg_switch		= -1;
 		psg_frequency	= -1;
 	}
@@ -150,10 +148,8 @@ public:
 		sw_vrc7_voice	=	work->sw_vrc7_voice;
 		n163_voice		=	work->n163_voice;
 		sw_n163_voice	=	work->sw_n163_voice;
-		n163_num		=	work->n163_num;
 		psg_switch		=	work->psg_switch;
 		psg_frequency	=	work->psg_frequency;
-
 
 	}
 
