@@ -46,8 +46,8 @@ class MusicFile :
 {
 //メンバー変数
 public:
-			MusicHeader			Header;		//Header
-			DPCMinfo*			cDPCMinfo;	//⊿PCM
+	MusicHeader				Header;		//Header
+	DPCMinfo*				cDPCMinfo;	//⊿PCM
 
 	map<size_t, FDSC*	>	ptcFDSC;	//FDS  wave table (career)
 	map<size_t, FDSM*	>	ptcFDSM;	//FDS  wave table (modulator)
@@ -59,9 +59,7 @@ public:
 	map<size_t, Sub*	>	ptcSub;		//Subroutine Sequence
 
 private:
-//static	const	Command_Info	Command[];
-					string		dpcm_code;
-//					size_t		nsf_size;
+	string					dpcm_code;
 
 //メンバー関数
 public:

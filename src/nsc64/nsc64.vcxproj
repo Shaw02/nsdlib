@@ -171,6 +171,7 @@
     <ClInclude Include="..\nsc\FileOutput.h" />
     <ClInclude Include="..\nsc\MMLfile.h" />
     <ClInclude Include="..\nsc\mml_Address.h" />
+    <ClInclude Include="..\nsc\mml_CallSub.h" />
     <ClInclude Include="..\nsc\mml_general.h" />
     <ClInclude Include="..\nsc\mml_note.h" />
     <ClInclude Include="..\nsc\mml_poke.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="..\nsc\FileOutput.cpp" />
     <ClCompile Include="..\nsc\MMLfile.cpp" />
     <ClCompile Include="..\nsc\mml_Address.cpp" />
+    <ClCompile Include="..\nsc\mml_CallSub.cpp" />
     <ClCompile Include="..\nsc\mml_general.cpp" />
     <ClCompile Include="..\nsc\mml_note.cpp" />
     <ClCompile Include="..\nsc\mml_poke.cpp" />

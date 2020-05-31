@@ -47,7 +47,6 @@ public:
 
 	//APU
 	int	sweep;
-	int	apu_tri_time;
 
 	//FDS
 	size_t	fds_career;
@@ -56,7 +55,6 @@ public:
 	bool	sw_fds_modlator;
 	int		fds_volume;
 	int		fds_frequency;
-	int		fds_sweepbias;
 
 	//VRC7
 	size_t	vrc7_voice;
@@ -97,14 +95,12 @@ public:
 		sw_Em			= false;
 		sw_En			= false;
 		sweep			= -1;
-		apu_tri_time	= -1;
 	//	fds_career		= -1;
 	//	fds_modlator	= -1;
 		sw_fds_career	= false;
 		sw_fds_modlator	= false;
 		fds_volume		= -1;
 		fds_frequency	= -1;
-		fds_sweepbias	= 0;
 	//	vrc7_voice		= -1;
 		sw_vrc7_voice	= false;
 	//	n163_voice		= -1;
@@ -136,14 +132,12 @@ public:
 		sw_Em			=	work->sw_Em;
 		sw_En			=	work->sw_En;
 		sweep			=	work->sweep;
-		apu_tri_time	=	work->apu_tri_time;
 		fds_career		=	work->fds_career;
 		fds_modlator	=	work->fds_modlator;
 		sw_fds_career	=	work->sw_fds_career;
 		sw_fds_modlator	=	work->sw_fds_modlator;
 		fds_volume		=	work->fds_volume;
 		fds_frequency	=	work->fds_frequency;
-		fds_sweepbias	=	work->fds_sweepbias;
 		vrc7_voice		=	work->vrc7_voice;
 		sw_vrc7_voice	=	work->sw_vrc7_voice;
 		n163_voice		=	work->n163_voice;
@@ -185,26 +179,26 @@ private:
 	//----------------------------------
 	//音長
 	//			int		DefaultLength;			//l
-				int		opt_DefaultLength;
+//				int		opt_DefaultLength;
 	
 	//----------------------------------
 	//クオンタイズ
 				int		QMax;					//QMax
 				int		gatetime_q;				//q
 				int		gatetime_Q;				//Q
-				int		opt_gatetime_q;			//
-				int		opt_gatetime_u;			//
+//				int		opt_gatetime_q;			//
+//				int		opt_gatetime_u;			//
 
 	//----------------------------------
 	//音量
 //				char	volume;					//現在の音量
-				int		opt_volume;
+//				int		opt_volume;
 
 	//----------------------------------
 	//オクターブ
 //				char	octave;					//現在のオクターブ
 //				char	octave1;				//一次的な相対オクターブ　計算用
-				int		opt_octave;
+//				int		opt_octave;
 
 	//----------------------------------
 	//ノート
@@ -246,18 +240,18 @@ private:
 //	unsigned	int		iEvol;			//
 //	unsigned	int		iEm;			//
 //	unsigned	int		iEn;			//
-	unsigned	char	iSweep;			//
+//	unsigned	char	iSweep;			//
 				size_t	iSub;			//サブルーチン用
 
 	//設定するかどうか（defailt = false）
-				bool	f_opt_Voi;		//
-				bool	f_opt_Evoi;		//
-				bool	f_opt_Evol;		//
-				bool	f_opt_Em;		//
-				bool	f_opt_En;		//
-				bool	f_opt_Key;		//
-				bool	f_opt_Sweep;	//
-				bool	f_opt_Sub;		//サブルーチン（パッチ用）
+//				bool	f_opt_Voi;		//
+//				bool	f_opt_Evoi;		//
+//				bool	f_opt_Evol;		//
+//				bool	f_opt_Em;		//
+//				bool	f_opt_En;		//
+//				bool	f_opt_Key;		//
+//				bool	f_opt_Sweep;	//
+	//			bool	f_opt_Sub;		//サブルーチン（パッチ用）
 
 	//----------------------------------
 	//無限ループ
@@ -451,7 +445,7 @@ public:
 				void	SetVolumeDec(MMLfile* MML);
 
 //	unsigned	int		GetDefaultLength(void){return(nsd.length);};
-
+/*
 				void	Reset_opt(void){
 					opt_octave			= -1;
 					opt_volume			= -1;
@@ -465,9 +459,10 @@ public:
 					f_opt_En			= false;	//
 					f_opt_Key			= false;	//
 					f_opt_Sweep			= false;	//
-					f_opt_Sub			= false;	//
+			//		f_opt_Sub			= false;	//
 			//		if((echo_flag == true) && (echo_slur == false)){
 			//			echo_vol_ret	= true;		//
 			//		}
 				}
+*/
 };

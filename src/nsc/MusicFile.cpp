@@ -221,7 +221,7 @@ const	static	Command_Info	Command[] = {
 	map<size_t,	SE*			>::iterator	itSE;
 	map<size_t,	Sub*		>::iterator	itSub;
 
-	iSize = 0;
+//	iSize = 0;
 
 	//このオブジェクトは必ず使う（最適化対象外）。
 	setUse();
@@ -359,7 +359,7 @@ const	static	Command_Info	Command[] = {
 				}
 				cDPCMinfo = new DPCMinfo(MML, Header.bank);
 				ptcItem.push_back(cDPCMinfo);
-				iSize += cDPCMinfo->getSize();	//BGMのサイズを更新
+			//	iSize += cDPCMinfo->getSize();	//BGMのサイズを更新
 				break;
 			case(id_FDSC):
 				i = MML->GetNum();
@@ -371,7 +371,7 @@ const	static	Command_Info	Command[] = {
 				_fdsc = new FDSC(MML, i);
 				ptcItem.push_back(_fdsc);
 				ptcFDSC[i] = _fdsc;
-				iSize += _fdsc->getSize();	//BGMのサイズを更新
+			//	iSize += _fdsc->getSize();	//BGMのサイズを更新
 				break;
 			case(id_FDSM):
 				i = MML->GetNum();
@@ -383,7 +383,7 @@ const	static	Command_Info	Command[] = {
 				_fdsm = new FDSM(MML, i);
 				ptcItem.push_back(_fdsm);
 				ptcFDSM[i] = _fdsm;
-				iSize += _fdsm->getSize();	//BGMのサイズを更新
+			//	iSize += _fdsm->getSize();	//BGMのサイズを更新
 				break;
 			case(id_VRC7):
 				i = MML->GetNum();
@@ -395,7 +395,7 @@ const	static	Command_Info	Command[] = {
 				_vrc7 = new VRC7(MML, i);
 				ptcItem.push_back(_vrc7);
 				ptcVRC7[i] = _vrc7;
-				iSize += _vrc7->getSize();	//BGMのサイズを更新
+			//	iSize += _vrc7->getSize();	//BGMのサイズを更新
 				break;
 			case(id_N163):
 				i = MML->GetNum();
@@ -407,7 +407,7 @@ const	static	Command_Info	Command[] = {
 				_n163 = new N163(MML, i);
 				ptcItem.push_back(_n163);
 				ptcN163[i] = _n163;
-				iSize += _n163->getSize();	//BGMのサイズを更新
+			//	iSize += _n163->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Envelop):
 				i = MML->GetNum();
@@ -418,7 +418,7 @@ const	static	Command_Info	Command[] = {
 				_env = new Envelop(MML, i);
 				ptcItem.push_back(_env);
 				ptcEnv[i] = _env;
-				iSize += _env->getSize();	//BGMのサイズを更新
+			//	iSize += _env->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Vibrato):
 				MML->offset_Em = 1000000;
@@ -430,7 +430,7 @@ const	static	Command_Info	Command[] = {
 				_env = new Envelop(MML, i);
 				ptcItem.push_back(_env);
 				ptcEnv[i] = _env;
-				iSize += _env->getSize();	//BGMのサイズを更新
+			//	iSize += _env->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Sub):
 				i = MML->GetNum();
@@ -442,7 +442,7 @@ const	static	Command_Info	Command[] = {
 				_sub = new Sub(MML, i);
 				ptcItem.push_back(_sub);
 				ptcSub[i] = _sub;
-				iSize += _sub->getSize();	//BGMのサイズを更新
+			//	iSize += _sub->getSize();	//BGMのサイズを更新
 				break;
 			case(id_BGM):
 				i = MML->GetNum();
@@ -457,7 +457,7 @@ const	static	Command_Info	Command[] = {
 				_bgm = new BGM(MML, i);
 				ptcItem.push_back(_bgm);
 				ptcBGM[i] = _bgm;
-				iSize += _bgm->getSize();	//BGMのサイズを更新
+			//	iSize += _bgm->getSize();	//BGMのサイズを更新
 				break;
 			case(id_SE):
 				i = MML->GetNum();
@@ -472,7 +472,7 @@ const	static	Command_Info	Command[] = {
 				_se = new SE(MML, i);
 				ptcItem.push_back(_se);
 				ptcSE[i] = _se;
-				iSize += _se->getSize();	//BGMのサイズを更新
+			//	iSize += _se->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Null):
 				break;
@@ -695,20 +695,6 @@ void	MusicFile::Fix_Address(void)
 	}
 }
 
-/*
-//==============================================================
-//		曲バイナリイメージの作成
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-void	MusicFile::make_binary(void)
-{
-
-}
-*/		
 //==============================================================
 //		ＮＳＦの作成
 //--------------------------------------------------------------

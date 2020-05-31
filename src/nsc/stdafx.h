@@ -97,6 +97,7 @@ typedef struct {
 #include "mml_poke.h"			//メモリ書き込み
 #include "mml_note.h"			//音符・休符
 #include "mml_Address.h"
+#include "mml_CallSub.h"
 
 #include "MusicHeader.h"		//ヘッダー
 
