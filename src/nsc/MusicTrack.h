@@ -177,28 +177,10 @@ private:
 				bool	jump_flag;				// J
 
 	//----------------------------------
-	//音長
-	//			int		DefaultLength;			//l
-//				int		opt_DefaultLength;
-	
-	//----------------------------------
 	//クオンタイズ
 				int		QMax;					//QMax
 				int		gatetime_q;				//q
 				int		gatetime_Q;				//Q
-//				int		opt_gatetime_q;			//
-//				int		opt_gatetime_u;			//
-
-	//----------------------------------
-	//音量
-//				char	volume;					//現在の音量
-//				int		opt_volume;
-
-	//----------------------------------
-	//オクターブ
-//				char	octave;					//現在のオクターブ
-//				char	octave1;				//一次的な相対オクターブ　計算用
-//				int		opt_octave;
 
 	//----------------------------------
 	//ノート
@@ -213,8 +195,6 @@ private:
 	//----------------------------------
 	//移調
 				int		iKeyShift;				//k
-				
-//				int		iTranspose;				//_
 
 	//----------------------------------
 	//疑似エコー
@@ -234,38 +214,16 @@ private:
 				bool	f_Patch;				//パッチ処理中？
 	unsigned	int		i_Patch;
 
-	//現在の状態（設定数値）
-//	unsigned	int		iVoi;			//
-//	unsigned	int		iEvoi;			//
-//	unsigned	int		iEvol;			//
-//	unsigned	int		iEm;			//
-//	unsigned	int		iEn;			//
-//	unsigned	char	iSweep;			//
-				size_t	iSub;			//サブルーチン用
-
-	//設定するかどうか（defailt = false）
-//				bool	f_opt_Voi;		//
-//				bool	f_opt_Evoi;		//
-//				bool	f_opt_Evol;		//
-//				bool	f_opt_Em;		//
-//				bool	f_opt_En;		//
-//				bool	f_opt_Key;		//
-//				bool	f_opt_Sweep;	//
-	//			bool	f_opt_Sub;		//サブルーチン（パッチ用）
-
 	//----------------------------------
-	//無限ループ
+	//無限ループ・リピート関係
+
 				bool	is_loop;				//	L	コマンド出現したか？
-
-	//----------------------------------
-	//リピート関係
-	mml_repeat*			_old_repeat;
-
 				bool	is_repeat_a_s;			//	[	コマンドが出現したか？
 				bool	is_repeat_a_b;			//	:	コマンドが出現したか？
 				bool	is_repeat_b_s;			//	|:	コマンドが出現したか？
 				bool	is_repeat_b_b;			//	\	コマンドが出現したか？
 				int		count_repeat_a;
+	mml_repeat*			_old_repeat;
 
 			vector<	int			>			repeat_type;		//どのリピートを使っているか？
 			vector<	int			>::iterator	it_repeat_type;
@@ -280,8 +238,6 @@ private:
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_s;
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_b;
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_e;
-
-
 
 	//----------------------------------
 	//オブジェクト
@@ -443,26 +399,4 @@ public:
 				void	SetVolume(MMLfile* MML);
 				void	SetVolumeInc(MMLfile* MML);
 				void	SetVolumeDec(MMLfile* MML);
-
-//	unsigned	int		GetDefaultLength(void){return(nsd.length);};
-/*
-				void	Reset_opt(void){
-					opt_octave			= -1;
-					opt_volume			= -1;
-					opt_gatetime_q		= -1;
-					opt_gatetime_u		= -1;
-					opt_DefaultLength	= -1;
-					f_opt_Voi			= false;	//
-					f_opt_Evoi			= false;	//
-					f_opt_Evol			= false;	//
-					f_opt_Em			= false;	//
-					f_opt_En			= false;	//
-					f_opt_Key			= false;	//
-					f_opt_Sweep			= false;	//
-			//		f_opt_Sub			= false;	//
-			//		if((echo_flag == true) && (echo_slur == false)){
-			//			echo_vol_ret	= true;		//
-			//		}
-				}
-*/
 };

@@ -1731,7 +1731,6 @@ void	MusicTrack::SetSubroutine(size_t _no)
 //--------------------------------------------------------------
 void	MusicTrack::SetSubWithParch(size_t _no,bool _f)
 {
-	iSub = _no;
 	if(jump_flag==false){
 		mml_CallSub*	_event = new mml_CallSub(_no, _T("Call Subroutine for Patch"));
 		_event->setPatch();
