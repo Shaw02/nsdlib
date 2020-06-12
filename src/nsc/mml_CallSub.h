@@ -27,5 +27,6 @@ public:
 	~mml_CallSub(void);
 
 	void	setPatch(){	by_Patch = true; };
+	void	setPatch(bool _f){	by_Patch = _f; };
 	bool	getPatch(){	return(by_Patch); };
 };

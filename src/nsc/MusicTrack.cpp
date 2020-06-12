@@ -1599,6 +1599,8 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 							//--------------------------
 							//Address Object 
 							case(nsd_Call):
+								CopySubEvent(cOpCode, &sOpCode, pt_itMusic);
+								break;
 							case(nsd_Call_SE):
 							case(nsc_VRC7):
 							case(nsc_N163):
@@ -1673,6 +1675,16 @@ void	MusicTrack::CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<M
 {
 	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
 	mml_Address*	_event		=	new mml_Address(ptAdrItem->get_id(), cOpCode);
+	_event->setCode(sOpCode);
+	SetEvent(_event);
+}
+
+//--------------------------------------------------------------
+void	MusicTrack::CopySubEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
+{
+	mml_CallSub*	ptAdrItem	=	(mml_CallSub*)(*pt_itMusic);
+	mml_CallSub*	_event		=	new mml_CallSub(ptAdrItem->get_id());
+	_event->setPatch(ptAdrItem->getPatch());
 	_event->setCode(sOpCode);
 	SetEvent(_event);
 }
