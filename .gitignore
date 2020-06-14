@@ -6,6 +6,7 @@
 *.lib
 *.bin
 *.exe
+*.chm
 
 # Not Add & Commit
 _document/
