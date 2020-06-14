@@ -13,6 +13,18 @@
 
 
 ;****************************************************************
+;*	NTSC / PAL						*
+;****************************************************************
+
+.ifndef PAL
+Tempo_Sub		= 150
+.else
+Tempo_Sub		= 125
+.endif
+
+Tempo_Cmp		= 256 - Tempo_Sub
+
+;****************************************************************
 ;*	Sound I/O Device address defines			*
 ;****************************************************************
 
@@ -679,9 +691,9 @@ BGM_Begin:
 	jne	BGM_Begin
 
 	lda	__Tempo_ctr
-	sub	#150
+	sub	#Tempo_Sub
 	sta	__Tempo_ctr
-	cmp	#106
+	cmp	#Tempo_Cmp
 	jcc	BGM_Begin
 
 BGM_SEQ_Exit:

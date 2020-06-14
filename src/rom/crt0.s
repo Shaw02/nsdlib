@@ -87,14 +87,18 @@ _play:	.byte	0
 	.res	32,	$0
 	.res	32,	$0
 	.res	32,	$0
-	.word	$411A			;6E	60Hz
+	.word	$40FF			;6E	60.0988139 Hz (NTSC)
 .ifdef	DPCMBank
 	.byte	3,4,2,5,6,7,1,0		;70	
 .else
 	.byte	0,0,0,0,0,0,0,0		;70	bank
 .endif
-	.word	$4E20			;78
-	.byte	0			;7A
+	.word	$4E1D			;78	50.006979 Hz (PAL)
+.ifdef	PAL
+	.byte	1			;7A	PAL
+.else
+	.byte	0			;7A	NTSC
+.endif
 	.byte	FDS_Flag + VRC6_Flag + VRC7_Flag + MMC5_Flag + N163_Flag + PSG_Flag
 	.byte	0,0,0,0			;78
 
@@ -102,14 +106,14 @@ _play:	.byte	0
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	1
-		.byte	28
+		.byte	29
 		.byte	0,0,0,0,0,0,0,0
 
 .ifdef	DPCMBank
 .segment	"STARTUP"
 DRV_Name2:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version2:	.byte	1
-		.byte	28
+		.byte	29
 .endif
 
 ; ------------------------------------------------------------------------
