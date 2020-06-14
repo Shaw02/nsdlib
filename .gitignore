@@ -3,9 +3,9 @@
 
 # Build results
 *.bak
-src/nsd/*.lib
-src/rom/*.bin
-
+*.lib
+*.bin
+*.exe
 
 # Not Add & Commit
 _document/
@@ -56,7 +56,7 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-#[Bb]in/
+[Bb]in/
 [Oo]bj/
 [Ll]og/
 
