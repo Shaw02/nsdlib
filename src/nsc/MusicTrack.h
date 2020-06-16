@@ -169,6 +169,10 @@ private:
 				bool	jump_flag;				// J
 
 	//----------------------------------
+	//音長
+				int		opt_DefaultLength;		//音長省略時の処理用
+
+	//----------------------------------
 	//クオンタイズ
 				int		QMax;					//QMax
 				int		gatetime_q;				//q
@@ -393,9 +397,9 @@ public:
 				void	SetVolumeInc(MMLfile* MML);
 				void	SetVolumeDec(MMLfile* MML);
 
-				void	NSD_Reset(){
+				void	Reset_opt(void){
 					//リピート終了時に、デフォルト音長情報をリセットする
 					//分岐時に l コマンドがあった場合、その値から色々と計算してしまうため。
-					nsd.length = -1;
+					opt_DefaultLength	= -1;
 				}
 };

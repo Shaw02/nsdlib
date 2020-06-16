@@ -56,6 +56,8 @@ MusicTrack::MusicTrack(size_t _id, MMLfile* MML, const _CHAR _strName[]):
 		i++;
 	}
 
+	Reset_opt();
+
 	//クオンタイズ
 	QMax = MML->QMax;
 	gatetime_Q = QMax;
@@ -1253,7 +1255,6 @@ void	MusicTrack::SetRepeat_B_End(MMLfile* MML)
 	} else {
 		MML->Err(_T("リピート(B)の開始 |: コマンドがありません。"));
 	}
-	NSD_Reset();
 }
 //--------------------------------------------------------------
 void	MusicTrack::SetEvent_Repeat_B_End()
@@ -1264,8 +1265,7 @@ void	MusicTrack::SetEvent_Repeat_B_End()
 	//オブジェクトを保存
 	SetEvent(_event);
 
-	NSD_Reset();
-
+	Reset_opt();
 }
 
 //==============================================================
@@ -1530,7 +1530,7 @@ void	MusicTrack::SetEvent_Repeat_A_End()
 	SetEvent(_event);
 	ptc_Repert_A_E[cnt_Repert_A - 1] = _event;
 
-	NSD_Reset();
+	Reset_opt();
 }
 
 //==============================================================
@@ -1668,11 +1668,12 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 		st_it_repeat_c_e.pop_back();
 		sp_repeat_c--;
 
+		Reset_opt();
+
 		//リピートタイプの復帰
 		it_repeat_type--;
 		repeat_type.pop_back();
 	}
-	NSD_Reset();
 }
 
 //--------------------------------------------------------------
@@ -1741,6 +1742,7 @@ void	MusicTrack::SetSubroutine(size_t _no)
 		mml_CallSub*	_event = new mml_CallSub(_no);
 		SetEvent(_event);
 	};
+	Reset_opt();
 }
 
 //==============================================================
@@ -2902,7 +2904,7 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 void	MusicTrack::SetLength(MMLfile* MML)
 {
 	nsd.length			= MML->GetLength(nsd.length);
-//	opt_DefaultLength	= nsd.length;
+	opt_DefaultLength	= nsd.length;
 	mml_general*		_event;
 
 	switch(nsd.length){
@@ -3249,7 +3251,7 @@ void	MusicTrack::GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur)
 		}
 	}
 
-	if(Length == nsd.length){
+	if(Length == opt_DefaultLength){
 		Length = -1;
 	}
 	_old_note = new mml_note(old_note % 12, Length, GateTime, Slur, _T("Echo Note"));
@@ -3338,7 +3340,7 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 		//疑似エコー あり
 
 		Length_0 -= echo_length;
-		if(Length_0 == nsd.length){
+		if(Length_0 == opt_DefaultLength){
 			Length_0 = -1;
 		}
 
@@ -3349,7 +3351,7 @@ void	MusicTrack::SetNote(MMLfile* MML, int _key, int Length, int GateTime, bool 
 
 		GenerateEcho(MML,echo_length,GateTime,Slur);
 	} else {
-		if(Length == nsd.length){
+		if(Length == opt_DefaultLength){
 			Length = -1;
 		}
 		//疑似エコー なし
@@ -3482,7 +3484,7 @@ void	MusicTrack::SetRest(MMLfile*	MML, int mode)
 		}
 
 		if((echo_flag == false) || (_code != 0x0F) || (old_note == -1) || (echo_length != -1)){
-			if(Length == nsd.length){
+			if(Length == opt_DefaultLength){
 				Length = -1;
 			}
 			_old_note = new mml_note(_code, Length, GateTime, Slur, _T("Rest"));
