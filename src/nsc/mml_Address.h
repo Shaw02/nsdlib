@@ -19,17 +19,14 @@ class mml_Address :
 	public MusicEvent
 {
 //メンバー変数
-	unsigned	int		m_id;
-				bool	f_id;		
+
 //メンバー関数
 public:
 	mml_Address(unsigned char _code, const _CHAR _strName[]=_T("Address"));
-	mml_Address(unsigned char _code, unsigned char _data, const _CHAR _strName[]=_T("Address"));
+	mml_Address(size_t _id, unsigned char _code, const _CHAR _strName[]=_T("Address"));
+	mml_Address(size_t _id, unsigned char _code, unsigned char _data, const _CHAR _strName[]=_T("Address"));
 	~mml_Address(void);
 
-				void	set_Address(unsigned int _addr);
-//	unsigned	int		get_Address(void);
-				void	set_id(unsigned int _id);
-	unsigned	int		get_id(void);
-				bool	get_flag(void);
+				void	set_Address(size_t _addr);
+//				size_t	get_Address(void);
 };

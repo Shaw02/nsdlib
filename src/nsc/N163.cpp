@@ -15,14 +15,13 @@
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
-//		unsigned	int		_id			N163番号
+//					size_t	_id			N163番号
 //		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-N163::N163(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
-	MusicItem(_id, _strName),
-	m_id(_id)
+N163::N163(MMLfile* MML, size_t _id, const _CHAR _strName[]):
+	MusicItem(_id, _strName)
 {
 	//----------------------
 	//Local変数

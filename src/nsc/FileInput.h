@@ -24,12 +24,12 @@ public:
 					~FileInput(void);
 			void	fileopen(const char*	_strFileName);
 			void	fileopen(const char*	_strFileName,SearchPass* _pass);
-			void	StreamPointerAdd(long iSize);
-			void	StreamPointerMove(long iSize);
+			void	StreamPointerAdd(std::streamoff iSize);
+			void	StreamPointerMove(std::streamoff iSize);
 			void	Back(void);
 			string*	GetFilename(void){return(&strFilename);};
 unsigned	char	cRead();
-unsigned	int		GetSize();
+std::streamoff		GetSize();
 unsigned	int		GetLine(void){return(iLine);};
 			void	SetLine(unsigned int i){iLine = i;};
 

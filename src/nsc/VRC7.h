@@ -20,13 +20,12 @@ class VRC7 :
 {
 //メンバー変数
 private:
-	unsigned	int		m_id;
 
 //static	const	Command_Info	Command[];	//コマンドの情報
 
 //メンバー関数
 public:
-				VRC7(MMLfile* MML, unsigned int _id, const _CHAR _strName[] = _T("VRC7"));
+				VRC7(MMLfile* MML, size_t _id, const _CHAR _strName[] = _T("VRC7"));
 				~VRC7(void);
 		void	getAsm(MusicFile* MUS);
 };

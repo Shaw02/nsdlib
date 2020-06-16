@@ -32,15 +32,15 @@
 //==============================================================
 OPSW::OPSW(int argc, char* argv[]):
 	//初期化設定
-	fHelp(0),		//ヘルプは、デフォルトは表示しない。
+	cDebug(0),
+	fErr(false),
 	saveNSF(false),
 	saveASM(false),
 	flag_Optimize(false),
 	flag_OptObj(true),
 	flag_OptSeq(true),
-	fErr(false),
 	flag_SearchPass(false),
-	cDebug(0)
+	fHelp(0)		//ヘルプは、デフォルトは表示しない。
 {
 
 	//----------------------------------
@@ -149,11 +149,11 @@ OPSW::OPSW(int argc, char* argv[]):
 				//--------
 				//Debugの指定
 				case 'D' :
-					//0x01:	Class Object Creat
-					//0x02:	Address settlement
-					//0x04:	Music File Outputing
-					//0x40:	Class Object Clear	
-					//0x80:	Class Object Delete
+					//0x01:	Phase [1] : Creating Class Object process
+					//0x10:	Phase [2] : Optimizing process
+					//0x20:	Phase [3] : Setting Address
+					//0x40:	Phase [4] : Outputing Music File
+					//0x80:	Phase [5] : Delete Class Object
 					int	i;
 					iResult=sscanf(argv[iCount],"-D%d",&i);
 					cDebug = (char)i;
@@ -332,7 +332,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	//MMLのディレクトリを取得
 	iCount	= 0;
 	iResult	= 0;
-	while(iCount < strMMLname.size()){
+	while(iCount < (int)strMMLname.size()){
 		if((strMMLname[iCount] == '\\') || (strMMLname[iCount] == '/')){
 			iResult = iCount;
 		}
@@ -409,7 +409,7 @@ void	OPSW::print_help(){
 			//	_T("  -T			Disable to output the tick counting result.\n")
 				_T("  -Od[+/-]		Optimize the NSF bank struct of the delta-PCM.\n")
 				_T("  -Oo[+/-]		Optimize the object data.\n")
-			//	_T("  -Os[+/-]		Optimize the sequence data.\n")
+				_T("  -Os[+/-]		Optimize the sequence data.\n")
 				_T("  -S			Enable outout the search pass result.\n")
 				_T("  -L[file(.bin)]	Filename of the rom code for NSF.\n")
 				_T("  -FA[file(.s  )]	Filename of the output assembly langage file.\n")

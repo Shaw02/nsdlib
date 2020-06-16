@@ -46,36 +46,34 @@ class MusicFile :
 {
 //メンバー変数
 public:
-			MusicHeader			Header;		//Header
+	MusicHeader				Header;		//Header
+	DPCMinfo*				cDPCMinfo;	//⊿PCM
 
-	map<	int, FDSC*		>	ptcFDSC;	//FDS  wave table (career)
-	map<	int, FDSM*		>	ptcFDSM;	//FDS  wave table (modulator)
-	map<	int, VRC7*		>	ptcVRC7;	//VRC7 User Instrument
-	map<	int, N163*		>	ptcN163;	//N163 wave table
-	map<	int, Envelop*	>	ptcEnv;		//Envelop
-	map<	int, BGM*		>	ptcBGM;		//BGM
-	map<	int, SE*		>	ptcSE;		//SE 
-	map<	int, Sub*		>	ptcSub;		//Subroutine Sequence
-				DPCMinfo*		cDPCMinfo;
+	map<size_t, FDSC*	>	ptcFDSC;	//FDS  wave table (career)
+	map<size_t, FDSM*	>	ptcFDSM;	//FDS  wave table (modulator)
+	map<size_t, VRC7*	>	ptcVRC7;	//VRC7 User Instrument
+	map<size_t, N163*	>	ptcN163;	//N163 wave table
+	map<size_t, Envelop*>	ptcEnv;		//Envelop
+	map<size_t, BGM*	>	ptcBGM;		//BGM
+	map<size_t, SE*		>	ptcSE;		//SE 
+	map<size_t, Sub*	>	ptcSub;		//Subroutine Sequence
 
 private:
-//static	const	Command_Info	Command[];
-					string		dpcm_code;
-	unsigned	int				nsf_size;
+	string					dpcm_code;
 
 //メンバー関数
 public:
-	MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]=_T("==== [ Music ] ===="));
+	MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]=_T("================ [ Music ] ================"));
 	~MusicFile(void);
 
-	void				TickCount(void);
+	void	TickCount(void);
 
-	unsigned	int		SetDPCMOffset(unsigned int iMusSize);
+	size_t	SetDPCMOffset(size_t iMusSize);
 
 	void	Fix_Address(void);
 
 	//バイナリーを作る
-	void	make_bin(size_t rom_size, int ptOffset);
+	void	make_bin(size_t rom_size, size_t ptOffset);
 
 	//保存フェーズ
 	void	saveNSF(const char*	strFileName);

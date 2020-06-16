@@ -28,7 +28,7 @@ private:
 
 public:
 
-	Sub(MMLfile* MML, unsigned int _id, _CHAR _strName[] = _T("Sub"));
+	Sub(MMLfile* MML, size_t _id, const _CHAR _strName[] = _T("Sub"));
 	~Sub();
 
 	void				getAsm(MusicFile* MUS);

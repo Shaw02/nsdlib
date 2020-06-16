@@ -24,6 +24,9 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //				無し
 //==============================================================
 MMLfile::MMLfile(const char*	strFileName):
+	p_macro(0),
+	f_macro(false),
+	f_2to1(false),
 	offset_Ei(0),
 	offset_Ev(0),
 	offset_En(0),
@@ -37,10 +40,7 @@ MMLfile::MMLfile(const char*	strFileName):
 	rest(2),
 	wait(0),
 	QMax(8),
-	priority(0),
-	p_macro(0),
-	f_macro(false),
-	f_2to1(false)
+	priority(0)
 	{
 	//File open
 	nowFile	= new FileInput();
@@ -64,9 +64,9 @@ MMLfile::~MMLfile(void)
 
 	//----------------------
 	//Local変数
-	vector	<FileInput*				>::iterator	itFiles;
-	map		<string,		string	>::iterator	itMac;
-	map		<unsigned int,	Patch*	>::iterator	itPatch;
+	vector	<FileInput*			>::iterator	itFiles;
+	map		<string,	string	>::iterator	itMac;
+	map		<size_t,	Patch*	>::iterator	itPatch;
 
 	//----------------------
 	//Delete Class
@@ -187,17 +187,22 @@ void	MMLfile::SetMacro(int i_Lv)
 	string	macro_name		="";
 	string	macro_contents	="";
 
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "Set Macro (Lv=" << i_Lv << ") : ";
+	}
+
 	int		iKakko	= 0;
 
 	//------------------
 	//マクロ名の取得
 	while((cData = cRead()) > 0x20){
 		if(cData == '{'){
+			Back();
 			break;
 		}
 		macro_name += cData;
 	};
-	Back();
 
 	//------------------
 	//マクロ名の重複チェック
@@ -205,15 +210,15 @@ void	MMLfile::SetMacro(int i_Lv)
 		Err(_T("既にそのマクロ名は存在しています。"));
 	}
 
+
 	//------------------
 	//マクロ内容の取得
-	while(cRead() != '{'){
-		if(eof()){
-			Err(_T("文字列開始を示す{が見つかりません。"));
-		}
+	cData = GetChar();
+	if(cData != '{'){
+		Err(_T("マクロ定義開始を示す{が見つかりません。"));
 	}
 
-	while(('}' != (cData = cRead())) || (iKakko != 0)){
+	while(('}' != (cData = GetChar())) || (iKakko != 0)){
 		if(eof()){
 			Err(_T("文字列終了を示す}が見つかりません。"));
 		}
@@ -231,6 +236,10 @@ void	MMLfile::SetMacro(int i_Lv)
 	ptcMac[macro_name] = macro_contents;
 	lv_Mac[macro_name] = i_Lv;
 
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "SetMacro ptcMac[" << macro_name << "] = \"" << macro_contents << "\"" << endl;
+	}
 }
 
 //==============================================================
@@ -252,6 +261,11 @@ void	MMLfile::DeleteMacro(int i_Lv)
 	string	macro_name;
 	int		macro_lv;
 
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "Delete Macro (Lv=" << i_Lv << ") : " << endl;
+	}
+		
 	//----------------------
 	//当該Lvのマクロを解放する。
 	if(!ptcMac.empty()){
@@ -263,10 +277,13 @@ void	MMLfile::DeleteMacro(int i_Lv)
 			if(i_Lv == macro_lv){
 				ptcMac.erase(macro_name);
 				lv_Mac.erase(macro_name);
+				//Debug用
+				if(cOptionSW->cDebug & DEBUG_Macros){
+					cout << "	ptcMac[" << macro_name << "]" << endl;
+				}
 			}
 		}
 	}
-
 }
 
 //==============================================================
@@ -282,39 +299,45 @@ void	MMLfile::DeleteMacro(int i_Lv)
 void	MMLfile::CallMacro(void)
 {
 	char							cData;
-	int								i		= 0;
-	int								n		= 0;
-	int								iSize	= ptcMac.size();
+	size_t							i		= 0;
+	size_t							n		= 0;
+	size_t							iSize	= ptcMac.size();
 	string							_name	= "";
 	string*							strMac	= new	string[iSize];
 	map<string,string>::iterator	itMac	= ptcMac.begin();
 
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "Call Macro : ";
+	}
+
 	//------------------
-	//全マクロ名の取得
+	//定義された全マクロの取得
 	if(!ptcMac.empty()){
 		do{
-			strMac[i] = itMac->first;
-			i++;
+			strMac[n] = itMac->first;
+			n++;
 			itMac++;
 		}while(itMac != ptcMac.end());
 	}
 
 	//------------------
 	//マクロ名の照合
+	//※登録されているマクロの中で、一番長く一致するマクロ名を探す。
 	do{
 		cData = cRead();
 		_name += cData;
-		i = 0;			//ループ用
-		n = 0;			//ヒット数
+		n = 0;			//ループ用
+		i = 0;			//ヒット数
 		if(cData > 0x20){
-			while(i<iSize){
-				if(strMac[i].find(_name.c_str()) == 0){
-					n++;		//マクロ名先頭文字列ヒット
+			while(n<iSize){
+				if(strMac[n].find(_name.c_str()) == 0){
+					i++;		//マクロ名先頭文字列ヒット
 				}
-				i++;
+				n++;
 			}
 		}
-	} while(n>0);		//ヒット数が0になるまで、繰り返し。
+	} while(i>0);		//ヒット数が0になるまで、繰り返し。
 
 	Back();										//ポインタを１つ戻す。
 	_name = _name.substr(0, _name.length()-1);	//１文字減らす。
@@ -327,12 +350,12 @@ void	MMLfile::CallMacro(void)
 
 	//------------------
 	//マクロ名の重複チェック
-	i = 0;
-	while(i < p_macro){
-		if(s_macro[i].name == _name){
+	n = 0;
+	while(n < p_macro){
+		if(s_macro[n].name == _name){
 			Err(_T("マクロ内で同じマクロを呼び出しています。"));
 		}
-		i++;
+		n++;
 	}
 
 	//------------------
@@ -340,6 +363,11 @@ void	MMLfile::CallMacro(void)
 	if(p_macro > 0){
 		s_macro[p_macro-1].name = nowMacro.name;
 		s_macro[p_macro-1].line = nowMacro.line;
+	}
+
+	//Debug用
+	if(cOptionSW->cDebug & DEBUG_Macros){
+		cout << "ptcMac[" << _name << "]　(nest = " << p_macro << " )" << endl;
 	}
 
 	nowMacro.name = _name;
@@ -364,7 +392,7 @@ void	MMLfile::CallMacro(void)
 void	MMLfile::SetPatch(void)
 {
 
-	int			i		= GetNum();
+	size_t			i		= GetNum();
 
 	//重複チェック
 	if(ptcPatch.count(i) != 0){
@@ -379,13 +407,13 @@ void	MMLfile::SetPatch(void)
 //		パッチの有無チェック
 //--------------------------------------------------------------
 //	●引数
-//			unsigned int _no	パッチ番号
+//			size_t _no	パッチ番号
 //	●返値
 //			bool				あるかどうか
 //	●処理
 //			
 //==============================================================
-bool	MMLfile::ChkPatch(unsigned int _no)
+bool	MMLfile::ChkPatch(size_t _no)
 {
 	bool	result;
 
@@ -401,13 +429,13 @@ bool	MMLfile::ChkPatch(unsigned int _no)
 //			現在コンパイル処理中のファイルポインタの取得
 //--------------------------------------------------------------
 //	●引数
-//			無し
+//						無し
 //	●返値
-//			int		現在のファイルポインタ
+//		std::streamoff	現在のファイルポインタ
 //==============================================================
-int		MMLfile::tellg(void)
+std::streamoff	MMLfile::tellg(void)
 {
-	int	i;
+	std::streamoff	i;
 
 	if(p_macro > 0){
 		i = nowMacro.line;
@@ -422,11 +450,11 @@ int		MMLfile::tellg(void)
 //			現在コンパイル処理中のファイルポインタを絶対的に移動
 //--------------------------------------------------------------
 //	●引数
-//			long	iSize	移動値
+//			std::streamoff	iSize	移動値
 //	●返値
 //			無し
 //==============================================================
-void	MMLfile::StreamPointerMove(long iSize)
+void	MMLfile::StreamPointerMove(std::streamoff iSize)
 {
 	if(p_macro > 0){
 		nowMacro.line = iSize;
@@ -914,9 +942,8 @@ int	MMLfile::readLength(int DefaultLength){
 			//付点だけ記述される場合。
 			if(DefaultLength == -1){
 				Err(_T("音長を記述して下さい。"));
-			} else {
-				iLength = DefaultLength;
 			}
+			iLength = DefaultLength;
 		}
 
 		iDot	= iLength;
@@ -945,9 +972,8 @@ int	MMLfile::readLength(int DefaultLength){
 		//引数を書かない場合
 		if(DefaultLength == -1){
 			Err(_T("音長を記述して下さい。"));
-		} else {
-			iLength = -1;
 		}
+		iLength = -1;
 	}
 
 	return(iLength);
@@ -993,9 +1019,9 @@ int		MMLfile::GetLength(int DefaultLength)	//
 		}
 
 		if(add == true){
-			iLength += iCalc;
+			iLength += iCalc;	// '+' と '^' は加算
 		} else {
-			iLength -= iCalc;
+			iLength -= iCalc;	// '-' と '~' は減算
 		}
 		cData = cRead();
 	};
@@ -1016,16 +1042,16 @@ int		MMLfile::GetLength(int DefaultLength)	//
 //		コマンドIDの取得
 //--------------------------------------------------------------
 //	●引数
-//		Command_Info*			_command
-//		unsigned		int		_size
+//		Command_Info*		_command
+//		size_t				_size
 //	●返値
 //		int			コマンドコード　（-1でunknown command）
 //==============================================================
-int	MMLfile::GetCommandID(const Command_Info _command[], unsigned int _size)
+int	MMLfile::GetCommandID(const Command_Info _command[], size_t _size)
 {
-	unsigned	int		ptCommand	= tellg();	//現在のファイルポインタを保持しておく。
-	unsigned	int		i			= 0;		//走査用
-	unsigned	int		j;						//文字列チェック用
+	std::streamoff	ptCommand	= tellg();	//現在のファイルポインタを保持しておく。
+				size_t	i = 0;					//走査用
+				size_t	j;						//文字列チェック用
 
 	//コマンド文字列のチェック
 	while(i < _size){

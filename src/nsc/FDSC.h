@@ -20,13 +20,12 @@ class FDSC :
 {
 //メンバー変数
 private:
-	unsigned	int		m_id;
 
 //static	const	Command_Info	Command[];	//コマンドの情報
 
 //メンバー関数
 public:
-				FDSC(MMLfile* MML, unsigned int _id, const _CHAR _strName[] = _T("FDSC"));
+				FDSC(MMLfile* MML, size_t _id, const _CHAR _strName[] = _T("FDSC"));
 				~FDSC(void);
 		void	getAsm(MusicFile* MUS);
 };

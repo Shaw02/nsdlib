@@ -20,31 +20,28 @@ class TrackSet :
 {
 //メンバー変数
 protected:
-	unsigned	int				m_id;		//ID
-				int				iTempo;
+				int				iTempo;		//テンポ
 
-protected:
-//static	const	Command_Info	Command[];	//コマンドの情報
 	map<int,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
 				MusicTrack*		nowTrack;	//コンパイル中のトラック
 				int				iTrack;		//コンパイル中のトラック番号
 				int				maxTrack;	//トラック番号の最大値
 				bool			fSub;		//サブルーチン記述ブロックかどうかのフラグ
 				bool			fSE;		//SEかどうかのフラグ
-	unsigned	int				TrackPt;	//
+				std::streamoff	TrackPt;	//
 	unsigned	int				TrackLine;	//
 	unsigned	char			Priority;	//効果音優先順位
+
 //メンバー関数
 public:
-				TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const _CHAR _strName[] = _T("==== [ Track Set ]===="));
+				TrackSet(MMLfile* MML, size_t _id, bool _sub, bool _se, const _CHAR _strName[] = _T("==== [ Track Set ]===="));
 				~TrackSet(void);
 
 		void	TickCount(MusicFile* MUS);
 		void	TickCountPrint(MusicFile* MUS, int iStart, int iEnd);
 		void	getAsm(MusicFile* MUS);
 
-		void	OptimizeDefineCheck(MusicFile* MUS);
-		void	clear(int _id);
+		void	clear_Optimize();
 		void	Fix_Address(MusicFile* MUS);
 
 		void	TrackChk(MMLfile* MML);

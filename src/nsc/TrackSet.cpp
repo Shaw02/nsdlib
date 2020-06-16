@@ -10,21 +10,25 @@
 #include "StdAfx.h"
 #include "TrackSet.h"
 
+/****************************************************************/
+/*					グローバル変数（クラスだけど・・・）		*/
+/****************************************************************/
+extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
-//		unsigned	int		_id			BGM番号
+//					size_t	_id			BGM番号
 //		bool				_sub		このオブジェクトは、サブルーチン？
 //		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-TrackSet::TrackSet(MMLfile* MML, unsigned int _id, bool _sub, bool _se, const _CHAR _strName[]):
+TrackSet::TrackSet(MMLfile* MML, size_t _id, bool _sub, bool _se, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
-	iTempo(120),
-	m_id(_id)
+	iTempo(120)
 {
 	//----------------------
 	//Local変数
@@ -462,7 +466,7 @@ const	static	Command_Info	Command[] = {
 				if(fSub == true){
 					MML->Warning(_T("Subブロック内では無限ループはできません。無視します。"));
 				} else {
-					nowTrack->SetLoop();
+					nowTrack->SetLoop(MML);
 				}
 				break;
 
@@ -656,22 +660,18 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Envelop_Voice):
 				nowTrack->SetEnvelop_Evoi(MML->GetInt() + MML->offset_Ei);
-			//	nowTrack->SetEnvelop(nsd_Envelop_Voice, MML, MML->offset_Ei);
 				break;
 
 			case(mml_Envelop_Volume):
 				nowTrack->SetEnvelop_Evol(MML->GetInt() + MML->offset_Ev);
-			//	nowTrack->SetEnvelop(nsd_Envelop_Volume, MML, MML->offset_Ev);
 				break;
 
 			case(mml_Envelop_Frequency):
 				nowTrack->SetEnvelop_Em(MML->GetInt() + MML->offset_Em);
-			//	nowTrack->SetEnvelop(nsd_Envelop_Frequency, MML, MML->offset_Em);
 				break;
 
 			case(mml_Envelop_Note):
 				nowTrack->SetEnvelop_En(MML->GetInt() + MML->offset_En);
-			//	nowTrack->SetEnvelop(nsd_Envelop_Note, MML, MML->offset_En);
 				break;
 
 			case(mml_Envelop_Off_Voice):
@@ -680,17 +680,14 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Envelop_Off_Volume):
 				nowTrack->SetEnvelop_Evol();
-			//	SetEvent(new mml_Address(nsd_Envelop_Volume));
 				break;
 
 			case(mml_Envelop_Off_Frequency):
 				nowTrack->SetEnvelop_Em();
-			//	SetEvent(new mml_Address(nsd_Envelop_Frequency));
 				break;
 
 			case(mml_Envelop_Off_Note):
 				nowTrack->SetEnvelop_En();
-			//	SetEvent(new mml_Address(nsd_Envelop_Note));
 				break;
 
 			case(mml_Patch):
@@ -715,7 +712,6 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Voice):
 				nowTrack->SetVoice(MML->GetInt());
-			//	SetEvent(new mml_general(nsd_Voice, MML, _T("Voice")));
 				break;
 
 			case(mml_FDSC):
@@ -808,12 +804,10 @@ const	static	Command_Info	Command[] = {
 					MML->Err(_T("移調は-127～128の範囲で指定してください。"));
 				}
 				nowTrack->SetTranspose(i);
-				//SetEvent(new mml_general(nsd_Transpose, MML, _T("Transpose")));
 				break;
 
 			case(mml_Transpose_Relative):
 				nowTrack->SetTranspose_Relative(MML->GetInt());
-				//SetEvent(new mml_general(nsd_Relative_Transpose, MML, _T("Relative Transpose")));
 				break;
 
 			case(mml_KeyShift):
@@ -876,12 +870,12 @@ const	static	Command_Info	Command[] = {
 	if(fSub == true){
 		//サブルーチンブロックの場合
 		code.resize(0);
-		i = (int)ptcTrack[iTrack]->SetEnd(MML);
+		ptcTrack[0]->SetEnd(MML);
 
 	} else {
 		//それ以外の場合
-		i = 2 + ((maxTrack + 1) * 2);		//トラック情報を書くヘッダーのサイズを計算。
-		code.resize(i);						//ヘッダ用にコードサイズを確保
+		iSize = 2 + ((maxTrack + 1) * 2);		//トラック情報を書くヘッダーのサイズを計算。
+		code.resize(iSize);						//ヘッダ用にコードサイズを確保
 
 		code[0] = (unsigned char)maxTrack + 1;				//トラック数
 		code[1] = Priority;									//各種フラグ
@@ -889,20 +883,10 @@ const	static	Command_Info	Command[] = {
 		//各トラックに終端を書いて、曲データのアドレス情報を作成
 		iTrack = 0;
 		while(iTrack <= maxTrack){
-			unsigned	int	n	= (int)ptcTrack[iTrack]->SetEnd(MML);
-			if(n==0){
-				code[iTrack *2 + 2]	= 0;
-				code[iTrack *2 + 3]	= 0;
-			} else {
-				code[iTrack *2 + 2]	= (unsigned char)((i   ) & 0xFF);
-				code[iTrack *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
-			}
-			i += n;
+			ptcTrack[iTrack]->SetEnd(MML);
 			iTrack++;
 		}
 	}
-	iSize = i;
-
 }
 
 //==============================================================
@@ -925,10 +909,16 @@ TrackSet::~TrackSet(void)
 //	●返値
 //				無し
 //==============================================================
-void	TrackSet::clear(int _id)
+void	TrackSet::clear_Optimize()
 {
-	maxTrack = -1;
-	MusicItem::clear(_id);
+	if(cOptionSW->cDebug & DEBUG_Optimize){
+		_COUT << _T("Optimize Object  : ") << strName;
+		if(f_id == true){
+			_COUT	<< _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
+	}
+	MusicItem::clear_Optimize();
 }
 
 //==============================================================
@@ -1025,9 +1015,10 @@ void	TrackSet::TickCountPrint(MusicFile* MUS, int iStart, int iEnd)
 void	TrackSet::TickCount(MusicFile* MUS)
 {
 
-	int		iTrack = 0;
 	int		j;
 	int		_maxTrack = maxTrack + 1;
+
+	iTrack = 0;
 
 	while(iTrack < _maxTrack){
 		j = iTrack + 8;
@@ -1041,24 +1032,6 @@ void	TrackSet::TickCount(MusicFile* MUS)
 }
 
 //==============================================================
-//		不要な定義があるか検索
-//--------------------------------------------------------------
-//	●引数
-//		MusicFile*	MUS		曲データファイル・オブジェクト
-//	●返値
-//				無し
-//==============================================================
-void	TrackSet::OptimizeDefineCheck(MusicFile* MUS)
-{
-	iTrack = 0;
-	while(iTrack <= maxTrack){
-		ptcTrack[iTrack]->OptimizeDefineCheck(MUS);
-		iTrack++;
-	}
-
-}
-
-//==============================================================
 //		アドレス情報を決定する。
 //--------------------------------------------------------------
 //	●引数
@@ -1068,12 +1041,35 @@ void	TrackSet::OptimizeDefineCheck(MusicFile* MUS)
 //==============================================================
 void	TrackSet::Fix_Address(MusicFile* MUS)
 {
-	iTrack = 0;
-	while(iTrack <= maxTrack){
-		ptcTrack[iTrack]->Fix_Address(MUS);
-		iTrack++;
-	}
+	size_t	i;
+	size_t	n;
 
+	if(fSub == true){
+		//サブルーチンブロックの場合
+		if (iSize > 0) {
+			//且つ、最適化で消されていなかったら。
+			ptcTrack[0]->Fix_Address(MUS);
+		}
+	} else {
+		//それ以外の場合
+		i = code.size();
+
+		//各トラックのアドレス情報を作成
+		iTrack = 0;
+		while(iTrack <= maxTrack){
+			ptcTrack[iTrack]->Fix_Address(MUS);
+			n = ptcTrack[iTrack]->getSize();
+			if(n==0){
+				code[iTrack *2 + 2]	= 0;
+				code[iTrack *2 + 3]	= 0;
+			} else {
+				code[iTrack *2 + 2]	= (unsigned char)((i   ) & 0xFF);
+				code[iTrack *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
+			}
+			i += n;
+			iTrack++;
+		}
+	}
 }
 
 //==============================================================
@@ -1188,7 +1184,7 @@ void	TrackSet::TrackProc(MMLfile* MML)
 MusicTrack*	TrackSet::makeTrack(MMLfile* MML, int _track)
 {
 	//トラックのオブジェクトを生成。
-	MusicTrack*	newTrack	= new MusicTrack(MML);
+	MusicTrack*	newTrack	= new MusicTrack(_track, MML);
 
 	//生成したアイテムは保存
 	ptcItem.push_back(newTrack);		//基底クラス"MusicItem"側で開放する。

@@ -15,14 +15,13 @@
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
-//		unsigned	int		_id			エンベロープ番号
+//					size_t	_id			エンベロープ番号
 //		const		_CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-Envelop::Envelop(MMLfile* MML, unsigned int _id, const _CHAR _strName[]):
-	MusicItem(_id, _strName),
-	m_id(_id)
+Envelop::Envelop(MMLfile* MML, size_t _id, const _CHAR _strName[]):
+	MusicItem(_id, _strName)
 {
 	//----------------------
 	//Local変数
@@ -230,7 +229,7 @@ void Envelop::SetLoop(MMLfile* MML, int LoopPoint)
 				MML->Warning(_T("ループ位置を指定できる範囲(63Byte)を超えました。"));
 			}
 		}
-		code.append((char)1, (char)(ptEnvelop-1 | 0xC0));
+		code.append((char)1, (char)((ptEnvelop-1) | 0xC0));
 	} else {
 		if(ptEnvelop == Loop_Normal){
 			MML->Err(_T("Lコマンドでパターン定義を終わることはできません。"));

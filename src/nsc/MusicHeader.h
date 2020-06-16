@@ -20,9 +20,9 @@ class MusicHeader
 public:
 				bool	bank;
 				bool	op_code;		//option で code 指定された？
-	unsigned	char	iBGM;			//BGM数
-	unsigned	char	iSE;			//SE数
-	unsigned	int		offsetPCM;
+				size_t	iBGM;			//BGM数
+				size_t	iSE;			//SE数
+				size_t	offsetPCM;
 				int		iExternal;		//拡張音源フラグ
 				string	Label;
 				string	title;

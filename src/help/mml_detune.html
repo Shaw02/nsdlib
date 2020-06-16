@@ -28,7 +28,9 @@
 <h3>定義（Define）</h3>
 <code><pre>
         D<var>detune1</var>
+        D_<var>relative1</var>
         D%<var>detune2</var>
+        D%_<var>relative2</var>
 </pre></code>
 </div>
 
@@ -43,10 +45,22 @@ cent単位のディチューンです。<br>
 16が100[cent]（半音）に相当します。（Default: <var>detune1</var> = 0）<br>
 </p>
 
+<h4>relative1</h4>
+<p>
+cent単位の相対ディチューンです。<br>
+尚、演算結果におけるオーバーフローのチェックはしていません。<br>
+</p>
+
 <h4>detune2</h4>
 <p>
 レジスター単位のディチューンです。<br>
 -128～127の範囲で指定してください。（Default: <var>detune2</var> = 0）<br>
+</p>
+
+<h4>relative2</h4>
+<p>
+レジスター単位の相対ディチューンです。<br>
+尚、演算結果におけるオーバーフローのチェックはしていません。<br>
 </p>
 
 </div>

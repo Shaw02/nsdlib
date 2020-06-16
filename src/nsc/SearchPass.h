@@ -17,8 +17,8 @@
 class SearchPass
 {
 protected:
-	int					m_count;			//“o˜^”—Ê
-	map<int, string>	m_ptcPass;			//ŒŸõƒpƒX‚Ìˆê——i—Dæ‡ˆÊF“o˜^‡j
+	size_t				m_count;			//“o˜^”—Ê
+	map<size_t, string>	m_ptcPass;			//ŒŸõƒpƒX‚Ìˆê——i—Dæ‡ˆÊF“o˜^‡j
 
 public:
 						SearchPass(void);
@@ -31,8 +31,8 @@ public:
 	void				add(string*	_str);			//’Ç‰Ái";"‚Ì‹æØ‚è‘Î‰j
 	void				add(char*	_str);			//’Ç‰Ái";"‚Ì‹æØ‚è‘Î‰j
 
-	const char*			get(int id);				//•¶š—ñ‚Ìæ“¾
-	int					count(){return(m_count);};	//“o˜^”—Ê‚Ìæ“¾
+	const char*			get(size_t id);				//•¶š—ñ‚Ìæ“¾
+	size_t				count(){return(m_count);};	//“o˜^”—Ê‚Ìæ“¾
 
 
 };

@@ -24,28 +24,31 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //				無し
 //==============================================================
 MusicItem::MusicItem(const _CHAR _strName[]):
-	iOffset(0),
+	strName(_strName),
 	iSize(0),
-	f_Optimize(false),
-	strName(_strName)
+	iOffset(0),
+	f_id(false),
+	f_necessary(false)
 {
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x01){
+	if(cOptionSW->cDebug & DEBUG_Create){
 		_COUT << _T("Create Music Object : ") << strName << endl;
 	}
 }
 
-MusicItem::MusicItem(int _id, const _CHAR _strName[]):
-	iOffset(0),
+MusicItem::MusicItem(size_t _id, const _CHAR _strName[]):
+	strName(_strName),
 	iSize(0),
-	f_Optimize(false),
-	strName(_strName)
+	iOffset(0),
+	m_id(_id),
+	f_id(true),
+	f_necessary(false)
 {
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x01){
-		_COUT << _T("Create Music Object : ====[ ") << strName << _T("(");
-		cout << _id;
-		_COUT << _T(") ]====") << endl;
+	if(cOptionSW->cDebug & DEBUG_Create){
+		_COUT << _T("Create Music Object : ") << strName << _T("(");
+		cout << m_id;
+		_COUT << _T(")") << endl;
 	}
 }
 
@@ -62,8 +65,12 @@ MusicItem::~MusicItem(void)
 	clear();
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x80){
-		_COUT << _T("Delete Music Object : ") << strName << endl;
+	if(cOptionSW->cDebug & DEBUG_Delete){
+		_COUT << _T("Delete Music Object : ") << strName;
+		if(f_id == true){
+			_COUT << _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
 	}
 }
 
@@ -95,17 +102,39 @@ void	MusicItem::clear(void)
 		}
 		ptcItem.clear();
 	}
+
+	iSize = 0;
 }
 
-void	MusicItem::clear(int _id)
+void	MusicItem::clear_Optimize()
 {
+	//----------------------
+	//Local変数
+	list<	MusicItem*>::iterator	itItem;
 
-	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x40){
-		_COUT << _T("Clear Music Object : ====[ ") << strName << _T("(") << _id << _T(") ]====") << endl;
+	if(chkUse() == false){
+		//----------------------
+		//このオブジェクトごと、ごっそりクリアする。
+		//Debug message　（うざい程出力するので注意。）
+		if(cOptionSW->cDebug & DEBUG_Optimize){
+			_COUT << _T("Optimizing : ") << strName;
+			if(f_id == true){
+				_COUT	<< _T("(") << m_id << _T(")");
+			}
+			_COUT << endl;
+		}
+		clear();
+	} else {
+		//----------------------
+		//子オブジェクトを最適化するか評価する。
+		if(!ptcItem.empty()){
+			itItem = ptcItem.begin();
+			while(itItem != ptcItem.end()){
+				(*itItem)->clear_Optimize();
+				itItem++;
+			}
+		}
 	}
-
-	clear();
 }
 
 //==============================================================
@@ -129,7 +158,7 @@ size_t		MusicItem::getSize()
 //	●返値
 //		unsigned	int	
 //==============================================================
-unsigned	int		MusicItem::getOffset()
+size_t	MusicItem::getOffset()
 {
 	return(iOffset);
 }
@@ -138,29 +167,33 @@ unsigned	int		MusicItem::getOffset()
 //		オフセットアドレスの設定
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int		_offset
+//		size_t	_offset
 //	●返値
 //				無し
 //==============================================================
-unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
+size_t	MusicItem::SetOffset(size_t _offset)
 {
 	//----------------------
 	//Local変数
 	list<	MusicItem*>::iterator	itItem;
-	unsigned	int		i	=	0;
+	size_t	i = 0;
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x02){
+	if(cOptionSW->cDebug & DEBUG_SetAddress){
 		_COUT << _T("Object Address [0x") << hex << setw(4) << setfill(_T('0')) << _offset << _T("]: ");
 		while(i < code.size()){
 			_COUT	<<	hex	<<	setw(2)	<<	setfill(_T('0'))	<<	(unsigned int)(code[i] & 0xFF)	<<	_T(" ");
 			i++;
 		}
-		_COUT  << dec	<< _T(": ") << strName << endl;
+		_COUT  << dec	<< _T(": ") << strName;
+		if(f_id == true){
+			_COUT	<< _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
 	}
 
 	iOffset = _offset;
-	_offset	+= (unsigned int)code.size();
+	_offset	+= code.size();
 
 	if(!ptcItem.empty()){
 		itItem = ptcItem.begin();
@@ -169,6 +202,9 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 			itItem++;
 		}
 	}
+
+	//このオブジェクトのサイズ（最適化後）
+	iSize = _offset - iOffset;
 
 	return(_offset);
 }
@@ -181,11 +217,11 @@ unsigned	int		MusicItem::SetOffset(unsigned	int _offset)
 //	●返値
 //		unsigned	char	内容
 //==============================================================
-unsigned	char	MusicItem::getCode(unsigned int n)
+unsigned	char	MusicItem::getCode(size_t n)
 {
 	unsigned	char	iCode;
 	
-	if((n<0) || (n>iSize)){
+	if((n<0) || (n>=iSize)){
 		iCode = 0xFF;
 	} else {
 		iCode = code[n];
@@ -246,7 +282,7 @@ void	MusicItem::getAsm(MusicFile* MUS)
 {
 	//----------------------
 	//Local変数
-	unsigned	int	i = 0;
+	size_t	i = 0;
 	list<	MusicItem*>::iterator	itItem;
 
 	if(code.size() > 0){
@@ -269,4 +305,43 @@ void	MusicItem::getAsm(MusicFile* MUS)
 			itItem++;
 		}
 	}
+}
+
+//==============================================================
+//		idの設定
+//--------------------------------------------------------------
+//	●引数
+//		size_t	_id		番号
+//	●返値
+//				無し
+//==============================================================
+void	MusicItem::set_id(size_t _id)
+{
+	f_id = true;
+	m_id = _id;
+}
+
+//==============================================================
+//		idの取得
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		unsigned	int		番号
+//==============================================================
+size_t	MusicItem::get_id(void)
+{
+	return(m_id);
+}
+//==============================================================
+//		flagの取得
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		unsigned	int		番号
+//==============================================================
+bool	MusicItem::get_flag(void)
+{
+	return(f_id);
 }

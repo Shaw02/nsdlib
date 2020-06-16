@@ -24,8 +24,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //				無し
 //==============================================================
 FileInput::FileInput(void):
-	readData(0),
-	iLine(1)
+	iLine(1),
+	readData(0)
 {
 }
 
@@ -77,11 +77,11 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 	} else {
 
 		//検索パス
-		int		i		= 0;
-		int		iSize	= _pass->count();
+		size_t	i		= 0;
+		size_t	iSize	= _pass->count();
 		string	name;
 		string	workName= string(_strFileName);
-		int		loc		= workName.rfind('/');
+		size_t	loc		= workName.rfind('/');
 
 		//指定のファイルにパスが書かれていたら、消す。
 		if(loc != string::npos){
@@ -140,15 +140,15 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 //--------------------------------
 //相対シーク
 //--------------------------------
-void	FileInput::StreamPointerAdd(long iSize){
-	seekg((long)iSize,ios::cur);
+void	FileInput::StreamPointerAdd(std::streamoff iSize){
+	seekg(iSize,ios::cur);
 };
 
 //--------------------------------
 //絶対シーク
 //--------------------------------
-void	FileInput::StreamPointerMove(long iSize){
-		seekg((long)iSize,ios::beg);
+void	FileInput::StreamPointerMove(std::streamoff iSize){
+	seekg(iSize,ios::beg);
 };
 
 void	FileInput::Back(void)
@@ -177,10 +177,10 @@ unsigned	char	FileInput::cRead()
 //--------------------------------
 //サイズ
 //--------------------------------
-unsigned	int	FileInput::GetSize(){
+std::streamoff	FileInput::GetSize(){
 
-	unsigned	int	iData;
-	unsigned	int	iDataT = tellg();
+	std::streamoff	iData;
+	std::streamoff	iDataT = tellg();
 
 	seekg(0		,ios::end);
 	iData = tellg();

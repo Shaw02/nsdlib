@@ -14,6 +14,21 @@
 /*			クラス定義											*/
 /*																*/
 /****************************************************************/
+
+#define	DEBUG_Create		0x01	//0x01:	Phase [1] : Creating Class Object process
+#define DEBUG_Macros		0x02	//0x02	  - Debug for Macro, Patch
+#define	DEBUG_Optimize		0x10	//0x10:	Phase [2] : Optimizing process
+#define	DEBUG_SetAddress	0x20	//0x20:	Phase [3] : Setting Address
+//#define	DEBUG_Output	0x40	//0x40:	Phase [4] : Outputing Music File
+#define	DEBUG_Delete		0x80	//0x80:	Phase [5] : Delete Class Object
+
+
+
+/****************************************************************/
+/*																*/
+/*			クラス定義											*/
+/*																*/
+/****************************************************************/
 class OPSW {
 //メンバー変数
 public:

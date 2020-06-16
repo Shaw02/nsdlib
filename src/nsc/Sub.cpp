@@ -15,13 +15,13 @@
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		MMLfile*	MML		MMLファイルのオブジェクト
-//		unsigned int	_id		サブルーチン番号
+//		MMLfile*	MML			MMLファイルのオブジェクト
+//		size_t		_id			サブルーチン番号
 //		const _CHAR	_strName[]	オブジェクト名
 //	●返値
 //					無し
 //==============================================================
-Sub::Sub(MMLfile* MML, unsigned int _id, _CHAR _strName[]/* = "==== [ Sub ]===="*/):
+Sub::Sub(MMLfile* MML, size_t _id, const _CHAR _strName[]/* = "==== [ Sub ]===="*/):
 	TrackSet(MML, _id, true, false, _strName)
 {
 	

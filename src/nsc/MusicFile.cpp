@@ -27,8 +27,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //==============================================================
 MusicFile::MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]):
 	MusicItem(_strName),
-	cDPCMinfo(NULL),
-	Header(_code)
+	Header(_code),
+	cDPCMinfo(NULL)
 {
 	//----------------------
 	//Local変数
@@ -204,8 +204,8 @@ const	static	Command_Info	Command[] = {
 		{	"　",				id_Null			},
 	};
 
-	unsigned	int			i;
-	unsigned	char		cData;
+				size_t		i;
+//	unsigned	char		cData;
 				FDSC*		_fdsc;
 				FDSM*		_fdsm;
 				VRC7*		_vrc7;
@@ -216,17 +216,21 @@ const	static	Command_Info	Command[] = {
 				Sub*		_sub;
 	string		msg;
 
-	map<	int,	Envelop*	>::iterator	itEnvelop;
-	map<	int,	BGM*		>::iterator	itBGM;
-	map<	int,	SE*			>::iterator	itSE;
-	map<	int,	Sub*		>::iterator	itSub;
+	map<size_t,	Envelop*	>::iterator	itEnvelop;
+	map<size_t,	BGM*		>::iterator	itBGM;
+	map<size_t,	SE*			>::iterator	itSE;
+	map<size_t,	Sub*		>::iterator	itSub;
 
-	iSize = 0;
+//	iSize = 0;
+
+	//このオブジェクトは必ず使う（最適化対象外）。
+	setUse();
 
 	do{
 		
 		//１文字読み込み（コメントチェック、includeファイルの終端チェックもあり）
-		cData = MML->GetChar();
+//		cData = MML->GetChar();
+		MML->GetChar();
 
 		//[EOF]チェック
 		if( MML->eom() ){
@@ -355,7 +359,7 @@ const	static	Command_Info	Command[] = {
 				}
 				cDPCMinfo = new DPCMinfo(MML, Header.bank);
 				ptcItem.push_back(cDPCMinfo);
-				iSize += cDPCMinfo->getSize();	//BGMのサイズを更新
+			//	iSize += cDPCMinfo->getSize();	//BGMのサイズを更新
 				break;
 			case(id_FDSC):
 				i = MML->GetNum();
@@ -367,7 +371,7 @@ const	static	Command_Info	Command[] = {
 				_fdsc = new FDSC(MML, i);
 				ptcItem.push_back(_fdsc);
 				ptcFDSC[i] = _fdsc;
-				iSize += _fdsc->getSize();	//BGMのサイズを更新
+			//	iSize += _fdsc->getSize();	//BGMのサイズを更新
 				break;
 			case(id_FDSM):
 				i = MML->GetNum();
@@ -379,7 +383,7 @@ const	static	Command_Info	Command[] = {
 				_fdsm = new FDSM(MML, i);
 				ptcItem.push_back(_fdsm);
 				ptcFDSM[i] = _fdsm;
-				iSize += _fdsm->getSize();	//BGMのサイズを更新
+			//	iSize += _fdsm->getSize();	//BGMのサイズを更新
 				break;
 			case(id_VRC7):
 				i = MML->GetNum();
@@ -391,7 +395,7 @@ const	static	Command_Info	Command[] = {
 				_vrc7 = new VRC7(MML, i);
 				ptcItem.push_back(_vrc7);
 				ptcVRC7[i] = _vrc7;
-				iSize += _vrc7->getSize();	//BGMのサイズを更新
+			//	iSize += _vrc7->getSize();	//BGMのサイズを更新
 				break;
 			case(id_N163):
 				i = MML->GetNum();
@@ -403,7 +407,7 @@ const	static	Command_Info	Command[] = {
 				_n163 = new N163(MML, i);
 				ptcItem.push_back(_n163);
 				ptcN163[i] = _n163;
-				iSize += _n163->getSize();	//BGMのサイズを更新
+			//	iSize += _n163->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Envelop):
 				i = MML->GetNum();
@@ -414,7 +418,7 @@ const	static	Command_Info	Command[] = {
 				_env = new Envelop(MML, i);
 				ptcItem.push_back(_env);
 				ptcEnv[i] = _env;
-				iSize += _env->getSize();	//BGMのサイズを更新
+			//	iSize += _env->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Vibrato):
 				MML->offset_Em = 1000000;
@@ -426,7 +430,7 @@ const	static	Command_Info	Command[] = {
 				_env = new Envelop(MML, i);
 				ptcItem.push_back(_env);
 				ptcEnv[i] = _env;
-				iSize += _env->getSize();	//BGMのサイズを更新
+			//	iSize += _env->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Sub):
 				i = MML->GetNum();
@@ -438,7 +442,7 @@ const	static	Command_Info	Command[] = {
 				_sub = new Sub(MML, i);
 				ptcItem.push_back(_sub);
 				ptcSub[i] = _sub;
-				iSize += _sub->getSize();	//BGMのサイズを更新
+			//	iSize += _sub->getSize();	//BGMのサイズを更新
 				break;
 			case(id_BGM):
 				i = MML->GetNum();
@@ -453,7 +457,7 @@ const	static	Command_Info	Command[] = {
 				_bgm = new BGM(MML, i);
 				ptcItem.push_back(_bgm);
 				ptcBGM[i] = _bgm;
-				iSize += _bgm->getSize();	//BGMのサイズを更新
+			//	iSize += _bgm->getSize();	//BGMのサイズを更新
 				break;
 			case(id_SE):
 				i = MML->GetNum();
@@ -468,7 +472,7 @@ const	static	Command_Info	Command[] = {
 				_se = new SE(MML, i);
 				ptcItem.push_back(_se);
 				ptcSE[i] = _se;
-				iSize += _se->getSize();	//BGMのサイズを更新
+			//	iSize += _se->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Null):
 				break;
@@ -525,30 +529,28 @@ MusicFile::~MusicFile(void)
 //==============================================================
 void	MusicFile::TickCount(void)
 {
-	map<	int, FDSC*		>::iterator	itFDSC;		//FDS  wave table (career)
-	map<	int, FDSM*		>::iterator	itFDSM;		//FDS  wave table (modulator)
-	map<	int, VRC7*		>::iterator	itVRC7;		//VRC7 User Instrument
-	map<	int, N163*		>::iterator	itN163;		//N163 wave table
-	map<	int, Envelop*	>::iterator	itEnv;		//Envelop
-	map<	int, Sub*		>::iterator	itSub;		//Subroutine
+	map<size_t, FDSC*		>::iterator	itFDSC;		//FDS  wave table (career)
+	map<size_t, FDSM*		>::iterator	itFDSM;		//FDS  wave table (modulator)
+	map<size_t, VRC7*		>::iterator	itVRC7;		//VRC7 User Instrument
+	map<size_t, N163*		>::iterator	itN163;		//N163 wave table
+	map<size_t, Envelop*	>::iterator	itEnv;		//Envelop
+	map<size_t, Sub*		>::iterator	itSub;		//Subroutine
 
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
+				size_t		iBGM	= 0;
+				size_t		iSE		= 0;
 
 	//----------------------
 	//Tick Count & 最適化のための情報収集
 
 	while(iBGM < Header.iBGM){
-		cout << "---- BGM(" << iBGM << ") ----" <<endl;
+		_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
 		ptcBGM[iBGM]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
-		ptcBGM[iBGM]->OptimizeDefineCheck(this);	//使ている定義をチェック
 		iBGM++;
 	}
 
 	while(iSE < Header.iSE){
-		cout << "---- SE(" << iSE << ") ----" <<endl;
+		_COUT << _T("---- SE(") << iSE << _T(") ----") <<endl;
 		ptcSE[iSE]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
-		ptcSE[iSE]->OptimizeDefineCheck(this);		//使ている定義をチェック
 		iSE++;
 	}
 
@@ -557,8 +559,25 @@ void	MusicFile::TickCount(void)
 
 	if(cOptionSW->flag_OptSeq == true){		//コマンドの最適化が無効だったら、最適化しない。
 
-		//	to do	■■■■■■	不要なコマンド・オブジェクトを削除する	■■■■■■
+		iBGM	= 0;
+		while(iBGM < Header.iBGM){
+			ptcBGM[iBGM]->clear_Optimize();
+			iBGM++;
+		}
 
+		iSE		= 0;
+		while(iSE < Header.iSE){
+			ptcSE[iSE]->clear_Optimize();
+			iSE++;
+		}
+
+		if(!ptcSub.empty()){
+			itSub = ptcSub.begin();
+			while(itSub != ptcSub.end()){
+				itSub->second->clear_Optimize();
+				itSub++;
+			}
+		}
 	}
 
 	//----------------------
@@ -566,29 +585,11 @@ void	MusicFile::TickCount(void)
 
 	if(cOptionSW->flag_OptObj == true){		//定義の最適化が無効だったら、最適化しない。
 
-		//サブルーチン
-		if(!ptcSub.empty()){
-			itSub = ptcSub.begin();
-			while(itSub != ptcSub.end()){
-				if(itSub->second->chkUse() == true){
-					//使うサブルーチンであれば、その中で使ってる定義をチェック
-					itSub->second->OptimizeDefineCheck(this);
-				} else {
-					//使わないサブルーチンであれば、オブジェクト削除。
-					itSub->second->clear(itSub->first);
-				}
-				itSub++;
-			}
-		}
-
 		//エンベロープ
 		if(!ptcEnv.empty()){
 			itEnv = ptcEnv.begin();
 			while(itEnv != ptcEnv.end()){
-				if(itEnv->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
-					itEnv->second->clear(itEnv->first);
-				}
+				itEnv->second->clear_Optimize();
 				itEnv++;
 			}
 		}
@@ -597,10 +598,7 @@ void	MusicFile::TickCount(void)
 		if(!ptcFDSC.empty()){
 			itFDSC = ptcFDSC.begin();
 			while(itFDSC != ptcFDSC.end()){
-				if(itFDSC->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
-					itFDSC->second->clear(itFDSC->first);
-				}
+				itFDSC->second->clear_Optimize();
 				itFDSC++;
 			}
 		}
@@ -609,10 +607,7 @@ void	MusicFile::TickCount(void)
 		if(!ptcFDSM.empty()){
 			itFDSM = ptcFDSM.begin();
 			while(itFDSM != ptcFDSM.end()){
-				if(itFDSM->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
-					itFDSM->second->clear(itFDSM->first);
-				}
+				itFDSM->second->clear_Optimize();
 				itFDSM++;
 			}
 		}
@@ -621,10 +616,7 @@ void	MusicFile::TickCount(void)
 		if(!ptcVRC7.empty()){
 			itVRC7 = ptcVRC7.begin();
 			while(itVRC7 != ptcVRC7.end()){
-				if(itVRC7->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
-					itVRC7->second->clear(itVRC7->first);
-				}
+				itVRC7->second->clear_Optimize();
 				itVRC7++;
 			}
 		}
@@ -633,10 +625,7 @@ void	MusicFile::TickCount(void)
 		if(!ptcN163.empty()){
 			itN163 = ptcN163.begin();
 			while(itN163 != ptcN163.end()){
-				if(itN163->second->chkUse() == false){
-					//使わないサブルーチンであれば、オブジェクト削除。
-					itN163->second->clear(itN163->first);
-				}
+				itN163->second->clear_Optimize();
 				itN163++;
 			}
 		}
@@ -651,9 +640,9 @@ void	MusicFile::TickCount(void)
 //	●返値
 //		unsigned	int	ΔPCMの合計サイズ
 //==============================================================
-unsigned	int		MusicFile::SetDPCMOffset(unsigned int iMusSize)
+size_t	MusicFile::SetDPCMOffset(size_t iMusSize)
 {
-	unsigned	int		i;
+				size_t	i;
 	unsigned	char	mus_bank = (unsigned char)(iMusSize >> 12);
 
 	if((iMusSize & 0x0FFF) != 0){
@@ -681,10 +670,10 @@ unsigned	int		MusicFile::SetDPCMOffset(unsigned int iMusSize)
 //==============================================================
 void	MusicFile::Fix_Address(void)
 {
-	map<int,Sub*	>::iterator	itSub;
+	map<size_t,Sub*	>::iterator	itSub;
 
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
+	size_t	iBGM	= 0;
+	size_t	iSE		= 0;
 
 
 	while(iBGM < Header.iBGM){
@@ -706,20 +695,6 @@ void	MusicFile::Fix_Address(void)
 	}
 }
 
-/*
-//==============================================================
-//		曲バイナリイメージの作成
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-void	MusicFile::make_binary(void)
-{
-
-}
-*/		
 //==============================================================
 //		ＮＳＦの作成
 //--------------------------------------------------------------
@@ -728,12 +703,12 @@ void	MusicFile::make_binary(void)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::make_bin(size_t rom_size, int ptOffset)
+void	MusicFile::make_bin(size_t rom_size, size_t ptOffset)
 {
 				string		_str;
 	unsigned	int			i		= 2;
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
+				size_t		iBGM	= 0;
+				size_t		iSE		= 0;
 	unsigned	short*		pt;
 
 				size_t		_size	= 4 + (Header.iBGM + Header.iSE)*2;
@@ -745,8 +720,8 @@ void	MusicFile::make_bin(size_t rom_size, int ptOffset)
 
 	pt = (unsigned short*)_str.c_str();
 
-	_str[0] = Header.iBGM;
-	_str[1] = Header.iSE;
+	_str[0] = (char)(Header.iBGM & 0xFF);
+	_str[1] = (char)(Header.iSE  & 0xFF);
 
 	if(Header.bank == false){
 
@@ -834,7 +809,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	memcpy(&nsf->Title, Header.title.c_str(), 32);
 	memcpy(&nsf->Composer, Header.composer.c_str(), 32);
 	memcpy(&nsf->Copyright, Header.copyright.c_str(), 32);
-	nsf->MusicNumber	= Header.iBGM + Header.iSE;
+	nsf->MusicNumber	= (unsigned char)((Header.iBGM + Header.iSE) & 0xFF);
 	if(Header.iExternal != -1){
 		nsf->External	= (unsigned char)Header.iExternal;
 	}
@@ -875,7 +850,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		//------------------------------
 		//Bank対応bin？
 
-		unsigned	int	iSizeLimit = 0x10000;	//拡張RAMへの転送有り
+		size_t	iSizeLimit = 0x10000;	//拡張RAMへの転送有り
 
 		//シーケンスのバイナリを生成
 		make_bin(bin_size, 0x0000);
@@ -918,8 +893,8 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	if(dpcm_bank == false){
 		//⊿PCMサイズチェック
-		_COUT << _T("  Bank = ") << (unsigned int)pcm_bank << endl;
-		_COUT << _T("  Size = ") << (unsigned int)pcm_size << _T(" [Byte] / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
+		_COUT << _T("  Bank = ") << (size_t)pcm_bank << endl;
+		_COUT << _T("  Size = ") << (size_t)pcm_size << _T(" [Byte] / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
 
 		if(	(Header.offsetPCM + pcm_size) > 0x10000	){
 			Err(_T("⊿PCMのサイズが許容値を越えました。"));
@@ -927,8 +902,8 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	} else {
 		//⊿PCMサイズチェック
-		_COUT << _T("  Bank = ") << (unsigned int)pcm_bank << endl;
-		_COUT << _T("  Size = ") << (unsigned int)pcm_size << _T(" [Byte]") << endl;
+		_COUT << _T("  Bank = ") << (size_t)pcm_bank << endl;
+		_COUT << _T("  Size = ") << (size_t)pcm_size << _T(" [Byte]") << endl;
 
 		i = mus_bank + pcm_bank + 3;
 		if(i > 255){
@@ -1048,8 +1023,8 @@ void	MusicFile::saveNSF(const char*	strFileName)
 //==============================================================
 void	MusicFile::saveASM(const char*	strFileName)
 {
-	unsigned	int			iBGM	= 0;
-	unsigned	int			iSE		= 0;
+	size_t	iBGM	= 0;
+	size_t	iSE		= 0;
 
 	//----------------------
 	//File open

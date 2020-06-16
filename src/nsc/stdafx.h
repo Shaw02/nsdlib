@@ -14,6 +14,8 @@
 
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #ifdef	_UNICODE
 	#define	_CHAR	wchar_t
 	#define _T(x)	L ## x
@@ -64,8 +66,8 @@ class	MMLfile;
 class	Sub;
 
 typedef struct {
-	char*	str;
-	int		id;
+	const char*	str;
+	int			id;
 } Command_Info;
 
 #include "SearchPass.h"			//検索パス
@@ -95,6 +97,7 @@ typedef struct {
 #include "mml_poke.h"			//メモリ書き込み
 #include "mml_note.h"			//音符・休符
 #include "mml_Address.h"
+#include "mml_CallSub.h"
 
 #include "MusicHeader.h"		//ヘッダー
 

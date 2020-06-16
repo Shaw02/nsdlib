@@ -20,19 +20,18 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //--------------------------------------------------------------
 //	●引数
 //		FileInput*			DPCMfile	⊿PCM（*.dmc）のファイル名
-//		unsigned	int		_id			番号
+//					size_t	_id			番号
 //		const		_CHAR	_strName[]	このオブジェクトの名前
 //	●返値
 //					無し
 //==============================================================
-DPCM::DPCM(MMLfile* MML, const char* dmcfile, unsigned int _id, const _CHAR _strName[]):
-	MusicItem(_strName),
-	m_id(_id)
+DPCM::DPCM(MMLfile* MML, const char* dmcfile, size_t _id, const _CHAR _strName[]):
+	MusicItem(_id, _strName)
 {
 	//----------------------
 	//Local変数
-	unsigned	int		_size;
-	unsigned	int		i = 0;
+	size_t	_size;
+	size_t	i = 0;
 
 	fileopen(dmcfile, &cOptionSW->m_pass_dmc);
 	_size = GetSize();

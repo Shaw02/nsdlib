@@ -2443,33 +2443,132 @@ Exit:
 ;---------------------------------------
 ;APU, MMC5, VRC6, FME7 Frequency table
 Freq:
+.ifdef	PAL
+	.word	$0C5B	;C
+	.word	$0C44
+	.word	$0C2E
+	.word	$0C17
+	.word	$0C01
+	.word	$0BEB
+	.word	$0BD5
+	.word	$0BBF
+	.word	$0BAA	;Cis / Ds
+	.word	$0B94
+	.word	$0B7F
+	.word	$0B6A
+	.word	$0B55
+	.word	$0B40
+	.word	$0B2B
+	.word	$0B16
+	.word	$0B02	;D
+	.word	$0AEE
+	.word	$0ADA
+	.word	$0AC6
+	.word	$0AB2
+	.word	$0A9E
+	.word	$0A8B
+	.word	$0A77
+	.word	$0A64	;Dis / Es
+	.word	$0A51
+	.word	$0A3E
+	.word	$0A2B
+	.word	$0A18
+	.word	$0A06
+	.word	$09F3
+	.word	$09E1
+	.word	$09CF	;E
+	.word	$09BC
+	.word	$09AB
+	.word	$0999
+	.word	$0987
+	.word	$0976
+	.word	$0964
+	.word	$0953
+	.word	$0942	;F
+	.word	$0931
+	.word	$0920
+	.word	$090F
+	.word	$08FE
+	.word	$08EE
+	.word	$08DD
+	.word	$08CD
+	.word	$08BD	;Fis / Ges
+	.word	$08AD
+	.word	$089D
+	.word	$088D
+	.word	$087D
+	.word	$086D
+	.word	$085E
+	.word	$084E
+	.word	$083F	;G
+	.word	$0830
+	.word	$0821
+	.word	$0812
+	.word	$0803
+	.word	$07F4
+	.word	$07E6
+	.word	$07D7
+	.word	$07C9	;Gis / As
+	.word	$07BA
+	.word	$07AC
+	.word	$079E
+	.word	$0790
+	.word	$0782
+	.word	$0774
+	.word	$0766
+	.word	$0759	;A
+	.word	$074B
+	.word	$073E
+	.word	$0730
+	.word	$0723
+	.word	$0716
+	.word	$0709
+	.word	$06FC
+	.word	$06EF	;B
+	.word	$06E2
+	.word	$06D6
+	.word	$06C9
+	.word	$06BD
+	.word	$06B0
+	.word	$06A4
+	.word	$0698
+	.word	$068C	;H
+	.word	$0680
+	.word	$0674
+	.word	$0668
+	.word	$065C
+	.word	$0650
+	.word	$0645
+	.word	$0639
+	.word	$062E	;`C （線形補完用）
+.else
 	.word	$0D4D	;C
 	.word	$0D35
-	.word	$0D1D
+	.word	$0D1C
 	.word	$0D04
 	.word	$0CEC
-	.word	$0CD5
+	.word	$0CD4
 	.word	$0CBD
-	.word	$0CA6
+	.word	$0CA5
 	.word	$0C8E	;Cis / Ds
 	.word	$0C77
 	.word	$0C60
 	.word	$0C49
-	.word	$0C33
+	.word	$0C32
 	.word	$0C1C
 	.word	$0C06
-	.word	$0BF0
+	.word	$0BEF
 	.word	$0BDA	;D
 	.word	$0BC4
 	.word	$0BAE
 	.word	$0B99
-	.word	$0B84
+	.word	$0B83
 	.word	$0B6E
 	.word	$0B59
 	.word	$0B44
-	.word	$0B30	;Dis / Es
+	.word	$0B2F	;Dis / Es
 	.word	$0B1B
-	.word	$0B07
+	.word	$0B06
 	.word	$0AF2
 	.word	$0ADE
 	.word	$0ACA
@@ -2482,25 +2581,25 @@ Freq:
 	.word	$0A42
 	.word	$0A2F
 	.word	$0A1C
-	.word	$0A0A
+	.word	$0A09
 	.word	$09F7	;F
 	.word	$09E5
-	.word	$09D3
-	.word	$09C1
-	.word	$09AF
-	.word	$099D
+	.word	$09D2
+	.word	$09C0
+	.word	$09AE
+	.word	$099C
 	.word	$098B
 	.word	$0979
 	.word	$0968	;Fis / Ges
-	.word	$0957
+	.word	$0956
 	.word	$0945
 	.word	$0934
 	.word	$0923
-	.word	$0913
+	.word	$0912
 	.word	$0902
 	.word	$08F1
 	.word	$08E1	;G
-	.word	$08D1
+	.word	$08D0
 	.word	$08C0
 	.word	$08B0
 	.word	$08A0
@@ -2509,12 +2608,12 @@ Freq:
 	.word	$0871
 	.word	$0861	;Gis / As
 	.word	$0852
-	.word	$0843
+	.word	$0842
 	.word	$0833
 	.word	$0824
 	.word	$0815
-	.word	$0806
-	.word	$07F8
+	.word	$0803	;$0806	o4A のLFOの幅を増やすために
+	.word	$07F7
 	.word	$07E9	;A
 	.word	$07DA
 	.word	$07CC
@@ -2535,12 +2634,12 @@ Freq:
 	.word	$06FF
 	.word	$06F2
 	.word	$06E5
-	.word	$06D9
+	.word	$06D8
 	.word	$06CC
 	.word	$06BF
 	.word	$06B3
 	.word	$06A7	;`C （線形補完用）
-
+.endif
 
 ;---------------------------------------
 ;FDS Frequency table
@@ -2551,28 +2650,28 @@ Freq_FDS:
 	.word	$09C4
 	.word	$09D6
 	.word	$09E8
-	.word	$09FA
+	.word	$09FB
 	.word	$0A0D
-	.word	$0A1F
-	.word	$0A32	;Cis / Ds
-	.word	$0A45
-	.word	$0A58
-	.word	$0A6B
+	.word	$0A20
+	.word	$0A33	;Cis / Ds
+	.word	$0A46
+	.word	$0A59
+	.word	$0A6C
 	.word	$0A7F
-	.word	$0A92
+	.word	$0A93
 	.word	$0AA6
 	.word	$0ABA
-	.word	$0ACD	;D
-	.word	$0AE1
+	.word	$0ACE	;D
+	.word	$0AE2
 	.word	$0AF6
 	.word	$0B0A
-	.word	$0B1E
+	.word	$0B1F
 	.word	$0B33
 	.word	$0B48
 	.word	$0B5D
 	.word	$0B72	;Dis / Es
 	.word	$0B87
-	.word	$0B9C
+	.word	$0B9D
 	.word	$0BB2
 	.word	$0BC8
 	.word	$0BDE
@@ -2580,69 +2679,69 @@ Freq_FDS:
 	.word	$0C0A
 	.word	$0C20	;E
 	.word	$0C37
-	.word	$0C4D
+	.word	$0C4E
 	.word	$0C64
 	.word	$0C7B
-	.word	$0C92
-	.word	$0CA9
+	.word	$0C93
+	.word	$0CAA
 	.word	$0CC1
 	.word	$0CD9	;F
-	.word	$0CF0
-	.word	$0D08
+	.word	$0CF1
+	.word	$0D09
 	.word	$0D21
 	.word	$0D39
-	.word	$0D51
-	.word	$0D6A
-	.word	$0D83
-	.word	$0D9C	;Fis / Ges
-	.word	$0DB5
+	.word	$0D52
+	.word	$0D6B
+	.word	$0D84
+	.word	$0D9D	;Fis / Ges
+	.word	$0DB6
 	.word	$0DCF
-	.word	$0DE8
-	.word	$0E02
-	.word	$0E1C
-	.word	$0E36
+	.word	$0DE9
+	.word	$0E03
+	.word	$0E1D
+	.word	$0E37
 	.word	$0E51
-	.word	$0E6B	;G
+	.word	$0E6C	;G
 	.word	$0E86
 	.word	$0EA1
-	.word	$0EBC
-	.word	$0ED7
+	.word	$0EBD
+	.word	$0ED8
 	.word	$0EF3
 	.word	$0F0F
 	.word	$0F2B
 	.word	$0F47	;Gis / As
-	.word	$0F63
+	.word	$0F64
 	.word	$0F80
-	.word	$0F9C
-	.word	$0FB9
-	.word	$0FD6
+	.word	$0F9D
+	.word	$0FBA
+	.word	$0FD7
 	.word	$0FF4
-	.word	$1011
-	.word	$102F	;A
-	.word	$104D
+	.word	$1012
+	.word	$1030	;A
+	.word	$104E
 	.word	$106C
-	.word	$108A
+	.word	$108B
 	.word	$10A9
 	.word	$10C8
 	.word	$10E7
-	.word	$1106
+	.word	$1107
 	.word	$1126	;B
-	.word	$1145
-	.word	$1165
+	.word	$1146
+	.word	$1166
 	.word	$1186
-	.word	$11A6
-	.word	$11C7
+	.word	$11A7
+	.word	$11C8
 	.word	$11E8
-	.word	$1209
+	.word	$120A
 	.word	$122B	;H
-	.word	$124C
-	.word	$126E
-	.word	$1290
+	.word	$124D
+	.word	$126F
+	.word	$1291
 	.word	$12B3
 	.word	$12D6
-	.word	$12F8
+	.word	$12F9
 	.word	$131C
-	.word	$133F	;`C （線形補完用）
+	.word	$1340	;`C （線形補完用）
 .endif
 
 ;---------------------------------------
@@ -2651,100 +2750,100 @@ Freq_FDS:
 Freq_SAW:
 	.word	$0F34	;C
 	.word	$0F18
-	.word	$0EFD
+	.word	$0EFC
 	.word	$0EE1
-	.word	$0EC6
+	.word	$0EC5
 	.word	$0EAA
 	.word	$0E8F
-	.word	$0E75
+	.word	$0E74
 	.word	$0E5A
-	.word	$0E40
+	.word	$0E3F
 	.word	$0E25
 	.word	$0E0B
 	.word	$0DF1
-	.word	$0DD8
+	.word	$0DD7
 	.word	$0DBE
-	.word	$0DA5
-	.word	$0D8C	;D
-	.word	$0D73
+	.word	$0DA4
+	.word	$0D8B	;D
+	.word	$0D72
 	.word	$0D5A
-	.word	$0D42
+	.word	$0D41
 	.word	$0D29
-	.word	$0D11
-	.word	$0CF9
+	.word	$0D10
+	.word	$0CF8
 	.word	$0CE1
 	.word	$0CC9
-	.word	$0CB2
+	.word	$0CB1
 	.word	$0C9A
 	.word	$0C83
 	.word	$0C6C
 	.word	$0C55
 	.word	$0C3E
 	.word	$0C28
-	.word	$0C12	;E
+	.word	$0C11	;E
 	.word	$0BFB
 	.word	$0BE5
 	.word	$0BCF
-	.word	$0BBA
+	.word	$0BB9
 	.word	$0BA4
-	.word	$0B8F
+	.word	$0B8E
 	.word	$0B79
 	.word	$0B64	;F
 	.word	$0B4F
 	.word	$0B3A
-	.word	$0B26
+	.word	$0B25
 	.word	$0B11
-	.word	$0AFD
-	.word	$0AE9
+	.word	$0AFC
+	.word	$0AE8
 	.word	$0AD4
-	.word	$0AC1
-	.word	$0AAD
+	.word	$0AC0
+	.word	$0AAC
 	.word	$0A99
-	.word	$0A86
+	.word	$0A85
 	.word	$0A72
 	.word	$0A5F
 	.word	$0A4C
 	.word	$0A39
 	.word	$0A26	;G
 	.word	$0A13
-	.word	$0A01
+	.word	$0A00
 	.word	$09EE
 	.word	$09DC
 	.word	$09CA
 	.word	$09B8
 	.word	$09A6
 	.word	$0994
-	.word	$0983
+	.word	$0982
 	.word	$0971
-	.word	$0960
+	.word	$095F
 	.word	$094E
 	.word	$093D
 	.word	$092C
 	.word	$091B
-	.word	$090B	;A
+	.word	$090A	;A
 	.word	$08FA
 	.word	$08E9
 	.word	$08D9
-	.word	$08C9
-	.word	$08B9
-	.word	$08A9
-	.word	$0899
-	.word	$0889	;B
+	.word	$08C8
+	.word	$08B8
+	.word	$08A8
+	.word	$0898
+	.word	$0888	;B
 	.word	$0879
 	.word	$0869
 	.word	$085A
-	.word	$084B
+	.word	$084A
 	.word	$083B
 	.word	$082C
 	.word	$081D
 	.word	$080E	;H
 	.word	$07FF
-	.word	$07F1
+	.word	$07F0
 	.word	$07E2
 	.word	$07D3
 	.word	$07C5
 	.word	$07B7
-	.word	$07A9
+	.word	$07A8
 	.word	$079A	;`C （線形補完用）
 .endif
 
@@ -3413,9 +3512,14 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
+;	ror	__ptr + 1
 	inx			; octave--;
 	cpx	#7
 	bne	Octave_Loop
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	Octave_Exit
+;	inc	__tmp + 1
 	; } }
 Octave_Exit:
 	sta	__tmp
@@ -3502,8 +3606,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
+;	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	DEC_Freq
+;	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
@@ -3987,8 +4096,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
+;	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	DEC_Freq
+;	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
@@ -4065,8 +4179,13 @@ Octave_Proc:
 Octave_Loop:
 	lsr	__tmp + 1	; frequency >>= 1
 	ror	a
+;	ror	__ptr + 1
 	dex			; octave--;
 	bne	Octave_Loop
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	DEC_Freq
+;	inc	__tmp + 1
 	; } }
 DEC_Freq:
 	sub	#1
@@ -4155,9 +4274,16 @@ Octave_Loop:
 	lsr	__ptr		;高速化のため、
 	ror	__tmp + 1	;ゼロページとaレジスターで
 	ror	a		;シフト演算する。
+;	ror	__ptr + 1
 	inx
 	cpx	#$08
 	bne	Octave_Loop
+;	rol	__ptr + 1
+;	adc	#0
+;	bcc	Octave_Exit
+;	inc	__tmp + 1
+;	bne	Octave_Exit
+;	inc	__ptr		;n16xは、精度高いから、四捨五入しなくていいよね。
 Octave_Exit:
 	sta	__tmp
 
