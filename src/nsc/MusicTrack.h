@@ -394,6 +394,8 @@ public:
 				void	SetVolumeDec(MMLfile* MML);
 
 				void	NSD_Reset(){
+					//リピート終了時に、デフォルト音長情報をリセットする
+					//分岐時に l コマンドがあった場合、その値から色々と計算してしまうため。
 					nsd.length = -1;
 				}
 };
