@@ -17,22 +17,22 @@
 class NSD_WORK{
 
 public:
-	int	gatemode;
-	int	length;
-	int	gate_q;
-	int	gate_u;
+	int		gatemode;
+	int		length;
+	int		gate_q;
+	int		gate_u;
 
-	int	octave;
-	int	octave1;		//One time octave
-	int	detune_cent;
-	int	detune_reg;
+	int		octave;
+	int		octave1;		//One time octave
+	int		detune_cent;
+	int		detune_reg;
 
-	int	trans;
+	int		trans;
 
-	int	voice;
-	int	voice_rel;
-	int	volume;
-	int	volume_rel;
+	int		voice;
+	int		voice_rel;
+	int		volume;
+	int		volume_rel;
 
 	size_t	env_volume;
 	size_t	env_voice;
@@ -86,24 +86,16 @@ public:
 		voice_rel		= -1;
 		volume			= 15;
 		volume_rel		=  2;
-	//	env_volume		= -1;
-	//	env_voice		= -1;
-	//	env_frequency	= -1;
-	//	env_note		= -1;
 		sw_Evoi			= false;
 		sw_Evol			= false;
 		sw_Em			= false;
 		sw_En			= false;
 		sweep			= -1;
-	//	fds_career		= -1;
-	//	fds_modlator	= -1;
 		sw_fds_career	= false;
 		sw_fds_modlator	= false;
 		fds_volume		= -1;
 		fds_frequency	= -1;
-	//	vrc7_voice		= -1;
 		sw_vrc7_voice	= false;
-	//	n163_voice		= -1;
 		sw_n163_voice	= false;
 		psg_switch		= -1;
 		psg_frequency	= -1;
@@ -194,7 +186,7 @@ private:
 				
 	//----------------------------------
 	//移調
-				int		iKeyShift;				//k
+				int		iKeyShift;				//k (コンパイラレベル)
 
 	//----------------------------------
 	//疑似エコー
@@ -313,9 +305,9 @@ public:
 				void	SetRepeat_C_Start(MMLfile* MML);
 				void	SetRepeat_C_End(MMLfile* MML);
 
-				void	CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
-				void	CopySubEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
-				void	CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
+				void	CopyAddressEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
+				void	CopySubEvent(	 string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
+				void	CopyEnvEvent(	 string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 
 				void	SetSE(MMLfile* MML);
 				void	SetSubroutine(size_t _no);
@@ -400,4 +392,8 @@ public:
 				void	SetVolume(MMLfile* MML);
 				void	SetVolumeInc(MMLfile* MML);
 				void	SetVolumeDec(MMLfile* MML);
+
+				void	NSD_Reset(){
+					nsd.length = -1;
+				}
 };

@@ -1019,9 +1019,9 @@ int		MMLfile::GetLength(int DefaultLength)	//
 		}
 
 		if(add == true){
-			iLength += iCalc;
+			iLength += iCalc;	// '+' ‚Æ '^' ‚Í‰ÁŽZ
 		} else {
-			iLength -= iCalc;
+			iLength -= iCalc;	// '-' ‚Æ '~' ‚ÍŒ¸ŽZ
 		}
 		cData = cRead();
 	};
