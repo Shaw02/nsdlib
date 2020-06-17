@@ -5,6 +5,8 @@
 *.bak
 *.lib
 *.bin
+*.nsf
+*.nes
 *.exe
 *.chm
 
