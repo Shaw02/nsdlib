@@ -29,6 +29,7 @@ OBJS	=	BGM.o			\
 			mml_poke.o		\
 			MMLfile.o		\
 			MusicEvent.o	\
+			MusicNote.o		\
 			MusicFile.o		\
 			MusicHeader.o	\
 			MusicItem.o		\

@@ -180,6 +180,7 @@
     <ClInclude Include="..\nsc\MusicFile.h" />
     <ClInclude Include="..\nsc\MusicHeader.h" />
     <ClInclude Include="..\nsc\MusicItem.h" />
+    <ClInclude Include="..\nsc\MusicNote.h" />
     <ClInclude Include="..\nsc\MusicTrack.h" />
     <ClInclude Include="..\nsc\N163.h" />
     <ClInclude Include="..\nsc\nsd_work.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="..\nsc\MusicFile.cpp" />
     <ClCompile Include="..\nsc\MusicHeader.cpp" />
     <ClCompile Include="..\nsc\MusicItem.cpp" />
+    <ClCompile Include="..\nsc\MusicNote.cpp" />
     <ClCompile Include="..\nsc\MusicTrack.cpp" />
     <ClCompile Include="..\nsc\N163.cpp" />
     <ClCompile Include="..\nsc\nsc.cpp" />

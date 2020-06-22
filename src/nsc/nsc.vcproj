@@ -185,6 +185,9 @@
 					RelativePath=".\MusicItem.cpp">
 				</File>
 				<File
+					RelativePath=".\MusicNote.cpp">
+				</File>
+				<File
 					RelativePath=".\N163.cpp">
 				</File>
 				<File
@@ -319,6 +322,9 @@
 			</File>
 			<File
 				RelativePath=".\MusicItem.h">
+			</File>
+			<File
+				RelativePath=".\MusicNote.h">
 			</File>
 			<File
 				RelativePath=".\MusicTrack.h">

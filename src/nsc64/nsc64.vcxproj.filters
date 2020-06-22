@@ -136,6 +136,9 @@
     <ClInclude Include="..\nsc\nsd_work.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\nsc\MusicNote.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\nsc\nsc.cpp">
@@ -229,6 +232,9 @@
       <Filter>ソース ファイル\Music\Event</Filter>
     </ClCompile>
     <ClCompile Include="..\nsc\nsd_work.cpp">
+      <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\MusicNote.cpp">
       <Filter>ソース ファイル\Music</Filter>
     </ClCompile>
   </ItemGroup>
