@@ -182,6 +182,7 @@
     <ClInclude Include="..\nsc\MusicItem.h" />
     <ClInclude Include="..\nsc\MusicTrack.h" />
     <ClInclude Include="..\nsc\N163.h" />
+    <ClInclude Include="..\nsc\nsd_work.h" />
     <ClInclude Include="..\nsc\Option.h" />
     <ClInclude Include="..\nsc\Patch.h" />
     <ClInclude Include="..\nsc\resource.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="..\nsc\MusicTrack.cpp" />
     <ClCompile Include="..\nsc\N163.cpp" />
     <ClCompile Include="..\nsc\nsc.cpp" />
+    <ClCompile Include="..\nsc\nsd_work.cpp" />
     <ClCompile Include="..\nsc\Option.cpp" />
     <ClCompile Include="..\nsc\Patch.cpp" />
     <ClCompile Include="..\nsc\SE.cpp" />

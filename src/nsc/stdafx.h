@@ -101,6 +101,7 @@ typedef struct {
 
 #include "MusicHeader.h"		//ヘッダー
 
+#include "nsd_work.h"
 #include "MusicTrack.h"			//トラック情報
 #include "TrackSet.h"
 #include "BGM.h"
