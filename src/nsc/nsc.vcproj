@@ -185,7 +185,13 @@
 					RelativePath=".\MusicItem.cpp">
 				</File>
 				<File
+					RelativePath=".\MusicNote.cpp">
+				</File>
+				<File
 					RelativePath=".\N163.cpp">
+				</File>
+				<File
+					RelativePath=".\nsd_work.cpp">
 				</File>
 				<File
 					RelativePath=".\Patch.cpp">
@@ -318,10 +324,16 @@
 				RelativePath=".\MusicItem.h">
 			</File>
 			<File
+				RelativePath=".\MusicNote.h">
+			</File>
+			<File
 				RelativePath=".\MusicTrack.h">
 			</File>
 			<File
 				RelativePath=".\N163.h">
+			</File>
+			<File
+				RelativePath=".\nsd_work.h">
 			</File>
 			<File
 				RelativePath=".\Option.h">
