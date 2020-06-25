@@ -726,18 +726,18 @@ void	MusicFile::make_bin(size_t rom_size, size_t ptOffset)
 	if(Header.bank == false){
 
 		if(cDPCMinfo != NULL){
-			pt[1]	= (unsigned short)(ptOffset + rom_size - 0x80 + _size + cDPCMinfo->getOffset());	//ΔPCM info のアドレス
+			pt[1]	= (unsigned short)(ptOffset + rom_size + _size + cDPCMinfo->getOffset());	//ΔPCM info のアドレス
 		} else {
 			pt[1]	= 0;
 		}
 
 		while(iBGM < Header.iBGM){
-			pt[i] = (unsigned short)(ptOffset + rom_size - 0x80 + _size + ptcBGM[iBGM]->getOffset());
+			pt[i] = (unsigned short)(ptOffset + rom_size + _size + ptcBGM[iBGM]->getOffset());
 			i++;
 			iBGM++;
 		}
 		while(iSE < Header.iSE){
-			pt[i] = (unsigned short)(ptOffset + rom_size - 0x80 + _size + ptcSE[iSE]->getOffset());
+			pt[i] = (unsigned short)(ptOffset + rom_size + _size + ptcSE[iSE]->getOffset());
 			i++;
 			iSE++;
 		}
@@ -788,12 +788,16 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	unsigned	int		i,j;
 				size_t	bin_size;
+				size_t	code_size;
 				size_t	mus_size;
 				size_t	pcm_size;
 	unsigned	char	mus_bank;
 	unsigned	char	pcm_bank;
-				char*	romimg			= new char[0xC000+0x80];
-	NSF_Header*			nsf				= (NSF_Header*)romimg;
+
+	NSF_Header*			nsf_hed			= new NSF_Header;
+				char*	nsf_code		= new char[0xC000];
+
+//	NSF_Header*			nsf				= (NSF_Header*)romimg;
 	FileInput*			_romcode		= new FileInput();
 				bool	dpcm_bank		= false;
 				bool	flag_Optimize	= cOptionSW->flag_Optimize;
@@ -801,36 +805,38 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	//NSF用コードの転送
 	_romcode->fileopen(Header.romcode.c_str(), &(cOptionSW->m_pass_code));
 	bin_size = _romcode->GetSize();
-	_romcode->read(romimg, bin_size);
+	code_size = bin_size - sizeof(NSF_Header);
+	_romcode->read((char *)nsf_hed, sizeof(NSF_Header));
+	_romcode->read(nsf_code, code_size);
 	_romcode->close();
 	delete		_romcode;
 
 	//NSFヘッダーの更新
-	memcpy(&nsf->Title, Header.title.c_str(), 32);
-	memcpy(&nsf->Composer, Header.composer.c_str(), 32);
-	memcpy(&nsf->Copyright, Header.copyright.c_str(), 32);
-	nsf->MusicNumber	= (unsigned char)((Header.iBGM + Header.iSE) & 0xFF);
+	memcpy(&nsf_hed->Title, Header.title.c_str(), 32);
+	memcpy(&nsf_hed->Composer, Header.composer.c_str(), 32);
+	memcpy(&nsf_hed->Copyright, Header.copyright.c_str(), 32);
+	nsf_hed->MusicNumber	= (unsigned char)((Header.iBGM + Header.iSE) & 0xFF);
 	if(Header.iExternal != -1){
-		nsf->External	= (unsigned char)Header.iExternal;
+		nsf_hed->External	= (unsigned char)Header.iExternal;
 	}
 
 	_COUT << _T("----------------------------------------") << endl;
 	_COUT << _T("*NSF build process") << endl;
 
 
-	if((nsf->Bank[0] == 0) && (nsf->Bank[1] == 0) && (nsf->Bank[2] == 0) && (nsf->Bank[3] == 0)){
+	if((nsf_hed->Bank[0] == 0) && (nsf_hed->Bank[1] == 0) && (nsf_hed->Bank[2] == 0) && (nsf_hed->Bank[3] == 0)){
 
 		//------------------------------
 		//Bank 非対応bin
 
 		//シーケンスのバイナリを生成
-		make_bin(bin_size, 0x8000);
+		make_bin(code_size, 0x8000);
 
 		if(Header.bank == true){
 			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。"));
 		}
 
-		mus_size = bin_size - 0x80 + code.size();
+		mus_size = code_size + code.size();
 		mus_bank = (unsigned char)(mus_size >> 12);
 		if((mus_size & 0x0FFF) != 0){
 			mus_bank++;
@@ -853,7 +859,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		size_t	iSizeLimit = 0x10000;	//拡張RAMへの転送有り
 
 		//シーケンスのバイナリを生成
-		make_bin(bin_size, 0x0000);
+		make_bin(code_size, 0x0000);
 
 		if(Header.bank == false){
 			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
@@ -918,8 +924,9 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	if(dpcm_bank == false){
 		if(cDPCMinfo == NULL){
 			//⊿PCMを使わない場合
-			write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
-			write(code.c_str(), code.size());	//シーケンスの書き込み
+			write((char *)nsf_hed, sizeof(NSF_Header));			//NSFヘッダーの書き込み
+			write(nsf_code, code_size);		//コードの書き込み
+			write(code.c_str(), code.size());					//シーケンスの書き込み
 
 		} else {
 			//⊿PCMを使う場合
@@ -927,19 +934,19 @@ void	MusicFile::saveNSF(const char*	strFileName)
 				//最適化が有効であれば、ヘッダーにバンク情報を書く。
 				i = 0;
 				while(i < mus_bank){
-					nsf->Bank[i] = (unsigned char)i;
+					nsf_hed->Bank[i] = (unsigned char)i;
 					i++;
 				}
 				while(i < ((Header.offsetPCM - 0x8000)>>12)){
-					nsf->Bank[i] = 0;
+					nsf_hed->Bank[i] = 0;
 					i++;
 				}
 				j = 0;
 				while(i < 8){
 					if(j < pcm_bank){
-						nsf->Bank[i] = mus_bank + (unsigned char)j;
+						nsf_hed->Bank[i] = mus_bank + (unsigned char)j;
 					} else {
-						nsf->Bank[i] = 0;
+						nsf_hed->Bank[i] = 0;
 					}
 					i++;
 					j++;
@@ -947,8 +954,9 @@ void	MusicFile::saveNSF(const char*	strFileName)
 			}
 
 			//コード＆シーケンス
-			write(romimg, bin_size);			//NSFヘッダー ＆ コードの書き込み
-			write(code.c_str(), code.size());	//シーケンスの書き込み
+			write((char *)nsf_hed, sizeof(NSF_Header));					//NSFヘッダーの書き込み
+			write(nsf_code, code_size);		//コードの書き込み
+			write(code.c_str(), code.size());					//シーケンスの書き込み
 
 			if(flag_Optimize == true){
 				//GAP
@@ -980,8 +988,9 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		}
 	} else {
 		//Bank 対応bin
-		write(&romimg[0x0000], bin_size);	//NSFヘッダー ＆ コードの書き込み
-		write(code.c_str(), code.size());	//シーケンスの書き込み
+		write((char *)nsf_hed, sizeof(NSF_Header));					//NSFヘッダーの書き込み
+		write(nsf_code, code_size);		//コードの書き込み
+		write(code.c_str(), code.size());					//シーケンスの書き込み
 		//GAP
 		while(mus_size < ((unsigned int)mus_bank<<12)){
 			put(0);		//0 padding
@@ -1010,7 +1019,8 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	//----------------------
 	//Exit
-	delete[]	romimg;
+	delete[]	nsf_hed;
+	delete[]	nsf_code;
 }
 
 //==============================================================

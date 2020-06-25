@@ -21,6 +21,7 @@ OBJS	=	BGM.o			\
 			FDSM.o			\
 			FileInput.o		\
 			FileOutput.o	\
+			MetaItem.o		\
 			mml_Address.o	\
 			mml_CallSub.o	\
 			mml_general.o	\
