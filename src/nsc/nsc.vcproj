@@ -243,6 +243,13 @@
 						RelativePath=".\MusicEvent.cpp">
 					</File>
 				</Filter>
+				<Filter
+					Name="Meta"
+					Filter="">
+					<File
+						RelativePath=".\MetaItem.cpp">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="MML"
@@ -289,6 +296,9 @@
 			</File>
 			<File
 				RelativePath=".\FileOutput.h">
+			</File>
+			<File
+				RelativePath=".\MetaItem.h">
 			</File>
 			<File
 				RelativePath=".\mml_Address.h">

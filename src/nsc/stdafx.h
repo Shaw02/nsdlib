@@ -99,6 +99,9 @@ typedef struct {
 #include "mml_Address.h"
 #include "mml_CallSub.h"
 
+#include "MetaItem.h"
+
+
 #include "MusicHeader.h"		//ƒwƒbƒ_[
 
 #include "nsd_work.h"

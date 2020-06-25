@@ -28,6 +28,9 @@
     <Filter Include="ソース ファイル\Music\Event">
       <UniqueIdentifier>{1da4e2d4-db17-4dca-86cd-b56a02e71734}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Music\Meta">
+      <UniqueIdentifier>{14ef4836-2849-430a-baad-8d7141ebbaf6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="nsc64.rc">
@@ -139,6 +142,9 @@
     <ClInclude Include="..\nsc\MusicNote.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\nsc\MetaItem.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\nsc\nsc.cpp">
@@ -236,6 +242,9 @@
     </ClCompile>
     <ClCompile Include="..\nsc\MusicNote.cpp">
       <Filter>ソース ファイル\Music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\MetaItem.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
