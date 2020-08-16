@@ -101,6 +101,13 @@ typedef struct {
 
 #include "MetaItem.h"
 
+/*
+#include "Meta_INFO.h"			//NSFe MUST
+#include "Meta_DATA.h"			//NSFe MUST
+#include "Meta_BANK.h"			//
+#include "Meta_NSF2.h"			//
+#include "Meta_NEND.h"			//NSFe MUST
+*/
 
 #include "MusicHeader.h"		//ÉwÉbÉ_Å[
 

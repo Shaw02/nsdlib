@@ -911,7 +911,7 @@ TrackSet::~TrackSet(void)
 //==============================================================
 void	TrackSet::clear_Optimize()
 {
-	if(cOptionSW->cDebug & DEBUG_Optimize){
+	if(cOptionSW->iDebug & DEBUG_Optimize){
 		_COUT << _T("Optimize Object  : ") << strName;
 		if(f_id == true){
 			_COUT	<< _T("(") << m_id << _T(")");

@@ -29,7 +29,7 @@ MetaItem::MetaItem(const char _strName[]):
 	m_offset(0)
 {
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & DEBUG_Create){
+	if(cOptionSW->iDebug & DEBUG_Meta_Create){
 		_COUT << _T("Create Meta Object : ") << m_identifier << endl;
 	}
 }
@@ -47,7 +47,7 @@ MetaItem::~MetaItem(void)
 	clear();
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & DEBUG_Delete){
+	if(cOptionSW->iDebug & DEBUG_Meta_Delete){
 		_COUT << _T("Delete Meta Object : ") << m_identifier << endl;
 	}
 }
@@ -126,7 +126,7 @@ size_t	MetaItem::SetOffset(size_t _offset)
 	size_t	i = 0;
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & DEBUG_SetAddress){
+	if(cOptionSW->iDebug & DEBUG_Meta_Set){
 		_COUT << _T("Object Address [0x") << hex << setw(4) << setfill(_T('0')) << _offset << _T("]: ");
 		while(i < m_data.size()){
 			_COUT	<<	hex	<<	setw(2)	<<	setfill(_T('0'))	<<	(unsigned int)(m_data[i] & 0xFF)	<<	_T(" ");
