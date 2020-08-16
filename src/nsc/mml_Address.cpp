@@ -99,7 +99,7 @@ void	mml_Address::set_Address(size_t _addr)
 {
 	switch(iSize){
 		case(0):
-			if(cOptionSW->cDebug & DEBUG_Optimize){
+			if(cOptionSW->iDebug & DEBUG_Optimize){
 				_COUT << _T("This Object has cleared : ") << strName;
 				if(f_id == true){
 					_COUT	<< _T("(") << m_id << _T(")");

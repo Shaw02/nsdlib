@@ -32,7 +32,7 @@
 //==============================================================
 OPSW::OPSW(int argc, char* argv[]):
 	//èâä˙âªê›íË
-	cDebug(0),
+	iDebug(0),
 	fErr(false),
 	saveNSF(false),
 	saveASM(false),
@@ -156,7 +156,7 @@ OPSW::OPSW(int argc, char* argv[]):
 					//0x80:	Phase [5] : Delete Class Object
 					int	i;
 					iResult=sscanf(argv[iCount],"-D%d",&i);
-					cDebug = (char)i;
+					iDebug = i;
 					if((iResult==NULL)||(iResult==EOF)){
 						opError(_T("-D"));
 						break;

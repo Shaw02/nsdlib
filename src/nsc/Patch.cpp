@@ -481,7 +481,7 @@ const	static	Command_Info	Command[] = {
 	MML->DeleteMacro(1);
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		DebugMsg();
 	}
 }

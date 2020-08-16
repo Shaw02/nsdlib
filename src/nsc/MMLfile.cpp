@@ -188,7 +188,7 @@ void	MMLfile::SetMacro(int i_Lv)
 	string	macro_contents	="";
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "Set Macro (Lv=" << i_Lv << ") : ";
 	}
 
@@ -237,7 +237,7 @@ void	MMLfile::SetMacro(int i_Lv)
 	lv_Mac[macro_name] = i_Lv;
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "SetMacro ptcMac[" << macro_name << "] = \"" << macro_contents << "\"" << endl;
 	}
 }
@@ -262,7 +262,7 @@ void	MMLfile::DeleteMacro(int i_Lv)
 	int		macro_lv;
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "Delete Macro (Lv=" << i_Lv << ") : " << endl;
 	}
 		
@@ -278,7 +278,7 @@ void	MMLfile::DeleteMacro(int i_Lv)
 				ptcMac.erase(macro_name);
 				lv_Mac.erase(macro_name);
 				//Debug用
-				if(cOptionSW->cDebug & DEBUG_Macros){
+				if(cOptionSW->iDebug & DEBUG_Macros){
 					cout << "	ptcMac[" << macro_name << "]" << endl;
 				}
 			}
@@ -307,7 +307,7 @@ void	MMLfile::CallMacro(void)
 	map<string,string>::iterator	itMac	= ptcMac.begin();
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "Call Macro : ";
 	}
 
@@ -366,7 +366,7 @@ void	MMLfile::CallMacro(void)
 	}
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "ptcMac[" << _name << "]　(nest = " << p_macro << " )" << endl;
 	}
 
