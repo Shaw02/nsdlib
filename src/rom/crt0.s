@@ -147,7 +147,9 @@ DRV_Version2:	.byte	1
 ; ------------------------------------------------------------------------
 .proc	_nsf_init
 
+.ifdef	DPCMBank
 	sei
+.endif
 	cld
 
 	pha
