@@ -19,7 +19,8 @@
 //	œ•Ô’l
 //				–³‚µ
 //==============================================================
-MusicHeader::MusicHeader(string _code):
+MusicHeader::MusicHeader(string _code) :
+	MetaItem("NSFE"),
 	bank(false),
 	op_code(false),
 	iBGM(1),

@@ -226,7 +226,7 @@ void	MetaItem::getMetaData(string* _str)
 	_str->append(m_identifier, 4);
 
 	//Data
-	getMetaData(_str);
+	getData(_str);
 }
 
 //==============================================================
