@@ -35,6 +35,11 @@ struct	NSF_Header{
 	unsigned	char	szMetaData[3];		//7D-7F
 };
 
+#define	nsf_flag_IRQ_support 		0x10
+#define	nsf_flag_non_Ret_Init		0x20
+#define	nsf_flag_non_Play 			0x40
+#define	nsf_flag_MetaData			0x80
+
 /****************************************************************/
 /*																*/
 /*			ƒNƒ‰ƒX’è‹`											*/

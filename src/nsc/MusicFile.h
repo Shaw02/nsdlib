@@ -32,6 +32,7 @@ public:
 	map<size_t, Sub*	>	ptcSub;		//Subroutine Sequence
 
 private:
+	string					meta_data;
 	string					dpcm_code;
 
 //メンバー関数
@@ -49,7 +50,7 @@ public:
 	void	make_bin(size_t rom_size, size_t ptOffset);
 
 	//保存フェーズ
-	void	saveNSF(const char*	strFileName);
+	void	saveNSF(const char*	strFileName, int iNSF_version);
 	void	saveASM(const char*	strFileName);
 
 	void	Err(const _CHAR msg[]);

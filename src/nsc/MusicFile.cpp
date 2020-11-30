@@ -783,7 +783,7 @@ void	MusicFile::make_bin(size_t rom_size, size_t ptOffset)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::saveNSF(const char*	strFileName)
+void	MusicFile::saveNSF(const char*	strFileName, int iNSF_version)
 {
 
 	unsigned	int		i,j;
@@ -791,6 +791,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 				size_t	code_size;
 				size_t	mus_size;
 				size_t	pcm_size;
+				size_t	meta_size;
 	unsigned	char	mus_bank;
 	unsigned	char	pcm_bank;
 
@@ -802,6 +803,10 @@ void	MusicFile::saveNSF(const char*	strFileName)
 				bool	dpcm_bank		= false;
 				bool	flag_Optimize	= cOptionSW->flag_Optimize;
 
+	_COUT << _T("----------------------------------------") << endl;
+	_COUT << _T("*NSF build process") << endl;
+
+	//----------------------
 	//NSF用コードの転送
 	_romcode->fileopen(Header.romcode.c_str(), &(cOptionSW->m_pass_code));
 	bin_size = _romcode->GetSize();
@@ -815,15 +820,34 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	memcpy(&nsf_hed->Title, Header.title.c_str(), 32);
 	memcpy(&nsf_hed->Composer, Header.composer.c_str(), 32);
 	memcpy(&nsf_hed->Copyright, Header.copyright.c_str(), 32);
+	nsf_hed->Version		= (unsigned char)iNSF_version;
 	nsf_hed->MusicNumber	= (unsigned char)((Header.iBGM + Header.iSE) & 0xFF);
 	if(Header.iExternal != -1){
 		nsf_hed->External	= (unsigned char)Header.iExternal;
 	}
 
-	_COUT << _T("----------------------------------------") << endl;
-	_COUT << _T("*NSF build process") << endl;
+	//----------------------
+	//Meta Data
+	if(iNSF_version >=2){
 
+		//■■■ To Do: META DATAはどこで作る？ ＆ サイズの取得方法の検討
+		meta_size = Header.getSize();
 
+		//サイズチェック
+		_COUT << _T("[Meta Data]") << endl;
+		_COUT << _T("  Size = ") << (unsigned int)meta_size << _T(" [Byte] / ") << 0xFFFFFF << _T(" [Byte]") << endl;
+
+		if(meta_size > 0xFFFFFF){
+			Err(_T("Meta Dataのサイズが許容値を越えました。"));
+		}
+
+		nsf_hed->szMetaData[0] = ( meta_size      & 0xFF);
+		nsf_hed->szMetaData[1] = ((meta_size>> 8) & 0xFF);
+		nsf_hed->szMetaData[2] = ((meta_size>>16) & 0xFF);
+	}
+
+	//----------------------
+	//Binが、バンク対応か？
 	if((nsf_hed->Bank[0] == 0) && (nsf_hed->Bank[1] == 0) && (nsf_hed->Bank[2] == 0) && (nsf_hed->Bank[3] == 0)){
 
 		//------------------------------
@@ -887,6 +911,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	}
 
+	//----------------------
 	//⊿PCM
 	_COUT << _T("[DPCM]") << endl;
 
