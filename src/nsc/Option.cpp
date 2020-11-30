@@ -139,7 +139,7 @@ OPSW::OPSW(int argc, char* argv[]):
 								iNSF_version = 2;
 								break;
 							default :
-								opError(_T("-o"));
+								opError(_T("-n"));
 								break;
 						}
 						break;
