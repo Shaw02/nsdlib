@@ -32,15 +32,17 @@
 //==============================================================
 OPSW::OPSW(int argc, char* argv[]):
 	//初期化設定
-	iDebug(0),
+	fHelp(false),		//ヘルプは、デフォルトは表示しない。
 	fErr(false),
 	saveNSF(false),
+	saveNSFe(false),
 	saveASM(false),
 	flag_Optimize(false),
 	flag_OptObj(true),
 	flag_OptSeq(true),
 	flag_SearchPass(false),
-	fHelp(0)		//ヘルプは、デフォルトは表示しない。
+	iNSF_version(1),
+	iDebug(0)
 {
 
 	//----------------------------------
@@ -76,7 +78,7 @@ OPSW::OPSW(int argc, char* argv[]):
 				case 'h' :
 				case 'H' :
 				case '?' :
-					fHelp=1;
+					fHelp=true;
 					break;
 				//--------
 				//アセンブリ言語へ
@@ -127,6 +129,27 @@ OPSW::OPSW(int argc, char* argv[]):
 				case 'n' :
 				case 'N' :
 					saveNSF = true;
+					{
+						switch(argv[iCount][2]){
+							case 0x00 :
+							case '1' :
+								iNSF_version = 1;
+								break;
+							case '2' :
+								iNSF_version = 2;
+								break;
+							default :
+								opError(_T("-o"));
+								break;
+						}
+						break;
+					}
+					break;
+				//--------
+				//NSFe
+				case 'x' :
+				case 'X' :
+					saveNSFe = true;
 					break;
 				//--------
 				//標準エラー出力へ
@@ -304,7 +327,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	//--------------
 	//ヘルプ表示
 	//ファイル名が書かれなかった場合も、ヘルプを表示する。
-	if((fHelp==1)||(strMMLname.empty())){print_help();};
+	if((fHelp==true)||(strMMLname.empty())){print_help();};
 
 	if(strASMname.empty()){
 		iOptionChk=0;		
@@ -405,6 +428,8 @@ void	OPSW::print_help(){
 				_T("\n")
 				_T("  -A			Compile to assembly langage.\n")
 				_T("  -N			Compile to NSF music format.\n")
+				_T("  -N[num]		Compile to NSF music format.(num is NSF version.)\n")
+				_T("  -X			Compile to NSFe music format.\n")
 				_T("  -E			Error/Warning messages out the stadard error.\n")
 			//	_T("  -T			Disable to output the tick counting result.\n")
 				_T("  -Od[+/-]		Optimize the NSF bank struct of the delta-PCM.\n")
