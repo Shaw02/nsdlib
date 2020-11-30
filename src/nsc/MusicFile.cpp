@@ -542,6 +542,8 @@ void	MusicFile::TickCount(void)
 	//----------------------
 	//Tick Count & 最適化のための情報収集
 
+	//■■■To do: ここで、メタデータも作る。
+
 	while(iBGM < Header.iBGM){
 		_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
 		ptcBGM[iBGM]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
@@ -831,6 +833,9 @@ void	MusicFile::saveNSF(const char*	strFileName, int iNSF_version)
 	if(iNSF_version >=2){
 
 		//■■■ To Do: META DATAはどこで作る？ ＆ サイズの取得方法の検討
+
+		//■■■ To Do: nsf_hed->Flags の設定
+
 		meta_size = Header.getSize();
 
 		//サイズチェック
