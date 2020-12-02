@@ -32,8 +32,8 @@ protected:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-	MetaItem(const char m_identifier[]="");
-	~MetaItem(void);
+				MetaItem(const char m_identifier[]="");
+	virtual		~MetaItem(void);
 
 				void	clear(void);
 				size_t	getSize();

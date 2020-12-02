@@ -51,6 +51,7 @@ public:
 
 	//保存フェーズ
 	void	saveNSF(const char*	strFileName, int iNSF_version);
+	void	saveNSFe(const char*	strFileName);
 	void	saveASM(const char*	strFileName);
 
 	void	Err(const _CHAR msg[]);

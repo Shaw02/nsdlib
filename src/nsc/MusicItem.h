@@ -38,9 +38,9 @@ protected:
 
 //ÉÅÉìÉoÅ[ä÷êî
 public:
-	MusicItem(const _CHAR _strName[]=_T(""));
-	MusicItem(size_t _id, const _CHAR _strName[]=_T(""));
-	~MusicItem(void);
+				MusicItem(const _CHAR _strName[]=_T(""));
+				MusicItem(size_t _id, const _CHAR _strName[]=_T(""));
+	virtual		~MusicItem(void);
 
 				void	clear(void);
 				void	clear_Optimize();
