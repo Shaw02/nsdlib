@@ -877,6 +877,8 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 
 	unsigned	int		i,j;
 
+				size_t	iSizeLimit;		//サイズチェック用
+
 				size_t	code_size;
 				size_t	mus_size;
 				size_t	pcm_size;
@@ -893,6 +895,8 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 
 	//----------------------
 	//Binが、バンク対応か？
+	//chk_Bank == 0	・・・　非対応bin
+	//chk_Bank != 0	・・・　　対応bin
 	chk_Bank  = NSF_Hed->Bank[0];
 	chk_Bank |= NSF_Hed->Bank[1];
 	chk_Bank |= NSF_Hed->Bank[2];
@@ -901,6 +905,9 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 	chk_Bank |= NSF_Hed->Bank[5];
 	chk_Bank |= NSF_Hed->Bank[6];
 	chk_Bank |= NSF_Hed->Bank[7];
+
+	//----------------------
+	//シーケンスの作成
 	if(chk_Bank == 0){
 
 		//------------------------------
@@ -909,55 +916,56 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。"));
 		}
 
+		//サイズの上限
+		iSizeLimit = Header.offsetPCM - 0x8000;
 
 		//シーケンスのバイナリを生成
 		mus_size = make_mus(NSF_Data, code_size, 0x8000);
 		mus_size += code_size;						//.bin と 曲オブジェクトを足し算
-		mus_bank = (unsigned char)(mus_size >> 12);
-		if((mus_size & 0x0FFF) != 0){
-			mus_bank++;
-		}
 
-		//サイズチェック
+		//出力
 		_COUT << _T("[CODE & MUSIC]") << endl;
-		_COUT << _T("  Bank = ") << (unsigned int)mus_bank << endl;
-		_COUT << _T("  Size = ") << (unsigned int)mus_size << _T(" [Byte] / ") << Header.offsetPCM - 0x8000 << _T(" [Byte]") << endl;
-
-		if((0x8000 + mus_size) > Header.offsetPCM){
-			Err(_T("コード・シーケンスのサイズが許容値を越えました。"));
-		}
-
 	} else {
 
 		//------------------------------
 		//Bank対応bin？
-		size_t	iSizeLimit = 0x10000;	//拡張RAMへの転送有り
-
 		if(Header.bank == false){
 			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
 		}
 
+		//サイズの上限
+		iSizeLimit = 0x10000;
+
 		//シーケンスのバイナリを生成
 		mus_size = make_mus(NSF_Data, code_size, 0x0000);
-		mus_bank = (unsigned char)(mus_size >> 12);
-		if((mus_size & 0x0FFF) != 0){
-			mus_bank++;
-		}
 
+		//出力
 		_COUT << _T("[CODE]") << endl;
 		_COUT << _T("  Bank = 3") << endl;
 		_COUT << _T("  Size = 12288 [Byte]") << endl;
 
 		_COUT << _T("[MUSIC]") << endl;
-		_COUT << _T("  Bank = ") << (unsigned int)mus_bank << endl;
-		_COUT << _T("  Size = ") << (unsigned int)mus_size << _T(" [Byte] / ") << iSizeLimit << _T(" [Byte]") << endl;
-
-		//サイズチェック
-		if(mus_size > iSizeLimit){
-			Err(_T("コード・シーケンスのサイズが許容値を越えました。"));
-		}
-
 	}
+
+	//バンク数の計算
+	mus_bank = (unsigned char)(mus_size >> 12);
+	if((mus_size & 0x0FFF) != 0){
+		mus_bank++;
+	}
+
+	_COUT << _T("  Bank = ") << (unsigned int)mus_bank << endl;
+	_COUT << _T("  Size = ") << (unsigned int)mus_size << _T(" [Byte] / ") << iSizeLimit << _T(" [Byte]") << endl;
+
+	//サイズチェック
+	if(mus_size > iSizeLimit){
+		Err(_T("コード・シーケンスのサイズが許容値を越えました。"));
+	}
+
+	//----------------------
+	//GAP
+
+	//■■■To Dp:	GAPの生成
+
 
 	//----------------------
 	//⊿PCM
@@ -991,14 +999,6 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 
 	//⊿PCMが有る && バンク構成の最適化が有効 && bank非対応の.binを使う場合、
 	//NSFヘッダーに、バンク情報を書き込む
-//	chk_Bank  = nsf_hed->Bank[0];
-//	chk_Bank |= nsf_hed->Bank[1];
-//	chk_Bank |= nsf_hed->Bank[2];
-//	chk_Bank |= nsf_hed->Bank[3];
-//	chk_Bank |= nsf_hed->Bank[4];
-//	chk_Bank |= nsf_hed->Bank[5];
-//	chk_Bank |= nsf_hed->Bank[6];
-//	chk_Bank |= nsf_hed->Bank[7];	既に生成済み
 	if((chk_Bank == 0) && (cDPCMinfo != NULL) && (flag_Optimize == true)){
 		i = 0;
 		while(i < mus_bank){
@@ -1021,6 +1021,15 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 		}
 	}
 
+	//----------------------
+	//GAP
+
+	//■■■To Dp:	GAPの生成
+
+
+	//----------------------
+	//Exit
+
 	return(mus_size);		//■■■■■	今後、NSF_Dataのサイズにする。
 
 }
@@ -1035,18 +1044,18 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 //==============================================================
 void	MusicFile::saveNSF(const char*	strFileName)
 {
-
+	// - - - - - - - - - - - - - - - - - - - - - - - -
+	//■■■　Todo:	make_bin()に移動
 	unsigned	int		i;
 				char	chk_Bank;		//NSFヘッダーのバンクチェック用
 				size_t	mus_size;
 				size_t	pcm_size;
 	unsigned	char	mus_bank;
-	unsigned	char	pcm_bank;		//◆Todo:	make_bin()に移動
-
+	unsigned	char	pcm_bank;
+				bool	flag_Optimize	= cOptionSW->flag_Optimize;
+	// - - - - - - - - - - - - - - - - - - - - - - - -
 
 				size_t	meta_size;
-
-				bool	flag_Optimize	= cOptionSW->flag_Optimize;
 
 	NSF_Header*			NSF_Hed			= new NSF_Header;
 				string	NSF_Data;
@@ -1089,7 +1098,9 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	//----------------------
 	//Meta Data
 
-	//MetaData作成			■■■■■To do:	Meta dataの生成
+	//■■■■■To do:	Meta dataの生成
+
+	//MetaData作成			
 	meta_data.clear();
 	Header.getData(&meta_data);
 
