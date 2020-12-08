@@ -135,7 +135,7 @@ int	main(int argc, char* argv[])
 		//•Û‘¶
 		//NSF
 		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
-			cSND->saveNSF(cOptionSW->strNSFname.c_str(), cOptionSW->iNSF_version);
+			cSND->saveNSF(cOptionSW->strNSFname.c_str());
 		}
 
 		//NSFe

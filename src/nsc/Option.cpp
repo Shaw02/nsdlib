@@ -380,7 +380,7 @@ OPSW::OPSW(int argc, char* argv[]):
 			strNSFename+=cOption;
 			iOptionChk++;
 		};
-		strNSFename+=".nsf";
+		strNSFename+=".nsfe";
 	};
 
 	//----------------------------------

@@ -699,21 +699,69 @@ void	MusicFile::Fix_Address(void)
 }
 
 //==============================================================
-//		ＮＳＦの作成
+//		ＢＩＮの読み込み
 //--------------------------------------------------------------
 //	●引数
-//		size_t	rom_size	*.binのサイズ
+//		string* 		_str		コード生成先
+//		NSF_Header*		nsf_hed		NSFヘッダーの読み込み先
+//	●返値
+//		size_t						読み込んだ.binファイル（NSFヘッダー分を除く）
+//==============================================================
+size_t	MusicFile::read_bin(string* _str, NSF_Header* nsf_hed)
+{
+				size_t	bin_size;		//.binファイルのサイズ
+				size_t	code_size;		//うち、ドライバー（コード）のサイズ
+
+				char*	nsf_code		= new char[0xC000];	//ここに.binファイルを読み込む
+	FileInput*			_romcode		= new FileInput();	
+
+	//----------------------
+	//NSF用コードの転送
+	_romcode->fileopen(Header.romcode.c_str(), &(cOptionSW->m_pass_code));
+	bin_size = _romcode->GetSize();
+	code_size = bin_size - sizeof(NSF_Header);
+	_romcode->read((char *)nsf_hed, sizeof(NSF_Header));
+	_romcode->read(nsf_code, code_size);
+	_romcode->close();
+	delete		_romcode;
+
+	//----------------------
+	//NSFヘッダーの更新
+	memcpy(&nsf_hed->Title, Header.title.c_str(), 32);
+	memcpy(&nsf_hed->Composer, Header.composer.c_str(), 32);
+	memcpy(&nsf_hed->Copyright, Header.copyright.c_str(), 32);
+	nsf_hed->Version		= (unsigned char)(cOptionSW->iNSF_version);
+	nsf_hed->MusicNumber	= (unsigned char)((Header.iBGM + Header.iSE) & 0xFF);
+	if(Header.iExternal != -1){
+		nsf_hed->External	= (unsigned char)Header.iExternal;
+	}
+
+
+	//----------------------
+	//Exit
+	_str->append(nsf_code, code_size);
+
+	delete[]	nsf_code;
+
+	//----------------------
+	//Exit
+	return(code_size);
+
+}
+
+//==============================================================
+//		シーケンスデータの作成
+//--------------------------------------------------------------
+//	●引数
+//		string* _str		コード生成先
+//		size_t	code_size	*.binのサイズ（NSFヘッダー分を除く）
 //		size_t	ptOffset	ROMのオフセットアドレス
 //								bank非対応の場合は、0x8000
 //								bank　対応の場合は、0x0000
 //	●返値
-//				無し
+//		size_t				シーケンスデータのサイズ
 //	●処理
 //		NSF、NSFe用の曲データ構造を作る。
-//		作成したBGM,SEバイナリは、this object の メンバー変数`code` に格納する。
-//		作成したMeta  バイナリは、this object の メンバー変数`meta_data` に格納する。
-//		作成した⊿PCM バイナリは、this object の メンバー変数`dpcm_code` に格納する。
-//		※paddingはしない。
 //		Addr	Type	Contents
 //		-------+-------+--------------------------
 //		0000	BYTE	BGM データ数
@@ -722,41 +770,43 @@ void	MusicFile::Fix_Address(void)
 //		0004	WORD[]	BGM, SEのアドレス、
 //		xxxx	----	BGM, SEのシーケンスデータ
 //==============================================================
-void	MusicFile::make_bin(size_t rom_size, size_t ptOffset)
+size_t	MusicFile::make_mus(string* _str, size_t code_size, size_t ptOffset)
 {
-				string		_str;			//曲データバイナリ生成用
 	unsigned	int			i		= 2;
 				size_t		iBGM	= 0;
 				size_t		iSE		= 0;
 	unsigned	short*		pt;
 
 				size_t		_size	= 4 + (Header.iBGM + Header.iSE)*2;
+				size_t		size0	= _str->size();		//初期サイズ
 
+	//----------------------
+	//バイナリをクリア。
+	code.clear();
+	//領域の確保
+	code.resize(_size);
 
-	//曲バイナリーの作成
-	_str.clear();
-	_str.resize(_size);
+	//曲アドレス情報（NSF, NSEe用）の作成
+	pt = (unsigned short*)code.c_str();
 
-	pt = (unsigned short*)_str.c_str();
-
-	_str[0] = (char)(Header.iBGM & 0xFF);
-	_str[1] = (char)(Header.iSE  & 0xFF);
+	code[0] = (char)(Header.iBGM & 0xFF);
+	code[1] = (char)(Header.iSE  & 0xFF);
 
 	if(Header.bank == false){
 
 		if(cDPCMinfo != NULL){
-			pt[1]	= (unsigned short)(ptOffset + rom_size + _size + cDPCMinfo->getOffset());	//ΔPCM info のアドレス
+			pt[1]	= (unsigned short)(ptOffset + code_size + _size + cDPCMinfo->getOffset());	//ΔPCM info のアドレス
 		} else {
 			pt[1]	= 0;
 		}
 
 		while(iBGM < Header.iBGM){
-			pt[i] = (unsigned short)(ptOffset + rom_size + _size + ptcBGM[iBGM]->getOffset());
+			pt[i] = (unsigned short)(ptOffset + code_size + _size + ptcBGM[iBGM]->getOffset());
 			i++;
 			iBGM++;
 		}
 		while(iSE < Header.iSE){
-			pt[i] = (unsigned short)(ptOffset + rom_size + _size + ptcSE[iSE]->getOffset());
+			pt[i] = (unsigned short)(ptOffset + code_size + _size + ptcSE[iSE]->getOffset());
 			i++;
 			iSE++;
 		}
@@ -782,114 +832,87 @@ void	MusicFile::make_bin(size_t rom_size, size_t ptOffset)
 
 	}
 
-	getCode(&_str);
-	code.append(_str);
+	getCode(_str);
 
-	//MetaData作成
-	meta_data.clear();
-	Header.getData(&meta_data);
+	return(_str->size() - size0);
 
-	//ΔPCMの作成
+}
+
+//==============================================================
+//		⊿ＰＣＭの作成
+//--------------------------------------------------------------
+//	●引数
+//		string* _str		コード生成先
+//	●返値
+//		size_t				⊿PCMデータのサイズ
+//	●処理
+//
+//==============================================================
+size_t	MusicFile::make_dpcm(string* _str)
+{
+	//ΔPCMの作成			■■■■■ここでやる？
 	dpcm_code.clear();
 	if(cDPCMinfo != NULL){
 		cDPCMinfo->getDPCMCode(&dpcm_code);
 	}
 
+	//■■■To Do
+
+	return(dpcm_code.size());
 }
 
 //==============================================================
-//		ＮＳＦ形式への保存
+//		ＮＳＦの作成
 //--------------------------------------------------------------
 //	●引数
-//		const	char*	strFileName		ファイル名
-//				int		iNSF_version	ヴァージョン
+//		NSF_Header*		NSF_Hed		ヘッダー部
+//		string*			NSF_Data	データ部
 //	●返値
-//				無し
-//==============================================================
-void	MusicFile::saveNSF(const char*	strFileName, int iNSF_version)
+//		size_t						データ部のサイズ
+//	●処理
+//
+//--------------------------------------------------------------
+size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 {
 
 	unsigned	int		i,j;
-				size_t	bin_size;
+
 				size_t	code_size;
 				size_t	mus_size;
 				size_t	pcm_size;
-				size_t	meta_size;
 	unsigned	char	mus_bank;
 	unsigned	char	pcm_bank;
 
-	NSF_Header*			nsf_hed			= new NSF_Header;
-				char*	nsf_code		= new char[0xC000];
+				char	chk_Bank;		//NSFヘッダーのバンクチェック用
 
-//	NSF_Header*			nsf				= (NSF_Header*)romimg;
-	FileInput*			_romcode		= new FileInput();
-				bool	dpcm_bank		= false;
 				bool	flag_Optimize	= cOptionSW->flag_Optimize;
 
-	_COUT << _T("----------------------------------------") << endl;
-	_COUT << _T("*NSF build process") << endl;
-
 	//----------------------
-	//バイナリをクリア（一旦、ここにビルドする）。
-	code.clear();
-
-	//----------------------
-	//NSF用コードの転送
-	_romcode->fileopen(Header.romcode.c_str(), &(cOptionSW->m_pass_code));
-	bin_size = _romcode->GetSize();
-	code_size = bin_size - sizeof(NSF_Header);
-	_romcode->read((char *)nsf_hed, sizeof(NSF_Header));
-	_romcode->read(nsf_code, code_size);
-	_romcode->close();
-	delete		_romcode;
-
-	//NSFヘッダーの更新
-	memcpy(&nsf_hed->Title, Header.title.c_str(), 32);
-	memcpy(&nsf_hed->Composer, Header.composer.c_str(), 32);
-	memcpy(&nsf_hed->Copyright, Header.copyright.c_str(), 32);
-	nsf_hed->Version		= (unsigned char)iNSF_version;
-	nsf_hed->MusicNumber	= (unsigned char)((Header.iBGM + Header.iSE) & 0xFF);
-	if(Header.iExternal != -1){
-		nsf_hed->External	= (unsigned char)Header.iExternal;
-	}
-
-	//----------------------
-	//Meta Data
-	meta_size = Header.getSize();
-
-	//サイズチェック
-	_COUT << _T("[Meta Data]") << endl;
-	_COUT << _T("  Size = ") << (unsigned int)meta_size << _T(" [Byte] / ") << 0xFFFFFF << _T(" [Byte]") << endl;
-
-	if(meta_size > 0xFFFFFF){
-		Err(_T("Meta Dataのサイズが許容値を越えました。"));
-	}
-
-	if(iNSF_version >=2){
-		//Meta Dataがある場合
-		if(meta_size > 0){
-			nsf_hed->Flags |= nsf_flag_MetaData;
-			nsf_hed->szMetaData[0] = (char)( meta_size      & 0xFF);
-			nsf_hed->szMetaData[1] = (char)((meta_size>> 8) & 0xFF);
-			nsf_hed->szMetaData[2] = (char)((meta_size>>16) & 0xFF);
-		}
-	}
+	//BINファイルの読みこみ
+	code_size = read_bin(NSF_Data, NSF_Hed);
 
 	//----------------------
 	//Binが、バンク対応か？
-	if((nsf_hed->Bank[0] == 0) && (nsf_hed->Bank[1] == 0) && (nsf_hed->Bank[2] == 0) && (nsf_hed->Bank[3] == 0)){
+	chk_Bank  = NSF_Hed->Bank[0];
+	chk_Bank |= NSF_Hed->Bank[1];
+	chk_Bank |= NSF_Hed->Bank[2];
+	chk_Bank |= NSF_Hed->Bank[3];
+	chk_Bank |= NSF_Hed->Bank[4];
+	chk_Bank |= NSF_Hed->Bank[5];
+	chk_Bank |= NSF_Hed->Bank[6];
+	chk_Bank |= NSF_Hed->Bank[7];
+	if(chk_Bank == 0){
 
 		//------------------------------
 		//Bank 非対応bin
-
-		//シーケンスのバイナリを生成
-		make_bin(code_size, 0x8000);
-
 		if(Header.bank == true){
 			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。"));
 		}
 
-		mus_size = code_size + code.size();		//.bin と 曲オブジェクトを足し算
+
+		//シーケンスのバイナリを生成
+		mus_size = make_mus(NSF_Data, code_size, 0x8000);
+		mus_size += code_size;						//.bin と 曲オブジェクトを足し算
 		mus_bank = (unsigned char)(mus_size >> 12);
 		if((mus_size & 0x0FFF) != 0){
 			mus_bank++;
@@ -908,18 +931,14 @@ void	MusicFile::saveNSF(const char*	strFileName, int iNSF_version)
 
 		//------------------------------
 		//Bank対応bin？
-
 		size_t	iSizeLimit = 0x10000;	//拡張RAMへの転送有り
-
-		//シーケンスのバイナリを生成
-		make_bin(code_size, 0x0000);
 
 		if(Header.bank == false){
 			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
 		}
 
-		dpcm_bank = true;
-		mus_size = code.size();
+		//シーケンスのバイナリを生成
+		mus_size = make_mus(NSF_Data, code_size, 0x0000);
 		mus_bank = (unsigned char)(mus_size >> 12);
 		if((mus_size & 0x0FFF) != 0){
 			mus_bank++;
@@ -944,14 +963,13 @@ void	MusicFile::saveNSF(const char*	strFileName, int iNSF_version)
 	//⊿PCM
 	_COUT << _T("[DPCM]") << endl;
 
-	pcm_size = dpcm_code.size();
+	pcm_size = make_dpcm(NSF_Data);
 	pcm_bank = (unsigned char)((pcm_size + (Header.offsetPCM & 0x0FFF)) >> 12);
 	if((pcm_size & 0x0FFF) != 0){
 		pcm_bank++;
 	}
 
-
-	if(dpcm_bank == false){
+	if(chk_Bank == 0){
 		//⊿PCMサイズチェック
 		_COUT << _T("  Bank = ") << (size_t)pcm_bank << endl;
 		_COUT << _T("  Size = ") << (size_t)pcm_size << _T(" [Byte] / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
@@ -971,51 +989,144 @@ void	MusicFile::saveNSF(const char*	strFileName, int iNSF_version)
 		}
 	}
 
-	//----------------------
-	//ＮＳＦ書き込み
-	fileopen(strFileName);
-
-
-	//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	//■■■ To Do: 整理。　ファイルへの書き込みは1ヵ所にする。
-
-
-	//Phase [1] (NSF Header)
 	//⊿PCMが有る && バンク構成の最適化が有効 && bank非対応の.binを使う場合、
 	//NSFヘッダーに、バンク情報を書き込む
-	if((dpcm_bank == false) && (cDPCMinfo != NULL) && (flag_Optimize == true)){
+//	chk_Bank  = nsf_hed->Bank[0];
+//	chk_Bank |= nsf_hed->Bank[1];
+//	chk_Bank |= nsf_hed->Bank[2];
+//	chk_Bank |= nsf_hed->Bank[3];
+//	chk_Bank |= nsf_hed->Bank[4];
+//	chk_Bank |= nsf_hed->Bank[5];
+//	chk_Bank |= nsf_hed->Bank[6];
+//	chk_Bank |= nsf_hed->Bank[7];	既に生成済み
+	if((chk_Bank == 0) && (cDPCMinfo != NULL) && (flag_Optimize == true)){
 		i = 0;
 		while(i < mus_bank){
-			nsf_hed->Bank[i] = (unsigned char)i;
+			NSF_Hed->Bank[i] = (unsigned char)i;
 			i++;
 		}
 		while(i < ((Header.offsetPCM - 0x8000)>>12)){
-			nsf_hed->Bank[i] = 0;
+			NSF_Hed->Bank[i] = 0;
 			i++;
 		}
 		j = 0;
 		while(i < 8){
 			if(j < pcm_bank){
-				nsf_hed->Bank[i] = mus_bank + (unsigned char)j;
+				NSF_Hed->Bank[i] = mus_bank + (unsigned char)j;
 			} else {
-				nsf_hed->Bank[i] = 0;
+				NSF_Hed->Bank[i] = 0;
 			}
 			i++;
 			j++;
 		}
 	}
 
-	//Phase [2] (Data)
+	return(mus_size);		//■■■■■	今後、NSF_Dataのサイズにする。
+
+}
+
+//==============================================================
+//		ＮＳＦ形式への保存
+//--------------------------------------------------------------
+//	●引数
+//		const	char*	strFileName		ファイル名
+//	●返値
+//				無し
+//==============================================================
+void	MusicFile::saveNSF(const char*	strFileName)
+{
+
+	unsigned	int		i;
+				char	chk_Bank;		//NSFヘッダーのバンクチェック用
+				size_t	mus_size;
+				size_t	pcm_size;
+	unsigned	char	mus_bank;
+	unsigned	char	pcm_bank;		//◆Todo:	make_bin()に移動
+
+
+				size_t	meta_size;
+
+				bool	flag_Optimize	= cOptionSW->flag_Optimize;
+
+	NSF_Header*			NSF_Hed			= new NSF_Header;
+				string	NSF_Data;
+
+
+	_COUT << _T("----------------------------------------") << endl;
+	_COUT << _T("*NSF build process") << endl;
+
+	//----------------------
+	//クリア
+	NSF_Data.clear();
+
+	//----------------------
+	//NSFの、ヘッダーとデータ部の作成
+	mus_size = make_bin(NSF_Hed, &NSF_Data);
+
+	// - - - - - - - - - - - - - - - - - - - - - - - -
+	//■■■　Todo:	make_bin()に移動
+	mus_bank = (unsigned char)(mus_size >> 12);
+	if((mus_size & 0x0FFF) != 0){
+		mus_bank++;
+	}
+
+	pcm_size = dpcm_code.size();
+	pcm_bank = (unsigned char)((pcm_size + (Header.offsetPCM & 0x0FFF)) >> 12);
+	if((pcm_size & 0x0FFF) != 0){
+		pcm_bank++;
+	}
+	chk_Bank  = NSF_Hed->Bank[0];
+	chk_Bank |= NSF_Hed->Bank[1];
+	chk_Bank |= NSF_Hed->Bank[2];
+	chk_Bank |= NSF_Hed->Bank[3];
+	chk_Bank |= NSF_Hed->Bank[4];
+	chk_Bank |= NSF_Hed->Bank[5];
+	chk_Bank |= NSF_Hed->Bank[6];
+	chk_Bank |= NSF_Hed->Bank[7];
+	// - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+	//----------------------
+	//Meta Data
+
+	//MetaData作成			■■■■■To do:	Meta dataの生成
+	meta_data.clear();
+	Header.getData(&meta_data);
+
+	meta_size = Header.getSize();
+
+	//サイズチェック
+	_COUT << _T("[Meta Data]") << endl;
+	_COUT << _T("  Size = ") << (unsigned int)meta_size << _T(" [Byte] / ") << 0xFFFFFF << _T(" [Byte]") << endl;
+
+	if(meta_size > 0xFFFFFF){
+		Err(_T("Meta Dataのサイズが許容値を越えました。"));
+	}
+
+	if(cOptionSW->iNSF_version >=2){
+		//Meta Dataがある場合
+		if(meta_size > 0){
+			NSF_Hed->Flags |= nsf_flag_MetaData;
+			NSF_Hed->szMetaData[0] = (char)( meta_size      & 0xFF);
+			NSF_Hed->szMetaData[1] = (char)((meta_size>> 8) & 0xFF);
+			NSF_Hed->szMetaData[2] = (char)((meta_size>>16) & 0xFF);
+		}
+	}
+
+
+
+	//----------------------
+	//ＮＳＦ書き込み
+	fileopen(strFileName);
+
 	//コード ＆ シーケンスの書き込み
-	write((char *)nsf_hed, sizeof(NSF_Header));			//NSFヘッダーの書き込み
-	if(iNSF_version>=2){
+	write((char *)NSF_Hed, sizeof(NSF_Header));			//NSFヘッダーの書き込み
+	if(cOptionSW->iNSF_version>=2){
 		write(meta_data.c_str(), meta_size);
 	}
-	write(nsf_code, code_size);							//コードの書き込み
-	write(code.c_str(), code.size());					//シーケンスの書き込み
+	write(NSF_Data.c_str(), NSF_Data.size());			//データの書き込み
 
-
-	if(dpcm_bank == false){
+	if(chk_Bank == 0){
 		if(cDPCMinfo != NULL){
 			if(flag_Optimize == true){
 				//GAP
@@ -1077,8 +1188,7 @@ void	MusicFile::saveNSF(const char*	strFileName, int iNSF_version)
 
 	//----------------------
 	//Exit
-	delete[]	nsf_hed;
-	delete[]	nsf_code;
+	delete[]	NSF_Hed;
 }
 
 //==============================================================
@@ -1092,11 +1202,10 @@ void	MusicFile::saveNSF(const char*	strFileName, int iNSF_version)
 void	MusicFile::saveNSFe(const char*	strFileName)
 {
 
-	//----------------------
-	//バイナリをクリア（一旦、ここにビルドする）。
-	code.clear();
 
 
+	_COUT << _T("----------------------------------------") << endl;
+	_COUT << _T("*NSFe build process") << endl;
 
 	//----------------------
 	//File open
