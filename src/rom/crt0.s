@@ -107,7 +107,7 @@ _play:	.byte	0
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	1
 		.byte	29
-		.byte	0,0,0,0,0,0,0,0
+;		.byte	0,0,0,0,0,0,0,0		;TNS-HFC—p GAP
 
 .ifdef	DPCMBank
 .segment	"STARTUP"
