@@ -652,7 +652,6 @@ size_t	MusicFile::SetDPCMOffset(size_t iMusSize)
 		mus_bank++;
 	}
 
-
 	dpcm_code.clear();
 	if(cDPCMinfo != NULL){
 		cDPCMinfo->getDPCMCode(&dpcm_code);
@@ -850,15 +849,10 @@ size_t	MusicFile::make_mus(string* _str, size_t code_size, size_t ptOffset)
 //==============================================================
 size_t	MusicFile::make_dpcm(string* _str)
 {
-	size_t		size0	= _str->size();		//初期サイズ
-
 	//ΔPCMの作成
-	dpcm_code.clear();
-	if(cDPCMinfo != NULL){
-		cDPCMinfo->getDPCMCode(_str);
-	}
+	_str->append(dpcm_code);
 
-	return(_str->size() - size0);
+	return(dpcm_code.size());
 }
 
 //==============================================================
@@ -1077,59 +1071,60 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	NSF_Header*			NSF_Hed			= new NSF_Header;
 				string	NSF_Data;
 
-				size_t	meta_size;
+				string	Meta_data;
+				size_t	Meta_size;
 
 	_COUT << _T("----------------------------------------") << endl;
 	_COUT << _T("*NSF build process") << endl;
 
+	//==============================
 	//----------------------
 	//クリア
 	NSF_Data.clear();
+	Meta_data.clear();
 
 	//----------------------
 	//NSFの、ヘッダーとデータ部の作成
 	make_bin(NSF_Hed, &NSF_Data);
 
-
-	//----------------------
+	//==============================
 	//Meta Data
 
 	//■■■■■To do:	Meta dataの生成
 
 	//MetaData作成			
-	meta_data.clear();
-	Header.getData(&meta_data);
+	Header.getData(&Meta_data);
+	Meta_size = Header.getSize();
 
-	meta_size = Header.getSize();
-
-	//サイズチェック
+	//サイズチェック（NSF2の場合、アドレス幅24bitの制限あり）
 	_COUT << _T("[Meta Data]") << endl;
-	_COUT << _T("  Size = ") << (unsigned int)meta_size << _T(" [Byte] / ") << 0xFFFFFF << _T(" [Byte]") << endl;
+	_COUT << _T("  Size = ") << (unsigned int)Meta_size << _T(" [Byte] / ") << 0xFFFFFF << _T(" [Byte]") << endl;
 
-	if(meta_size > 0xFFFFFF){
+	if(Meta_size > 0xFFFFFF){
 		Err(_T("Meta Dataのサイズが許容値を越えました。"));
 	}
 
 	if(cOptionSW->iNSF_version >=2){
 		//Meta Dataがある場合
-		if(meta_size > 0){
+		if(Meta_size > 0){
 			NSF_Hed->Flags |= nsf_flag_MetaData;
-			NSF_Hed->szMetaData[0] = (char)( meta_size      & 0xFF);
-			NSF_Hed->szMetaData[1] = (char)((meta_size>> 8) & 0xFF);
-			NSF_Hed->szMetaData[2] = (char)((meta_size>>16) & 0xFF);
+			NSF_Hed->szMetaData[0] = (char)( Meta_size      & 0xFF);
+			NSF_Hed->szMetaData[1] = (char)((Meta_size>> 8) & 0xFF);
+			NSF_Hed->szMetaData[2] = (char)((Meta_size>>16) & 0xFF);
 		}
 	}
 
-
-
+	//==============================
+	//NSF書き込み
 	//----------------------
-	//ＮＳＦ書き込み
+	//Open File
 	fileopen(strFileName);
 
-	//コード ＆ シーケンスの書き込み
+	//----------------------
+	//Write File
 	write((char *)NSF_Hed, sizeof(NSF_Header));			//NSFヘッダーの書き込み
 	if(cOptionSW->iNSF_version>=2){
-		write(meta_data.c_str(), meta_size);
+		write(Meta_data.c_str(), Meta_size);			//Meta dataの書き込み
 	}
 	write(NSF_Data.c_str(), NSF_Data.size());			//データの書き込み
 
@@ -1137,7 +1132,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	//Close file
 	close();
 
-	//----------------------
+	//==============================
 	//Exit
 	delete[]	NSF_Hed;
 }
@@ -1153,18 +1148,67 @@ void	MusicFile::saveNSF(const char*	strFileName)
 void	MusicFile::saveNSFe(const char*	strFileName)
 {
 
+	const		char	NSFE_Head[4]	= {0x4E, 0x53, 0x46, 0x45};		//NSFE
+
+	NSF_Header*			NSF_Hed			= new NSF_Header;
+				string	NSF_Data;
+
+				string	Meta_data;
+				size_t	Meta_size;
+
 	_COUT << _T("----------------------------------------") << endl;
 	_COUT << _T("*NSFe build process") << endl;
 
+	//==============================
 	//----------------------
-	//File open
+	//クリア
+	NSF_Data.clear();
+	Meta_data.clear();
+
+	//----------------------
+	//NSFの、ヘッダーとデータ部の作成
+	make_bin(NSF_Hed, &NSF_Data);
+
+	//==============================
+	//メタデータの生成
+	//----------------------
+	//INFO
+	
+
+	//----------------------
+	//NSF2
+
+
+	//----------------------
+	//BANK
+
+
+	//----------------------
+	//Other ~ NEND
+
+	Header.getData(&Meta_data);
+	Meta_size = Header.getSize();
+
+
+	//==============================
+	//NSFE書き込み
+
+	//----------------------
+	//Open File
 	fileopen(strFileName);
 
-
+	//----------------------
+	//Write File
+	write(NSFE_Head, sizeof(NSFE_Head));			//NSFヘッダーの書き込み
+	write(Meta_data.c_str(), Meta_size);			//Meta dataの書き込み
 
 	//----------------------
 	//Close file
 	close();
+
+	//==============================
+	//Exit
+	delete[]	NSF_Hed;
 
 }
 
