@@ -145,6 +145,21 @@
     <ClInclude Include="..\nsc\MetaItem.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\nsc\Meta_DATA.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_INFO.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_NEND.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_BANK.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_NSF2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\nsc\nsc.cpp">
@@ -244,6 +259,21 @@
       <Filter>ソース ファイル\Music</Filter>
     </ClCompile>
     <ClCompile Include="..\nsc\MetaItem.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_DATA.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_INFO.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_NEND.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_BANK.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_NSF2.cpp">
       <Filter>ソース ファイル\Music\Meta</Filter>
     </ClCompile>
   </ItemGroup>

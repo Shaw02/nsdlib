@@ -1093,8 +1093,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	//■■■■■To do:	Meta dataの生成
 
 	//MetaData作成			
-	Header.getData(&Meta_data);
-	Meta_size = Header.getSize();
+	Meta_size = Header.getData(&Meta_data);
 
 	//サイズチェック（NSF2の場合、アドレス幅24bitの制限あり）
 	_COUT << _T("[Meta Data]") << endl;
@@ -1156,6 +1155,10 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 				string	Meta_data;
 				size_t	Meta_size;
 
+				char	chk_Bank;		//NSFヘッダーのバンクチェック用
+
+//	MetaItem*			meta_item;
+
 	_COUT << _T("----------------------------------------") << endl;
 	_COUT << _T("*NSFe build process") << endl;
 
@@ -1167,28 +1170,50 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 
 	//----------------------
 	//NSFの、ヘッダーとデータ部の作成
-	make_bin(NSF_Hed, &NSF_Data);
+	make_bin(NSF_Hed, &NSF_Data);		//バンク構成の最適化はここでやっている。
 
 	//==============================
 	//メタデータの生成
-	//----------------------
-	//INFO
-	
 
 	//----------------------
-	//NSF2
-
+	//DATA
+	Header.setItem_front(new Meta_DATA(&NSF_Data));
 
 	//----------------------
 	//BANK
+	chk_Bank  = NSF_Hed->Bank[0];
+	chk_Bank |= NSF_Hed->Bank[1];
+	chk_Bank |= NSF_Hed->Bank[2];
+	chk_Bank |= NSF_Hed->Bank[3];
+	chk_Bank |= NSF_Hed->Bank[4];
+	chk_Bank |= NSF_Hed->Bank[5];
+	chk_Bank |= NSF_Hed->Bank[6];
+	chk_Bank |= NSF_Hed->Bank[7];
+	if(chk_Bank != 0){
+		Header.setItem_front(new Meta_BANK(NSF_Hed));
+	}
 
+	//----------------------
+	//NSF2
+	if(cOptionSW->iNSF_version >=2){
+		Header.setItem_front(new Meta_NSF2(NSF_Hed));
+	}
+
+	//----------------------
+	//INFO
+	Header.setItem_front(new Meta_INFO(NSF_Hed));
 
 	//----------------------
 	//Other ~ NEND
+	Header.setItem(new Meta_NEND());	//■■■To Do: NEND は、その他のメタデータの生成時に一緒に作る。
 
-	Header.getData(&Meta_data);
-	Meta_size = Header.getSize();
+	//==============================
+	//バイナリに変換
+	Meta_size = Header.getData(&Meta_data);
 
+	//サイズチェック（NSF2の場合、アドレス幅24bitの制限あり）
+	_COUT << _T("[Meta Data]") << endl;
+	_COUT << _T("  Size = ") << (unsigned int)Meta_size << _T(" [Byte] / ") << 0xFFFFFF << _T(" [Byte]") << endl;
 
 	//==============================
 	//NSFE書き込み
@@ -1209,7 +1234,6 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 	//==============================
 	//Exit
 	delete[]	NSF_Hed;
-
 }
 
 //==============================================================

@@ -149,10 +149,40 @@ size_t	MetaItem::SetOffset(size_t _offset)
 	//このオブジェクトのサイズ（最適化後）
 	m_size = _offset - m_offset;
 
-	//Size と ID の分を加算
+	//Size と ID の分を加算（m_sizeには含めない）
 	_offset += 8;
 
 	return(_offset);
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		size_t
+//==============================================================
+void	MetaItem::setItem(MetaItem* _item)
+{
+	//作ったobjectのポインタを保存しておく。
+	ptcItem.push_back(_item);
+	m_size += _item->getSize();
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		size_t
+//==============================================================
+void	MetaItem::setItem_front(MetaItem* _item)
+{
+	//作ったobjectのポインタを保存しておく。
+	ptcItem.push_front(_item);
+	m_size += _item->getSize();
 }
 
 //==============================================================
@@ -184,7 +214,7 @@ unsigned	char	MetaItem::getData(size_t n)
 //	●返値
 //				無し
 //==============================================================
-void	MetaItem::getData(string* _str)
+size_t	MetaItem::getData(string* _str)
 {
 	//----------------------
 	//Local変数
@@ -199,6 +229,8 @@ void	MetaItem::getData(string* _str)
 			itItem++;
 		}
 	}
+	m_size = _str->size();
+	return(m_size);
 }
 
 //==============================================================
@@ -243,4 +275,3 @@ void	MetaItem::setMetaData(string* _str)
 	m_data.assign(*_str);
 	m_size = m_data.size();
 }
-

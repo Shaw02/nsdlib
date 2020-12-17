@@ -32,7 +32,6 @@ public:
 	map<size_t, Sub*	>	ptcSub;		//Subroutine Sequence
 
 private:
-	string					meta_data;
 	string					dpcm_code;
 
 //ƒƒ“ƒo[ŠÖ”

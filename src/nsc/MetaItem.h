@@ -40,8 +40,11 @@ public:
 				size_t	getOffset();
 				size_t	SetOffset(size_t _offset);
 
+				void	setItem(MetaItem* _item);
+				void	setItem_front(MetaItem* _item);
+
 	unsigned	char	getData(size_t n);
-	virtual		void	getData(string* _str);
+	virtual		size_t	getData(string* _str);
 	virtual		void	getMetaData(string* _str);
 	virtual		void	setMetaData(string* _str);
 

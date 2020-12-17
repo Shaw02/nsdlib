@@ -22,6 +22,11 @@ OBJS	=	BGM.o			\
 			FileInput.o		\
 			FileOutput.o	\
 			MetaItem.o		\
+			Meta_INFO.o		\
+			Meta_NSF2.o		\
+			Meta_BANK.o		\
+			Meta_DATA.o		\
+			Meta_NEND.o		\
 			mml_Address.o	\
 			mml_CallSub.o	\
 			mml_general.o	\

@@ -247,6 +247,21 @@
 					Name="Meta"
 					Filter="">
 					<File
+						RelativePath=".\Meta_BANK.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_DATA.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_INFO.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_NEND.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_NSF2.cpp">
+					</File>
+					<File
 						RelativePath=".\MetaItem.cpp">
 					</File>
 				</Filter>
@@ -296,6 +311,21 @@
 			</File>
 			<File
 				RelativePath=".\FileOutput.h">
+			</File>
+			<File
+				RelativePath=".\Meta_BANK.h">
+			</File>
+			<File
+				RelativePath=".\Meta_DATA.h">
+			</File>
+			<File
+				RelativePath=".\Meta_INFO.h">
+			</File>
+			<File
+				RelativePath=".\Meta_NEND.h">
+			</File>
+			<File
+				RelativePath=".\Meta_NSF2.h">
 			</File>
 			<File
 				RelativePath=".\MetaItem.h">

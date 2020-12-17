@@ -99,17 +99,15 @@ typedef struct {
 #include "mml_Address.h"
 #include "mml_CallSub.h"
 
+#include "MusicHeader.h"		//ヘッダー
+
 #include "MetaItem.h"
 
-/*
 #include "Meta_INFO.h"			//NSFe MUST
 #include "Meta_DATA.h"			//NSFe MUST
-#include "Meta_BANK.h"			//
-#include "Meta_NSF2.h"			//
+#include "Meta_BANK.h"			//NSFe optional / NSF MUSTNOT
+#include "Meta_NSF2.h"			//NSFe optional /  NSF MUSTNOT
 #include "Meta_NEND.h"			//NSFe MUST
-*/
-
-#include "MusicHeader.h"		//ヘッダー
 
 #include "nsd_work.h"
 #include "MusicNote.h"

@@ -129,21 +129,6 @@ OPSW::OPSW(int argc, char* argv[]):
 				case 'n' :
 				case 'N' :
 					saveNSF = true;
-					{
-						switch(argv[iCount][2]){
-							case 0x00 :
-							case '1' :
-								iNSF_version = 1;
-								break;
-							case '2' :
-								iNSF_version = 2;
-								break;
-							default :
-								opError(_T("-n"));
-								break;
-						}
-						break;
-					}
 					break;
 				//--------
 				//NSFe‚Ö
@@ -156,6 +141,23 @@ OPSW::OPSW(int argc, char* argv[]):
 				case 'e' :
 				case 'E' :
 					fErr = true;
+					break;
+				//--------
+				//‚m‚r‚e‚Ö
+				case 'v' :
+				case 'V' :
+					switch(argv[iCount][2]){
+						case 0x00 :
+						case '1' :
+							iNSF_version = 1;
+							break;
+						case '2' :
+							iNSF_version = 2;
+							break;
+						default :
+							opError(_T("-v"));
+							break;
+					}
 					break;
 				//--------
 				//Tick Count
@@ -463,13 +465,13 @@ void	OPSW::print_help(){
 				_T("\n")
 				_T("  -A			Compile to assembly langage.\n")
 				_T("  -N			Compile to NSF music format.\n")
-				_T("  -N[num]		Compile to NSF music format.(num is NSF version.)\n")
 				_T("  -X			Compile to NSFe music format.\n")
-				_T("  -E			Error/Warning messages out the stadard error.\n")
+				_T("  -V[num]		Specify the NSF Version.\n")
 			//	_T("  -T			Disable to output the tick counting result.\n")
 				_T("  -Od[+/-]		Optimize the NSF bank struct of the delta-PCM.\n")
 				_T("  -Oo[+/-]		Optimize the object data.\n")
 				_T("  -Os[+/-]		Optimize the sequence data.\n")
+				_T("  -E			Error/Warning messages out the stadard error.\n")
 				_T("  -S			Enable outout the search pass result.\n")
 				_T("  -L[file(.bin)]	Filename of the rom code for NSF.\n")
 				_T("  -FA[file(.s  )]	Filename of the output assembly langage file.\n")
