@@ -41,7 +41,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	flag_OptObj(true),
 	flag_OptSeq(true),
 	flag_SearchPass(false),
-	iNSF_version(1),
+	iNSF_version(2),
 	iDebug(0)
 {
 

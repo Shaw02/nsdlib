@@ -26,13 +26,16 @@ MusicHeader::MusicHeader(string _code) :
 	iBGM(1),
 	iSE(0),
 	offsetPCM(0x10000),
-	iExternal(-1),
 	Label("_nsd_"),
+	segmentSEQ("RODATA"),
+	segmentPCM("PCMDATA"),
+	f_VRC7_chg(false),
+	iExternal(-1),
 	title(""),
 	copyright(""),
 	composer(""),
-	segmentSEQ("RODATA"),
-	segmentPCM("PCMDATA")
+	maker(""),
+	text("")
 {
 	if(_code.empty()){
 		op_code = false;
@@ -55,35 +58,59 @@ MusicHeader::~MusicHeader(void)
 {
 }
 
+//==============================================================
 void	MusicHeader::Set_Title(MMLfile* MML)
 {
 	title = MML->GetString();
 }
 
+//==============================================================
 void	MusicHeader::Set_Copyright(MMLfile* MML)
 {
 	copyright = MML->GetString();
 }
 
+//==============================================================
 void	MusicHeader::Set_Composer(MMLfile* MML)
 {
 	composer = MML->GetString();
 }
 
+//==============================================================
+void	MusicHeader::Set_Maker(MMLfile* MML)
+{
+	maker = MML->GetString();
+}
+
+//==============================================================
+void	MusicHeader::Set_Text(MMLfile* MML)
+{
+	text = MML->GetString();
+}
+
+//==============================================================
+
+	//¡¡¡To Do:	mixe
+
+//==============================================================
 void	MusicHeader::Set_SegmentSEQ(MMLfile* MML)
 {
 	segmentSEQ = MML->GetString();
 }
 
+//==============================================================
 void	MusicHeader::Set_SegmentPCM(MMLfile* MML)
 {
 	segmentPCM = MML->GetString();
 }
+
+//==============================================================
 void	MusicHeader::Set_Label(MMLfile* MML)
 {
 	Label = MML->GetString();
 }
 
+//==============================================================
 void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 {
 	offsetPCM = MML->GetInt();
@@ -102,6 +129,7 @@ void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 	}
 }
 
+//==============================================================
 void	MusicHeader::Set_RomCode(MMLfile* MML)
 {
 	if(op_code == true){
@@ -112,6 +140,7 @@ void	MusicHeader::Set_RomCode(MMLfile* MML)
 	}
 }
 
+//==============================================================
 void	MusicHeader::Set_Number_BGM(MMLfile* MML)
 {
 	size_t	_n = MML->GetInt();
@@ -122,6 +151,7 @@ void	MusicHeader::Set_Number_BGM(MMLfile* MML)
 	iBGM = _n;
 }
 
+//==============================================================
 void	MusicHeader::Set_Number_SE(MMLfile* MML)
 {
 	size_t	_n = MML->GetInt();
@@ -132,6 +162,7 @@ void	MusicHeader::Set_Number_SE(MMLfile* MML)
 	iSE = _n;
 }
 
+//==============================================================
 void	MusicHeader::Set_External(MMLfile* MML)
 {
 	int	_n = MML->GetInt();
@@ -142,6 +173,7 @@ void	MusicHeader::Set_External(MMLfile* MML)
 	iExternal = _n;
 }
 
+//==============================================================
 void	MusicHeader::Set_Bank(void)
 {
 	bank		= true;

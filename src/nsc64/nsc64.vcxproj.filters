@@ -160,6 +160,15 @@
     <ClInclude Include="..\nsc\Meta_NSF2.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\nsc\Meta_auth.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_text.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_VRC7.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\nsc\nsc.cpp">
@@ -274,6 +283,15 @@
       <Filter>ソース ファイル\Music\Meta</Filter>
     </ClCompile>
     <ClCompile Include="..\nsc\Meta_NSF2.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_auth.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_text.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_VRC7.cpp">
       <Filter>ソース ファイル\Music\Meta</Filter>
     </ClCompile>
   </ItemGroup>

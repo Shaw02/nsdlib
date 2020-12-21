@@ -32,7 +32,7 @@ struct	NSF_Header{
 	unsigned	char	Video;				//7A
 	unsigned	char	External;			//7B
 	unsigned	char	Flags;				//7C
-	unsigned	char	szMetaData[3];		//7D-7F
+	unsigned	char	szNSF_Data[3];		//7D-7F
 };
 
 #define	nsf_flag_IRQ_support 		0x10
@@ -55,14 +55,26 @@ public:
 				size_t	iBGM;			//BGM数
 				size_t	iSE;			//SE数
 				size_t	offsetPCM;
-				int		iExternal;		//拡張音源フラグ
+
+				//for .s
 				string	Label;
+				string	segmentSEQ;
+				string	segmentPCM;
+
+				//for NSF
+				bool	f_VRC7_chg;		//#VRC7を使ったか？
+
+				int		iExternal;		//拡張音源フラグ
 				string	title;
 				string	copyright;
 				string	composer;
-				string	segmentSEQ;
-				string	segmentPCM;
+				string	maker;
+				string	text;
 				string	romcode;
+	vector<unsigned char>		plst;
+	vector<unsigned char>		psfx;
+	map<unsigned char, short>	mixe;
+
 //メンバー関数
 public:
 				MusicHeader(string _code);
@@ -70,6 +82,9 @@ public:
 		void	Set_Title(MMLfile* MML);
 		void	Set_Copyright(MMLfile* MML);
 		void	Set_Composer(MMLfile* MML);
+		void	Set_Maker(MMLfile* MML);
+		void	Set_Text(MMLfile* MML);
+
 		void	Set_SegmentSEQ(MMLfile* MML);
 		void	Set_SegmentPCM(MMLfile* MML);
 		void	Set_Label(MMLfile* MML);

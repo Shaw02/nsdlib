@@ -47,5 +47,6 @@ public:
 	virtual		size_t	getData(string* _str);
 	virtual		void	getMetaData(string* _str);
 	virtual		void	setMetaData(string* _str);
-
+				void	push_back(char _ch);
+				void	append(string* _str);
 };

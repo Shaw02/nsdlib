@@ -40,6 +40,12 @@ enum	Command_ID_MusicFile {
 	id_Title,
 	id_Composer,
 	id_Copyright,
+	id_Maker,
+	id_Text,
+	id_plst,
+	id_psfx,
+	id_mixe,
+	id_vrc7_chg,
 	id_OffsetPCM,
 	id_Code,
 	id_External,
@@ -100,6 +106,22 @@ const	static	Command_Info	Command[] = {
 		{	"#copyright",		id_Copyright	},
 		{	"作者",				id_Copyright	},
 		{	"著作権者",			id_Copyright	},
+		{	"#Maker",			id_Maker		},
+		{	"#maker",			id_Maker		},
+		{	"製作者",			id_Maker		},
+		{	"#Text",			id_Text			},
+		{	"#text",			id_Text			},
+		{	"テキスト",			id_Text			},
+		{	"#Plst",			id_plst			},
+		{	"#plst",			id_plst			},
+		{	"音楽順番",			id_plst			},
+		{	"曲順",				id_plst			},
+		{	"#Psfx",			id_psfx			},
+		{	"#psfx",			id_psfx			},
+		{	"効果音順番",		id_psfx			},
+		{	"#Mixe",			id_mixe			},
+		{	"#mixe",			id_mixe			},
+		{	"#VRC7",			id_vrc7_chg		},
 		{	"#OffsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
@@ -254,6 +276,29 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(id_Copyright):
 				Header.Set_Copyright(MML);
+				break;
+			case(id_Maker):
+				Header.Set_Maker(MML);
+				break;
+			case(id_Text):
+				Header.Set_Text(MML);
+				Header.setItem(new Meta_text(&Header));
+				break;
+			case(id_plst):
+				//■■■To Do:	plst
+				break;
+			case(id_psfx):
+				//■■■To Do:	psfx
+				break;
+			case(id_mixe):
+				//■■■To Do:	mixe
+				break;
+			case(id_vrc7_chg):
+				if(Header.f_VRC7_chg == true){
+					MML->Warning(_T("#VRC7が複数回指定されています。"));
+				}
+				Header.f_VRC7_chg = true;
+				Header.setItem(new Meta_VRC7(MML));
 				break;
 			case(id_OffsetPCM):
 				Header.Set_OffsetPCM(MML);
@@ -483,6 +528,7 @@ const	static	Command_Info	Command[] = {
 		
 	} while( !MML->eom() );
 
+	//==============================
 	//Check
 	if( Header.iBGM + Header.iSE > 255){
 		Err(_T("BGMとSEの数が合計で255を越えました。"));
@@ -503,6 +549,18 @@ const	static	Command_Info	Command[] = {
 		};
 		i++;
 	}
+
+	//==============================
+	//Metadata
+
+	//曲名、作曲者、著作権者が32Byteを超える場合、 又は、 Textがある場合、 又は、 NSFe形式で保存する場合、authを作る。
+	if((Header.title.size() > 32) || (Header.composer.size() > 32) || (Header.copyright.size() > 32) || (Header.maker.size() > 0) || (cOptionSW->saveNSFe == true)){
+		Header.setItem(new Meta_auth(&Header));
+	}
+
+	//----------------------
+	//NEND
+	Header.setItem(new Meta_NEND());
 
 }
 
@@ -540,10 +598,8 @@ void	MusicFile::TickCount(void)
 				size_t		iBGM	= 0;
 				size_t		iSE		= 0;
 
-	//----------------------
+	//==============================
 	//Tick Count & 最適化のための情報収集
-
-	//■■■To do: ここで、メタデータも作る。
 
 	while(iBGM < Header.iBGM){
 		_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
@@ -557,9 +613,12 @@ void	MusicFile::TickCount(void)
 		iSE++;
 	}
 
+
+	//==============================
+	//最適化
+
 	//----------------------
 	//不要なコマンドの削除
-
 	if(cOptionSW->flag_OptSeq == true){		//コマンドの最適化が無効だったら、最適化しない。
 
 		iBGM	= 0;
@@ -585,7 +644,6 @@ void	MusicFile::TickCount(void)
 
 	//----------------------
 	//使っていない定義の削除
-
 	if(cOptionSW->flag_OptObj == true){		//定義の最適化が無効だったら、最適化しない。
 
 		//エンベロープ
@@ -726,9 +784,21 @@ size_t	MusicFile::read_bin(string* _str, NSF_Header* nsf_hed)
 
 	//----------------------
 	//NSFヘッダーの更新
+	if(Header.title.size() < 32){
+		Header.title.resize(32);
+	}
 	memcpy(&nsf_hed->Title, Header.title.c_str(), 32);
+
+	if(Header.composer.size() < 32){
+		Header.composer.resize(32);
+	}
 	memcpy(&nsf_hed->Composer, Header.composer.c_str(), 32);
+
+	if(Header.copyright.size() < 32){
+		Header.copyright.resize(32);
+	}
 	memcpy(&nsf_hed->Copyright, Header.copyright.c_str(), 32);
+
 	nsf_hed->Version		= (unsigned char)(cOptionSW->iNSF_version);
 	nsf_hed->MusicNumber	= (unsigned char)((Header.iBGM + Header.iSE) & 0xFF);
 	if(Header.iExternal != -1){
@@ -1070,6 +1140,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	NSF_Header*			NSF_Hed			= new NSF_Header;
 				string	NSF_Data;
+				size_t	NSF_size;
 
 				string	Meta_data;
 				size_t	Meta_size;
@@ -1085,31 +1156,29 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	//----------------------
 	//NSFの、ヘッダーとデータ部の作成
-	make_bin(NSF_Hed, &NSF_Data);
+	NSF_size = make_bin(NSF_Hed, &NSF_Data);
 
 	//==============================
 	//Meta Data
-
-	//■■■■■To do:	Meta dataの生成
-
-	//MetaData作成			
 	Meta_size = Header.getData(&Meta_data);
+
+	//NENDだけであれば、metadataの埋め込みは不要
+	if(Meta_size <= 8){
+		Meta_data.clear();
+		Meta_size = 0;
+	}
 
 	//サイズチェック（NSF2の場合、アドレス幅24bitの制限あり）
 	_COUT << _T("[Meta Data]") << endl;
-	_COUT << _T("  Size = ") << (unsigned int)Meta_size << _T(" [Byte] / ") << 0xFFFFFF << _T(" [Byte]") << endl;
-
-	if(Meta_size > 0xFFFFFF){
-		Err(_T("Meta Dataのサイズが許容値を越えました。"));
-	}
+	_COUT << _T("  Size = ") << (unsigned int)Meta_size << _T(" [Byte]") << endl;
 
 	if(cOptionSW->iNSF_version >=2){
 		//Meta Dataがある場合
 		if(Meta_size > 0){
 			NSF_Hed->Flags |= nsf_flag_MetaData;
-			NSF_Hed->szMetaData[0] = (char)( Meta_size      & 0xFF);
-			NSF_Hed->szMetaData[1] = (char)((Meta_size>> 8) & 0xFF);
-			NSF_Hed->szMetaData[2] = (char)((Meta_size>>16) & 0xFF);
+			NSF_Hed->szNSF_Data[0] = (char)( NSF_size      & 0xFF);
+			NSF_Hed->szNSF_Data[1] = (char)((NSF_size>> 8) & 0xFF);
+			NSF_Hed->szNSF_Data[2] = (char)((NSF_size>>16) & 0xFF);
 		}
 	}
 
@@ -1122,10 +1191,10 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	//----------------------
 	//Write File
 	write((char *)NSF_Hed, sizeof(NSF_Header));			//NSFヘッダーの書き込み
+	write(NSF_Data.c_str(), NSF_size);					//データの書き込み
 	if(cOptionSW->iNSF_version>=2){
 		write(Meta_data.c_str(), Meta_size);			//Meta dataの書き込み
 	}
-	write(NSF_Data.c_str(), NSF_Data.size());			//データの書き込み
 
 	//----------------------
 	//Close file
@@ -1204,16 +1273,12 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 	Header.setItem_front(new Meta_INFO(NSF_Hed));
 
 	//----------------------
-	//Other ~ NEND
-	Header.setItem(new Meta_NEND());	//■■■To Do: NEND は、その他のメタデータの生成時に一緒に作る。
-
-	//==============================
 	//バイナリに変換
 	Meta_size = Header.getData(&Meta_data);
 
-	//サイズチェック（NSF2の場合、アドレス幅24bitの制限あり）
+	//サイズチェック
 	_COUT << _T("[Meta Data]") << endl;
-	_COUT << _T("  Size = ") << (unsigned int)Meta_size << _T(" [Byte] / ") << 0xFFFFFF << _T(" [Byte]") << endl;
+	_COUT << _T("  Size = ") << (unsigned int)Meta_size << _T(" [Byte]") << endl;
 
 	//==============================
 	//NSFE書き込み

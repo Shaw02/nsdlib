@@ -247,6 +247,9 @@
 					Name="Meta"
 					Filter="">
 					<File
+						RelativePath=".\Meta_auth.cpp">
+					</File>
+					<File
 						RelativePath=".\Meta_BANK.cpp">
 					</File>
 					<File
@@ -260,6 +263,12 @@
 					</File>
 					<File
 						RelativePath=".\Meta_NSF2.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_text.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_VRC7.cpp">
 					</File>
 					<File
 						RelativePath=".\MetaItem.cpp">
@@ -313,6 +322,9 @@
 				RelativePath=".\FileOutput.h">
 			</File>
 			<File
+				RelativePath=".\Meta_auth.h">
+			</File>
+			<File
 				RelativePath=".\Meta_BANK.h">
 			</File>
 			<File
@@ -326,6 +338,12 @@
 			</File>
 			<File
 				RelativePath=".\Meta_NSF2.h">
+			</File>
+			<File
+				RelativePath=".\Meta_text.h">
+			</File>
+			<File
+				RelativePath=".\Meta_VRC7.h">
 			</File>
 			<File
 				RelativePath=".\MetaItem.h">
