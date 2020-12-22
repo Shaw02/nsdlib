@@ -15,14 +15,17 @@
 /*			クラス定義											*/
 /*																*/
 /****************************************************************/
-class Meta_text :
+class Meta_mixe :
 	public MetaItem
 {
 //メンバー変数
 private:
+	map<unsigned char, short>	m_volume;	//音量の記憶
 
 //メンバー関数
 public:
-	Meta_text(string* text, const char _strName[] = "text");
-	~Meta_text(void);
+	Meta_mixe(const char _strName[] = "mixe");
+	~Meta_mixe(void);
+
+	void	append(unsigned char _id, signed int _vol, MMLfile* MML);
 };

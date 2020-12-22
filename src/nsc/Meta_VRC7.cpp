@@ -14,24 +14,18 @@
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//		NSF_Header*			_nsf_hed	NSFヘッダー
+//		unsigned	char	_vrc7		VRC7の換装設定
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
 //==============================================================
-Meta_VRC7::Meta_VRC7(MMLfile* MML, const char _strName[]):
+Meta_VRC7::Meta_VRC7(unsigned char _vrc7, const char _strName[]):
 	MetaItem(_strName)
 {
-	int	_vrc7	= MML->GetInt();
-
-	if((_vrc7 < 0)||(_vrc7 > 1)){
-		MML->Err(_T("#VRC7は、0か1で指定してください。"));
-	}
-
 	m_size = 1;
 	m_data.resize(m_size);
 
-	m_data[0] = (char)_vrc7;
+	m_data[0] = _vrc7;
 }
 
 //==============================================================

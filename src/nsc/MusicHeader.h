@@ -12,36 +12,6 @@
 
 /****************************************************************/
 /*																*/
-/*			構造体定義											*/
-/*																*/
-/****************************************************************/
-struct	NSF_Header{
-				char	Name[5];			//00	"NESM",0x1A
-	unsigned	char	Version;			//05
-	unsigned	char	MusicNumber;		//06
-	unsigned	char	StartMusicNumber;	//07
-	unsigned	short	LoadAddress;		//08
-	unsigned	short	InitAddress;		//0A
-	unsigned	short	MainAddress;		//0C
-				char	Title[32];			//0E
-				char	Composer[32];		//2E
-				char	Copyright[32];		//4E
-	unsigned	short	Frequency_NTSC;		//6E
-	unsigned	char	Bank[8];			//70
-	unsigned	short	Frequency_PAL;		//78
-	unsigned	char	Video;				//7A
-	unsigned	char	External;			//7B
-	unsigned	char	Flags;				//7C
-	unsigned	char	szNSF_Data[3];		//7D-7F
-};
-
-#define	nsf_flag_IRQ_support 		0x10
-#define	nsf_flag_non_Ret_Init		0x20
-#define	nsf_flag_non_Play 			0x40
-#define	nsf_flag_MetaData			0x80
-
-/****************************************************************/
-/*																*/
 /*			クラス定義											*/
 /*																*/
 /****************************************************************/
@@ -62,19 +32,31 @@ public:
 				string	segmentPCM;
 
 				//for NSF
-				bool	f_VRC7_chg;		//#VRC7を使ったか？
-
 				int		iExternal;		//拡張音源フラグ
 				string	title;
 				string	copyright;
 				string	composer;
 				string	maker;
-				string	text;
 				string	romcode;
-	vector<unsigned char>		plst;
-	vector<unsigned char>		psfx;
-	map<unsigned char, short>	mixe;
+				string	text;
 
+				//for Metadata
+				Meta_INFO*	m_INFO;		//2.1	INFO	NSFe MUST
+				Meta_DATA*	m_DATA;		//2.2	DATA	NSFe MUST
+				Meta_NEND*	m_NEND;		//2.3	NEND	NSFe MUST
+				Meta_BANK*	m_BANK;		//2.4	BANK	NSFe optional / NSF MUSTNOT
+				Meta_NSF2*	m_NSF2;		//2.6	NSF2	NSFe optional /  NSF MUSTNOT
+				Meta_VRC7*	m_VRC7;		//2.7	VRC7
+				Meta_plst*	m_plst;		//2.8	plst
+				Meta_psfx*	m_psfx;		//2.9	psfx
+//				Meta_time*	m_time;		//2.10	time
+//				Meta_fade*	m_fade;		//2.11	fade
+//				Meta_tlbl*	m_tlbl;		//2.12	tlbl
+//				Meta_taut*	n_taut;		//2.13	taut
+				Meta_auth*	m_auth;		//2.14	auth
+				Meta_text*	m_text;		//2.15	text
+				Meta_mixe*	m_mixe;		//2.16	mixe
+				
 //メンバー関数
 public:
 				MusicHeader(string _code);
@@ -83,7 +65,15 @@ public:
 		void	Set_Copyright(MMLfile* MML);
 		void	Set_Composer(MMLfile* MML);
 		void	Set_Maker(MMLfile* MML);
-		void	Set_Text(MMLfile* MML);
+		void	Text_Append(MMLfile* MML);
+
+		void	Set_NEND();
+		void	Ser_VRC7(MMLfile* MML);
+		void	Set_plst(MMLfile* MML);
+		void	Set_psfx(MMLfile* MML);
+		void	Set_auth();
+		void	Set_text();
+		void	Set_mixe(MMLfile* MML);
 
 		void	Set_SegmentSEQ(MMLfile* MML);
 		void	Set_SegmentPCM(MMLfile* MML);

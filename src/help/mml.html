@@ -210,21 +210,24 @@ NSFヘッダー、またはメタデータに設定されます。<br>
 		演奏する順番にBGM番号を0~255で指定し、番号と番号の間はスペース、TAB、もしくはカンマで区切ってください。<br>
 		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
 </tr>
-<tr><td>#mixe	{<var>id</var>, <var>volume</var>}	</td>
+<tr><td>#mixe	{<br>
+	    <var>id</var> = <var>volume</var>,<br>
+	    <var>id</var> = <var>volume</var><br>
+	}</td>
 	<td>		</td>
 	<td>2		</td>
 	<td>v		</td>
 	<td>各拡張音源の音量バランスを指定します。<br>
 		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。<br>
 		<var>id</var>は、音源タイプを指定します(DefaultはNSFeの仕様で標準化された規格です)。<br>
-		　0 - APU Squares - Default: 0<br>
-		　1 - APU Triangle / Noise / DPCM - Comparison: Triangle - Default: -20<br>
-		　2 - VRC6 - Default: 0<br>
-		　3 - VRC7 - Comparison: Pseudo-square - Default: 1100<br>
-		　4 - FDS - Default: 700<br>
-		　5 - MMC5 - Default: 0<br>
-		　6 - N163 - Comparison: 1-Channel mode - Default: 1100 or 1900<br>
-		　7 - Sunsoft 5B - Comparison: Volume 12 ($C) - Default: -130<br>
+		　APU1 : Squares - Default: 0<br>
+		　APU2 : Triangle / Noise / DPCM - Comparison: Triangle - Default: -20<br>
+		　VRC6 : Default: 0<br>
+		　VRC7 : Comparison: Pseudo-square - Default: 1100<br>
+		　FDS  : Default: 700<br>
+		　MMC5 : Default: 0<br>
+		　N163 : Comparison: 1-Channel mode - Default: 1100 or 1900<br>
+		　SN5B : Comparison: Volume 12 ($C) - Default: -130<br>
 		<var>volume</var>は音量を、-32768～32767で指定します（単位；1/100dB）。</td>
 </tr>
 <tr><td>#code		"<var>name</var>"		</td>

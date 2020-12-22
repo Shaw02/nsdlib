@@ -193,6 +193,7 @@
     <ClInclude Include="..\nsc\MusicTrack.h" />
     <ClInclude Include="..\nsc\N163.h" />
     <ClInclude Include="..\nsc\nsd_work.h" />
+    <ClInclude Include="..\nsc\NSF_Header.h" />
     <ClInclude Include="..\nsc\Option.h" />
     <ClInclude Include="..\nsc\Patch.h" />
     <ClInclude Include="..\nsc\resource.h" />
@@ -220,8 +221,11 @@
     <ClCompile Include="..\nsc\Meta_BANK.cpp" />
     <ClCompile Include="..\nsc\Meta_DATA.cpp" />
     <ClCompile Include="..\nsc\Meta_INFO.cpp" />
+    <ClCompile Include="..\nsc\Meta_mixe.cpp" />
     <ClCompile Include="..\nsc\Meta_NEND.cpp" />
     <ClCompile Include="..\nsc\Meta_NSF2.cpp" />
+    <ClCompile Include="..\nsc\Meta_plst.cpp" />
+    <ClCompile Include="..\nsc\Meta_psfx.cpp" />
     <ClCompile Include="..\nsc\Meta_text.cpp" />
     <ClCompile Include="..\nsc\Meta_VRC7.cpp" />
     <ClCompile Include="..\nsc\MMLfile.cpp" />

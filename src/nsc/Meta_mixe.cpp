@@ -8,24 +8,21 @@
 *******************************************************************************/
 
 #include "StdAfx.h"
-#include "Meta_text.h"
+#include "Meta_mixe.h"
 
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//					string*	text		テキスト
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
 //==============================================================
-Meta_text::Meta_text(string* text, const char _strName[]):
+Meta_mixe::Meta_mixe(const char _strName[]):
 	MetaItem(_strName)
 {
-	m_data.clear();
 	m_size = 0;
-
-	append(text);
+	m_data.clear();
 }
 
 //==============================================================
@@ -36,6 +33,32 @@ Meta_text::Meta_text(string* text, const char _strName[]):
 //	●返値
 //				無し
 //==============================================================
-Meta_text::~Meta_text(void)
+Meta_mixe::~Meta_mixe(void)
 {
+}
+
+//==============================================================
+//		デストラクタ
+//--------------------------------------------------------------
+//	●引数
+//				unsigned char	_id		音源のID
+//				MMLfile*		MML		MMLファイル
+//	●返値
+//				無し
+//==============================================================
+void	Meta_mixe::append(unsigned char _id, signed int _vol, MMLfile* MML)
+{
+	//エラー処理
+	if(m_volume.count(_id) > 0){
+		MML->Warning(_T("#mixeにて音源指定が重複しています。"));
+	} else {
+		if((_vol<-32768) || (_vol>32767)){
+			MML->Warning(_T("#mixeの音量は、-32768～32767で指定してください。"));
+		}
+		m_volume[_id] = (short)_vol & 0xFFFF;
+		m_data.push_back(_id);
+		m_data.push_back((char)( _vol     & 0xFF));
+		m_data.push_back((char)((_vol>>8) & 0xFF));
+		m_size += 3;
+	}
 }

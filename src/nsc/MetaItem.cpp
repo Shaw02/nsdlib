@@ -287,7 +287,7 @@ void	MetaItem::setMetaData(string* _str)
 void	MetaItem::push_back(char _ch)
 {
 	m_data.push_back(_ch);
-	m_size = m_data.size();
+	m_size++;
 }
 
 //==============================================================
@@ -300,10 +300,7 @@ void	MetaItem::push_back(char _ch)
 //==============================================================
 void	MetaItem::append(string* _str)
 {
-
-	cout << _str->c_str() << endl;
-
+	m_size += _str->size() + 1;
 	m_data.append(*_str);
 	m_data.push_back(0x00);
-	m_size = m_data.size();
 }

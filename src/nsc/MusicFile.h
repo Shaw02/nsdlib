@@ -48,7 +48,6 @@ public:
 	size_t	read_bin(string* _str, NSF_Header* nsf_hed);				//.binを読み込む
 	size_t	make_mus(string* _str, size_t rom_size, size_t ptOffset);	//バイナリーを作る
 	size_t	make_dpcm(string* _str);
-//	size_t	make_meta();
 	size_t	make_bin(NSF_Header* NSF_Hed, string* NSF_Data);
 
 	//保存フェーズ

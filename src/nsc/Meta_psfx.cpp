@@ -8,24 +8,21 @@
 *******************************************************************************/
 
 #include "StdAfx.h"
-#include "Meta_text.h"
+#include "Meta_mixe.h"
 
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
 //	●引数
-//					string*	text		テキスト
 //		const		char	_strName[]	クラスの名前
 //	●返値
 //				無し
 //==============================================================
-Meta_text::Meta_text(string* text, const char _strName[]):
+Meta_psfx::Meta_psfx(const char _strName[]):
 	MetaItem(_strName)
 {
-	m_data.clear();
 	m_size = 0;
-
-	append(text);
+	m_data.clear();
 }
 
 //==============================================================
@@ -36,6 +33,6 @@ Meta_text::Meta_text(string* text, const char _strName[]):
 //	●返値
 //				無し
 //==============================================================
-Meta_text::~Meta_text(void)
+Meta_psfx::~Meta_psfx(void)
 {
 }

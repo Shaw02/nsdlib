@@ -169,6 +169,9 @@
     <ClInclude Include="..\nsc\Meta_VRC7.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\nsc\NSF_Header.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\nsc\nsc.cpp">
@@ -293,6 +296,15 @@
     </ClCompile>
     <ClCompile Include="..\nsc\Meta_VRC7.cpp">
       <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_mixe.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_psfx.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_plst.cpp">
+      <Filter>ヘッダー ファイル</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@
 /*			クラス定義											*/
 /*																*/
 /****************************************************************/
-class Meta_text :
+class Meta_plst :
 	public MetaItem
 {
 //メンバー変数
@@ -23,6 +23,6 @@ private:
 
 //メンバー関数
 public:
-	Meta_text(string* text, const char _strName[] = "text");
-	~Meta_text(void);
+	Meta_plst(const char _strName[] = "plst");
+	~Meta_plst(void);
 };

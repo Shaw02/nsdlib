@@ -281,24 +281,19 @@ const	static	Command_Info	Command[] = {
 				Header.Set_Maker(MML);
 				break;
 			case(id_Text):
-				Header.Set_Text(MML);
-				Header.setItem(new Meta_text(&Header));
+				Header.Text_Append(MML);
 				break;
 			case(id_plst):
-				//■■■To Do:	plst
+				Header.Set_plst(MML);
 				break;
 			case(id_psfx):
-				//■■■To Do:	psfx
+				Header.Set_psfx(MML);
 				break;
 			case(id_mixe):
-				//■■■To Do:	mixe
+				Header.Set_mixe(MML);
 				break;
 			case(id_vrc7_chg):
-				if(Header.f_VRC7_chg == true){
-					MML->Warning(_T("#VRC7が複数回指定されています。"));
-				}
-				Header.f_VRC7_chg = true;
-				Header.setItem(new Meta_VRC7(MML));
+				Header.Ser_VRC7(MML);
 				break;
 			case(id_OffsetPCM):
 				Header.Set_OffsetPCM(MML);
@@ -553,14 +548,9 @@ const	static	Command_Info	Command[] = {
 	//==============================
 	//Metadata
 
-	//曲名、作曲者、著作権者が32Byteを超える場合、 又は、 Textがある場合、 又は、 NSFe形式で保存する場合、authを作る。
-	if((Header.title.size() > 32) || (Header.composer.size() > 32) || (Header.copyright.size() > 32) || (Header.maker.size() > 0) || (cOptionSW->saveNSFe == true)){
-		Header.setItem(new Meta_auth(&Header));
-	}
-
-	//----------------------
-	//NEND
-	Header.setItem(new Meta_NEND());
+	Header.Set_text();	//text
+	Header.Set_auth();	//auth
+	Header.Set_NEND();	//NEND
 
 }
 

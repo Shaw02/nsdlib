@@ -61,6 +61,7 @@ void nsc_exit(int no);
 
 using namespace std;
 
+class	MusicHeader;
 class	MusicFile;
 class	MMLfile;
 class	Sub;
@@ -99,25 +100,26 @@ typedef struct {
 #include "mml_Address.h"
 #include "mml_CallSub.h"
 
-#include "MusicHeader.h"		//ヘッダー
+#include "NSF_Header.h"			//ヘッダー
 
 #include "MetaItem.h"
-
 #include "Meta_INFO.h"			//2.1	INFO	NSFe MUST
 #include "Meta_DATA.h"			//2.2	DATA	NSFe MUST
 #include "Meta_NEND.h"			//2.3	NEND	NSFe MUST
 #include "Meta_BANK.h"			//2.4	BANK	NSFe optional / NSF MUSTNOT
 #include "Meta_NSF2.h"			//2.6	NSF2	NSFe optional /  NSF MUSTNOT
 #include "Meta_VRC7.h"			//2.7	VRC7
-//#include "Meta_plst.h"			//2.8	plst
-//#include "Meta_psfx.h"			//2.9	psfx
+#include "Meta_plst.h"			//2.8	plst
+#include "Meta_psfx.h"			//2.9	psfx
 //#include "Meta_time.h"			//2.10	time
 //#include "Meta_fade.h"			//2.11	fade
 //#include "Meta_tlbl.h"			//2.12	tlbl
 //#include "Meta_taut.h"			//2.13	taut
 #include "Meta_auth.h"			//2.14	auth
 #include "Meta_text.h"			//2.15	text
-//#include "Meta_mixe.h"			//2.16	mixe
+#include "Meta_mixe.h"			//2.16	mixe
+
+#include "MusicHeader.h"		//ヘッダー
 
 #include "nsd_work.h"
 #include "MusicNote.h"

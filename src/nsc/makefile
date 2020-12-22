@@ -28,8 +28,11 @@ OBJS	=	BGM.o			\
 			Meta_BANK.o		\
 			Meta_NSF2.o		\
 			Meta_VRC7.o		\
+			Meta_plst.o		\
+			Meta_psfx.o		\
 			Meta_auth.o		\
 			Meta_text.o		\
+			Meta_mixe.o		\
 			mml_Address.o	\
 			mml_CallSub.o	\
 			mml_general.o	\

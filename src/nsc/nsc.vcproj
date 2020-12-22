@@ -259,10 +259,19 @@
 						RelativePath=".\Meta_INFO.cpp">
 					</File>
 					<File
+						RelativePath=".\Meta_mixe.cpp">
+					</File>
+					<File
 						RelativePath=".\Meta_NEND.cpp">
 					</File>
 					<File
 						RelativePath=".\Meta_NSF2.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_plst.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_psfx.cpp">
 					</File>
 					<File
 						RelativePath=".\Meta_text.cpp">
@@ -334,10 +343,19 @@
 				RelativePath=".\Meta_INFO.h">
 			</File>
 			<File
+				RelativePath=".\Meta_mixe.h">
+			</File>
+			<File
 				RelativePath=".\Meta_NEND.h">
 			</File>
 			<File
 				RelativePath=".\Meta_NSF2.h">
+			</File>
+			<File
+				RelativePath=".\Meta_plst.h">
+			</File>
+			<File
+				RelativePath=".\Meta_psfx.h">
 			</File>
 			<File
 				RelativePath=".\Meta_text.h">
@@ -392,6 +410,9 @@
 			</File>
 			<File
 				RelativePath=".\nsd_work.h">
+			</File>
+			<File
+				RelativePath=".\NSF_Header.h">
 			</File>
 			<File
 				RelativePath=".\Option.h">

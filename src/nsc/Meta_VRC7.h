@@ -23,6 +23,6 @@ private:
 
 //ƒƒ“ƒo[ŠÖ”
 public:
-	Meta_VRC7(MMLfile* MML, const char _strName[] = "VRC7");
+	Meta_VRC7(unsigned char _vrc7, const char _strName[] = "VRC7");
 	~Meta_VRC7(void);
 };
