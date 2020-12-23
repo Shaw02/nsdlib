@@ -108,22 +108,27 @@ const	static	Command_Info	Command[] = {
 		{	"著作権者",			id_Copyright	},
 		{	"#Maker",			id_Maker		},
 		{	"#maker",			id_Maker		},
+		{	"#Ripper",			id_Maker		},
+		{	"#ripper",			id_Maker		},
 		{	"製作者",			id_Maker		},
 		{	"#Text",			id_Text			},
 		{	"#text",			id_Text			},
 		{	"テキスト",			id_Text			},
+		{	"#PlayList",		id_plst			},
 		{	"#Plst",			id_plst			},
 		{	"#plst",			id_plst			},
 		{	"音楽順番",			id_plst			},
 		{	"曲順",				id_plst			},
+		{	"#PlaySfx",			id_psfx			},
 		{	"#Psfx",			id_psfx			},
 		{	"#psfx",			id_psfx			},
 		{	"効果音順番",		id_psfx			},
 		{	"#Mixe",			id_mixe			},
 		{	"#mixe",			id_mixe			},
+		{	"#Mix",				id_mixe			},
+		{	"#mix",				id_mixe			},
 		{	"#VRC7",			id_vrc7_chg		},
 		{	"#OffsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
-		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#offsetPCM",		id_OffsetPCM	},	//Offset Address of ⊿PCM
 		{	"#Code",			id_Code			},
 		{	"#code",			id_Code			},
@@ -988,6 +993,9 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 		if(Header.bank == false){
 			Err(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
 		}
+		if(cOptionSW->iNSF_version >=2){
+			NSF_Hed->Flags |= nsf_flag_IRQ_support;
+		}
 
 		//サイズの上限
 		iSizeLimit = 0x10000;
@@ -1047,21 +1055,19 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 		pcm_bank++;
 	}
 
+	//⊿PCMサイズチェック
+	_COUT << _T("  Bank = ") << (size_t)pcm_bank << endl;
+	_COUT << _T("  Size = ") << (size_t)pcm_size << _T(" [Byte]");
 	if(chk_Bank == 0){
-		//⊿PCMサイズチェック
-		_COUT << _T("  Bank = ") << (size_t)pcm_bank << endl;
-		_COUT << _T("  Size = ") << (size_t)pcm_size << _T(" [Byte] / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
+		_COUT << _T(" / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
 
 		if(	(Header.offsetPCM + pcm_size) > 0x10000	){
 			Err(_T("⊿PCMのサイズが許容値を越えました。"));
 		}
-
 	} else {
-		//⊿PCMサイズチェック
-		_COUT << _T("  Bank = ") << (size_t)pcm_bank << endl;
-		_COUT << _T("  Size = ") << (size_t)pcm_size << _T(" [Byte]") << endl;
-
+		_COUT << endl;
 		i = mus_bank + pcm_bank + code_bank;
+
 		if(i > 255){
 			Err(_T("バンク数の合計が255を越えました。"));
 		}
@@ -1111,8 +1117,15 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 	}
 
 	//----------------------
-	//Exit
+	//NSF2の場合、サイズをヘッダーに書く
+	if(cOptionSW->iNSF_version >=2){
+		NSF_Hed->szNSF_Data[0] = (char)( NSF_size      & 0xFF);
+		NSF_Hed->szNSF_Data[1] = (char)((NSF_size>> 8) & 0xFF);
+		NSF_Hed->szNSF_Data[2] = (char)((NSF_size>>16) & 0xFF);
+	}
 
+	//----------------------
+	//Exit
 	return(NSF_size);
 
 }
@@ -1154,11 +1167,10 @@ void	MusicFile::saveNSF(const char*	strFileName)
 
 	//NENDだけであれば、metadataの埋め込みは不要
 	if(Meta_size <= 8){
-		Meta_data.clear();
 		Meta_size = 0;
 	}
 
-	//サイズチェック（NSF2の場合、アドレス幅24bitの制限あり）
+	//サイズ表示
 	_COUT << _T("[Meta Data]") << endl;
 	_COUT << _T("  Size = ") << (unsigned int)Meta_size << _T(" [Byte]") << endl;
 
@@ -1166,9 +1178,6 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		//Meta Dataがある場合
 		if(Meta_size > 0){
 			NSF_Hed->Flags |= nsf_flag_MetaData;
-			NSF_Hed->szNSF_Data[0] = (char)( NSF_size      & 0xFF);
-			NSF_Hed->szNSF_Data[1] = (char)((NSF_size>> 8) & 0xFF);
-			NSF_Hed->szNSF_Data[2] = (char)((NSF_size>>16) & 0xFF);
 		}
 	}
 
@@ -1182,7 +1191,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 	//Write File
 	write((char *)NSF_Hed, sizeof(NSF_Header));			//NSFヘッダーの書き込み
 	write(NSF_Data.c_str(), NSF_size);					//データの書き込み
-	if(cOptionSW->iNSF_version>=2){
+	if((cOptionSW->iNSF_version>=2) && (Meta_size > 0)){
 		write(Meta_data.c_str(), Meta_size);			//Meta dataの書き込み
 	}
 
@@ -1214,10 +1223,6 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 				string	Meta_data;
 				size_t	Meta_size;
 
-				char	chk_Bank;		//NSFヘッダーのバンクチェック用
-
-//	MetaItem*			meta_item;
-
 	_COUT << _T("----------------------------------------") << endl;
 	_COUT << _T("*NSFe build process") << endl;
 
@@ -1233,46 +1238,24 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 
 	//==============================
 	//メタデータの生成
-
 	//----------------------
 	//DATA
-	Header.setItem_front(new Meta_DATA(&NSF_Data));
+	Header.Set_DATA(&NSF_Data);
 
 	//----------------------
-	//BANK
-	chk_Bank  = NSF_Hed->Bank[0];
-	chk_Bank |= NSF_Hed->Bank[1];
-	chk_Bank |= NSF_Hed->Bank[2];
-	chk_Bank |= NSF_Hed->Bank[3];
-	chk_Bank |= NSF_Hed->Bank[4];
-	chk_Bank |= NSF_Hed->Bank[5];
-	chk_Bank |= NSF_Hed->Bank[6];
-	chk_Bank |= NSF_Hed->Bank[7];
-	if(chk_Bank != 0){
-		Header.setItem_front(new Meta_BANK(NSF_Hed));
-	}
-
-	//----------------------
-	//NSF2
-	if(cOptionSW->iNSF_version >=2){
-		Header.setItem_front(new Meta_NSF2(NSF_Hed));
-	}
-
-	//----------------------
-	//INFO
-	Header.setItem_front(new Meta_INFO(NSF_Hed));
+	//NSFe用のmetadeta(INFO, NSF2, BANK)
+	Header.Set_NSFe_footer(NSF_Hed);
 
 	//----------------------
 	//バイナリに変換
 	Meta_size = Header.getData(&Meta_data);
 
-	//サイズチェック
+	//サイズ表示
 	_COUT << _T("[Meta Data]") << endl;
 	_COUT << _T("  Size = ") << (unsigned int)Meta_size << _T(" [Byte]") << endl;
 
 	//==============================
 	//NSFE書き込み
-
 	//----------------------
 	//Open File
 	fileopen(strFileName);

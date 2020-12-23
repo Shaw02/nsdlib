@@ -40,21 +40,24 @@ MusicHeader::MusicHeader(string _code) :
 	composer(""),
 	maker(""),
 	text(""),
-	m_INFO(NULL),		//2.1	INFO	NSFe MUST
-	m_DATA(NULL),		//2.2	DATA	NSFe MUST
-	m_NEND(NULL),		//2.3	NEND	NSFe MUST
-	m_BANK(NULL),		//2.4	BANK	NSFe optional / NSF MUSTNOT
-	m_NSF2(NULL),		//2.6	NSF2	NSFe optional /  NSF MUSTNOT
-	m_VRC7(NULL),		//2.7	VRC7
-	m_plst(NULL),		//2.8	plst
-	m_psfx(NULL),		//2.9	psfx
-//	m_time(NULL),		//2.10	time
-//	m_fade(NULL),		//2.11	fade
-//	m_tlbl(NULL),		//2.12	tlbl
-//	n_taut(NULL),		//2.13	taut
-	m_auth(NULL),		//2.14	auth
-	m_text(NULL),		//2.15	text
-	m_mixe(NULL)		//2.16	mixe
+	f_track_time(false),
+	f_track_fade(false),
+	f_track_label(false),
+	f_track_auth(false),
+	meta_DATA(NULL),		//2.2	DATA	NSFe MUST
+	meta_NEND(NULL),		//2.3	NEND	NSFe MUST
+	meta_BANK(NULL),		//2.4	BANK	NSFe optional / NSF MUSTNOT
+	meta_NSF2(NULL),		//2.6	NSF2	NSFe optional /  NSF MUSTNOT
+	meta_VRC7(NULL),		//2.7	VRC7
+	meta_plst(NULL),		//2.8	plst
+	meta_psfx(NULL),		//2.9	psfx
+//	meta_time(NULL),		//2.10	time
+//	meta_fade(NULL),		//2.11	fade
+//	meta_tlbl(NULL),		//2.12	tlbl
+//	meta_taut(NULL),		//2.13	taut
+	meta_auth(NULL),		//2.14	auth
+	meta_text(NULL),		//2.15	text
+	meta_mixe(NULL)			//2.16	mixe
 {
 	if(_code.empty()){
 		op_code = false;
@@ -115,10 +118,52 @@ void	MusicHeader::Text_Append(MMLfile* MML)
 
 
 //==============================================================
+//	Metadata
+//--------------------------------------------------------------
+void	MusicHeader::Set_NSFe_footer(NSF_Header* _nsf_hed)
+{
+	char	chk_Bank;		//NSFヘッダーのバンクチェック用
+
+	//----------------------
+	//BANK
+	chk_Bank  = _nsf_hed->Bank[0];
+	chk_Bank |= _nsf_hed->Bank[1];
+	chk_Bank |= _nsf_hed->Bank[2];
+	chk_Bank |= _nsf_hed->Bank[3];
+	chk_Bank |= _nsf_hed->Bank[4];
+	chk_Bank |= _nsf_hed->Bank[5];
+	chk_Bank |= _nsf_hed->Bank[6];
+	chk_Bank |= _nsf_hed->Bank[7];
+	if(chk_Bank != 0){
+		meta_BANK = new Meta_BANK(_nsf_hed);
+		setItem_front(meta_BANK);
+	}
+
+	//----------------------
+	//NSF2
+	if(cOptionSW->iNSF_version >=2){
+		meta_NSF2 = new Meta_NSF2(_nsf_hed);
+		setItem_front(meta_NSF2);
+	}
+
+	//----------------------
+	//INFO
+	meta_INFO = new Meta_INFO(_nsf_hed);
+	setItem_front(meta_INFO);
+}
+
+//--------------------------------------------------------------
+void	MusicHeader::Set_DATA(string* data)
+{
+	meta_DATA = new Meta_DATA(data);
+	setItem_front(meta_DATA);
+}
+
+//--------------------------------------------------------------
 void	MusicHeader::Set_NEND()
 {
-	m_NEND = new Meta_NEND();
-	setItem(m_NEND);
+	meta_NEND = new Meta_NEND();
+	setItem(meta_NEND);
 }
 
 //--------------------------------------------------------------
@@ -126,7 +171,7 @@ void	MusicHeader::Ser_VRC7(MMLfile* MML)
 {
 	int	_vrc7	= MML->GetInt();
 
-	if(m_VRC7 != NULL){
+	if(meta_VRC7 != NULL){
 		MML->Warning(_T("#VRC7が重複しています。"));
 	}
 
@@ -134,8 +179,8 @@ void	MusicHeader::Ser_VRC7(MMLfile* MML)
 		MML->Err(_T("#VRC7は、0か1で指定してください。"));
 	}
 
-	m_VRC7 = new Meta_VRC7((char)_vrc7);
-	setItem(m_VRC7);
+	meta_VRC7 = new Meta_VRC7((char)_vrc7);
+	setItem(meta_VRC7);
 }
 
 //--------------------------------------------------------------
@@ -169,12 +214,12 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 
 	//------------------------------
 	//コンパイル
-	if(m_plst != NULL){
+	if(meta_plst != NULL){
 		MML->Warning(_T("#plstが重複しています。"));
 	}
 
-	m_plst = new Meta_plst();
-	setItem(m_plst);
+	meta_plst = new Meta_plst();
+	setItem(meta_plst);
 
 	// { の検索
 	while(MML->cRead() != '{'){
@@ -202,7 +247,7 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 				if( (i<0) || (i>=iBGM)){
 					MML->Err(_T("#plstは0 <= n < #BGMコマンドで指定した数の範囲で指定して下さい。"));
 				}
-				m_plst->push_back((char)(i & 0xFF));
+				meta_plst->push_back((char)(i & 0xFF));
 				break;
 			case(plst_Commma):
 				break;
@@ -245,12 +290,12 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 
 	//------------------------------
 	//コンパイル
-	if(m_psfx != NULL){
+	if(meta_psfx != NULL){
 		MML->Warning(_T("#psfxが重複しています。"));
 	}
 
-	m_psfx = new Meta_psfx();
-	setItem(m_psfx);
+	meta_psfx = new Meta_psfx();
+	setItem(meta_psfx);
 
 	// { の検索
 	while(MML->cRead() != '{'){
@@ -278,7 +323,7 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 				if( (i<0) || (i>=iSE)){
 					MML->Err(_T("#psfxは0 <= n < #SEコマンドで指定した数の範囲で指定して下さい。"));
 				}
-				m_psfx->push_back((char)((i+iBGM) & 0xFF));
+				meta_psfx->push_back((char)((i+iBGM) & 0xFF));
 				break;
 			case(psfx_Commma):
 				break;
@@ -291,12 +336,36 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 }
 
 //--------------------------------------------------------------
+void	MusicHeader::Set_time()
+{
+
+}
+
+//--------------------------------------------------------------
+void	MusicHeader::Set_fade()
+{
+
+}
+
+//--------------------------------------------------------------
+void	MusicHeader::Set_tlbl()
+{
+
+}
+
+//--------------------------------------------------------------
+void	MusicHeader::Set_taut()
+{
+
+}
+
+//--------------------------------------------------------------
 void	MusicHeader::Set_auth()
 {
 	//曲名、作曲者、著作権者が32Byteを超える場合、 又は、 Textがある場合、 又は、 NSFe形式で保存する場合、authを作る。
 	if((title.size() > 32) || (composer.size() > 32) || (copyright.size() > 32) || (maker.size() > 0) || (cOptionSW->saveNSFe == true)){
-		m_auth = new Meta_auth(this);
-		setItem(m_auth);
+		meta_auth = new Meta_auth(this);
+		setItem(meta_auth);
 	}
 }
 
@@ -304,8 +373,8 @@ void	MusicHeader::Set_auth()
 void	MusicHeader::Set_text()
 {
 	if(text.size() > 0){
-		m_text = new Meta_text(&text);
-		setItem(m_text);
+		meta_text = new Meta_text(&text);
+		setItem(meta_text);
 	}
 }
 
@@ -364,11 +433,11 @@ const	static	Command_Info	Command[] = {
 	//------------------------------
 	//コンパイル
 
-	if(m_mixe != NULL){
+	if(meta_mixe != NULL){
 		MML->Warning(_T("#mixeが重複しています。"));
 	} else {
-		m_mixe = new Meta_mixe();
-		setItem(m_mixe);
+		meta_mixe = new Meta_mixe();
+		setItem(meta_mixe);
 	}
 
 	// { の検索
@@ -418,7 +487,7 @@ const	static	Command_Info	Command[] = {
 			case(mixe_Num):
 				MML->Back();
 				i = MML->GetInt();
-				m_mixe->append(id, i, MML);
+				meta_mixe->append(id, i, MML);
 				break;
 			case(mixe_Commma):
 				break;

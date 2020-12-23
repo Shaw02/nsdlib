@@ -40,22 +40,27 @@ public:
 				string	romcode;
 				string	text;
 
-				//for Metadata
-				Meta_INFO*	m_INFO;		//2.1	INFO	NSFe MUST
-				Meta_DATA*	m_DATA;		//2.2	DATA	NSFe MUST
-				Meta_NEND*	m_NEND;		//2.3	NEND	NSFe MUST
-				Meta_BANK*	m_BANK;		//2.4	BANK	NSFe optional / NSF MUSTNOT
-				Meta_NSF2*	m_NSF2;		//2.6	NSF2	NSFe optional /  NSF MUSTNOT
-				Meta_VRC7*	m_VRC7;		//2.7	VRC7
-				Meta_plst*	m_plst;		//2.8	plst
-				Meta_psfx*	m_psfx;		//2.9	psfx
-//				Meta_time*	m_time;		//2.10	time
-//				Meta_fade*	m_fade;		//2.11	fade
-//				Meta_tlbl*	m_tlbl;		//2.12	tlbl
-//				Meta_taut*	n_taut;		//2.13	taut
-				Meta_auth*	m_auth;		//2.14	auth
-				Meta_text*	m_text;		//2.15	text
-				Meta_mixe*	m_mixe;		//2.16	mixe
+private:		//for Metadata
+				bool		f_track_time;	//#time		コマンドがあったか？
+				bool		f_track_fade;	//#fade		コマンドがあったか？
+				bool		f_track_label;	//#label	コマンドがあったか？
+				bool		f_track_auth;	//#composer	コマンドがあったか？
+
+				Meta_INFO*	meta_INFO;		//2.1	INFO	NSFe MUST
+				Meta_DATA*	meta_DATA;		//2.2	DATA	NSFe MUST
+				Meta_NEND*	meta_NEND;		//2.3	NEND	NSFe MUST
+				Meta_BANK*	meta_BANK;		//2.4	BANK	NSFe optional / NSF MUSTNOT
+				Meta_NSF2*	meta_NSF2;		//2.6	NSF2	NSFe optional /  NSF MUSTNOT
+				Meta_VRC7*	meta_VRC7;		//2.7	VRC7
+				Meta_plst*	meta_plst;		//2.8	plst
+				Meta_psfx*	meta_psfx;		//2.9	psfx
+//				Meta_time*	meta_time;		//2.10	time
+//				Meta_fade*	meta_fade;		//2.11	fade
+//				Meta_tlbl*	meta_tlbl;		//2.12	tlbl
+//				Meta_taut*	meta_taut;		//2.13	taut
+				Meta_auth*	meta_auth;		//2.14	auth
+				Meta_text*	meta_text;		//2.15	text
+				Meta_mixe*	meta_mixe;		//2.16	mixe
 				
 //メンバー関数
 public:
@@ -67,10 +72,16 @@ public:
 		void	Set_Maker(MMLfile* MML);
 		void	Text_Append(MMLfile* MML);
 
+		void	Set_NSFe_footer(NSF_Header* _nsf_hed);
+		void	Set_DATA(string* data);
 		void	Set_NEND();
 		void	Ser_VRC7(MMLfile* MML);
 		void	Set_plst(MMLfile* MML);
 		void	Set_psfx(MMLfile* MML);
+		void	Set_time();
+		void	Set_fade();
+		void	Set_tlbl();
+		void	Set_taut();
 		void	Set_auth();
 		void	Set_text();
 		void	Set_mixe(MMLfile* MML);

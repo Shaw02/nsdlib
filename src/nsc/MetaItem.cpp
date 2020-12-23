@@ -218,6 +218,7 @@ size_t	MetaItem::getData(string* _str)
 {
 	//----------------------
 	//Local•Ï”
+	size_t	_size0 = _str->size();
 	list<	MetaItem*>::iterator	itItem;
 
 	_str->append(m_data);
@@ -229,7 +230,7 @@ size_t	MetaItem::getData(string* _str)
 			itItem++;
 		}
 	}
-	m_size = _str->size();
+	m_size = _str->size() - _size0;
 	return(m_size);
 }
 

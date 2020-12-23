@@ -20,6 +20,11 @@ class TrackSet :
 {
 //メンバー変数
 protected:
+				string			label;		//曲名
+				string			author;		//作曲者
+				int				time;		//演奏時間[msec]
+				int				fade;		//フェードアウト時間[msec]
+
 				int				iTempo;		//テンポ
 
 	map<int,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
