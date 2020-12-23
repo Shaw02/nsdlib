@@ -57,31 +57,32 @@ MusicHeader::~MusicHeader(void)
 
 void	MusicHeader::Set_Title(MMLfile* MML)
 {
-	title = MML->GetString();
+	title = MML->GetString(true);
 }
 
 void	MusicHeader::Set_Copyright(MMLfile* MML)
 {
-	copyright = MML->GetString();
+	copyright = MML->GetString(true);
 }
 
 void	MusicHeader::Set_Composer(MMLfile* MML)
 {
-	composer = MML->GetString();
+	composer = MML->GetString(true);
 }
 
 void	MusicHeader::Set_SegmentSEQ(MMLfile* MML)
 {
-	segmentSEQ = MML->GetString();
+	segmentSEQ = MML->GetString(false);
 }
 
 void	MusicHeader::Set_SegmentPCM(MMLfile* MML)
 {
-	segmentPCM = MML->GetString();
+	segmentPCM = MML->GetString(false);
 }
+
 void	MusicHeader::Set_Label(MMLfile* MML)
 {
-	Label = MML->GetString();
+	Label = MML->GetString(false);
 }
 
 void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
@@ -106,9 +107,9 @@ void	MusicHeader::Set_RomCode(MMLfile* MML)
 {
 	if(op_code == true){
 		MML->Warning(_T("オプションスイッチでリンクするコードが指定されているので、#codeコマンドは無視します。"));
-		MML->GetString();
+		MML->GetString(false);
 	} else {
-		romcode = MML->GetString();
+		romcode = MML->GetString(false);
 	}
 }
 

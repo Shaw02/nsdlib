@@ -83,12 +83,17 @@ public:
 				void	Back_one(void);					//1文字戻し
 				void	Back(void);						//1文字戻し（全角・半角変換対応）
 
-				char	read_char(void);	//1Byte読み込み
-				char	cRead(void);		//1Byte読み込み（全角・半角変換対応）
-				char	GetChar(void);		//1Byte読み込み（with EOF & Commend check）
-				string	GetString(void);	//""付 文字列 読み込み
-				int		GetNum(void);		//()付  数値  読み込み
-				int		GetInt(void);		//数値読み込み
+				char	read_char(void);				//1Byte読み込み
+				char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
+				char	GetChar(void);					//1Byte読み込み（with EOF & Commend check）
+				string	GetString(bool f_ESC);			//""付 文字列 読み込み
+				int		GetNum(void);					//()付  数値  読み込み
+				int		GetInt(void);					//数値読み込み
+				bool	chkSigh(void);					//符号チェック
+				int		GetHex(void);					//16進数読み込み
+				int		GetDec(void);					//10進数読み込み
+				int		GetOct(void);					// 8進数読み込み
+				int		GetBin(void);					// 2進数読み込み
 				int		GetLength(int DefaultLength);	//音長読み込み（演算付き）
 				int		readLength(int DefaultLength);	//音長読み込み
 
