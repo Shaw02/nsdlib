@@ -174,8 +174,11 @@
     <ClInclude Include="..\nsc\Meta_BANK.h" />
     <ClInclude Include="..\nsc\Meta_DATA.h" />
     <ClInclude Include="..\nsc\Meta_INFO.h" />
+    <ClInclude Include="..\nsc\Meta_mixe.h" />
     <ClInclude Include="..\nsc\Meta_NEND.h" />
     <ClInclude Include="..\nsc\Meta_NSF2.h" />
+    <ClInclude Include="..\nsc\Meta_plst.h" />
+    <ClInclude Include="..\nsc\Meta_psfx.h" />
     <ClInclude Include="..\nsc\Meta_text.h" />
     <ClInclude Include="..\nsc\Meta_VRC7.h" />
     <ClInclude Include="..\nsc\MMLfile.h" />

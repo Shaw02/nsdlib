@@ -172,6 +172,15 @@
     <ClInclude Include="..\nsc\NSF_Header.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\nsc\Meta_plst.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_mixe.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_psfx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\nsc\nsc.cpp">
@@ -304,7 +313,7 @@
       <Filter>ソース ファイル\Music\Meta</Filter>
     </ClCompile>
     <ClCompile Include="..\nsc\Meta_plst.cpp">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\Music\Meta</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
