@@ -169,6 +169,7 @@ const	static	unsigned	char	Yen_UTF8[]	=	{0xC2, 0xA5, 0x00};			//Yen
 const	static	unsigned	char	Yen_UTF8W[]	=	{0xEF, 0xBF, 0xA5, 0x00};	//Yen
 
 const	static	Command_Info	Command[] = {
+		{	"曲名",			mml_label			},
 		{	"タイトル",		mml_label			},
 		{	"#Title",		mml_label			},
 		{	"#title",		mml_label			},
@@ -185,6 +186,7 @@ const	static	Command_Info	Command[] = {
 		{	"#composer",	mml_author			},
 		{	"#Taut",		mml_author			},
 		{	"#taut",		mml_author			},
+		{	"タイム",		mml_time			},
 		{	"時間",			mml_time			},
 		{	"#Time",		mml_time			},
 		{	"#time",		mml_time			},

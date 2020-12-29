@@ -68,9 +68,29 @@ SE(<var>n</var>){
 
 <table>
 <tr><th>Command</th><th>Default</th><th>Type</th><th>Contens</th></tr>
-<tr><td>#priority <var>n</var>		</td><td>0 (#priority)</td><td>-</td><td>このシーケンス（SE）記述ブロック個別に優先度を設定します。（Default: <var>n</var> = 0）<br>
+<tr><td>#priority <var>n</var>		</td><td>0 (#priority)</td><td>-</td><td>このシーケンス（SE）記述ブロック個別に優先度を設定します。<br>
 													　（0 : 優先度高 ～ 3:優先度低）<br>
 													（効果音の記述ブロックにのみ有効です。）</td></tr>
+<tr><td>#label "<var>strings</var>"	</td><td>-	</td><td>-</td>
+	<td>このシーケンス記述ブロック個別の曲名を設定します。<br>
+		NSF2, NSFe共にメタデータ"#tlbl"を生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#author "<var>strings</var>"	</td><td>-	</td><td>-</td>
+	<td>このシーケンス記述ブロック個別の作曲者を設定します。<br>
+		NSF2, NSFe共にメタデータ"#taut"を生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#time <var>n</var>	</td><td>-1	</td><td>-</td>
+	<td>このシーケンス記述ブロック個別の演奏時間をmsec単位で設定します。<br>
+		0未満は、NSFプレイヤーのデフォルトの演奏時間となります。<br>
+		0は、直ちにフェードアウトが始まることを意味します。<br>
+		NSF2, NSFe共にメタデータ"#time"を生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#fade <var>n</var>	</td><td>-1	</td><td>-</td>
+	<td>このシーケンス記述ブロック個別のフェードアウト時間をmsec単位で設定します。<br>
+		0未満は、NSFプレイヤーのデフォルトのフェードアウト時間となります。<br>
+		0は、フェードアウトしない事を意味します。<br>
+		NSF2, NSFe共にメタデータ"#fade"を生成します。NSF1では未対応です。</td>
+</tr>
 <tr><td><a href="mml_note.html">a</a></td><td>-</td><td>-</td><td>音符 (A, La, ラ)</td></tr>
 <tr><td><a href="mml_note.html">b</a></td><td>-</td><td>-</td><td>音符 (B, Si, シ)</td></tr>
 <tr><td><a href="mml_note.html">c</a></td><td>-</td><td>-</td><td>音符 (C, Do, ド)</td></tr>
