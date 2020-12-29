@@ -41,11 +41,6 @@ public:
 				string	text;
 
 private:		//for Metadata
-				bool		f_track_time;	//#time		コマンドがあったか？
-				bool		f_track_fade;	//#fade		コマンドがあったか？
-				bool		f_track_label;	//#label	コマンドがあったか？
-				bool		f_track_auth;	//#composer	コマンドがあったか？
-
 				Meta_INFO*	meta_INFO;		//2.1	INFO	NSFe MUST
 				Meta_DATA*	meta_DATA;		//2.2	DATA	NSFe MUST
 				Meta_NEND*	meta_NEND;		//2.3	NEND	NSFe MUST
@@ -54,10 +49,10 @@ private:		//for Metadata
 				Meta_VRC7*	meta_VRC7;		//2.7	VRC7
 				Meta_plst*	meta_plst;		//2.8	plst
 				Meta_psfx*	meta_psfx;		//2.9	psfx
-//				Meta_time*	meta_time;		//2.10	time
-//				Meta_fade*	meta_fade;		//2.11	fade
-//				Meta_tlbl*	meta_tlbl;		//2.12	tlbl
-//				Meta_taut*	meta_taut;		//2.13	taut
+				Meta_time*	meta_time;		//2.10	time
+				Meta_fade*	meta_fade;		//2.11	fade
+				Meta_tlbl*	meta_tlbl;		//2.12	tlbl
+				Meta_taut*	meta_taut;		//2.13	taut
 				Meta_auth*	meta_auth;		//2.14	auth
 				Meta_text*	meta_text;		//2.15	text
 				Meta_mixe*	meta_mixe;		//2.16	mixe
@@ -78,10 +73,10 @@ public:
 		void	Ser_VRC7(MMLfile* MML);
 		void	Set_plst(MMLfile* MML);
 		void	Set_psfx(MMLfile* MML);
-		void	Set_time();
-		void	Set_fade();
-		void	Set_tlbl();
-		void	Set_taut();
+		void	Set_time(int _iTime);
+		void	Set_fade(int _iFade);
+		void	Set_tlbl(string* _str);
+		void	Set_taut(string* _str);
 		void	Set_auth();
 		void	Set_text();
 		void	Set_mixe(MMLfile* MML);

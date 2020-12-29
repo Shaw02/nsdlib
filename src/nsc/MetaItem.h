@@ -49,4 +49,5 @@ public:
 	virtual		void	setMetaData(string* _str);
 				void	push_back(char _ch);
 				void	append(string* _str);
+				void	append(int _i);
 };

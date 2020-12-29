@@ -181,6 +181,18 @@
     <ClInclude Include="..\nsc\Meta_psfx.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\nsc\Meta_fade.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_taut.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_time.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nsc\Meta_tlbl.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\nsc\nsc.cpp">
@@ -313,6 +325,18 @@
       <Filter>ソース ファイル\Music\Meta</Filter>
     </ClCompile>
     <ClCompile Include="..\nsc\Meta_plst.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_fade.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_taut.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_time.cpp">
+      <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\Meta_tlbl.cpp">
       <Filter>ソース ファイル\Music\Meta</Filter>
     </ClCompile>
   </ItemGroup>

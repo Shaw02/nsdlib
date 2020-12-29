@@ -30,6 +30,10 @@ OBJS	=	BGM.o			\
 			Meta_VRC7.o		\
 			Meta_plst.o		\
 			Meta_psfx.o		\
+			Meta_time.o		\
+			Meta_fade.o		\
+			Meta_tlbl.o		\
+			Meta_taut.o		\
 			Meta_auth.o		\
 			Meta_text.o		\
 			Meta_mixe.o		\

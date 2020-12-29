@@ -305,3 +305,19 @@ void	MetaItem::append(string* _str)
 	m_data.append(*_str);
 	m_data.push_back(0x00);
 }
+//==============================================================
+//		コードの設定
+//--------------------------------------------------------------
+//	●引数
+//		string*		_str
+//	●返値
+//				無し
+//==============================================================
+void	MetaItem::append(int _i)
+{
+	m_size += 4;
+	m_data.push_back((unsigned char)(_i      ) & 0xFF);
+	m_data.push_back((unsigned char)(_i >> 8 ) & 0xFF);
+	m_data.push_back((unsigned char)(_i >>16 ) & 0xFF);
+	m_data.push_back((unsigned char)(_i >>24 ) & 0xFF);
+}

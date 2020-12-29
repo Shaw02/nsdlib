@@ -79,4 +79,16 @@ public:
 		void	Set_FDS_Volume(MMLfile* MML);		//FDS	マスター音量
 		void	Set_N163_Channel(MMLfile* MML);		//N16x	チャンネル数
 		void	Set_FME7_Frequency(MMLfile* MML);	//SN5B	エンベロープ周波数
+
+		//----------------------------------
+		//MetaItem
+		bool	isLabel(void){if(label.size() == 0){return(false);} else {return(true);};}
+		bool	isAuthor(void){if(author.size() == 0){return(false);} else {return(true);};}
+		bool	isTime(void){if(time < 0){return(false);} else {return(true);};}
+		bool	isFade(void){if(time < 0){return(false);} else {return(true);};}
+
+		string*	getLabel(void){return(&label);};
+		string*	getAuthor(void){return(&author);};
+		int		getTime(void){return(time);};
+		int		getFade(void){return(fade);};
 };

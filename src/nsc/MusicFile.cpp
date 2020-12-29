@@ -233,14 +233,6 @@ const	static	Command_Info	Command[] = {
 
 				size_t		i;
 //	unsigned	char		cData;
-				FDSC*		_fdsc;
-				FDSM*		_fdsm;
-				VRC7*		_vrc7;
-				N163*		_n163;
-				Envelop*	_env;
-				BGM*		_bgm;
-				SE*			_se;
-				Sub*		_sub;
 	string		msg;
 
 	map<size_t,	Envelop*	>::iterator	itEnvelop;
@@ -253,8 +245,13 @@ const	static	Command_Info	Command[] = {
 	//このオブジェクトは必ず使う（最適化対象外）。
 	setUse();
 
+	//メタデータチェック用のフラグ初期化
+	f_is_track_time		= false;
+	f_is_track_fade		= false;
+	f_is_track_label	= false;
+	f_is_track_auth		= false;
+
 	do{
-		
 		//１文字読み込み（コメントチェック、includeファイルの終端チェックもあり）
 //		cData = MML->GetChar();
 		MML->GetChar();
@@ -404,120 +401,159 @@ const	static	Command_Info	Command[] = {
 				}
 				cDPCMinfo = new DPCMinfo(MML, Header.bank);
 				ptcItem.push_back(cDPCMinfo);
-			//	iSize += cDPCMinfo->getSize();	//BGMのサイズを更新
 				break;
 			case(id_FDSC):
-				i = MML->GetNum();
-
-				//重複チェック
-				if(ptcFDSC.count(i) != 0){
-					MML->Err(_T("FDSC()ブロックで同じ番号が指定されました。"));
+				{
+					FDSC*	_fdsc;
+					i = MML->GetNum();
+					//重複チェック
+					if(ptcFDSC.count(i) != 0){
+						MML->Err(_T("FDSC()ブロックで同じ番号が指定されました。"));
+					}
+					_fdsc = new FDSC(MML, i);
+					ptcItem.push_back(_fdsc);
+					ptcFDSC[i] = _fdsc;
 				}
-				_fdsc = new FDSC(MML, i);
-				ptcItem.push_back(_fdsc);
-				ptcFDSC[i] = _fdsc;
-			//	iSize += _fdsc->getSize();	//BGMのサイズを更新
 				break;
 			case(id_FDSM):
-				i = MML->GetNum();
-
-				//重複チェック
-				if(ptcFDSM.count(i) != 0){
-					MML->Err(_T("FDSM()ブロックで同じ番号が指定されました。"));
+				{
+					FDSM*	_fdsm;
+					i = MML->GetNum();
+					//重複チェック
+					if(ptcFDSM.count(i) != 0){
+						MML->Err(_T("FDSM()ブロックで同じ番号が指定されました。"));
+					}
+					_fdsm = new FDSM(MML, i);
+					ptcItem.push_back(_fdsm);
+					ptcFDSM[i] = _fdsm;
 				}
-				_fdsm = new FDSM(MML, i);
-				ptcItem.push_back(_fdsm);
-				ptcFDSM[i] = _fdsm;
-			//	iSize += _fdsm->getSize();	//BGMのサイズを更新
 				break;
 			case(id_VRC7):
-				i = MML->GetNum();
-
-				//重複チェック
-				if(ptcVRC7.count(i) != 0){
-					MML->Err(_T("VRC7()ブロックで同じ番号が指定されました。"));
+				{
+					VRC7*	_vrc7;
+					i = MML->GetNum();
+					//重複チェック
+					if(ptcVRC7.count(i) != 0){
+						MML->Err(_T("VRC7()ブロックで同じ番号が指定されました。"));
+					}
+					_vrc7 = new VRC7(MML, i);
+					ptcItem.push_back(_vrc7);
+					ptcVRC7[i] = _vrc7;
 				}
-				_vrc7 = new VRC7(MML, i);
-				ptcItem.push_back(_vrc7);
-				ptcVRC7[i] = _vrc7;
-			//	iSize += _vrc7->getSize();	//BGMのサイズを更新
 				break;
 			case(id_N163):
-				i = MML->GetNum();
-
-				//重複チェック
-				if(ptcN163.count(i) != 0){
-					MML->Err(_T("N163()ブロックで同じ番号が指定されました。"));
+				{
+					N163*	_n163;
+					i = MML->GetNum();
+					//重複チェック
+					if(ptcN163.count(i) != 0){
+						MML->Err(_T("N163()ブロックで同じ番号が指定されました。"));
+					}
+					_n163 = new N163(MML, i);
+					ptcItem.push_back(_n163);
+					ptcN163[i] = _n163;
 				}
-				_n163 = new N163(MML, i);
-				ptcItem.push_back(_n163);
-				ptcN163[i] = _n163;
-			//	iSize += _n163->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Envelop):
-				i = MML->GetNum();
-				//重複チェック
-				if(ptcEnv.count(i) != 0){
-					MML->Err(_T("Envelope()ブロックで同じ番号が指定されました。"));
+				{
+					Envelop*	_env;
+					i = MML->GetNum();
+					//重複チェック
+					if(ptcEnv.count(i) != 0){
+						MML->Err(_T("Envelope()ブロックで同じ番号が指定されました。"));
+					}
+					_env = new Envelop(MML, i);
+					ptcItem.push_back(_env);
+					ptcEnv[i] = _env;
 				}
-				_env = new Envelop(MML, i);
-				ptcItem.push_back(_env);
-				ptcEnv[i] = _env;
-			//	iSize += _env->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Vibrato):
-				MML->offset_Em = 1000000;
-				i = MML->GetNum() + MML->offset_Em;
-				//重複チェック
-				if(ptcEnv.count(i) != 0){
-					MML->Err(_T("ビブラート()ブロックで同じ番号が指定されました。"));
+				{
+					Envelop*	_env;
+					MML->offset_Em = 1000000;
+					i = MML->GetNum() + MML->offset_Em;
+					//重複チェック
+					if(ptcEnv.count(i) != 0){
+						MML->Err(_T("ビブラート()ブロックで同じ番号が指定されました。"));
+					}
+					_env = new Envelop(MML, i);
+					ptcItem.push_back(_env);
+					ptcEnv[i] = _env;
 				}
-				_env = new Envelop(MML, i);
-				ptcItem.push_back(_env);
-				ptcEnv[i] = _env;
-			//	iSize += _env->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Sub):
-				i = MML->GetNum();
-				//重複チェック
-				if(ptcSub.count(i) != 0){
-					MML->Err(_T("Sub()ブロックで同じ番号が指定されました。"));
+				{
+					Sub*	_sub;
+					i = MML->GetNum();
+					//重複チェック
+					if(ptcSub.count(i) != 0){
+						MML->Err(_T("Sub()ブロックで同じ番号が指定されました。"));
+					}
+					//範囲チェック
+					_sub = new Sub(MML, i);
+					ptcItem.push_back(_sub);
+					ptcSub[i] = _sub;
 				}
-				//範囲チェック
-				_sub = new Sub(MML, i);
-				ptcItem.push_back(_sub);
-				ptcSub[i] = _sub;
-			//	iSize += _sub->getSize();	//BGMのサイズを更新
 				break;
 			case(id_BGM):
-				i = MML->GetNum();
-				//重複チェック
-				if(ptcBGM.count(i) != 0){
-					MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
+				{
+					BGM*	_bgm;
+					i = MML->GetNum();
+					//重複チェック
+					if(ptcBGM.count(i) != 0){
+						MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
+					}
+					//範囲チェック
+					if((Header.iBGM <= i) || (i<0)){
+						MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
+					}
+					_bgm = new BGM(MML, i);
+					ptcItem.push_back(_bgm);
+					ptcBGM[i] = _bgm;
+					//メタデータがあったかチェック
+					if(_bgm->isLabel() == true){
+						f_is_track_label = true;
+					}
+					if(_bgm->isAuthor() == true){
+						f_is_track_auth	= true;
+					}
+					if(_bgm->isTime() == true){
+						f_is_track_time	= true;
+					}
+					if(_bgm->isFade() == true){
+						f_is_track_fade	= true;
+					}
 				}
-				//範囲チェック
-				if((Header.iBGM <= i) || (i<0)){
-					MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
-				}
-				_bgm = new BGM(MML, i);
-				ptcItem.push_back(_bgm);
-				ptcBGM[i] = _bgm;
-			//	iSize += _bgm->getSize();	//BGMのサイズを更新
 				break;
 			case(id_SE):
-				i = MML->GetNum();
-				//重複チェック
-				if(ptcSE.count(i) != 0){
-					MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
+				{
+					SE*	_se;
+					i = MML->GetNum();
+					//重複チェック
+					if(ptcSE.count(i) != 0){
+						MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
+					}
+					//範囲チェック
+					if((Header.iSE <= i) || (i<0)){
+						MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
+					}
+					_se = new SE(MML, i);
+					ptcItem.push_back(_se);
+					ptcSE[i] = _se;
+					//メタデータがあったかチェック
+					if(_se->isLabel() == true){
+						f_is_track_label = true;
+					}
+					if(_se->isAuthor() == true){
+						f_is_track_auth	= true;
+					}
+					if(_se->isTime() == true){
+						f_is_track_time	= true;
+					}
+					if(_se->isFade() == true){
+						f_is_track_fade	= true;
+					}
 				}
-				//範囲チェック
-				if((Header.iSE <= i) || (i<0)){
-					MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
-				}
-				_se = new SE(MML, i);
-				ptcItem.push_back(_se);
-				ptcSE[i] = _se;
-			//	iSize += _se->getSize();	//BGMのサイズを更新
 				break;
 			case(id_Null):
 				break;
@@ -549,13 +585,6 @@ const	static	Command_Info	Command[] = {
 		};
 		i++;
 	}
-
-	//==============================
-	//Metadata
-
-	Header.Set_text();	//text
-	Header.Set_auth();	//auth
-	Header.Set_NEND();	//NEND
 
 }
 
@@ -597,16 +626,50 @@ void	MusicFile::TickCount(void)
 	//Tick Count & 最適化のための情報収集
 
 	while(iBGM < Header.iBGM){
+		BGM* _BGM = ptcBGM[iBGM];
 		_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
-		ptcBGM[iBGM]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
+		_BGM->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
+		if(f_is_track_label == true){
+			Header.Set_tlbl(_BGM->getLabel());
+		}
+		if(f_is_track_auth == true){
+			Header.Set_taut(_BGM->getAuthor());
+		}
+		if(f_is_track_time == true){
+			Header.Set_time(_BGM->getTime());
+		}
+		if(f_is_track_fade == true){
+			Header.Set_fade(_BGM->getFade());
+		}
 		iBGM++;
 	}
 
 	while(iSE < Header.iSE){
+		SE*	_SE = ptcSE[iSE];
 		_COUT << _T("---- SE(") << iSE << _T(") ----") <<endl;
-		ptcSE[iSE]->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
+		_SE->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
+		if(f_is_track_label == true){
+			Header.Set_tlbl(_SE->getLabel());
+		}
+		if(f_is_track_auth == true){
+			Header.Set_taut(_SE->getAuthor());
+		}
+		if(f_is_track_time == true){
+			Header.Set_time(_SE->getTime());
+		}
+		if(f_is_track_fade == true){
+			Header.Set_fade(_SE->getFade());
+		}
 		iSE++;
 	}
+
+
+	//==============================
+	//Metadata
+
+	Header.Set_text();	//text
+	Header.Set_auth();	//auth
+	Header.Set_NEND();	//NEND
 
 
 	//==============================

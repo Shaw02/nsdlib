@@ -256,6 +256,9 @@
 						RelativePath=".\Meta_DATA.cpp">
 					</File>
 					<File
+						RelativePath=".\Meta_fade.cpp">
+					</File>
+					<File
 						RelativePath=".\Meta_INFO.cpp">
 					</File>
 					<File
@@ -274,7 +277,16 @@
 						RelativePath=".\Meta_psfx.cpp">
 					</File>
 					<File
+						RelativePath=".\Meta_taut.cpp">
+					</File>
+					<File
 						RelativePath=".\Meta_text.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_time.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_tlbl.cpp">
 					</File>
 					<File
 						RelativePath=".\Meta_VRC7.cpp">
@@ -340,6 +352,9 @@
 				RelativePath=".\Meta_DATA.h">
 			</File>
 			<File
+				RelativePath=".\Meta_fade.h">
+			</File>
+			<File
 				RelativePath=".\Meta_INFO.h">
 			</File>
 			<File
@@ -358,7 +373,16 @@
 				RelativePath=".\Meta_psfx.h">
 			</File>
 			<File
+				RelativePath=".\Meta_taut.h">
+			</File>
+			<File
 				RelativePath=".\Meta_text.h">
+			</File>
+			<File
+				RelativePath=".\Meta_time.h">
+			</File>
+			<File
+				RelativePath=".\Meta_tlbl.h">
 			</File>
 			<File
 				RelativePath=".\Meta_VRC7.h">

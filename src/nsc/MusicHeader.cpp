@@ -40,10 +40,6 @@ MusicHeader::MusicHeader(string _code) :
 	composer(""),
 	maker(""),
 	text(""),
-	f_track_time(false),
-	f_track_fade(false),
-	f_track_label(false),
-	f_track_auth(false),
 	meta_DATA(NULL),		//2.2	DATA	NSFe MUST
 	meta_NEND(NULL),		//2.3	NEND	NSFe MUST
 	meta_BANK(NULL),		//2.4	BANK	NSFe optional / NSF MUSTNOT
@@ -51,10 +47,10 @@ MusicHeader::MusicHeader(string _code) :
 	meta_VRC7(NULL),		//2.7	VRC7
 	meta_plst(NULL),		//2.8	plst
 	meta_psfx(NULL),		//2.9	psfx
-//	meta_time(NULL),		//2.10	time
-//	meta_fade(NULL),		//2.11	fade
-//	meta_tlbl(NULL),		//2.12	tlbl
-//	meta_taut(NULL),		//2.13	taut
+	meta_time(NULL),		//2.10	time
+	meta_fade(NULL),		//2.11	fade
+	meta_tlbl(NULL),		//2.12	tlbl
+	meta_taut(NULL),		//2.13	taut
 	meta_auth(NULL),		//2.14	auth
 	meta_text(NULL),		//2.15	text
 	meta_mixe(NULL)			//2.16	mixe
@@ -336,27 +332,43 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 }
 
 //--------------------------------------------------------------
-void	MusicHeader::Set_time()
+void	MusicHeader::Set_time(int _iTime)
 {
-
+	if(meta_time == NULL){
+		meta_time = new Meta_time();
+		setItem(meta_time);
+	}
+	meta_time->append(_iTime);		
 }
 
 //--------------------------------------------------------------
-void	MusicHeader::Set_fade()
+void	MusicHeader::Set_fade(int _iFade)
 {
-
+	if(meta_fade == NULL){
+		meta_fade = new Meta_fade();
+		setItem(meta_fade);
+	}
+	meta_fade->append(_iFade);	
 }
 
 //--------------------------------------------------------------
-void	MusicHeader::Set_tlbl()
+void	MusicHeader::Set_tlbl(string* _str)
 {
-
+	if(meta_tlbl == NULL){
+		meta_tlbl = new Meta_tlbl();
+		setItem(meta_tlbl);
+	}
+	meta_tlbl->append(_str);
 }
 
 //--------------------------------------------------------------
-void	MusicHeader::Set_taut()
+void	MusicHeader::Set_taut(string* _str)
 {
-
+	if(meta_taut == NULL){
+		meta_taut = new Meta_taut();
+		setItem(meta_taut);
+	}
+	meta_taut->append(_str);
 }
 
 //--------------------------------------------------------------

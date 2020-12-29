@@ -34,6 +34,11 @@ public:
 private:
 	string					dpcm_code;
 
+				bool		f_is_track_time;	//#time		コマンドがあったか？
+				bool		f_is_track_fade;	//#fade		コマンドがあったか？
+				bool		f_is_track_label;	//#label	コマンドがあったか？
+				bool		f_is_track_auth;	//#composer	コマンドがあったか？
+
 //メンバー関数
 public:
 	MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]=_T("================ [ Music ] ================"));
