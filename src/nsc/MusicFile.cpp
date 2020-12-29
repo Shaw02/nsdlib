@@ -1162,21 +1162,23 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 
 	//----------------------
 	//GAPの生成
-	if(cDPCMinfo != NULL){
-		if(chk_Bank == 0){
+	if(chk_Bank == 0){
+		NSF_size = NSF_Data->size();
+		if(cDPCMinfo != NULL){
 			//バンク内を0でpaddingする。
-			NSF_size = (size_t)((mus_bank + pcm_bank)<<12);
-		} else {
-			//バンク内を0でpaddingする。
-			NSF_size = (size_t)((mus_bank + pcm_bank + code_bank)<<12);
-			//BANK対応の.binを使う場合で、且つ、32kByte未満の場合、32kByteにする。
-			if(NSF_size < 0x8000){
-				NSF_size = 0x8000;
+			if((NSF_size & 0x0FFF) != 0){
+				NSF_size = (NSF_size & 0xF000) + 0x1000;
+				NSF_Data->resize(NSF_size);
 			}
 		}
-		NSF_Data->resize(NSF_size);
 	} else {
-		NSF_size = NSF_Data->size();
+		//バンク内を0でpaddingする。
+		NSF_size = (size_t)((mus_bank + pcm_bank + code_bank)<<12);
+		//BANK対応の.binを使う場合で、且つ、32kByte未満の場合、32kByteにする。
+		if(NSF_size < 0x8000){
+			NSF_size = 0x8000;
+		}
+		NSF_Data->resize(NSF_size);
 	}
 
 	//----------------------
