@@ -247,6 +247,51 @@
 					Name="Meta"
 					Filter="">
 					<File
+						RelativePath=".\Meta_auth.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_BANK.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_DATA.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_fade.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_INFO.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_mixe.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_NEND.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_NSF2.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_plst.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_psfx.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_taut.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_text.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_time.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_tlbl.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_VRC7.cpp">
+					</File>
+					<File
 						RelativePath=".\MetaItem.cpp">
 					</File>
 				</Filter>
@@ -298,6 +343,51 @@
 				RelativePath=".\FileOutput.h">
 			</File>
 			<File
+				RelativePath=".\Meta_auth.h">
+			</File>
+			<File
+				RelativePath=".\Meta_BANK.h">
+			</File>
+			<File
+				RelativePath=".\Meta_DATA.h">
+			</File>
+			<File
+				RelativePath=".\Meta_fade.h">
+			</File>
+			<File
+				RelativePath=".\Meta_INFO.h">
+			</File>
+			<File
+				RelativePath=".\Meta_mixe.h">
+			</File>
+			<File
+				RelativePath=".\Meta_NEND.h">
+			</File>
+			<File
+				RelativePath=".\Meta_NSF2.h">
+			</File>
+			<File
+				RelativePath=".\Meta_plst.h">
+			</File>
+			<File
+				RelativePath=".\Meta_psfx.h">
+			</File>
+			<File
+				RelativePath=".\Meta_taut.h">
+			</File>
+			<File
+				RelativePath=".\Meta_text.h">
+			</File>
+			<File
+				RelativePath=".\Meta_time.h">
+			</File>
+			<File
+				RelativePath=".\Meta_tlbl.h">
+			</File>
+			<File
+				RelativePath=".\Meta_VRC7.h">
+			</File>
+			<File
 				RelativePath=".\MetaItem.h">
 			</File>
 			<File
@@ -344,6 +434,9 @@
 			</File>
 			<File
 				RelativePath=".\nsd_work.h">
+			</File>
+			<File
+				RelativePath=".\NSF_Header.h">
 			</File>
 			<File
 				RelativePath=".\Option.h">

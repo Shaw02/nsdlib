@@ -49,6 +49,7 @@ public:
 	unsigned	int			iDebug;			//デバッグ用
 				string		strMMLname;		//指定したMMLファイル名
 				string		strNSFname;		//指定したNSFファイル名
+				string		strNSFename;	//指定したNSFeファイル名
 				string		strASMname;		//指定したASMファイル名
 				string		strCodeName;	//ROM Codeの名前
 

@@ -149,10 +149,40 @@ size_t	MetaItem::SetOffset(size_t _offset)
 	//このオブジェクトのサイズ（最適化後）
 	m_size = _offset - m_offset;
 
-	//Size と ID の分を加算
+	//Size と ID の分を加算（m_sizeには含めない）
 	_offset += 8;
 
 	return(_offset);
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		size_t
+//==============================================================
+void	MetaItem::setItem(MetaItem* _item)
+{
+	//作ったobjectのポインタを保存しておく。
+	ptcItem.push_back(_item);
+	m_size += _item->getSize();
+}
+
+//==============================================================
+//		
+//--------------------------------------------------------------
+//	●引数
+//				無し
+//	●返値
+//		size_t
+//==============================================================
+void	MetaItem::setItem_front(MetaItem* _item)
+{
+	//作ったobjectのポインタを保存しておく。
+	ptcItem.push_front(_item);
+	m_size += _item->getSize();
 }
 
 //==============================================================
@@ -184,10 +214,11 @@ unsigned	char	MetaItem::getData(size_t n)
 //	●返値
 //				無し
 //==============================================================
-void	MetaItem::getData(string* _str)
+size_t	MetaItem::getData(string* _str)
 {
 	//----------------------
 	//Local変数
+	size_t	_size0 = _str->size();
 	list<	MetaItem*>::iterator	itItem;
 
 	_str->append(m_data);
@@ -199,6 +230,8 @@ void	MetaItem::getData(string* _str)
 			itItem++;
 		}
 	}
+	m_size = _str->size() - _size0;
+	return(m_size);
 }
 
 //==============================================================
@@ -244,3 +277,47 @@ void	MetaItem::setMetaData(string* _str)
 	m_size = m_data.size();
 }
 
+//==============================================================
+//		コードの設定
+//--------------------------------------------------------------
+//	●引数
+//		string*		_str
+//	●返値
+//				無し
+//==============================================================
+void	MetaItem::push_back(char _ch)
+{
+	m_data.push_back(_ch);
+	m_size++;
+}
+
+//==============================================================
+//		コードの設定
+//--------------------------------------------------------------
+//	●引数
+//		string*		_str
+//	●返値
+//				無し
+//==============================================================
+void	MetaItem::append(string* _str)
+{
+	m_size += _str->size() + 1;
+	m_data.append(*_str);
+	m_data.push_back(0x00);
+}
+//==============================================================
+//		コードの設定
+//--------------------------------------------------------------
+//	●引数
+//		string*		_str
+//	●返値
+//				無し
+//==============================================================
+void	MetaItem::append(int _i)
+{
+	m_size += 4;
+	m_data.push_back((unsigned char)(_i      ) & 0xFF);
+	m_data.push_back((unsigned char)(_i >> 8 ) & 0xFF);
+	m_data.push_back((unsigned char)(_i >>16 ) & 0xFF);
+	m_data.push_back((unsigned char)(_i >>24 ) & 0xFF);
+}

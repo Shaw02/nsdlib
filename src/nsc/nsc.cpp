@@ -133,10 +133,17 @@ int	main(int argc, char* argv[])
 
 		//==================================
 		//•Û‘¶
+		//NSF
 		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
 			cSND->saveNSF(cOptionSW->strNSFname.c_str());
 		}
 
+		//NSFe
+		if(cOptionSW->saveNSFe == true){
+			cSND->saveNSFe(cOptionSW->strNSFename.c_str());
+		}
+
+		//Assembly
 		if(cOptionSW->saveASM == true){
 			cSND->saveASM(cOptionSW->strASMname.c_str());
 		}

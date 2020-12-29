@@ -39,10 +39,12 @@
 <dl>
 <dt>-a</dt><dd>Compile to assembly langage. (*.s) </dd>
 <dt>-n</dt><dd>Compile to NSF music format. (*.nsf) </dd>
-<dt>-e</dt><dd>Error/Warning messages out the Stadard error (stderr).</dd>
+<dt>-x</dt><dd>Compile to NSFe music format. (*.nsfe) </dd>
+<dt>-v<var>version</var></dt><dd>Specify the NSF Version.</dd>
 <dt>-od<var>switch</var></dt><dd>Optimize of Delta-PCM.</dd>
 <dt>-oo<var>switch</var></dt><dd>Optimize of object.</dd>
-<!-- <dt>-os<var>switch</var></dt><dd>Optimize of sequence.</dd> -->
+<dt>-os<var>switch</var></dt><dd>Optimize of sequence.</dd>
+<dt>-e</dt><dd>Error/Warning messages out the Stadard error (stderr).</dd>
 <dt>-s</dt><dd>Enable outout the search pass result.</dd>
 <dt>-l<var>filename</var></dt><dd>Set the filename of the rom code for NSF.</dd>
 <dt>-fa<var>filename</var></dt><dd>Set the filename of the output assembly langage file.</dd>
@@ -70,17 +72,25 @@ MMLファイルをアセンブリ言語ソース（ca65.exe用）へ変換します。<br>
 
 <h4>-n</h4>
 <p>
-NSF Music formatへ変換します。<br>
+NSF (Nintendo Sound Format)へ変換します。<br>
+</p>
+
+<h4>-x</h4>
+<p>
+NSFe (Extended Nintendo Sound Format)へ変換します。<br>
+</p>
+
+<h4>-n, -xオプションにおける注意事項</h4>
+<p>
 バンク切り替え非対応版の.binを用いてコンパイラで直接ＮＳＦを生成する場合、
 実行コード、シーケンスデータ、⊿ＰＣＭデータの合計が32kByteまでとなります。<br>
 バンク切り替え対応版の.binを用いる場合は、1024kByteまでのデータを作成する事が可能です。<br>
 各.binの詳細は、<a href="spec.html">各.lib／.binの仕様</a>を参照願います。
 </p>
-
-<h4>-e</h4>
+	
+<h4>-v<var>version</var></h4>
 <p>
-エラー／ワーニングを、標準エラー出力に出力します。<br>
-デフォルトでは標準出力に返しますが、ファイルに関するエラーのみは、標準エラー出力固定となります。<br>
+NSFのヴァージョンを1~2で指定可能です。省略した場合は、Version 2となります。<br>
 </p>
 
 <h4>-od<var>switch</var></h4>
@@ -121,6 +131,12 @@ Version 0.10β～0.17βでのデフォルトの動作です。<br>
 シーケンスデータにおける最適化のスイッチです。<br>
 <var>switch</var>にて<var>+</var>を指定した場合、BGM, 効果音, 及びサブルーチンのシーケンスデータを最適化します（デフォルト）。<br>
 <var>switch</var>にて<var>-</var>を指定した場合、シーケンスデータを最適化しません。<br>
+</p>
+
+<h4>-e</h4>
+<p>
+エラー／ワーニングを、標準エラー出力に出力します。<br>
+デフォルトでは標準出力に返しますが、ファイルに関するエラーのみは、標準エラー出力固定となります。<br>
 </p>
 
 <h4>-s</h4>

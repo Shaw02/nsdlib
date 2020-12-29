@@ -34,6 +34,11 @@ public:
 private:
 	string					dpcm_code;
 
+				bool		f_is_track_time;	//#time		コマンドがあったか？
+				bool		f_is_track_fade;	//#fade		コマンドがあったか？
+				bool		f_is_track_label;	//#label	コマンドがあったか？
+				bool		f_is_track_auth;	//#composer	コマンドがあったか？
+
 //メンバー関数
 public:
 	MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]=_T("================ [ Music ] ================"));
@@ -45,11 +50,14 @@ public:
 
 	void	Fix_Address(void);
 
-	//バイナリーを作る
-	void	make_bin(size_t rom_size, size_t ptOffset);
+	size_t	read_bin(string* _str, NSF_Header* nsf_hed);				//.binを読み込む
+	size_t	make_mus(string* _str, size_t rom_size, size_t ptOffset);	//バイナリーを作る
+	size_t	make_dpcm(string* _str);
+	size_t	make_bin(NSF_Header* NSF_Hed, string* NSF_Data);
 
 	//保存フェーズ
 	void	saveNSF(const char*	strFileName);
+	void	saveNSFe(const char*	strFileName);
 	void	saveASM(const char*	strFileName);
 
 	void	Err(const _CHAR msg[]);
