@@ -26,6 +26,7 @@ MAIN_PROJ  =	test.nes
 #; リンカーの設定
 CFG_FILE   =	nesc.cfg
 MAP_FILE   =	test.map
+DBG_FILE   =	test.dbg
 
 #---------------
 #; ソースファイル

@@ -44,8 +44,8 @@ MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<b
 <tr><td>#bgm <var>n</var>				</td><td>1</td><td>BGM（曲）の数を設定します。</td></tr>
 <tr><td>#se <var>n</var>				</td><td>0</td><td>SE（効果音）の数を設定します。</td></tr>
 <tr><td>#priority <var>n</var>			</td><td>0</td><td>以降のSE（効果音）の優先度を設定します。<br>
-														SE（効果音）を再生開始した時、既に優先度が高いSE（効果音）が再生中であった場合は、再生しません。<br>
-														　（0 : 優先度高 ～ 3:優先度低）</td></tr>
+												SE（効果音）を再生開始した時、既に優先度が高いSE（効果音）が再生中であった場合は、再生しません。<br>
+												　（0 : 優先度高 ～ 3:優先度低）</td></tr>
 <tr><td>#timebase <var>n</var>			</td><td>24</td><td>以降のシーケンス記述ブロック（BGM, SE, Sub）の４分音符の分解能を設定します。<br>
 												何度でも指定可能であり、各シーケンス記述ブロック毎に設定することもできます。<br>
 												音符、休符において、この数値<var>n</var>の４倍の値を割り切ることが可能なｍ分音符を使用することができます。<br>
@@ -83,10 +83,10 @@ MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<b
 <tr><td>#offsetEm <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">Emコマンド</a>の引数を指定数値だけずらします。</td></tr>
 <tr><td>#offsetEn <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">Enコマンド</a>の引数を指定数値だけずらします。</td></tr>
 <tr><td>#offsetPCM	<var>address</var>	</td><td>$10000<br>(⊿PCM無し)</td><td>⊿PCMを配置するアドレスを指定します。<br>
-														シーケンスデータはこのコマンドで指定したアドレス-1の領域まで使えます。<br>
-														NSF music formatを出力する場合は、このアドレスよりΔPCMの実体が配置されます。<br>
-														アセンブリ言語ソースを出力する場合は、リンカー"ld65.exe"のコンフィグファイルにて、
-														"#segmentPCM"コマンドで指定したセグメントの配置アドレスと、同じアドレスに設定して下さい。</td></tr>
+												シーケンスデータはこのコマンドで指定したアドレス-1の領域まで使えます。<br>
+												NSF music formatを出力する場合は、このアドレスよりΔPCMの実体が配置されます。<br>
+												アセンブリ言語ソースを出力する場合は、リンカー"ld65.exe"のコンフィグファイルにて、
+												"#segmentPCM"コマンドで指定したセグメントの配置アドレスと、同じアドレスに設定して下さい。</td></tr>
 <tr><td>BGM(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
 	<td>-</td>
 	<td><var>n</var>番目のBGMのシーケンスの記述ブロックです。<br>
@@ -145,20 +145,120 @@ MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<b
 
 <p>
 NSF music format用の設定コマンドです。<br>
-多くのコマンドは、NSFへビルドする際に、NSFヘッダーに設定されます。<br>
+NSFヘッダー、またはメタデータに設定されます。<br>
 </p>
 
 <table>
 <caption>コマンド一覧</caption>
-<tr><th>Command</th><th>Default</th><th>Contens</th></tr>
-<tr><td>#title		"<var>strings</var>"	</td><td></td><td>タイトル名を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
-<tr><td>#composer	"<var>strings</var>"	</td><td></td><td>作曲者を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
-<tr><td>#copyright	"<var>strings</var>"	</td><td></td><td>著作権者を設定します。NSFビルド時にヘッダーに埋め込まれます。</td></tr>
-<tr><td>#code		"<var>name</var>"		</td><td>nsd.bin</td><td>リンクするＮＳＦ用のＲＯＭコードを指定します。<br>
-													<a href="nsc_option.html">コンパイルオプション</a>`-l'でROMコードの指定がある場合は、コンパイルオプションを優先します。<br>
-													各ROMコードの詳細は、<a href="spec.html">各.lib/.binの仕様</a>を参照ねがいます。</td></tr>
-<tr><td>#External	<var>n</var>			</td><td>各.binによる</td><td>NSFのヘッダーに設定する拡張音源フラグを、この値に書き換えます（初期値は各.binで異なります）。<br></td></tr>
-<tr><td>#Bank								</td><td>-</td><td>⊿PCMのバンク切り替えに対応した.bin（nsd_all.bin, nsd_all2.bin）をリンクする場合に、各コマンドを記述する前に必ず指定してください。<br></td></tr>
+<tr><th>Command</th>
+	<th>Default</th>
+	<th>NSF</th>
+	<th>NSFe</th>
+	<th>Contens</th>
+</tr>
+<tr><td>#title		"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>タイトル名を設定します。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
+</tr>
+<tr><td>#composer	"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>作曲者を設定します。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
+</tr>
+<tr><td>#copyright	"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>著作権者を設定します。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
+</tr>
+<tr><td>#maker	"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>製作者を設定します。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#text	"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>テキストを設定します。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#plst	{<var>list</var>}	</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>BGMの演奏順番を指定します。<br>
+		演奏する順番にBGM番号を0~255で指定し、番号と番号の間はスペース、TAB、もしくはカンマで区切ってください。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#psfx	{<var>list</var>}	</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>SEの演奏順番を指定します。<br>
+		演奏する順番にBGM番号を0~255で指定し、番号と番号の間はスペース、TAB、もしくはカンマで区切ってください。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#mixe	{<br>
+	    <var>id</var> = <var>volume</var>,<br>
+	    <var>id</var> = <var>volume</var><br>
+	}</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>各拡張音源の音量バランスを指定します。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。<br>
+		<var>id</var>は、音源タイプを指定します(DefaultはNSFeの仕様で標準化された規格です)。<br>
+		　APU1 : Squares - Default: 0<br>
+		　APU2 : Triangle / Noise / DPCM - Comparison: Triangle - Default: -20<br>
+		　VRC6 : Default: 0<br>
+		　VRC7 : Comparison: Pseudo-square - Default: 1100<br>
+		　FDS  : Default: 700<br>
+		　MMC5 : Default: 0<br>
+		　N163 : Comparison: 1-Channel mode - Default: 1100 or 1900<br>
+		　SN5B : Comparison: Volume 12 ($C) - Default: -130<br>
+		<var>volume</var>は音量を、-32768～32767で指定します（単位；1/100dB）。</td>
+</tr>
+<tr><td>#code		"<var>name</var>"		</td>
+	<td>nsd.bin</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>リンクするＮＳＦ用のＲＯＭコードを指定します。<br>
+		<a href="nsc_option.html">コンパイルオプション</a>`-l'でROMコードの指定がある場合は、コンパイルオプションを優先します。<br>
+		各ROMコードの詳細は、<a href="spec.html">各.lib/.binの仕様</a>を参照ねがいます。<br>
+		NSFe作成時は、各.binの設定を元に、NSFeのメタデータを生成します。</td>
+</tr>
+<tr><td>#External	<var>n</var>			</td>
+	<td>各.binによる</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>NSFのヘッダーに設定する拡張音源フラグを、この値に書き換えます（初期値は各.binで異なります）。<br></td>
+</tr>
+<tr><td>#VRC7	<var>n</var>			</td>
+	<td>0		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>VRC7の換装を設定します（NSFプレイヤーが対応している場合、VRC7がOPLLの音色に切り替わります。）。<br>
+	　0 - VRC7<br>
+	　1 - YM2413 (`nsd_opll.bin'を使用する場合、こちらを指定してください)</td>
+</tr>
+<tr><td>#Bank								</td>
+	<td>非指定	</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>⊿PCMのバンク切り替えに対応した.bin（nsd_all.bin, nsd_all2.bin）をリンクする場合に、各コマンドを記述する前に必ず指定してください。<br></td>
+</tr>
 </table>
 <br>
 </div>

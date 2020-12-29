@@ -149,7 +149,7 @@ void	MMLfile::include()
 	//----------------------
 	//Local変数
 	vector	<FileInput*>::iterator	itFiles;
-	string	_name = GetString();
+	string	_name = GetString(false);
 
 	//----------------------
 	//同じファイルが開かれていないかチェック
@@ -188,7 +188,7 @@ void	MMLfile::SetMacro(int i_Lv)
 	string	macro_contents	="";
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "Set Macro (Lv=" << i_Lv << ") : ";
 	}
 
@@ -237,7 +237,7 @@ void	MMLfile::SetMacro(int i_Lv)
 	lv_Mac[macro_name] = i_Lv;
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "SetMacro ptcMac[" << macro_name << "] = \"" << macro_contents << "\"" << endl;
 	}
 }
@@ -262,7 +262,7 @@ void	MMLfile::DeleteMacro(int i_Lv)
 	int		macro_lv;
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "Delete Macro (Lv=" << i_Lv << ") : " << endl;
 	}
 		
@@ -278,7 +278,7 @@ void	MMLfile::DeleteMacro(int i_Lv)
 				ptcMac.erase(macro_name);
 				lv_Mac.erase(macro_name);
 				//Debug用
-				if(cOptionSW->cDebug & DEBUG_Macros){
+				if(cOptionSW->iDebug & DEBUG_Macros){
 					cout << "	ptcMac[" << macro_name << "]" << endl;
 				}
 			}
@@ -307,7 +307,7 @@ void	MMLfile::CallMacro(void)
 	map<string,string>::iterator	itMac	= ptcMac.begin();
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "Call Macro : ";
 	}
 
@@ -366,7 +366,7 @@ void	MMLfile::CallMacro(void)
 	}
 
 	//Debug用
-	if(cOptionSW->cDebug & DEBUG_Macros){
+	if(cOptionSW->iDebug & DEBUG_Macros){
 		cout << "ptcMac[" << _name << "]　(nest = " << p_macro << " )" << endl;
 	}
 
@@ -747,24 +747,19 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 //			文字列読み込み
 //--------------------------------------------------------------
 //	●引数
-//			無し
+//			bool	f_ESC	エスケープシーケンスの可否
+//							true: ESCシーケンス ok
 //	●返値
-//			string	読み込んだ文字列
+//			string			読み込んだ文字列
 //	●処理
 //			MML中で"と"で囲まれた文字列を取得する。
 //==============================================================
-string	MMLfile::GetString(void)
+string	MMLfile::GetString(bool	f_ESC)
 {
+	int		i;
 	char	cData;
-	
 	string	_str;
-/*
-	while(cRead() != '"'){
-		if(eof()){
-			Err(_T("文字列開始を示す\"が見つかりません。"));
-		}
-	}
-*/
+
 	cData = GetChar();
 	if(cData != '"'){
 			Err(_T("文字列開始を示す\"が見つかりません。"));
@@ -773,6 +768,66 @@ string	MMLfile::GetString(void)
 	while('"' != (cData = cRead())){
 		if(eof()){
 			Err(_T("文字列終了を示す\"が見つかりません。"));
+		}
+		if((f_ESC == true) && (cData == '\\')){
+			cData = GetChar();
+			if(eof()){
+				Err(_T("文字列終了を示す\"が見つかりません。"));
+			}
+			switch(cData){
+				case('a'):
+					cData = '\a';
+					break;
+				case('b'):
+					cData = '\b';
+					break;
+				case('f'):
+					cData = '\f';
+					break;
+				case('n'):
+					cData = '\n';
+					break;
+				case('r'):
+					cData = '\r';
+					break;
+				case('t'):
+					cData = '\t';
+					break;
+				case('v'):
+					cData = '\v';
+					break;
+				case('\''):
+					cData = '\'';
+					break;
+				case('\"'):
+					cData = '\"';
+					break;
+				case('\\'):
+					cData = '\\';
+					break;
+				case('\?'):
+					cData = '\?';
+					break;
+				case('x'):
+					i = GetHex();
+					cData = (char)(i & 0xFF);
+					break;
+				case('0'):
+				case('1'):
+				case('2'):
+				case('3'):
+				case('4'):
+				case('5'):
+				case('6'):
+				case('7'):
+					Back();
+					i = GetOct();
+					cData = (char)(i & 0xFF);
+					break;
+				default:
+					_str += '\\';
+					break;
+			}
 		}
 		_str += cData;
 	}
@@ -793,26 +848,14 @@ int	MMLfile::GetNum(void)
 {
 	char	cData;
 	int		iResult;
-/*
-	while(cRead() != '('){
-		if(eof()){
-			Err(_T("数値開始を示す(が見つかりません。"));
-		}
-	}
-*/
+
 	cData = GetChar();
 	if(cData != '('){
 		Err(_T("数値開始を示す(が見つかりません。"));
 	}
 
 	iResult = GetInt();
-/*
-	while(')' != (cData = cRead())){
-		if(eof()){
-			Err(_T("数値終了を示す)が見つかりません。"));
-		}
-	}
-*/
+
 	cData = GetChar();
 	if(cData != ')'){
 		Err(_T("数値終了を示す)が見つかりません。"));
@@ -831,73 +874,133 @@ int	MMLfile::GetNum(void)
 //==============================================================
 int		MMLfile::GetInt(void)
 {
-				bool	neg = false;			//符号
-				int		iResult = 0;			//演算結果
+				bool	neg;				//符号
+				int		iResult;			//演算結果
 	unsigned	char	cData = GetChar();
 
 	//16進数
 	if(cData == '$'){
-		cData = cRead();
-		if(cData == '+'){
-			neg = false;
-			cData	 = cRead();
-		}
-		if(cData == '-'){
-			neg = true;
-			cData	 = cRead();
-		}
-		while(((cData >= '0') && (cData <= '9')) || ((cData >= 'a') && (cData <= 'f')) || ((cData >= 'A') && (cData <= 'F'))){
-			iResult <<= 4;
-			if((cData >= '0') && (cData <= '9')){
-				iResult += (unsigned int)cData - 0x30;
-			} else if((cData >= 'A') && (cData <= 'F')){
-				iResult += (unsigned int)cData - 0x41 + 10;
-			} else if((cData >= 'a') && (cData <= 'f')){
-				iResult += (unsigned int)cData - 0x61 + 10;
-			}
-			cData	 = cRead();
-		}
+		neg		= chkSigh();
+		iResult = GetHex();
 
 	//２進数
 	} else if(cData == '%'){
-		cData = cRead();
-		if(cData == '-'){
-			neg = true;
-			cData	 = cRead();
-		}
-		while((cData >= '0') && (cData <= '1')){
-			iResult <<= 1;
-			iResult += (unsigned int)cData - 0x30;
-			cData	 = cRead();
-		}
+		neg		= chkSigh();
+		iResult = GetBin();
 
 	//10進数
 	} else if(((cData >= '0') && (cData <= '9')) || (cData == '-') || (cData == '+')){
-		if(cData == '+'){
-			neg = false;
-			cData	 = cRead();
-		}
-		if(cData == '-'){
-			neg = true;
-			cData	 = cRead();
-		}
-		while((cData >= '0') && (cData <= '9')){
-			iResult *= 10;
-			iResult += (unsigned int)cData - 0x30;
-			cData	 = cRead();
-		}
+		Back();		//ポインタを１つ戻す
+		neg		= chkSigh();
+		iResult = GetDec();
 
 	} else {
 			Err(_T("数値以外が指定されました。"));
 	}
 
-	//ポインタを１つ戻す
-	Back();							//	StreamPointerAdd(-1);
-
 	//符号
 	if(neg == true){
 		iResult = -iResult;
 	}
+
+	return(iResult);
+}
+
+//--------------------------------------------------------------
+bool	MMLfile::chkSigh(void)
+{
+				bool	neg;
+	unsigned	char	cData = GetChar();
+
+	switch(cData){
+		case('-'):
+			neg = true;
+			break;
+		case('+'):
+			neg = false;
+			break;
+		default:
+			Back();		//ポインタを１つ戻す
+			neg = false;
+			break;
+	}
+	return(neg);
+}
+
+//--------------------------------------------------------------
+int	MMLfile::GetHex(void)
+{
+				int		iResult = 0;			//演算結果
+	unsigned	char	cData = GetChar();
+
+	while(((cData >= '0') && (cData <= '9')) || ((cData >= 'a') && (cData <= 'f')) || ((cData >= 'A') && (cData <= 'F'))){
+		iResult <<= 4;
+		if((cData >= '0') && (cData <= '9')){
+			iResult += (unsigned int)cData - 0x30;
+		} else if((cData >= 'A') && (cData <= 'F')){
+			iResult += (unsigned int)cData - 0x41 + 10;
+		} else if((cData >= 'a') && (cData <= 'f')){
+			iResult += (unsigned int)cData - 0x61 + 10;
+		}
+		cData	 = cRead();
+	}
+
+	//ポインタを１つ戻す
+	Back();							//	StreamPointerAdd(-1);
+
+	return(iResult);
+}
+
+//--------------------------------------------------------------
+int	MMLfile::GetDec(void)
+{
+				int		iResult = 0;			//演算結果
+	unsigned	char	cData = GetChar();		
+
+	while((cData >= '0') && (cData <= '9')){
+		iResult *= 10;
+		iResult += (unsigned int)cData - 0x30;
+		cData	 = cRead();
+	}
+
+	//ポインタを１つ戻す
+	Back();							//	StreamPointerAdd(-1);
+
+	return(iResult);
+}
+
+//--------------------------------------------------------------
+int	MMLfile::GetOct(void)
+{
+				int		iResult = 0;			//演算結果
+	unsigned	char	cData = GetChar();		
+
+	while((cData >= '0') && (cData <= '7')){
+		iResult <<= 3;
+		iResult += (unsigned int)cData - 0x30;
+		cData	 = cRead();
+	}
+
+	//ポインタを１つ戻す
+	Back();							//	StreamPointerAdd(-1);
+
+	return(iResult);
+}
+
+//--------------------------------------------------------------
+int	MMLfile::GetBin(void)
+{
+				int		iResult = 0;			//演算結果
+	unsigned	char	cData = GetChar();		
+
+	while((cData >= '0') && (cData <= '1')){
+		iResult <<= 1;
+		iResult += (unsigned int)cData - 0x30;
+		cData	 = cRead();
+	}
+
+	//ポインタを１つ戻す
+	Back();							//	StreamPointerAdd(-1);
 
 	return(iResult);
 }

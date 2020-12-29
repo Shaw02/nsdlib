@@ -106,14 +106,14 @@ _play:	.byte	0
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	1
-		.byte	29
-		.byte	0,0,0,0,0,0,0,0
+		.byte	30
+;		.byte	0,0,0,0,0,0,0,0		;TNS-HFC—p GAP
 
 .ifdef	DPCMBank
 .segment	"STARTUP"
 DRV_Name2:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version2:	.byte	1
-		.byte	29
+		.byte	30
 .endif
 
 ; ------------------------------------------------------------------------
@@ -147,7 +147,9 @@ DRV_Version2:	.byte	1
 ; ------------------------------------------------------------------------
 .proc	_nsf_init
 
+.ifdef	DPCMBank
 	sei
+.endif
 	cld
 
 	pha

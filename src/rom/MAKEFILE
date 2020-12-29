@@ -126,7 +126,7 @@ $(PROJ_HFX4).bin :	CFG_FILE = opllall.cfg
 #---------------
 #; ÉäÉìÉJÅ[ÇÃê›íË
 MAP_FILE   =	$*.map
-
+DBG_FILE   =	$*.dbg
 
 
 ########################################
@@ -145,6 +145,7 @@ all:	$(PROJ_LIST)
 clean:
 	@$(RM) *.bak
 	@$(RM) *.o
+	@$(RM) *.dbg
 	@$(RM) *.map
 	@$(RM) *.lst
 	@$(RM) *.bin

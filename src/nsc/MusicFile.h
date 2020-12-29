@@ -11,33 +11,6 @@
 
 /****************************************************************/
 /*																*/
-/*			定数定義											*/
-/*																*/
-/****************************************************************/
-struct	NSF_Header{
-				char	Name[5];			//00	"NESM",0x1A
-	unsigned	char	Version;			//05
-	unsigned	char	MusicNumber;		//06
-	unsigned	char	StartMusicNumber;	//07
-	unsigned	short	LoadAddress;		//08
-	unsigned	short	InitAddress;		//0A
-	unsigned	short	MainAddress;		//0C
-				char	Title[32];			//0E
-				char	Composer[32];		//2E
-				char	Copyright[32];		//4E
-	unsigned	short	Frequency_NTSC;		//6E
-	unsigned	char	Bank[8];			//70
-	unsigned	short	Frequency_PAL;		//78
-	unsigned	char	Video;				//7A
-	unsigned	char	External;			//7B
-	unsigned	char	Null1;				//7C
-	unsigned	char	Null2;				//7D
-	unsigned	char	Null3;				//7E
-	unsigned	char	Null4;				//7F
-};
-
-/****************************************************************/
-/*																*/
 /*			クラス定義											*/
 /*																*/
 /****************************************************************/
@@ -61,6 +34,11 @@ public:
 private:
 	string					dpcm_code;
 
+				bool		f_is_track_time;	//#time		コマンドがあったか？
+				bool		f_is_track_fade;	//#fade		コマンドがあったか？
+				bool		f_is_track_label;	//#label	コマンドがあったか？
+				bool		f_is_track_auth;	//#composer	コマンドがあったか？
+
 //メンバー関数
 public:
 	MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]=_T("================ [ Music ] ================"));
@@ -72,11 +50,14 @@ public:
 
 	void	Fix_Address(void);
 
-	//バイナリーを作る
-	void	make_bin(size_t rom_size, size_t ptOffset);
+	size_t	read_bin(string* _str, NSF_Header* nsf_hed);				//.binを読み込む
+	size_t	make_mus(string* _str, size_t rom_size, size_t ptOffset);	//バイナリーを作る
+	size_t	make_dpcm(string* _str);
+	size_t	make_bin(NSF_Header* NSF_Hed, string* NSF_Data);
 
 	//保存フェーズ
 	void	saveNSF(const char*	strFileName);
+	void	saveNSFe(const char*	strFileName);
 	void	saveASM(const char*	strFileName);
 
 	void	Err(const _CHAR msg[]);

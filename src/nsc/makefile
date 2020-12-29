@@ -8,8 +8,68 @@ CXXFLAGS	= -finput-charset=cp932 -fexec-charset=cp932 -O4 -Wall -I/usr/local/inc
 DEST		= /usr/local/bin
 LDFLAGS		= -L/usr/local/lib
 LIBS		= -lm
-OBJS		= BGM.o DPCM.o DPCMinfo.o Envelop.o FileInput.o FileOutput.o MMLfile.o mml_Address.o mml_CallSub.o mml_general.o mml_repeat.o mml_note.o mml_poke.o MusicEvent.o MusicFile.o MusicHeader.o MusicItem.o MusicTrack.o N163.o nsc.o Option.o SE.o StdAfx.o Sub.o TrackSet.o VRC7.o FDSC.o FDSM.o Patch.o SearchPass.o
+
+########################################
+#;	Source files list
+########################################
+
+OBJS	=	BGM.o			\
+			DPCM.o			\
+			DPCMinfo.o		\
+			Envelop.o		\
+			FDSC.o			\
+			FDSM.o			\
+			FileInput.o		\
+			FileOutput.o	\
+			MetaItem.o		\
+			Meta_INFO.o		\
+			Meta_DATA.o		\
+			Meta_NEND.o		\
+			Meta_BANK.o		\
+			Meta_NSF2.o		\
+			Meta_VRC7.o		\
+			Meta_plst.o		\
+			Meta_psfx.o		\
+			Meta_time.o		\
+			Meta_fade.o		\
+			Meta_tlbl.o		\
+			Meta_taut.o		\
+			Meta_auth.o		\
+			Meta_text.o		\
+			Meta_mixe.o		\
+			mml_Address.o	\
+			mml_CallSub.o	\
+			mml_general.o	\
+			mml_repeat.o	\
+			mml_note.o		\
+			mml_poke.o		\
+			MMLfile.o		\
+			MusicEvent.o	\
+			MusicNote.o		\
+			MusicFile.o		\
+			MusicHeader.o	\
+			MusicItem.o		\
+			MusicTrack.o	\
+			nsd_work.o		\
+			N163.o nsc.o	\
+			Option.o		\
+			Patch.o			\
+			SE.o			\
+			StdAfx.o		\
+			Sub.o			\
+			SearchPass.o	\
+			TrackSet.o		\
+			VRC7.o
+
+########################################
+#;	Project
+########################################
+
 PROGRAM		= nsc
+
+########################################
+#;	Build process
+########################################
 
 all: $(PROGRAM)
 

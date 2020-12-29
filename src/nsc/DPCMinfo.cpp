@@ -15,6 +15,7 @@
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
+//					bool	_bank		BANK対応のMMLか？
 //		const		_CHAR	_strName[]	このオブジェクトの名前
 //	●返値
 //					無し
@@ -295,7 +296,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		MML->Err(_T("⊿PCM定義のパラメータが足りません。"));
 	}
 
-	infoDPCM[note].file = MML->GetString();
+	infoDPCM[note].file = MML->GetString(false);
 	if(ptcDPCM.count(infoDPCM[note].file) == 0){
 		//新しいファイルだったら、DPCMオブジェクトを生成する。
 		_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);

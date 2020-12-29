@@ -32,15 +32,17 @@
 //==============================================================
 OPSW::OPSW(int argc, char* argv[]):
 	//初期化設定
-	cDebug(0),
+	fHelp(false),		//ヘルプは、デフォルトは表示しない。
 	fErr(false),
 	saveNSF(false),
+	saveNSFe(false),
 	saveASM(false),
 	flag_Optimize(false),
 	flag_OptObj(true),
 	flag_OptSeq(true),
 	flag_SearchPass(false),
-	fHelp(0)		//ヘルプは、デフォルトは表示しない。
+	iNSF_version(2),
+	iDebug(0)
 {
 
 	//----------------------------------
@@ -76,10 +78,10 @@ OPSW::OPSW(int argc, char* argv[]):
 				case 'h' :
 				case 'H' :
 				case '?' :
-					fHelp=1;
+					fHelp=true;
 					break;
 				//--------
-				//アセンブリ言語へ
+				//最適化設定
 				case 'o' :
 				case 'O' :
 					{
@@ -129,10 +131,33 @@ OPSW::OPSW(int argc, char* argv[]):
 					saveNSF = true;
 					break;
 				//--------
+				//NSFeへ
+				case 'x' :
+				case 'X' :
+					saveNSFe = true;
+					break;
+				//--------
 				//標準エラー出力へ
 				case 'e' :
 				case 'E' :
 					fErr = true;
+					break;
+				//--------
+				//ＮＳＦへ
+				case 'v' :
+				case 'V' :
+					switch(argv[iCount][2]){
+						case 0x00 :
+						case '1' :
+							iNSF_version = 1;
+							break;
+						case '2' :
+							iNSF_version = 2;
+							break;
+						default :
+							opError(_T("-v"));
+							break;
+					}
 					break;
 				//--------
 				//Tick Count
@@ -156,8 +181,8 @@ OPSW::OPSW(int argc, char* argv[]):
 					//0x80:	Phase [5] : Delete Class Object
 					int	i;
 					iResult=sscanf(argv[iCount],"-D%d",&i);
-					cDebug = (char)i;
-					if((iResult==NULL)||(iResult==EOF)){
+					iDebug = i;
+					if((iResult==0)||(iResult==EOF)){
 						opError(_T("-D"));
 						break;
 					};
@@ -216,7 +241,7 @@ OPSW::OPSW(int argc, char* argv[]):
 					};
 					switch(argv[iCount][2]){
 					//--------
-					//MMLファイルの指定
+					//Assemblyファイルの指定
 					case 'A' :
 					case 'a' :
 						//既に指定されている？
@@ -237,6 +262,8 @@ OPSW::OPSW(int argc, char* argv[]):
 							break;
 						};
 						break;
+					//--------
+					//NSFファイルの指定
 					case 'N' :
 					case 'n' :
 						//既に指定されている？
@@ -254,6 +281,28 @@ OPSW::OPSW(int argc, char* argv[]):
 							};
 						} else {
 							opError(_T("-fn NSF ファイルが2回以上指定されました。"));
+							break;
+						};
+						break;
+					//--------
+					//NSFeファイルの指定
+					case 'X' :
+					case 'x' :
+						//既に指定されている？
+						if(strNSFename.empty()){
+							iFlagFilnameExt=0;		//拡張子の有無　Reset
+							iOptionChk=0;
+							while((cOption=argv[iCount][iOptionChk+3])!=0)
+							{
+								strNSFename+=cOption;
+								if(cOption=='.'){iFlagFilnameExt=1;};
+								iOptionChk++;
+							};
+							if(iFlagFilnameExt==0){
+								strNSFename+=".nsfe";
+							};
+						} else {
+							opError(_T("-fn NSFe ファイルが2回以上指定されました。"));
 							break;
 						};
 						break;
@@ -304,7 +353,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	//--------------
 	//ヘルプ表示
 	//ファイル名が書かれなかった場合も、ヘルプを表示する。
-	if((fHelp==1)||(strMMLname.empty())){print_help();};
+	if((fHelp==true)||(strMMLname.empty())){print_help();};
 
 	if(strASMname.empty()){
 		iOptionChk=0;		
@@ -324,6 +373,16 @@ OPSW::OPSW(int argc, char* argv[]):
 			iOptionChk++;
 		};
 		strNSFname+=".nsf";
+	};
+
+	if(strNSFename.empty()){
+		iOptionChk=0;		
+		while((cOption=strMMLname[iOptionChk])!='.')
+		{
+			strNSFename+=cOption;
+			iOptionChk++;
+		};
+		strNSFename+=".nsfe";
 	};
 
 	//----------------------------------
@@ -373,6 +432,7 @@ OPSW::OPSW(int argc, char* argv[]):
 	//Debug用 表示
 //	cout << "MML = " << strMMLname << endl;
 //	cout << "NSF = " << strNSFname << endl;
+//	cout << "NSFe = " << strNSFename << endl;
 //	cout << "BIN = " << strBINname << endl;
 //	cout << "ASM = " << strASMname << endl;
 //	cout << "C   = " << strCname << endl;
@@ -405,15 +465,18 @@ void	OPSW::print_help(){
 				_T("\n")
 				_T("  -A			Compile to assembly langage.\n")
 				_T("  -N			Compile to NSF music format.\n")
-				_T("  -E			Error/Warning messages out the stadard error.\n")
+				_T("  -X			Compile to NSFe music format.\n")
+				_T("  -V[num]		Specify the NSF Version.\n")
 			//	_T("  -T			Disable to output the tick counting result.\n")
 				_T("  -Od[+/-]		Optimize the NSF bank struct of the delta-PCM.\n")
 				_T("  -Oo[+/-]		Optimize the object data.\n")
 				_T("  -Os[+/-]		Optimize the sequence data.\n")
+				_T("  -E			Error/Warning messages out the stadard error.\n")
 				_T("  -S			Enable outout the search pass result.\n")
 				_T("  -L[file(.bin)]	Filename of the rom code for NSF.\n")
 				_T("  -FA[file(.s  )]	Filename of the output assembly langage file.\n")
 				_T("  -FN[file(.nsf)]	Filename of the output NSF music format.\n")
+				_T("  -FX[file(.nsfe)]	Filename of the output NSFe music format.\n")
 				_T("  -C[dir]		Search pass of the rom code for NSF.\n")
 				_T("  -P[dir]		Search pass of the delta-pcm.\n")
 				_T("  -I[dir]		Search pass of the include file.\n")

@@ -25,6 +25,28 @@
 </p>
 <table>
 <tr><th>ヴァージョン</th><th>内容</th><th>改定日</th></tr>
+<tr><td>1.30</td>
+	<td>●音源ドライバ本体<br>
+		・エミュレータmesenで再生できない現象を修正した。<br>
+		●ＭＭＬコンパイラ<br>
+		・オプションスイッチ<code>/X</code>により、Extended NSF (NSFe)へのコンパイルに対応した。<br>
+		・オプションスイッチ<code>/V</code>により、NSFのヴァージョン指定に対応した。<br>
+		　従来のNSF Version 1以外にNSF Version 2へのコンパイルに対応し、デフォルトのコンパイルをNSF Level 2に変更した。<br>
+		・各種メタデータに対応し、メタデータ用のコマンドを実装した（以下）。<br>
+		<ul>
+		<li><code>#maker</code>：制作者の名前を記述できます。</li>
+		<li><code>#text</code>：テキストを記述できます。</li>
+		<li><code>#Mix</code>：NSFプレイヤーに、各拡張音源の音量バランスを指定できます</li>
+		<li><code>#plst</code>：NSFプレイヤーでの、再生順番を指定できます</li>
+		<li><code>#psfx</code>：NSFプレイヤーでの、効果音の再生順番を指定できます</li>
+		<li><code>#VRC7</code>：NSFプレイヤーに、VRC7が別の音源(OPLL)に換装されている事を設定します。</li>
+		<li><code>#label</code> ：曲毎の曲名を指定します(MMLシーケンス記述ブロックにて)。</li>
+		<li><code>#author</code> ：曲毎の作曲者を指定します(MMLシーケンス記述ブロックにて)。</li>
+		<li><code>#time</code> ：各曲の再生時間を設定します(MMLシーケンス記述ブロックにて)。</li>
+		<li><code>#fade</code> ：各曲のフェードアウト時間を設定します(MMLシーケンス記述ブロックにて)。</li>
+		</ul>
+	</td>
+	<td width=120>2020年12月29日</td></tr>
 <tr><td>1.29</td>
 	<td>●音源ドライバ本体<br>
 		・PALシステム用のヴァージョン<var>nsd_pal.lib</var>を追加しました。<br>

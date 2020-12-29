@@ -86,7 +86,7 @@ int	main(int argc, char* argv[])
 
 		//==================================
 		_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
-					_T("    Version 1.28\n")
+					_T("    Version 1.30\n")
 					_T("        Copyright (c) 2012-2020 S.W.\n")	<<	endl;
 
 
@@ -133,10 +133,17 @@ int	main(int argc, char* argv[])
 
 		//==================================
 		//•Û‘¶
-		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveASM == false))){
+		//NSF
+		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
 			cSND->saveNSF(cOptionSW->strNSFname.c_str());
 		}
 
+		//NSFe
+		if(cOptionSW->saveNSFe == true){
+			cSND->saveNSFe(cOptionSW->strNSFename.c_str());
+		}
+
+		//Assembly
 		if(cOptionSW->saveASM == true){
 			cSND->saveASM(cOptionSW->strASMname.c_str());
 		}

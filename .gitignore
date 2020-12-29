@@ -5,6 +5,8 @@
 *.bak
 *.lib
 *.bin
+*.nsf
+*.nes
 *.exe
 *.chm
 
@@ -26,6 +28,7 @@ _old/
 *.o
 *.map
 *.lst
+*.dbg
 *log.txt
 
 

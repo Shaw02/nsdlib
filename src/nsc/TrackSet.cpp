@@ -28,6 +28,10 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //==============================================================
 TrackSet::TrackSet(MMLfile* MML, size_t _id, bool _sub, bool _se, const _CHAR _strName[]):
 	MusicItem(_id, _strName),
+	label(""),
+	author(""),
+	time(-1),
+	fade(-1),
 	iTempo(120)
 {
 	//----------------------
@@ -35,6 +39,11 @@ TrackSet::TrackSet(MMLfile* MML, size_t _id, bool _sub, bool _se, const _CHAR _s
 
 //	定数定義
 enum	Command_ID_mml {
+	mml_label,
+	mml_author,
+	mml_time,
+	mml_fade,
+
 	mml_Track,
 	mml_Scale,
 	mml_Major,
@@ -160,6 +169,33 @@ const	static	unsigned	char	Yen_UTF8[]	=	{0xC2, 0xA5, 0x00};			//Yen
 const	static	unsigned	char	Yen_UTF8W[]	=	{0xEF, 0xBF, 0xA5, 0x00};	//Yen
 
 const	static	Command_Info	Command[] = {
+		{	"曲名",			mml_label			},
+		{	"タイトル",		mml_label			},
+		{	"#Title",		mml_label			},
+		{	"#title",		mml_label			},
+		{	"ラベル",		mml_label			},
+		{	"#Label",		mml_label			},
+		{	"#label",		mml_label			},
+		{	"#Tlbl",		mml_label			},
+		{	"#tlbl",		mml_label			},
+		{	"#Author",		mml_author			},
+		{	"#author",		mml_author			},
+		{	"作曲",			mml_author			},
+		{	"作曲者",		mml_author			},
+		{	"#Composer",	mml_author			},
+		{	"#composer",	mml_author			},
+		{	"#Taut",		mml_author			},
+		{	"#taut",		mml_author			},
+		{	"タイム",		mml_time			},
+		{	"時間",			mml_time			},
+		{	"#Time",		mml_time			},
+		{	"#time",		mml_time			},
+		{	"フェードアウト",	mml_fade		},
+		{	"フェード",		mml_fade			},
+		{	"#FadeOut",		mml_fade			},
+		{	"#Fade",		mml_fade			},
+		{	"#fade",		mml_fade			},
+
 		{	"TR",		mml_Track				},
 		{	"トラック",	mml_Track				},
 		{	"Scale",	mml_Scale				},
@@ -184,7 +220,6 @@ const	static	Command_Info	Command[] = {
 
 		{	"L",		mml_Loop				},
 		{	"[:",		mml_Repeat_C_Start		},
-	//	{	":",		mml_Repeat_C_Branch		},
 		{	":]",		mml_Repeat_C_End		},
 		{	"|:",		mml_Repeat_B_Start		},
 		{	(char*)RS_UTF8,		mml_Repeat_B_Branch		},
@@ -414,6 +449,21 @@ const	static	Command_Info	Command[] = {
 		//各コマンド毎の処理
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
 
+			//for NSF output
+			case(mml_label):
+				label = MML->GetString(true);
+				break;
+			case(mml_author):
+				author = MML->GetString(true);
+				break;
+			case(mml_time):
+				time = MML->GetInt();
+				break;
+			case(mml_fade):
+				fade = MML->GetInt();
+				break;
+
+			//for Sequence
 			case(mml_Track):
 				if(fSub == true){
 					MML->Warning(_T("Subブロック内ではトラック指定はできません。無視します。"));
@@ -911,7 +961,7 @@ TrackSet::~TrackSet(void)
 //==============================================================
 void	TrackSet::clear_Optimize()
 {
-	if(cOptionSW->cDebug & DEBUG_Optimize){
+	if(cOptionSW->iDebug & DEBUG_Optimize){
 		_COUT << _T("Optimize Object  : ") << strName;
 		if(f_id == true){
 			_COUT	<< _T("(") << m_id << _T(")");

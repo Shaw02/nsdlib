@@ -306,7 +306,7 @@ $bass..main2 { $bass3-1 $bass3-1 $bass3-1 }
 
 /* vol  */ E(40) {10 9 6 3 L 0}
 
-$TriArp = {@N0,0 @0 s60 l16 Ev40 o6}
+$TriArp {@N0,0 @0 s60 l16 Ev40 o6}
 
 $arpegio_1 { rreg >ce<re g>cec drgr< }
 $arpegio_2 { r>ec<r agrr rrrr rrrr }
@@ -332,7 +332,7 @@ $arp..main2 { $arps2 $arps2 $arps1 $arps1 }
 /* vol  */ E(50) { 11 10 9 8 7 6 5 L 0 }
 /* note */ E(51) { 0 5 10 15 20 25 L 30 }
 
-$Bubble = {@N0,0 @0 s60 l16 Ev50 En51 o3}
+$Bubble {@N0,0 @0 s60 l16 Ev50 En51 o3}
 
 $bubble_rhythm { rrrr rr(((b)))b rrrr rrrr}
 
