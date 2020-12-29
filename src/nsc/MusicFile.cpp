@@ -1164,7 +1164,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 	//GAP‚Ì¶¬
 	if(chk_Bank == 0){
 		NSF_size = NSF_Data->size();
-		if(cDPCMinfo != NULL){
+		if((cDPCMinfo != NULL) && (flag_Optimize == true)){
 			//ƒoƒ“ƒN“à‚ğ0‚Åpadding‚·‚éB
 			if((NSF_size & 0x0FFF) != 0){
 				NSF_size = (NSF_size & 0xF000) + 0x1000;
