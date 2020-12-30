@@ -2,30 +2,30 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>�����h���C�o�[�̐���p�ϐ�</Title>
+<Title>音源ドライバーの制御用変数</Title>
 </HEAD>
 <BODY>
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-�d�l�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+仕様＼
 </div>
 
 <!-- contents start -->
 <div id='contents'>
-<h2>�����h���C�o�[�̐���p�ϐ�</h2>
+<h2>音源ドライバーの制御用変数</h2>
 
 <div id='block'>
 <p>
-�����h���C�o�[�̐���p�ϐ��ł��B<br>
-�{�����h���C�o�[��p�����A�v���P�[�V�������J������ۂɁA
-�����h���C�o�[�̐����Ԃ�m�肽�����ɂ��Q�Ƃ��������B<br>
-���A�����h���C�o�[�̐���p�ϐ��ɃA�N�Z�X����ɂ́A�A�Z���u�����ꒆ�ɂĈȉ��̒ʂ�O���錾���邱�Ƃŉ\�ł��B<br>
+音源ドライバーの制御用変数です。<br>
+本音源ドライバーを用いたアプリケーションを開発する際に、
+音源ドライバーの制御状態を知りたい時にご参照ください。<br>
+尚、音源ドライバーの制御用変数にアクセスするには、アセンブリ言語中にて以下の通り外部宣言することで可能です。<br>
 </p>
 
 <code><pre>
@@ -33,75 +33,75 @@
 </pre></code>
 
 <p>
-�p�[�g���̃����o�[�ϐ��́A2Byte���ɔz�u���Ă��܂��B<br>
-x���W�X�^���ɁA�i�g���b�N�ԍ��|�P�j�~�Q�̒l�������ƁA�A�N�Z�X�ɕ֗��ł��B<br>
+パート毎のメンバー変数は、2Byte毎に配置しています。<br>
+xレジスタ等に、（トラック番号－１）×２の値を書くと、アクセスに便利です。<br>
 </p>
 
 <p>
-<strong>���@�[�W�����A�b�v�ɂ�萧��ϐ��̍\���̂̍\�����ς��ꍇ�����邽�߁A����ϐ��ւ̃A�N�Z�X�͈ȉ��\�̕ϐ����ŃA�N�Z�X�̒��A���肢�������܂��B</strong><br>
-���A�g�������p�̃����o�[�ϐ��͊������܂��i�g���������g�p���Ȃ��ꍇ�́A�g�������p�̃����o�[�ϐ��͍\���̂̃����o�[�ɓ���܂���j�B<br>
+<strong>ヴァージョンアップにより制御変数の構造体の構成が変わる場合があるため、制御変数へのアクセスは以下表の変数名でアクセスの程、お願いいたします。</strong><br>
+又、拡張音源用のメンバー変数は割愛します（拡張音源を使用しない場合は、拡張音源用のメンバー変数は構造体のメンバーに入りません）。<br>
 </p>
 
 
 </div>
 
 <div id='block'>
-<h3>Segment "zeropage" �ɔz�u�����ϐ�</h3>
+<h3>Segment "zeropage" に配置される変数</h3>
 
 <div id='block'>
 <h4><a name="nsd_work_zp">nsd_work_zp</a></h4>
 <p>
-Zeropage�ɒu����鐧��p�ϐ��i�\���́j�ł��B<br>
-�p�x�Ɂi1tick���ŉ��x���j�g�p���邽�߁A�A�N�Z�X���x�̑���Zeropage�̈�ɔz�u���Ă��܂��B<br>
+Zeropageに置かれる制御用変数（構造体）です。<br>
+頻度に（1tick中で何度も）使用するため、アクセス速度の速いZeropage領域に配置しています。<br>
 </p>
 
 <table>
-<caption>�ϐ��̓��e�@�i���ʁ^Common�j</caption>
-<tr><th>�ϐ���</th><th>���e</th></tr>
+<caption>変数の内容　（共通／Common）</caption>
+<tr><th>変数名</th><th>内容</th></tr>
 <tr><td>__ptr</td>
-	<td>�ėp�ϐ��i�|�C���^�[�p�j<br>
-		���A���e��ێ�����K�v�͂���܂���B<br>
-		���[�U�[�����̗̈���ꎞ�I�ȕϐ��̈�Ƃ��Ďg�p���č\���܂��񂪁A
-		�{�����h���C�o�̃��C�u�����֐����Ă񂾏ꍇ�A���e�͔j�󂳂��|�A�����ӂ��������B</td></tr>
+	<td>汎用変数（ポインター用）<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
 <tr><td>__tmp</td>
-	<td>�ėp�ϐ��i�v�Z�p�j<br>
-		���A���e��ێ�����K�v�͂���܂���B<br>
-		���[�U�[�����̗̈���ꎞ�I�ȕϐ��̈�Ƃ��Ďg�p���č\���܂��񂪁A
-		�{�����h���C�o�̃��C�u�����֐����Ă񂾏ꍇ�A���e�͔j�󂳂��|�A�����ӂ��������B</td></tr>
+	<td>汎用変数（計算用）<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
 <tr><td>channel</td>
-	<td>���ݐ��䒆�̃`�����l��<br>
-		���A���e��ێ�����K�v�͂���܂���B<br>
-		���[�U�[�����̗̈���ꎞ�I�ȕϐ��̈�Ƃ��Ďg�p���č\���܂��񂪁A
-		�{�����h���C�o�̃��C�u�����֐����Ă񂾏ꍇ�A���e�͔j�󂳂��|�A�����ӂ��������B</td></tr>
+	<td>現在制御中のチャンネル<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
 <tr><td>__flag</td>
-	<td><code>D... ....</code> :	�Đ����䖳��<br>
-		<code>...J ....</code> :	�����蒆<br>
-		<code>.... PP..</code> :	���ʉ��̗D��x<br>
-		<code>.... ..S.</code> :	�r�d�Đ���<br>
-		<code>.... ...B</code> :	�a�f�l���Đ���	</td></tr>
+	<td><code>D... ....</code> :	再生制御無効<br>
+		<code>...J ....</code> :	早送り中<br>
+		<code>.... PP..</code> :	効果音の優先度<br>
+		<code>.... ..S.</code> :	ＳＥ再生中<br>
+		<code>.... ...B</code> :	ＢＧＭが再生中	</td></tr>
 <tr><td>__Tempo</td>
-	<td>�e���|�it�R�}���h�̐��l�j</td></tr>
+	<td>テンポ（tコマンドの数値）</td></tr>
 <tr><td>__Tempo_ctr</td>
-	<td>�e���|�J�E���^</td></tr>
+	<td>テンポカウンタ</td></tr>
 </table>
 <p>
 </p>
 <table>
-<caption>�ϐ��̓��e�@�i�p�[�g���^Each part�j</caption>
+<caption>変数の内容　（パート毎／Each part）</caption>
 <tr><td>__Sequence_ptr</td>
-	<td>���t�|�C���^</td></tr>
+	<td>演奏ポインタ</td></tr>
 <tr><td>__Length_ctr</td>
-	<td>�����J�E���^</td></tr>
+	<td>音長カウンタ</td></tr>
 <tr><td>__Gate</td>
-	<td>���݂̉����̃Q�[�g�^�C��</td></tr>
+	<td>現在の音符のゲートタイム</td></tr>
 <tr><td>__Envelop_V</td>
-	<td>�G���x���[�v�̃z�[���h�^�C���p�̃J�E���^<br>
-		<code>iiii ....</code> :	���F<br>
-		<code>.... vvvv</code> :	����</td></tr>
+	<td>エンベロープのホールドタイム用のカウンタ<br>
+		<code>iiii ....</code> :	音色<br>
+		<code>.... vvvv</code> :	音量</td></tr>
 <tr><td>__Envelop_F</td>
-	<td>�G���x���[�v�̃z�[���h�^�C���p�̃J�E���^<br>
-		<code>nnnn ....</code> :	�m�[�g<br>
-		<code>.... ffff</code> :	����</td></tr>
+	<td>エンベロープのホールドタイム用のカウンタ<br>
+		<code>nnnn ....</code> :	ノート<br>
+		<code>.... ffff</code> :	音程</td></tr>
 </table>
 
 </div>
@@ -109,121 +109,121 @@ Zeropage�ɒu����鐧��p�ϐ��i�\���́j�ł��B<br>
 </div>
 
 <div id='block'>
-<h3>Segment "bss" �ɔz�u�����ϐ�</h3>
+<h3>Segment "bss" に配置される変数</h3>
 
 <div id='block'>
 <h4><a name="nsd_work">nsd_work</a></h4>
 <p>
-�ʏ��RAM�̈�ɒu����鐧��p�ϐ��i�\���́j�ł��B<br>
-�����h���C�o�[������zeropage���L�ł��Ȃ��̂ŁA�ʏ��RAM�̈�ɔz�u���܂��B<br>
+通常のRAM領域に置かれる制御用変数（構造体）です。<br>
+音源ドライバーだけでzeropageを占有できないので、通常のRAM領域に配置します。<br>
 </p>
 
 <table>
-<caption>�ϐ��̓��e�@�i�p�[�g���^Each part�j</caption>
-<tr><th>�ϐ���</th><th>���e</th></tr>
+<caption>変数の内容　（パート毎／Each part）</caption>
+<tr><th>変数名</th><th>内容</th></tr>
 <tr><td>__chflag</td>
-	<td><code>..V. ....</code> :	VRC7�FSustain<br>
-		<code>...V ....</code> :	VRC7�FKeyOn/Off����<br>
-		<code>...S ....</code> :	SN5B�F�n�[�h�E�F�A�G���x���[�v<br>
-		<code>.... FF..</code> :	FDS �F�}�X�^�[����<br>
-		<code>.... .V..</code> :	VRC7�FKeyOff���Ƀn�[�h�E�F�A��KeyOff�����邩�ǂ���<br>
-		<code>.... ..KK</code> :	�G���x���[�v�����̃t�F�[�Y<br></td></tr>
+	<td><code>..V. ....</code> :	VRC7：Sustain<br>
+		<code>...V ....</code> :	VRC7：KeyOn/Off制御<br>
+		<code>...S ....</code> :	SN5B：ハードウェアエンベロープ<br>
+		<code>.... FF..</code> :	FDS ：マスター音量<br>
+		<code>.... .V..</code> :	VRC7：KeyOff時にハードウェアのKeyOffをするかどうか<br>
+		<code>.... ..KK</code> :	エンベロープ処理のフェーズ<br></td></tr>
 <tr><td>__gatemode</td>
-	<td><code>vvvv ....</code> :	�����[�X���̉��F�iR@�R�}���h�̐��l�j<br>
-		<code>.... e...</code> :	���F�G���x���[�v�̃X�C�b�`<br>
-		<code>.... .s..</code> :	�T�u���[�`�����畜�A<br>
-		<code>.... ..rr</code> :	�Q�[�g���[�h�iRm�R�}���h�̐ݒ�l�j</td></tr>
+	<td><code>vvvv ....</code> :	リリース時の音色（R@コマンドの数値）<br>
+		<code>.... e...</code> :	音色エンベロープのスイッチ<br>
+		<code>.... .s..</code> :	サブルーチンから復帰<br>
+		<code>.... ..rr</code> :	ゲートモード（Rmコマンドの設定値）</td></tr>
 <tr><td>__length</td>
-	<td>�����ȗ����̉����il�R�}���h�̐ݒ�l�j</td></tr>
+	<td>音長省略時の音長（lコマンドの設定値）</td></tr>
 <tr><td>__tai</td>
-	<td>�X���[�E�^�C����</td></tr>
+	<td>スラー・タイ制御</td></tr>
 <tr><td>__gate_q</td>
-	<td>�Q�[�g�^�C���iq�R�}���h�̐ݒ�l�j</td></tr>
+	<td>ゲートタイム（qコマンドの設定値）</td></tr>
 <tr><td>__gate_u</td>
-	<td>�Q�[�g�^�C���iu�R�}���h�̐ݒ�l�j</td></tr>
+	<td>ゲートタイム（uコマンドの設定値）</td></tr>
 <tr><td>__note</td>
-	<td>���ݔ������Ă���m�[�g�i���o�[</td></tr>
+	<td>現在発音しているノートナンバー</td></tr>
 <tr><td>__octave</td>
-	<td>���݂̃I�N�^�[�u�io�R�}���h�̐��l�~12�j</td></tr>
+	<td>現在のオクターブ（oコマンドの数値×12）</td></tr>
 <tr><td>__detune_cent</td>
-	<td>cent�P�ʂ̃f�B�`���[���iD�R�}���h�̐��l�j</td></tr>
+	<td>cent単位のディチューン（Dコマンドの数値）</td></tr>
 <tr><td>__detune_fine</td>
-	<td>���W�X�^�P�ʂ̃f�B�`���[���iD%�R�}���h�̐��l�j</td></tr>
+	<td>レジスタ単位のディチューン（D%コマンドの数値）</td></tr>
 <tr><td>__por_target</td>
-	<td>�|���^�����g����p�i�ڕW�l�j</td></tr>
+	<td>ポルタメント制御用（目標値）</td></tr>
 <tr><td>__por_depth</td>
-	<td>�|���^�����g����p�i���̕ω��ʁj</td></tr>
+	<td>ポルタメント制御用（一回の変化量）</td></tr>
 <tr><td>__por_ctr</td>
-	<td>�|���^�����g����p�i�J�E���^�[�j</td></tr>
+	<td>ポルタメント制御用（カウンター）</td></tr>
 <tr><td>__por_rate</td>
-	<td>�|���^�����g����p�i���t���[���ŕω����邩�H�j</td></tr>
+	<td>ポルタメント制御用（何フレームで変化するか？）</td></tr>
 <tr><td>__por_now</td>
-	<td>�|���^�����g����p�i���݂̕ψʁj</td></tr>
+	<td>ポルタメント制御用（現在の変位）</td></tr>
 <tr><td>__trans</td>
-	<td>�ڒ��i_�R�}���h�̐��l�j</td></tr>
+	<td>移調（_コマンドの数値）</td></tr>
 <tr><td>__trans_one</td>
-	<td>������̈ڒ��i', "�R�}���h����p�j</td></tr>
+	<td>一回限りの移調（', "コマンド制御用）</td></tr>
 <tr><td>__repeat_ctr</td>
-	<td>���s�[�g�`�̃J�E���^</td></tr>
+	<td>リピートＡのカウンタ</td></tr>
 <tr><td>__repeat_ctr2</td>
-	<td>���s�[�g�a�̃J�E���^</td></tr>
+	<td>リピートＢのカウンタ</td></tr>
 <tr><td>__volume</td>
-	<td><code>rrrr ....</code> :	�����[�X���̉��ʁiRv�R�}���h�̐��l�j<br>
-		<code>.... vvvv</code> :	���ʁiv�R�}���h�̐��l�j</td></tr>
+	<td><code>rrrr ....</code> :	リリース時の音量（Rvコマンドの数値）<br>
+		<code>.... vvvv</code> :	音量（vコマンドの数値）</td></tr>
 <tr><td>__env_vol_now</td>
-	<td>���ʃG���x���[�v�̌��ݒl</td></tr>
+	<td>音量エンベロープの現在値</td></tr>
 <tr><td>__env_freq_now</td>
-	<td>�����G���x���[�v�̌��ݒl</td></tr>
+	<td>音程エンベロープの現在値</td></tr>
 <tr><td>__env_note_now</td>
-	<td>�m�[�g�G���x���[�v�̌��ݒl</td></tr>
+	<td>ノートエンベロープの現在値</td></tr>
 <tr><td>__env_vol_ptr</td>
-	<td>���ʃG���x���[�v�̐��ڐ���p�̃|�C���^</td></tr>
+	<td>音量エンベロープの推移制御用のポインタ</td></tr>
 <tr><td>__env_voi_ptr</td>
-	<td>���F�G���x���[�v�̐��ڐ���p�̃|�C���^</td></tr>
+	<td>音色エンベロープの推移制御用のポインタ</td></tr>
 <tr><td>__env_freq_ptr</td>
-	<td>�����G���x���[�v�̐��ڐ���p�̃|�C���^</td></tr>
+	<td>音程エンベロープの推移制御用のポインタ</td></tr>
 <tr><td>__env_note_ptr</td>
-	<td>�m�[�g�G���x���[�v�̐��ڐ���p�̃|�C���^</td></tr>
+	<td>ノートエンベロープの推移制御用のポインタ</td></tr>
 <tr><td>__env_volume</td>
-	<td>���ʃG���x���[�v�E�e�[�u���̃|�C���^</td></tr>
+	<td>音量エンベロープ・テーブルのポインタ</td></tr>
 <tr><td>__env_voice</td>
-	<td>���F�G���x���[�v�E�e�[�u���̃|�C���^</td></tr>
+	<td>音色エンベロープ・テーブルのポインタ</td></tr>
 <tr><td>__env_frequency</td>
-	<td>���g���G���x���[�v�E�e�[�u���̃|�C���^</td></tr>
+	<td>周波数エンベロープ・テーブルのポインタ</td></tr>
 <tr><td>__env_note</td>
-	<td>�m�[�g�G���x���[�v�E�e�[�u���̃|�C���^</td></tr>
+	<td>ノートエンベロープ・テーブルのポインタ</td></tr>
 <tr><td>__frequency</td>
-	<td>���ݔ������Ă��鉹���i�����E�m�[�g�G���x���[�v�K�p��j</td></tr>
+	<td>現在発音している音程（音程・ノートエンベロープ適用後）</td></tr>
 <tr><td>__subroutine</td>
-	<td>�T�u���[�`���̖߂�A�h���X</td></tr>
+	<td>サブルーチンの戻りアドレス</td></tr>
 <tr><td>__repeat2</td>
-	<td>���s�[�g�a�ł̎��̃W�����v��A�h���X</td></tr>
+	<td>リピートＢでの次のジャンプ先アドレス</td></tr>
 <tr><td>__dpcm_info</td>
-	<td>��PCM����\���̂̃|�C���^</td></tr>
+	<td>⊿PCM制御構造体のポインタ</td></tr>
 <tr><td>__apu_voice_set1</td>
-	<td>APU ch1�̉��F�i���W�X�^�����ׂ݂̘̈_�����Z�p�j</td></tr>
+	<td>APU ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
 <tr><td>__apu_voice_set2</td>
-	<td>APU ch2�̉��F�i���W�X�^�����ׂ݂̘̈_�����Z�p�j</td></tr>
+	<td>APU ch2の音色（レジスタ書込みの為の論理演算用）</td></tr>
 <tr><td>__apu_tri_time</td>
-	<td>APU ch3�̃��j�A�J�E���^�[�l</td></tr>
+	<td>APU ch3のリニアカウンター値</td></tr>
 <tr><td>__apu_voice_set4</td>
-	<td>APU ch4�̉��F�i���W�X�^�����ׂ݂̘̈_�����Z�p�j</td></tr>
+	<td>APU ch4の音色（レジスタ書込みの為の論理演算用）</td></tr>
 <tr><td>__apu_voice_set1</td>
-	<td>SE ch1�̉��F�i���W�X�^�����ׂ݂̘̈_�����Z�p�j</td></tr>
+	<td>SE ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
 <tr><td>__apu_voice_set2</td>
-	<td>SE ch1�̉��F�i���W�X�^�����ׂ݂̘̈_�����Z�p�j</td></tr>
+	<td>SE ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
 <tr><td>__apu_frequency1</td>
-	<td>APU ch1�̉������8bit�̕ۑ��p�i�������W�X�^���8bit�X�V�ɂ��v�`�m�C�Y�����h�~�j�B</td></tr>
+	<td>APU ch1の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
 <tr><td>__apu_frequency2</td>
-	<td>APU ch2�̉������8bit�̕ۑ��p�i�������W�X�^���8bit�X�V�ɂ��v�`�m�C�Y�����h�~�j�B</td></tr>
+	<td>APU ch2の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
 <tr><td>__apu_frequency3</td>
-	<td>APU ch3�̉������8bit�̕ۑ��p�i�������W�X�^���8bit�X�V�ɂ��v�`�m�C�Y�����h�~�j�B</td></tr>
+	<td>APU ch3の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
 <tr><td>__se_frequency</td>
-	<td>SE ch1�̉������8bit�̕ۑ��p�i�������W�X�^���8bit�X�V�ɂ��v�`�m�C�Y�����h�~�j�B</td></tr>
+	<td>SE ch1の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
 <tr><td>__sweep_ch1</td>
-	<td>APU ch1��sweep���W�X�^�̌��ݒl</td></tr>
+	<td>APU ch1のsweepレジスタの現在値</td></tr>
 <tr><td>__sweep_ch2</td>
-	<td>APU ch2��sweep���W�X�^�̌��ݒl</td></tr>
+	<td>APU ch2のsweepレジスタの現在値</td></tr>
 </table>
 
 <p></p>

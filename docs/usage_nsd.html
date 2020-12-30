@@ -2,127 +2,127 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>�����h���C�o�[�insd.lib�j</Title>
+<Title>音源ドライバー（nsd.lib）</Title>
 </HEAD>
 <BODY>
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-<a href="usage.html">�g����</a>�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
 </div>
 
 <!-- contents start --><div id='contents'>
 <div id='contents'>
-<h2>�����h���C�o�[�insd.lib�j</h2>
+<h2>音源ドライバー（nsd.lib）</h2>
 
 <div class='block'>
 <p>
-�{�����h���C�o�[�́Acc65�i6502�p�N���X�J�����j�̃I�u�W�F�N�g���C�u����`*.lib'�Ƃ��ĊJ�����Ă��܂��B<br>
-���[�U�[�A�v���P�[�V��������́A���C�u�������̊֐����ĂԂ��Ƃɂ��A�{�����h���C�o�[�𐧌䂷�邱�Ƃ��\�ł��B<br>
+本音源ドライバーは、cc65（6502用クロス開発環境）のオブジェクトライブラリ`*.lib'として開発しています。<br>
+ユーザーアプリケーションからは、ライブラリ中の関数を呼ぶことにより、本音源ドライバーを制御することが可能です。<br>
 </p>
 <p>
-�{�����h���C�o�[�́Acc65�̕t����NES�p���C�u����`nes.lib'���̊֐�����،Ăяo���Ă��܂���B<br>
-�i�܂�A�b����̋@�\�i�W���֐��Ȃǁj����؁A�g���Ă��܂���B�j<br>
-�]���āA�A�Z���u������݂̂ŊJ�����ꂽ�A�v���P�[�V��������ł��g�p���鎖���\�ł��B<br>
-cc65�ȊO�̊J�����ŋL�q���ꂽ�R�[�h����Ăяo���Ă����삷��Ƃ͎v���܂����A
-���C�u������cc65�̌`���ł��̂ŁA���̊J�����̃��C�u�����`���ɕϊ����邩�A
-�������́Acc65�̃��C�u�����`���ƌ݊����������Ă���K�v������܂��B<br>
+本音源ドライバーは、cc65の付属のNES用ライブラリ`nes.lib'内の関数を一切呼び出していません。<br>
+（つまり、Ｃ言語の機能（標準関数など）を一切、使っていません。）<br>
+従って、アセンブリ言語のみで開発されたアプリケーションからでも使用する事が可能です。<br>
+cc65以外の開発環境で記述されたコードから呼び出しても動作するとは思いますが、
+ライブラリはcc65の形式ですので、その開発環境のライブラリ形式に変換するか、
+もしくは、cc65のライブラリ形式と互換性を持っている必要があります。<br>
 </p>
 </div>
 
 <div class='block'>
-<h3>�N���X�J����"cc65"�ł̎g�p���@</h3>
+<h3>クロス開発環境"cc65"での使用方法</h3>
 
-<h4>cc65�Ƃ�</h4>
+<h4>cc65とは</h4>
 <p>
-6502�V���[�Y�̂b�o�t���^�[�Q�b�g�Ƃ����A�b����E�A�Z���u������ɂ��N���X�J�����\�ɂ����\�t�g�E�F�A�J�����ł��B<br>
-�����̃v���b�g�t�H�[���i�V�X�e���j�ɑΉ����Ă���A�m�d�r�i�t�@�~�R���j�����̒��̂P�ƂȂ��Ă��܂��B<br>
-�t���[��6502�J�����Ƃ��Ă͔��ɗD��Ă���A�{�i�I�ȃN���X�J���ɂ��\�t�g�E�F�A�J�����ł��܂��B<br>
+6502シリーズのＣＰＵをターゲットとした、Ｃ言語・アセンブリ言語によるクロス開発を可能にしたソフトウェア開発環境です。<br>
+多くのプラットフォーム（システム）に対応しており、ＮＥＳ（ファミコン）もその中の１つとなっています。<br>
+フリーの6502開発環境としては非常に優れており、本格的なクロス開発によるソフトウェア開発ができます。<br>
 </p>
 <p>
-cc65�́A<a href="http://cc65.github.io/cc65/" target="_blank">http://cc65.github.io/cc65/</a>����_�E�����[�h�ł��܂��B<br>
-�i��cc65�̃z�[���y�[�W�A�}�j���A���́A�S�ĉp���ł��B�j<br>
+cc65は、<a href="http://cc65.github.io/cc65/" target="_blank">http://cc65.github.io/cc65/</a>からダウンロードできます。<br>
+（※cc65のホームページ、マニュアルは、全て英文です。）<br>
 </p>
 
-<h4>nsd.lib�����[�U�[�A�v���P�[�V�����ɑg�ݍ���</h4>
+<h4>nsd.libをユーザーアプリケーションに組み込む</h4>
 <p>
-�����J�["ld65.exe"�Ń����N���鎞�ɁA"nsd.lib"�i�����h���C�o�[�{�́j�������N���ĉ������B<br>
-�e�C���N���[�h�t�@�C���i�b����p��"nsd.h"�A�A�Z���u������p��"nsd.inc"�j�ɂ́A
-nsd.lib�𐧌䂷�郉�C�u�����֐��̊O���錾�����L�q����Ă��܂��̂ŁA
-���[�U�[�A�v���P�[�V�����̃\�[�X���烊���N����ƕ֗��ł��B<br>
+リンカー"ld65.exe"でリンクする時に、"nsd.lib"（音源ドライバー本体）をリンクして下さい。<br>
+各インクルードファイル（Ｃ言語用は"nsd.h"、アセンブリ言語用は"nsd.inc"）には、
+nsd.libを制御するライブラリ関数の外部宣言等が記述されていますので、
+ユーザーアプリケーションのソースからリンクすると便利です。<br>
 </p>
 
 </div>
 
 <div class='block'>
-<h3>���C�u����"nsd.lib"���p����Z�O�����g�E���x��</h3>
+<h3>ライブラリ"nsd.lib"が用いるセグメント・ラベル</h3>
 
-<h4>�Z�O�����g�ɂ���</h4>
+<h4>セグメントについて</h4>
 <p>
-�ȉ��̃Z�O�����g���g���Ă��܂��B<br>
-�����J�[�̃R���t�B�O�t�@�C���ŁA���Ȃ炸�{�Z�O�����g�̈������Ă��������B<br>
-���b���ꂩ��R���p�C�������A�Z���u������\�[�X�ŗp������Z�O�����g���ɍ��킹�Ă���܂��B<br>
+以下のセグメントを使っています。<br>
+リンカーのコンフィグファイルで、かならず本セグメント領域を作ってください。<br>
+※Ｃ言語からコンパイルされるアセンブリ言語ソースで用いられるセグメント名に合わせてあります。<br>
 </p>
 <table>
-<tr><th>�Z�O�����g��</th><th>���e</th></tr>
-<tr><td>CODE		</td><td>�����h���C�o�̃v���O�����{�̂ł�</td></tr>
-<tr><td>RODATA		</td><td>�Œ�f�[�^�ł��B<br>�����e�[�u����A�I�y�R�[�h���̃W�����v�e�[�u�����̃f�[�^������܂��B</td></tr>
-<tr><td>BSS			</td><td>����p�̃��[�N�G���A�i��[���y�[�W�j�ł��B</td></tr>
-<tr><td>ZEROPAGE	</td><td>����p�̃��[�N�G���A�i�[���y�[�W�j�ł��B<br>
-							�������J�[��"-t nes"�I�v�V�����ł͗e�ʂ�����Ȃ��|�A���ӂ��Ă��������B</td></tr>
+<tr><th>セグメント名</th><th>内容</th></tr>
+<tr><td>CODE		</td><td>音源ドライバのプログラム本体です</td></tr>
+<tr><td>RODATA		</td><td>固定データです。<br>音程テーブルや、オペコード毎のジャンプテーブル等のデータがあります。</td></tr>
+<tr><td>BSS			</td><td>制御用のワークエリア（非ゼロページ）です。</td></tr>
+<tr><td>ZEROPAGE	</td><td>制御用のワークエリア（ゼロページ）です。<br>
+							※リンカーの"-t nes"オプションでは容量が足りない旨、注意してください。</td></tr>
 </table>
 
-<h4>���x���ɂ���</h4>
+<h4>ラベルについて</h4>
 <p>
-�O���錾����郉�x���ɂ́A���x�����̐擪��"_nsd_"��5������t�����Ă��܂��B<br>
-�b���ꂩ��Q�Ƃ���ꍇ�́A�擪��`_'�𔲂��A"nsd_"��4�����ŎQ�Ɖ\�ł��B<br>
+外部宣言されるラベルには、ラベル名の先頭に"_nsd_"の5文字を付加しています。<br>
+Ｃ言語から参照する場合は、先頭の`_'を抜き、"nsd_"の4文字で参照可能です。<br>
 </p>
 
-<h4>�ȃf�[�^���p����Z�O�����g�E���x��</h4>
+<h4>曲データが用いるセグメント・ラベル</h4>
 <p>
-�t����MML�R���p�C����p���Ċy�Ȑ��삷��ꍇ�A
-�l�l�k�\�[�X�ɂāA�ȃf�[�^��z�u����Z�O�����g�A�p���郉�x������ݒ肷�邱�Ƃ��\�ł��B<br>
-�i�]���A�P�̃v���W�F�N�g�ɁA�����̂l�l�k���������I�u�W�F�N�g�������N�\�ł��B�j<br>
-�܂��A�t����MML�R���p�C���ō��ꂽ�A�Z���u������\�[�X�́A�\�[�X�̕ҏW�����ɂ��̂܂܃A�Z���u���E�����N���鎖���\�ł��B<br>
-�ʓr�A<a href="nsc_asm.html">nsc.exe���o�͂���A�Z���u������\�[�X�ɂ���</a>���Q�Ƃ��ĉ������B<br>
-�b����ŋȃf�[�^���Đ�����T���v���\�[�X�ł����A�A�Z���u������ł����@�͓����ł��B<br>
+付属のMMLコンパイラを用いて楽曲制作する場合、
+ＭＭＬソースにて、曲データを配置するセグメント、用いるラベル名を設定することが可能です。<br>
+（従い、１つのプロジェクトに、複数のＭＭＬから作ったオブジェクトをリンク可能です。）<br>
+また、付属のMMLコンパイラで作られたアセンブリ言語ソースは、ソースの編集無しにそのままアセンブル・リンクする事が可能です。<br>
+別途、<a href="nsc_asm.html">nsc.exeが出力するアセンブリ言語ソースについて</a>を参照して下さい。<br>
+Ｃ言語で曲データを再生するサンプルソースですが、アセンブリ言語でも方法は同じです。<br>
 </p>
 
-<h4>�b����ŃA�v���P�[�V�������J������ꍇ�̒���</h4>
+<h4>Ｃ言語でアプリケーションを開発する場合の注意</h4>
 <p>
-�{�����h���C�o�[�́A6502��"Zeropage"�̈�i���������0x0000�`0x00FF�j�������炩�g�p���܂��B<br>
-�i�g�p����ʂ́A�Ή�����g�������̎�ނɂ���ĈقȂ�܂��B�j<br>
-�]���܂��āA�ʓr�����J�[�p�� config �t�@�C�����쐬���A -t none �I�v�V�����Ńr���h���ĉ������B<br>
+本音源ドライバーは、6502の"Zeropage"領域（メモリ空間0x0000～0x00FF）をいくらか使用します。<br>
+（使用する量は、対応する拡張音源の種類によって異なります。）<br>
+従いまして、別途リンカー用の config ファイルを作成し、 -t none オプションでビルドして下さい。<br>
 </p>
 <p>
-����́A -t nes �I�v�V�����ł́A�b����̃����^�C�����g�����̃T�C�Y�����A zeropage �̃Z�O�����g�ݒ�����Ă��Ȃ����߂ł��B<br>
-���̂��߁A -t nes �I�v�V�������g�p����ƁA�����h���C�o�p�� Zeropage ���m�ۂł����A�r���h�Ɏ��s���܂��B<br>
+これは、 -t nes オプションでは、Ｃ言語のランタイムが使う分のサイズしか、 zeropage のセグメント設定をしていないためです。<br>
+そのため、 -t nes オプションを使用すると、音源ドライバ用の Zeropage を確保できず、ビルドに失敗します。<br>
 </p>
 
-<h4>NES�p���C�u����"nes.lib"���g�p����ꍇ�̒���</h4>
+<h4>NES用ライブラリ"nes.lib"を使用する場合の注意</h4>
 <p>
-cc65�ɕt����NES�p���C�u����"nes.lib"���̃R�[�h�́Aconfig�t�@�C���̃Z�O�����g�ݒ�Ɗ֌W�����ɁA
-Zeropage���΃A�h���X�i�܂�A�Ԓn�𒼐ڎw��j�œǂݏ������Ă���̈悪����܂��B<br>
-���̂��߁Aconfig�t�@�C���̃Z�O�����g�̐ݒ莟��ł́Anes.lib���A�N�Z�X����̈�ƃo�b�e�B���O���܂��B<br>
-�����J�[�p�� config �t�@�C���̍쐬�ɍۂ��ẮA
-cc65�ɕt���̃h�L�������g�y�сA"nes.inc"�y�сA"nes.lib"�̃\�[�X�t�@�C����ǂ��Q�Ƃ��Ă��������B<br>
+cc65に付属のNES用ライブラリ"nes.lib"内のコードは、configファイルのセグメント設定と関係無しに、
+Zeropageを絶対アドレス（つまり、番地を直接指定）で読み書きしている領域があります。<br>
+そのため、configファイルのセグメントの設定次第では、nes.libがアクセスする領域とバッティングします。<br>
+リンカー用の config ファイルの作成に際しては、
+cc65に付属のドキュメント及び、"nes.inc"及び、"nes.lib"のソースファイルを良く参照してください。<br>
 </p>
 
 </div>
 
 
 <div class='block'>
-<h3>�֐����t�@�����X�iFunction reference�j</h3>
+<h3>関数リファレンス（Function reference）</h3>
 <p>
-�ȉ��ɋL�ڂ̃��C�u�����֐��ɂ��āA�֐��ďo�K��͑S��cc65�� <code> __fastcall__ </code> �ƂȂ�܂��B
+以下に記載のライブラリ関数について、関数呼出規約は全てcc65の <code> __fastcall__ </code> となります。
 </p>
 
-<h4>���C�u�����֐��ꗗ</h4>
+<h4>ライブラリ関数一覧</h4>
 <table>
 <tr><th>return value	</th><th>Function name		</th><th>Contents		</th></tr>
 <tr><td>void	</td><td><a href="func_nsd_init.html">nsd_init(void)</a>							</td><td>Initraize the driver.	</td></tr>
@@ -140,37 +140,37 @@ cc65�ɕt���̃h�L�������g�y�сA"nes.inc"�y�сA"nes.lib"�̃\�[�X�t�@�C����ǂ��Q��
 <tr><td>void	</td><td><a href="func_nsd_load.html">nsd_load(<var>void *buff</var>)</a>			</td><td>Load the control work.	</td></tr>
 </table>
 
-<h3>�֐��ďo�K�� __fastcall__ �ɂ��āiAbout the calling conversion __fastcall__ �j</h3>
+<h3>関数呼出規約 __fastcall__ について（About the calling conversion __fastcall__ ）</h3>
 
-<h4>�����iInputs�j</h4>
+<h4>引数（Inputs）</h4>
 <p>
-�֐��̈�ԉE�̈����̓��W�X�^�[�œn����܂��B<br>
+関数の一番右の引数はレジスターで渡されます。<br>
 </p>
 <dl>
 <dt>1 byte value</dt><dd>a register</dd>
 <dt>2 byte value</dt><dd>a (LSB) and x (MSB) register</dd>
 </dl>
 <p>
-cc65�ł́A��ԉE�̈����ȊO�́A�\�t�g�E�F�A�X�^�b�N�izeropage���̕ϐ�sp�ɂ��b����Ő��䂳���j�Ɋi�[����܂����A
-�{�����h���C�o�[�ł̓��C�u�����֐��̈����͕K���P�ȓ��Ƃ��A�\�t�g�E�F�A�X�^�b�N�̎g�p������Ă���܂��B<br>
-����ɂ��Acc65�ɕt���̃����^�C�����C�u����`nes.lib'�������N���Ȃ��ł��A���삷��݌v�ƂȂ��Ă��܂��B<br>
+cc65では、一番右の引数以外は、ソフトウェアスタック（zeropage内の変数spによりＣ言語で制御される）に格納されますが、
+本音源ドライバーではライブラリ関数の引数は必ず１つ以内とし、ソフトウェアスタックの使用を避けております。<br>
+これにより、cc65に付属のランタイムライブラリ`nes.lib'をリンクしないでも、動作する設計となっています。<br>
 </p>
 
-<h4>�߂�l�iOutputs�j</h4>
+<h4>戻り値（Outputs）</h4>
 <p>
-�߂�l�̓��W�X�^�[�Ɋi�[����܂��B<br>
-�߂�l���Ȃ��ꍇ�́A���W�X�^�[�̒l�͕s��ƂȂ�܂��B<br>
-y���W�X�^�[�̒l�͏�ɕs��ł��B<br>
+戻り値はレジスターに格納されます。<br>
+戻り値がない場合は、レジスターの値は不定となります。<br>
+yレジスターの値は常に不定です。<br>
 </p>
 <dl>
 <dt>1 byte value</dt><dd>a register</dd>
 <dt>2 byte value</dt><dd>a (LSB) and x (MSB) register</dd>
 </dl>
 
-<h4>�֐��̃V���{�����iFunction symbol name�j</h4>
+<h4>関数のシンボル名（Function symbol name）</h4>
 <p>
-�A�Z���u�����ꂩ��Ăяo���ꍇ�́A�V���{�����ɃA���_�[�o�[('_')��ǉ����ĉ������B<br>
-���Ƃ��΁A�A�Z���u�����ꂩ��<code>nsd_main(void)</code>���Ăяo���ꍇ�́A<code>jsr _nsd_main</code>�ƋL�q���܂��B<br>
+アセンブリ言語から呼び出す場合は、シンボル名にアンダーバー('_')を追加して下さい。<br>
+たとえば、アセンブリ言語から<code>nsd_main(void)</code>を呼び出す場合は、<code>jsr _nsd_main</code>と記述します。<br>
 </p>
 
 </div>

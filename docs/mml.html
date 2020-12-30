@@ -2,154 +2,154 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>�l�l�k���@</Title>
+<Title>ＭＭＬ文法</Title>
 </HEAD>
 <BODY>
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-<a href="usage.html">�g����</a>�_
-<a href="usage_nsc.html">MML�R���p�C��</a>�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
 </div>
 
 <!-- contents start -->
 <div id='contents'>
-<h2>�l�l�k���@</h2>
+<h2>ＭＭＬ文法</h2>
 
 <p>
-MML�̑S�̓I�ȍ\���́A`#'�Ŏn�܂��`�A�^�����ߋy�сA
-�f�[�^�i���F�f�[�^�A�G���x���[�v�p�^�[���A�V�[�P���X�f�[�^���j���L�q����L�q�u���b�N�ō\������܂��B<br>
-MML�R���p�C���́AASCII�R�[�h0x00�`0x20�i���s�A�s�`�a�A�X�y�[�X���j�𖳎����܂��B<br>
+MMLの全体的な構文は、`#'で始まる定義、疑似命令及び、
+データ（音色データ、エンベロープパターン、シーケンスデータ等）を記述する記述ブロックで構成されます。<br>
+MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。<br>
 </p>
 
 <p>
-MML�́AASCII�ƌ݊����̂��镶���R�[�h�iShift-JIS�AUTF-8���j�ŋL�q���Ă��������B<br>
+MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<br>
 </p>
 
 <div class='block'>
-<h3><a name="common">���ʂ̃R�}���h</a></h3>
+<h3><a name="common">共通のコマンド</a></h3>
 <p>
-�Ȃ���ʉ��̐ݒ�E�L�q�����邽�߂̃R�}���h�Q�ł��B<br>
+曲や効果音の設定・記述をするためのコマンド群です。<br>
 </p>
 
 <table>
-<caption>�R�}���h�ꗗ</caption>
+<caption>コマンド一覧</caption>
 <tr><th>Command</th><th>Default</th><th>Contens</th></tr>
-<tr><td>#include�@"<var>filename</var>"	</td><td>-</td><td>�O���t�@�C�����Ăэ��݂܂��B</td></tr>
-<tr><td>#bgm <var>n</var>				</td><td>1</td><td>BGM�i�ȁj�̐���ݒ肵�܂��B</td></tr>
-<tr><td>#se <var>n</var>				</td><td>0</td><td>SE�i���ʉ��j�̐���ݒ肵�܂��B</td></tr>
-<tr><td>#priority <var>n</var>			</td><td>0</td><td>�ȍ~��SE�i���ʉ��j�̗D��x��ݒ肵�܂��B<br>
-												SE�i���ʉ��j���Đ��J�n�������A���ɗD��x������SE�i���ʉ��j���Đ����ł������ꍇ�́A�Đ����܂���B<br>
-												�@�i0 : �D��x�� �` 3:�D��x��j</td></tr>
-<tr><td>#timebase <var>n</var>			</td><td>24</td><td>�ȍ~�̃V�[�P���X�L�q�u���b�N�iBGM, SE, Sub�j�̂S�������̕���\��ݒ肵�܂��B<br>
-												���x�ł��w��\�ł���A�e�V�[�P���X�L�q�u���b�N���ɐݒ肷�邱�Ƃ��ł��܂��B<br>
-												�����A�x���ɂ����āA���̐��l<var>n</var>�̂S�{�̒l������؂邱�Ƃ��\�Ȃ����������g�p���邱�Ƃ��ł��܂��B<br>
-												����ȊO�̂����������g�p�����ꍇ�A����؂�Ȃ��|��Warning�i�x���j�ƂȂ�A�����_��؂�̂ĂăR���p�C�����܂��B</td></tr>
-<tr><td>#QMax <var>n</var>				</td><td>8</td><td>�V�[�P���X�L�q�u���b�N���ɂ�����<a href="mml_gate.html">Q �R�}���h</a>�̕����ݒ肵�܂��B<br>
-												Q�R�}���h�g�p���A���ۂ̔��������́A���� �~ <a href="mml_gate.html">Q �R�}���h</a>�̒l �� <var>n</var> �ƂȂ�܂��B</td></tr>
-<tr><td>#QReverse						</td><td>-</td><td>�{�R�}���h���L�q���邱�ƂŁA�V�[�P���X�L�q�u���b�N���ɂ�����Q�[�g�N�I���^�C�Y�R�}���h
-												`<a href="mml_gate.html">Q</a>'��`<a href="mml_gate.html">q</a>'�����ւ��܂��B</td></tr>
-<tr><td>#octaveReverse					</td><td>-</td><td>�{�R�}���h���L�q���邱�ƂŁA�V�[�P���X�L�q�u���b�N���ɂ����鑊�΃I�N�^�[�u�R�}���h
-												`<a href="mml_relative_octave.html">&lt;</a>'��`<a href="mml_relative_octave.html">&gt;</a>'�����ւ��܂��B</td></tr>
-<tr><td>#RepeatMode <var>n</var>		</td><td>0</td><td>�V�[�P���X�L�q�u���b�N���ɂ�����<a href="mml_repeatA.html">���s�[�g(A)�R�}���h</a>�̃R���p�C�����@��ݒ肵�܂��B<br>
-												�@0 �c MML�R���p�C���������I�ɁA���s�[�g�R�}���h�̃R���p�C�����@��I�����܂��B<br>
-												�@1 �c ���[�U�[�ɂĖ����I�ɁA���s�[�g�R�}���h�̃R���p�C�����@��I�����܂��B<br>
-												�@2 �c ���[�U�[�ɂĖ����I�ɁA���s�[�g�R�}���h�̃R���p�C�����@��I�����܂��B<br>
-												���l�̏ڍׂ́A<a href="mml_repeatA.html">���s�[�g(A)�R�}���h</a>���Q�ƁB</td></tr>
-<tr><td>#TieMode <var>n</var>			</td><td>0</td><td>�V�[�P���X�L�q�u���b�N���ɂ�����<b> ^ </b>�R�}���h�̃R���p�C�����@��ݒ肵�܂��B<br>
-												�@0 �c <b> ^ </b>�R�}���h�́A���ׂĂ̏ꍇ�ɂ�����<a href="mml_tie.html">�u�^�C�v</a>�Ƃ��ăR���p�C�����܂��B<br>
-												�@1 �c �����̒����^�R�}���h���L�q���ꂽ�ꍇ�́A���O�̉����ɑ΂��鉹�������Z���鉉�Z�q�Ƃ��ď������܂��B<br>
-												�@�@�@�@�i�����Z���ʂ�255[tick]�𒴂���ƃG���[�ɂȂ�܂��B�j</td></tr>
-<tr><td>#rest <var>n</var>				</td><td>2</td><td>�V�[�P���X�L�q�u���b�N���ɂ�����<a href="mml_rest.html">r �R�}���h</a>�ɂ��x���̃R���p�C�����@��ݒ肵�܂��B<br>
-												�@0 �c �����I�ɁA���ʂ��O�ɂ��܂��B��PCM�̏ꍇ��KeyOff���܂��B<br>
-												�@1 �c ���O�̃m�[�g���A<a href="mml_release.html">R@, Rv�R�}���h</a>�̒l�Ŗ炵�܂��B<br>
-												�@2 �c ���O�̃m�[�g�̃G���x���[�v�i���F�E���ʁj���p�����A�����[�X�p�^�[������`����Ă���ꍇ����ɏ]���܂��B<br>
-												�@3 �c <a href="mml_release.html">Rm�R�}���h</a>�ɏ]���܂��B<br></td></tr>
-<tr><td>#wait <var>n</var>				</td><td>0</td><td>�V�[�P���X�L�q�u���b�N���ɂ�����<a href="mml_rest.html">w �R�}���h</a>�ɂ��x���̃R���p�C�����@��ݒ肵�܂��B<br>
-												�@0 �c �����I�ɁA���ʂ��O�ɂ��܂��B��PCM�̏ꍇ��KeyOff���܂��B<br>
-												�@1 �c ���O�̃m�[�g���A<a href="mml_release.html">R@, Rv�R�}���h</a>�̒l�Ŗ炵�܂��B<br>
-												�@2 �c ���O�̃m�[�g�̃G���x���[�v�i���F�E���ʁj���p�����A�����[�X�p�^�[������`����Ă���ꍇ����ɏ]���܂��B<br>
-												�@3 �c <a href="mml_release.html">Rm�R�}���h</a>�ɏ]���܂��B<br></td></tr>
-<tr><td>#ReleaseVolume <var>n</var>		</td><td>2</td><td>�V�[�P���X�L�q�u���b�N���ɂ�����<a href="mml_release.html">Rv�R�}���h</a>�̏����l��ݒ肵�܂��B<br>
-												n��0�`15�͈̔͂Ŏw�肵�܂��B<br>
-												�������h���C�o���̃f�t�H���g��2�ł��邽�߁A2�ȊO���w�肵���ꍇ�͊e�g���b�N�̐擪�Ɏ�����Rv�R�}���h���o�͂��܂��B</td></tr>
-<tr><td>#offsetE@ <var>n</var>			</td><td>0</td><td>�V�[�P���X�L�q�u���b�N���ɂāA<a href="mml_envelop.html">E@�R�}���h</a>�̈������w�萔�l�������炵�܂��B</td></tr>
-<tr><td>#offsetEv <var>n</var>			</td><td>0</td><td>�V�[�P���X�L�q�u���b�N���ɂāA<a href="mml_envelop.html">Ev�R�}���h</a>�̈������w�萔�l�������炵�܂��B</td></tr>
-<tr><td>#offsetEm <var>n</var>			</td><td>0</td><td>�V�[�P���X�L�q�u���b�N���ɂāA<a href="mml_envelop.html">Em�R�}���h</a>�̈������w�萔�l�������炵�܂��B</td></tr>
-<tr><td>#offsetEn <var>n</var>			</td><td>0</td><td>�V�[�P���X�L�q�u���b�N���ɂāA<a href="mml_envelop.html">En�R�}���h</a>�̈������w�萔�l�������炵�܂��B</td></tr>
-<tr><td>#offsetPCM	<var>address</var>	</td><td>$10000<br>(��PCM����)</td><td>��PCM��z�u����A�h���X���w�肵�܂��B<br>
-												�V�[�P���X�f�[�^�͂��̃R�}���h�Ŏw�肵���A�h���X-1�̗̈�܂Ŏg���܂��B<br>
-												NSF music format���o�͂���ꍇ�́A���̃A�h���X��胢PCM�̎��̂��z�u����܂��B<br>
-												�A�Z���u������\�[�X���o�͂���ꍇ�́A�����J�["ld65.exe"�̃R���t�B�O�t�@�C���ɂāA
-												"#segmentPCM"�R�}���h�Ŏw�肵���Z�O�����g�̔z�u�A�h���X�ƁA�����A�h���X�ɐݒ肵�ĉ������B</td></tr>
+<tr><td>#include　"<var>filename</var>"	</td><td>-</td><td>外部ファイルを呼び込みます。</td></tr>
+<tr><td>#bgm <var>n</var>				</td><td>1</td><td>BGM（曲）の数を設定します。</td></tr>
+<tr><td>#se <var>n</var>				</td><td>0</td><td>SE（効果音）の数を設定します。</td></tr>
+<tr><td>#priority <var>n</var>			</td><td>0</td><td>以降のSE（効果音）の優先度を設定します。<br>
+												SE（効果音）を再生開始した時、既に優先度が高いSE（効果音）が再生中であった場合は、再生しません。<br>
+												　（0 : 優先度高 ～ 3:優先度低）</td></tr>
+<tr><td>#timebase <var>n</var>			</td><td>24</td><td>以降のシーケンス記述ブロック（BGM, SE, Sub）の４分音符の分解能を設定します。<br>
+												何度でも指定可能であり、各シーケンス記述ブロック毎に設定することもできます。<br>
+												音符、休符において、この数値<var>n</var>の４倍の値を割り切ることが可能なｍ分音符を使用することができます。<br>
+												それ以外のｍ分音符を使用した場合、割り切れない旨のWarning（警告）となり、小数点を切り捨ててコンパイルします。</td></tr>
+<tr><td>#QMax <var>n</var>				</td><td>8</td><td>シーケンス記述ブロック内における<a href="mml_gate.html">Q コマンド</a>の分母を設定します。<br>
+												Qコマンド使用時、実際の発音音長は、音長 × <a href="mml_gate.html">Q コマンド</a>の値 ÷ <var>n</var> となります。</td></tr>
+<tr><td>#QReverse						</td><td>-</td><td>本コマンドを記述することで、シーケンス記述ブロック内におけるゲートクオンタイズコマンド
+												`<a href="mml_gate.html">Q</a>'と`<a href="mml_gate.html">q</a>'を入れ替えます。</td></tr>
+<tr><td>#octaveReverse					</td><td>-</td><td>本コマンドを記述することで、シーケンス記述ブロック内における相対オクターブコマンド
+												`<a href="mml_relative_octave.html">&lt;</a>'と`<a href="mml_relative_octave.html">&gt;</a>'を入れ替えます。</td></tr>
+<tr><td>#RepeatMode <var>n</var>		</td><td>0</td><td>シーケンス記述ブロック内における<a href="mml_repeatA.html">リピート(A)コマンド</a>のコンパイル方法を設定します。<br>
+												　0 … MMLコンパイラが自動的に、リピートコマンドのコンパイル方法を選択します。<br>
+												　1 … ユーザーにて明示的に、リピートコマンドのコンパイル方法を選択します。<br>
+												　2 … ユーザーにて明示的に、リピートコマンドのコンパイル方法を選択します。<br>
+												数値の詳細は、<a href="mml_repeatA.html">リピート(A)コマンド</a>を参照。</td></tr>
+<tr><td>#TieMode <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内における<b> ^ </b>コマンドのコンパイル方法を設定します。<br>
+												　0 … <b> ^ </b>コマンドは、すべての場合において<a href="mml_tie.html">「タイ」</a>としてコンパイルします。<br>
+												　1 … 音符の直後に^コマンドが記述された場合は、直前の音符に対する音長を加算する演算子として処理します。<br>
+												　　　　（※加算結果が255[tick]を超えるとエラーになります。）</td></tr>
+<tr><td>#rest <var>n</var>				</td><td>2</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">r コマンド</a>による休符のコンパイル方法を設定します。<br>
+												　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。<br>
+												　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
+												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br>
+												　3 … <a href="mml_release.html">Rmコマンド</a>に従います。<br></td></tr>
+<tr><td>#wait <var>n</var>				</td><td>0</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">w コマンド</a>による休符のコンパイル方法を設定します。<br>
+												　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。<br>
+												　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
+												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br>
+												　3 … <a href="mml_release.html">Rmコマンド</a>に従います。<br></td></tr>
+<tr><td>#ReleaseVolume <var>n</var>		</td><td>2</td><td>シーケンス記述ブロック内における<a href="mml_release.html">Rvコマンド</a>の初期値を設定します。<br>
+												nは0～15の範囲で指定します。<br>
+												※音源ドライバ側のデフォルトは2であるため、2以外を指定した場合は各トラックの先頭に自動でRvコマンドを出力します。</td></tr>
+<tr><td>#offsetE@ <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">E@コマンド</a>の引数を指定数値だけずらします。</td></tr>
+<tr><td>#offsetEv <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">Evコマンド</a>の引数を指定数値だけずらします。</td></tr>
+<tr><td>#offsetEm <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">Emコマンド</a>の引数を指定数値だけずらします。</td></tr>
+<tr><td>#offsetEn <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">Enコマンド</a>の引数を指定数値だけずらします。</td></tr>
+<tr><td>#offsetPCM	<var>address</var>	</td><td>$10000<br>(⊿PCM無し)</td><td>⊿PCMを配置するアドレスを指定します。<br>
+												シーケンスデータはこのコマンドで指定したアドレス-1の領域まで使えます。<br>
+												NSF music formatを出力する場合は、このアドレスよりΔPCMの実体が配置されます。<br>
+												アセンブリ言語ソースを出力する場合は、リンカー"ld65.exe"のコンフィグファイルにて、
+												"#segmentPCM"コマンドで指定したセグメントの配置アドレスと、同じアドレスに設定して下さい。</td></tr>
 <tr><td>BGM(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
 	<td>-</td>
-	<td><var>n</var>�Ԗڂ�BGM�̃V�[�P���X�̋L�q�u���b�N�ł��B<br>
-		�V�[�P���X�p�^�[���̋L�q�́A<a href="mml_sequence.html">�V�[�P���X�f�[�^�iSequence data�j</a>�̍����Q�Ƃ��������B<br>
-		�ԍ���0����J�E���g���܂��B</td></tr>
+	<td><var>n</var>番目のBGMのシーケンスの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
+		番号は0からカウントします。</td></tr>
 <tr><td>SE(<var>n</var>){<br> <var>Sequence data</var><br>}		</td>
 	<td>-</td>
-	<td><var>n</var>�Ԗڂ�SE �̃V�[�P���X�̋L�q�u���b�N�ł��B<br>
-		�V�[�P���X�p�^�[���̋L�q�́A<a href="mml_sequence.html">�V�[�P���X�f�[�^�iSequence data�j</a>�̍����Q�Ƃ��������B<br>
-		�ԍ���0����J�E���g���܂��B</td></tr>
+	<td><var>n</var>番目のSE のシーケンスの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
+		番号は0からカウントします。</td></tr>
 <tr><td>Sub(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
 	<td>-</td>
-	<td><var>n</var>�Ԃ̃T�u���[�`���̋L�q�u���b�N�ł��B<br>
-		�V�[�P���X�p�^�[���̋L�q�́A<a href="mml_sequence.html">�V�[�P���X�f�[�^�iSequence data�j</a>�̍����Q�Ƃ��������B</td></tr>
+	<td><var>n</var>番のサブルーチンの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。</td></tr>
 <tr><td>$<var>name</var>{<br> <var>Sequence data</var><br>}		</td>
 	<td>-</td>
-	<td>�V�[�P���X�p�̃}�N����`�ł��B�ǂ̃V�[�P���X�L�q�u���b�N�ł��g�p�\�ȁA�O���[�o���}�N���ł��B<br>
-			<var>name</var>�́A`$'����A�L�����N�^�[�R�[�h0x00�`0x20�̕�����`{'������܂ł��}�N�����Ƃ��ĔF�����܂��B</td></tr>
+	<td>シーケンス用のマクロ定義です。どのシーケンス記述ブロックでも使用可能な、グローバルマクロです。<br>
+			<var>name</var>は、`$'から、キャラクターコード0x00～0x20の文字か`{'が来るまでをマクロ名として認識します。</td></tr>
 <tr><td>Envelope(<var>n</var>){<br> <var>Envelope data</var><br>}	</td>
 	<td>-</td>
-	<td><var>n</var>�Ԃ̃G���x���[�v�p�^�[����`�̋L�q�u���b�N�ł��B<br>
-		�G���x���[�v�p�^�[���̋L�q�́A<a href="mml_envelope.html">�G���x���[�v�p�^�[���iEnvelop pattern�j</a>�̍����Q�Ƃ��������B</td></tr>
+	<td><var>n</var>番のエンベロープパターン定義の記述ブロックです。<br>
+		エンベロープパターンの記述は、<a href="mml_envelope.html">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>
 <tr><td>Patch(<var>n</var>){<br> <var>Patch data</var><br>}	</td>
 	<td>-</td>
-	<td><var>n</var>�Ԃ̃p�b�`��`�̋L�q�u���b�N�ł��B<br>
-		�p�b�`��`�̋L�q�́A<a href="mml_patch.html">�p�b�`��`�iPatch define�j</a>�̍����Q�Ƃ��������B</td></tr>
+	<td><var>n</var>番のパッチ定義の記述ブロックです。<br>
+		パッチ定義の記述は、<a href="mml_patch.html">パッチ定義（Patch define）</a>の項を参照ください。</td></tr>
 <tr><td>DPCM{<br> <var>Delta PCM define</var><br>}	</td>
 	<td>-</td>
-	<td>��PCM��`�̋L�q�u���b�N�ł��B<br>
-		��PCM��`�̋L�q�́A<a href="mml_dpcm.html">��PCM��`�iDelta PCM define�j</a>�̍����Q�Ƃ��������B</td></tr>
+	<td>⊿PCM定義の記述ブロックです。<br>
+		⊿PCM定義の記述は、<a href="mml_dpcm.html">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
 <tr><td>FDSC(<var>n</var>){<br> <var>wave table</var><br>}	</td>
 	<td>-</td>
-	<td>FDS�̃L�����A���i���F�j�̔g�`�f�[�^��`�̋L�q�u���b�N�ł��B<br>
-		FDS�̃L�����A���̔g�`��`�̋L�q�́A<a href="mml_FDSC.html">FDS�L�����A�g�`��`�iFDS career wave table�j</a>�̍����Q�Ƃ��������B</td></tr>
+	<td>FDSのキャリア側（音色）の波形データ定義の記述ブロックです。<br>
+		FDSのキャリア側の波形定義の記述は、<a href="mml_FDSC.html">FDSキャリア波形定義（FDS career wave table）</a>の項を参照ください。</td></tr>
 <tr><td>FDSM(<var>n</var>){<br> <var>wave table</var><br>}	</td>
 	<td>-</td>
-	<td>FDS�̃��W�����[�^���i�k�e�n�j�̔g�`�f�[�^��`�̋L�q�u���b�N�ł��B<br>
-		FDS�̃��W�����[�^���̔g�`��`�̋L�q�́A<a href="mml_FDSM.html">FDS���W�����[�^�g�`��`�iFDS modulator wave table�j</a>�̍����Q�Ƃ��������B</td></tr>
+	<td>FDSのモジュレータ側（ＬＦＯ）の波形データ定義の記述ブロックです。<br>
+		FDSのモジュレータ側の波形定義の記述は、<a href="mml_FDSM.html">FDSモジュレータ波形定義（FDS modulator wave table）</a>の項を参照ください。</td></tr>
 <tr><td>VRC7(<var>n</var>){<br> <var>VRC7 define</var><br>}	</td>
 	<td>-</td>
-	<td>VRC7���[�U�[���F��`�̋L�q�u���b�N�ł��B<br>
-		VRC7���[�U�[���F��`�̋L�q�́A<a href="mml_vrc7.html">VRC7 ���[�U�[���F��`�iVRC7 User Instrument define�j</a>�̍����Q�Ƃ��������B</td></tr>
+	<td>VRC7ユーザー音色定義の記述ブロックです。<br>
+		VRC7ユーザー音色定義の記述は、<a href="mml_vrc7.html">VRC7 ユーザー音色定義（VRC7 User Instrument define）</a>の項を参照ください。</td></tr>
 <tr><td>N163(<var>n</var>){<br> <var>wave table</var><br>}	</td>
 	<td>-</td>
-	<td>n16x(n160,n161,n162,n163)�̉��F�g�`��`�̋L�q�u���b�N�ł��B<br>
-		n16x���F�g�`��`�̋L�q�́A<a href="mml_n163.html">n16x���F�g�`��`�iN16x sample wave block�j</a>�̍����Q�Ƃ��������B</td></tr>
-<tr><td>;<span style="color:green;">comments</span>		</td><td>-</td><td>�P�s�R�����g�ł��B���s�܂ł̋L�q�𖳎����܂��B<br>�i�e�L�q�u���b�N���ł��L���ł��j</td></tr>
-<tr><td>//<span style="color:green;">comments</span>	</td><td>-</td><td>�P�s�R�����g�ł��B���s�܂ł̋L�q�𖳎����܂��B<br>�i�e�L�q�u���b�N���ł��L���ł��j</td></tr>
-<tr><td>/*<span style="color:green;">comments</span>*/	</td><td>-</td><td>�͈̓R�����g�ł��B /* �� */ �̊Ԃ̋L�q�𖳎����܂��B<br>�i�e�L�q�u���b�N���ł��L���ł��j</td></tr>
+	<td>n16x(n160,n161,n162,n163)の音色波形定義の記述ブロックです。<br>
+		n16x音色波形定義の記述は、<a href="mml_n163.html">n16x音色波形定義（N16x sample wave block）</a>の項を参照ください。</td></tr>
+<tr><td>;<span style="color:green;">comments</span>		</td><td>-</td><td>１行コメントです。改行までの記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
+<tr><td>//<span style="color:green;">comments</span>	</td><td>-</td><td>１行コメントです。改行までの記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
+<tr><td>/*<span style="color:green;">comments</span>*/	</td><td>-</td><td>範囲コメントです。 /* と */ の間の記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
 </table>
 <br>
 </div>
 
 <div class='block'>
-<h3><a name="nsf">NSF music format���o�͂���ۂɗL���ȃR�}���h</a></h3>
+<h3><a name="nsf">NSF music formatを出力する際に有効なコマンド</a></h3>
 
 <p>
-NSF music format�p�̐ݒ�R�}���h�ł��B<br>
-NSF�w�b�_�[�A�܂��̓��^�f�[�^�ɐݒ肳��܂��B<br>
+NSF music format用の設定コマンドです。<br>
+NSFヘッダー、またはメタデータに設定されます。<br>
 </p>
 
 <table>
-<caption>�R�}���h�ꗗ</caption>
+<caption>コマンド一覧</caption>
 <tr><th>Command</th>
 	<th>Default</th>
 	<th>NSF</th>
@@ -160,55 +160,55 @@ NSF�w�b�_�[�A�܂��̓��^�f�[�^�ɐݒ肳��܂��B<br>
 	<td>		</td>
 	<td>1		</td>
 	<td>v		</td>
-	<td>�^�C�g������ݒ肵�܂��B<br>
-		NSF�ł̓w�b�_�[�ɖ��ߍ��܂�ANSFe�ł̓��^�f�[�^�𐶐����܂��B<br>
-		�܂��ANSF2�ŁA���A32�����𒴂���ꍇ�A���^�f�[�^�𐶐����܂��B</td>
+	<td>タイトル名を設定します。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
 </tr>
 <tr><td>#composer	"<var>strings</var>"	</td>
 	<td>		</td>
 	<td>1		</td>
 	<td>v		</td>
-	<td>��Ȏ҂�ݒ肵�܂��B<br>
-		NSF�ł̓w�b�_�[�ɖ��ߍ��܂�ANSFe�ł̓��^�f�[�^�𐶐����܂��B<br>
-		�܂��ANSF2�ŁA���A32�����𒴂���ꍇ�A���^�f�[�^�𐶐����܂��B</td>
+	<td>作曲者を設定します。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
 </tr>
 <tr><td>#copyright	"<var>strings</var>"	</td>
 	<td>		</td>
 	<td>1		</td>
 	<td>v		</td>
-	<td>���쌠�҂�ݒ肵�܂��B<br>
-		NSF�ł̓w�b�_�[�ɖ��ߍ��܂�ANSFe�ł̓��^�f�[�^�𐶐����܂��B<br>
-		�܂��ANSF2�ŁA���A32�����𒴂���ꍇ�A���^�f�[�^�𐶐����܂��B</td>
+	<td>著作権者を設定します。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
 </tr>
 <tr><td>#maker	"<var>strings</var>"	</td>
 	<td>		</td>
 	<td>2		</td>
 	<td>v		</td>
-	<td>����҂�ݒ肵�܂��B<br>
-		NSF2, NSFe���Ƀ��^�f�[�^�𐶐����܂��BNSF1�ł͖��Ή��ł��B</td>
+	<td>製作者を設定します。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
 </tr>
 <tr><td>#text	"<var>strings</var>"	</td>
 	<td>		</td>
 	<td>2		</td>
 	<td>v		</td>
-	<td>�e�L�X�g��ݒ肵�܂��B<br>
-		NSF2, NSFe���Ƀ��^�f�[�^�𐶐����܂��BNSF1�ł͖��Ή��ł��B</td>
+	<td>テキストを設定します。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
 </tr>
 <tr><td>#plst	{<var>list</var>}	</td>
 	<td>		</td>
 	<td>2		</td>
 	<td>v		</td>
-	<td>BGM�̉��t���Ԃ��w�肵�܂��B<br>
-		���t���鏇�Ԃ�BGM�ԍ���0~255�Ŏw�肵�A�ԍ��Ɣԍ��̊Ԃ̓X�y�[�X�ATAB�A�������̓J���}�ŋ�؂��Ă��������B<br>
-		NSF2, NSFe���Ƀ��^�f�[�^�𐶐����܂��BNSF1�ł͖��Ή��ł��B</td>
+	<td>BGMの演奏順番を指定します。<br>
+		演奏する順番にBGM番号を0~255で指定し、番号と番号の間はスペース、TAB、もしくはカンマで区切ってください。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
 </tr>
 <tr><td>#psfx	{<var>list</var>}	</td>
 	<td>		</td>
 	<td>2		</td>
 	<td>v		</td>
-	<td>SE�̉��t���Ԃ��w�肵�܂��B<br>
-		���t���鏇�Ԃ�BGM�ԍ���0~255�Ŏw�肵�A�ԍ��Ɣԍ��̊Ԃ̓X�y�[�X�ATAB�A�������̓J���}�ŋ�؂��Ă��������B<br>
-		NSF2, NSFe���Ƀ��^�f�[�^�𐶐����܂��BNSF1�ł͖��Ή��ł��B</td>
+	<td>SEの演奏順番を指定します。<br>
+		演奏する順番にBGM番号を0~255で指定し、番号と番号の間はスペース、TAB、もしくはカンマで区切ってください。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
 </tr>
 <tr><td>#mixe	{<br>
 	    <var>id</var> = <var>volume</var>,<br>
@@ -217,120 +217,120 @@ NSF�w�b�_�[�A�܂��̓��^�f�[�^�ɐݒ肳��܂��B<br>
 	<td>		</td>
 	<td>2		</td>
 	<td>v		</td>
-	<td>�e�g�������̉��ʃo�����X���w�肵�܂��B<br>
-		NSF2, NSFe���Ƀ��^�f�[�^�𐶐����܂��BNSF1�ł͖��Ή��ł��B<br>
-		<var>id</var>�́A�����^�C�v���w�肵�܂�(Default��NSFe�̎d�l�ŕW�������ꂽ�K�i�ł�)�B<br>
-		�@APU1 : Squares - Default: 0<br>
-		�@APU2 : Triangle / Noise / DPCM - Comparison: Triangle - Default: -20<br>
-		�@VRC6 : Default: 0<br>
-		�@VRC7 : Comparison: Pseudo-square - Default: 1100<br>
-		�@FDS  : Default: 700<br>
-		�@MMC5 : Default: 0<br>
-		�@N163 : Comparison: 1-Channel mode - Default: 1100 or 1900<br>
-		�@SN5B : Comparison: Volume 12 ($C) - Default: -130<br>
-		<var>volume</var>�͉��ʂ��A-32768�`32767�Ŏw�肵�܂��i�P�ʁG1/100dB�j�B</td>
+	<td>各拡張音源の音量バランスを指定します。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。<br>
+		<var>id</var>は、音源タイプを指定します(DefaultはNSFeの仕様で標準化された規格です)。<br>
+		　APU1 : Squares - Default: 0<br>
+		　APU2 : Triangle / Noise / DPCM - Comparison: Triangle - Default: -20<br>
+		　VRC6 : Default: 0<br>
+		　VRC7 : Comparison: Pseudo-square - Default: 1100<br>
+		　FDS  : Default: 700<br>
+		　MMC5 : Default: 0<br>
+		　N163 : Comparison: 1-Channel mode - Default: 1100 or 1900<br>
+		　SN5B : Comparison: Volume 12 ($C) - Default: -130<br>
+		<var>volume</var>は音量を、-32768～32767で指定します（単位；1/100dB）。</td>
 </tr>
 <tr><td>#code		"<var>name</var>"		</td>
 	<td>nsd.bin</td>
 	<td>1		</td>
 	<td>v		</td>
-	<td>�����N����m�r�e�p�̂q�n�l�R�[�h���w�肵�܂��B<br>
-		<a href="nsc_option.html">�R���p�C���I�v�V����</a>`-l'��ROM�R�[�h�̎w�肪����ꍇ�́A�R���p�C���I�v�V������D�悵�܂��B<br>
-		�eROM�R�[�h�̏ڍׂ́A<a href="spec.html">�e.lib/.bin�̎d�l</a>���Q�Ƃ˂����܂��B<br>
-		NSFe�쐬���́A�e.bin�̐ݒ�����ɁANSFe�̃��^�f�[�^�𐶐����܂��B</td>
+	<td>リンクするＮＳＦ用のＲＯＭコードを指定します。<br>
+		<a href="nsc_option.html">コンパイルオプション</a>`-l'でROMコードの指定がある場合は、コンパイルオプションを優先します。<br>
+		各ROMコードの詳細は、<a href="spec.html">各.lib/.binの仕様</a>を参照ねがいます。<br>
+		NSFe作成時は、各.binの設定を元に、NSFeのメタデータを生成します。</td>
 </tr>
 <tr><td>#External	<var>n</var>			</td>
-	<td>�e.bin�ɂ��</td>
+	<td>各.binによる</td>
 	<td>1		</td>
 	<td>v		</td>
-	<td>NSF�̃w�b�_�[�ɐݒ肷��g�������t���O���A���̒l�ɏ��������܂��i�����l�͊e.bin�ňقȂ�܂��j�B<br></td>
+	<td>NSFのヘッダーに設定する拡張音源フラグを、この値に書き換えます（初期値は各.binで異なります）。<br></td>
 </tr>
 <tr><td>#VRC7	<var>n</var>			</td>
 	<td>0		</td>
 	<td>2		</td>
 	<td>v		</td>
-	<td>VRC7�̊�����ݒ肵�܂��iNSF�v���C���[���Ή����Ă���ꍇ�AVRC7��OPLL�̉��F�ɐ؂�ւ��܂��B�j�B<br>
-	�@0 - VRC7<br>
-	�@1 - YM2413 (`nsd_opll.bin'���g�p����ꍇ�A��������w�肵�Ă�������)</td>
+	<td>VRC7の換装を設定します（NSFプレイヤーが対応している場合、VRC7がOPLLの音色に切り替わります。）。<br>
+	　0 - VRC7<br>
+	　1 - YM2413 (`nsd_opll.bin'を使用する場合、こちらを指定してください)</td>
 </tr>
 <tr><td>#Bank								</td>
-	<td>��w��	</td>
+	<td>非指定	</td>
 	<td>1		</td>
 	<td>v		</td>
-	<td>��PCM�̃o���N�؂�ւ��ɑΉ�����.bin�insd_all.bin, nsd_all2.bin�j�������N����ꍇ�ɁA�e�R�}���h���L�q����O�ɕK���w�肵�Ă��������B<br></td>
+	<td>⊿PCMのバンク切り替えに対応した.bin（nsd_all.bin, nsd_all2.bin）をリンクする場合に、各コマンドを記述する前に必ず指定してください。<br></td>
 </tr>
 </table>
 <br>
 </div>
 
 <div class='block'>
-<h3><a name="asm">�A�Z���u������\�[�X���o�͂���ۂɗL���ȃR�}���h</a></h3>
+<h3><a name="asm">アセンブリ言語ソースを出力する際に有効なコマンド</a></h3>
 <p>
-�A�Z���u������\�[�X�ɂďo�͂���ۂ̐ݒ�R�}���h�ł��B<br>
-��ɁA6502�J����"cc65"�ɕt���́A�A�Z���u��"ca65.exe"�p�̋^�����߂̏o�͂𐧌䂵�܂��B<br>
-���[�U�[�E�A�v���P�[�V�����ɑg�ݍ��ޏꍇ�ɁA�ݒ肵�ĉ������B<br>
+アセンブリ言語ソースにて出力する際の設定コマンドです。<br>
+主に、6502開発環境"cc65"に付属の、アセンブラ"ca65.exe"用の疑似命令の出力を制御します。<br>
+ユーザー・アプリケーションに組み込む場合に、設定して下さい。<br>
 </p>
 
 <table>
-<caption>�R�}���h�ꗗ</caption>
+<caption>コマンド一覧</caption>
 <tr><th>Command</th><th>Default</th><th>Contens</th></tr>
 <tr><td>#segment	"<var>name</var>"<br>
 		#segmentSEQ	"<var>name</var>"</td>
 	<td>RODATA</td>
-	<td>�ȁA���ʉ��A�G���x���[�v�A���F�f�[�^���i��PCM�ȊO�j��z�u����Z�O�����g�����w�肵�܂��B<br>
-		�����̃f�[�^�́A�A�Z���u������\�[�X�ɂāA�w.segment "<var>name</var>"�x�ƃZ�O�����g�����w�肳��܂��B<br>
-		������MML�t�@�C�����琶�������A�Z���u������\�[�X���A����̃t�@�C���Ƀ����N����ꍇ�A
-		�قȂ�Z�O�����g���i"ld65.exe"�̃R���t�B�O�t�@�C���ɂĈقȂ�o���N�}�b�s���O���ꂽ�j�ɐݒ肷�邱�ƂŁA
-		�o���N�i32kByte�𒴂���e�ʁj�ɑΉ�����NES�t�@�C���͂������ANSF�𐶐����鎖���\�ł��B</td></tr>
+	<td>曲、効果音、エンベロープ、音色データ等（⊿PCM以外）を配置するセグメント名を指定します。<br>
+		これらのデータは、アセンブリ言語ソースにて、『.segment "<var>name</var>"』とセグメント名が指定されます。<br>
+		複数のMMLファイルから生成したアセンブリ言語ソースを、同一のファイルにリンクする場合、
+		異なるセグメント名（"ld65.exe"のコンフィグファイルにて異なるバンクマッピングされた）に設定することで、
+		バンク（32kByteを超える容量）に対応したNESファイルはもちろん、NSFを生成する事も可能です。</td></tr>
 <tr><td>#segmentPCM	"<var>name</var>"	</td>
 	<td>PCMDATA</td>
-	<td>��PCM�̎��̂�z�u����Z�O�����g�����w�肵�܂��B<br>
-		��PCM�̎��̂��o�͂���ۂ́A�A�Z���u������\�[�X�ɂāA�w.segment "<var>name</var>"�x�ƃZ�O�����g�����w�肳��܂��B<br>
-		���̃Z�O�����g�́A�����J�["ld65.exe"�̃R���t�B�O�t�@�C���ɂāA
-		#offsetPCM�R�}���h�Őݒ肵���A�h���X�ƁA�����A�h���X�ɐݒ肵�ĉ������B<br>
-		���O��""�i���������j�ɐݒ肵���ꍇ�́A��PCM�̎��̂��A�Z���u������\�[�X�֏o�͂��܂���B<br>
-		����́A����̇�PCM���g�p���镡����MML�t�@�C�����琶�������A�Z���u������\�[�X���A
-		����̃t�@�C���Ƀ����N����ꍇ�ɂ����āA�ǂꂩ�P��MML�̂݁A��PCM�̎��̂��o�͂���΂悢���߂ł��B</td></tr>
+	<td>⊿PCMの実体を配置するセグメント名を指定します。<br>
+		⊿PCMの実体を出力する際は、アセンブリ言語ソースにて、『.segment "<var>name</var>"』とセグメント名が指定されます。<br>
+		このセグメントは、リンカー"ld65.exe"のコンフィグファイルにて、
+		#offsetPCMコマンドで設定したアドレスと、同じアドレスに設定して下さい。<br>
+		名前を""（何も無し）に設定した場合は、⊿PCMの実体をアセンブリ言語ソースへ出力しません。<br>
+		これは、同一の⊿PCMを使用する複数のMMLファイルから生成したアセンブリ言語ソースを、
+		同一のファイルにリンクする場合において、どれか１つのMMLのみ、⊿PCMの実体を出力すればよいためです。</td></tr>
 <tr><td>#label		"<var>name</var>"	</td>
 	<td>_nsd_</td>
-	<td>���x�����i�V���{�����j�̐擪�ɕt�^���镶������w�肵�܂��B<br>
-		�b�R���p�C���́A�b����ŋL�q���ꂽ���x���i�V���{���j���̐擪��`_'��t�����܂��B<br>
-		�]���A�b���ꂩ��ȃf�[�^���Q�Ƃ���ꍇ�AMML���Őݒ肷�郉�x�����͐擪��`_'��ǉ����Ă��������B<br>
-		������MML�t�@�C�����琶�������A�Z���u������\�[�X���A����̃t�@�C���Ƀ����N����ꍇ�́A
-		�K���A�eMML�t�@�C�����ňقȂ郉�x������ݒ肵�ĉ������B</td></tr>
+	<td>ラベル名（シンボル名）の先頭に付与する文字列を指定します。<br>
+		Ｃコンパイラは、Ｃ言語で記述されたラベル（シンボル）名の先頭に`_'を付加します。<br>
+		従い、Ｃ言語から曲データを参照する場合、MML側で設定するラベル名は先頭に`_'を追加してください。<br>
+		複数のMMLファイルから生成したアセンブリ言語ソースを、同一のファイルにリンクする場合は、
+		必ず、各MMLファイル中で異なるラベル名を設定して下さい。</td></tr>
 </table>
 
 <p>
-������MML����ϊ������A�Z���u������\�[�X���A����̃v���W�F�N�g�E�t�@�C���Ƀ����N���ăr���h����ꍇ�ł��A
-�G���x���[�v��`�A���F��`�A���o�b�l�̒�`�́A�eMML�t�@�C�����ɐݒ肵�ĉ������i�قȂ�ݒ���\�ł��j�B<br>
+複数のMMLから変換したアセンブリ言語ソースを、同一のプロジェクト・ファイルにリンクしてビルドする場合でも、
+エンベロープ定義、音色定義、⊿ＰＣＭの定義は、各MMLファイル毎に設定して下さい（異なる設定も可能です）。<br>
 </p>
 <p>
-�ȁE���ʉ��́A�ȉ��̎菇�ōĐ����ĉ������B
+曲・効果音は、以下の手順で再生して下さい。
 </p>
 <ol type='1'>
-<li>6502�̃�������ԂɁA���ꂩ��Đ�����f�[�^������o���N���}�b�s���O�B�������̓��[�h�B<br>
-	�i������6502�̃�������Ԃɑ��݂��Ă���ꍇ�͕s�v�j</li>
-<li><a href="func_nsd_set_dpcm.html">nsd_set_dpcm()</a>�֐��ɂć�PCM����\���̂�ݒ�<br>
-	�i�����o�b�l���g�p���Ȃ��ꍇ�A�y�сA���ݍĐ����̃f�[�^�Ɠ����l�l�k�t�@�C���ɋL�q���ꂽ�ȁE���ʉ����Đ�����ۂ͕s�v�j</li>
-<li><a href="func_nsd_play_bgm.html">nsd_play_bgm()</a>�֐��A<a href="func_nsd_play_se.html">nsd_play_se()</a>�֐��ɂčĐ��J�n<br>
-	�i�����A�֐��Ăяo����́A�o���N��؂�ւ��Ă���肠��܂���B�j</li>
+<li>6502のメモリ空間に、これから再生するデータがあるバンクをマッピング。もしくはロード。<br>
+	（※既に6502のメモリ空間に存在している場合は不要）</li>
+<li><a href="func_nsd_set_dpcm.html">nsd_set_dpcm()</a>関数にて⊿PCM制御構造体を設定<br>
+	（※⊿ＰＣＭを使用しない場合、及び、現在再生中のデータと同じＭＭＬファイルに記述された曲・効果音を再生する際は不要）</li>
+<li><a href="func_nsd_play_bgm.html">nsd_play_bgm()</a>関数、<a href="func_nsd_play_se.html">nsd_play_se()</a>関数にて再生開始<br>
+	（※尚、関数呼び出し後は、バンクを切り替えても問題ありません。）</li>
 </ol>
 <p>
-�f�[�^�̍Đ����́A�V�[�P���X�f�[�^���펞6502�̃�������Ԃɑ��݂��Ă���K�v�͂���܂���B<br>
-<a href="func_nsd_main.html">nsd_main()</a>�֐����Ăяo���ۂɁA
-6502�̃�������ԂɍĐ�����f�[�^������o���N���}�b�s���O���A
-�Ăяo������̓o���N��؂�ւ��Ă���肠��܂���B<br>
-�A���A��PCM���g�p����ꍇ�́A��PCM�̎��̂����݂���o���N�͏펞6502�̃�������ԂɃ}�b�s���O���ĉ������B<br>
+データの再生中は、シーケンスデータが常時6502のメモリ空間に存在している必要はありません。<br>
+<a href="func_nsd_main.html">nsd_main()</a>関数を呼び出す際に、
+6502のメモリ空間に再生するデータがあるバンクをマッピングし、
+呼び出した後はバンクを切り替えても問題ありません。<br>
+但し、⊿PCMを使用する場合は、⊿PCMの実体が存在するバンクは常時6502のメモリ空間にマッピングして下さい。<br>
 </p>
 
 </div>
 
 <div class='block'>
-<h3><a name="num">���l�̋L�@</a></h3>
+<h3><a name="num">数値の記法</a></h3>
 <p>
-0�`9�Ŏn�܂鐔�l�́A10�i���Ƃ݂Ȃ��܂��B<br>
-$�Ŏn�܂鐔�l�́A16�i���Ƃ݂Ȃ��܂��B<br>
-%�Ŏn�܂鐔�l�́A2�i���Ƃ݂Ȃ��܂��B<br>
+0～9で始まる数値は、10進数とみなします。<br>
+$で始まる数値は、16進数とみなします。<br>
+%で始まる数値は、2進数とみなします。<br>
 </p>
 </div>
 

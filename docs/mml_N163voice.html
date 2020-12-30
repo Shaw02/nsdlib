@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
 <Title>MML reference: n16x (n160, n161, n162, n163) Setting wave table</Title>
@@ -11,82 +11,82 @@
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-<a href="usage.html">�g����</a>�_
-<a href="usage_nsc.html">MML�R���p�C��</a>�_
-<a href="mml.html">MML���@</a>�_
-<a href="mml_sequence.html">MML�V�[�P���X</a>�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
 </div>
 
 <!-- contents start -->
 <div id='contents'>
 <h2>MML reference: n16x (n160, n161, n162, n163)  Setting wave table</h2>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>��`�iDefine�j</h3>
+<h3>定義（Define）</h3>
 <code><pre>
         @N<var>address</var>, <var>n</var>
         @NL<var>sample</var>, <var>n</var>
 </pre></code>
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>�����iInputs�j</h3>
+<h3>引数（Inputs）</h3>
 
 <h4>address</h4>
 <p>
-���W�X�^�P�ʂŁAn16x�ւ̓]������w�肵�܂��B<br>
-0�`63�͈̔͂Ŏw�肵�Ă��������B<br>
-n16x�ւ̓]����A�h���X�́A�w��l�̂Q�{�̒l�ƂȂ�܂��B<br>
+レジスタ単位で、n16xへの転送先を指定します。<br>
+0～63の範囲で指定してください。<br>
+n16xへの転送先アドレスは、指定値の２倍の値となります。<br>
 </p>
 
 <h4>sample</h4>
 <p>
-�T���v���̗v�f�P�ʂŁAn16x�ւ̓]������w�肵�܂��B<br>
-0�`252�͈̔͂ŁA�S�̔{�����w�肵�Ă��������B<br>
-n16x�ւ̓]����A�h���X�́A�w��l�̔����̒l�ƂȂ�܂��B<br>
+サンプルの要素単位で、n16xへの転送先を指定します。<br>
+0～252の範囲で、４の倍数を指定してください。<br>
+n16xへの転送先アドレスは、指定値の半分の値となります。<br>
 </p>
 
 <h4>n</h4>
 <p>
-n16x�֓]������<a href="mml_n163.html">n16x���F�g�`�L�q�u���b�N</a>�̔ԍ����w�肵�܂��B<br>
+n16xへ転送する<a href="mml_n163.html">n16x音色波形記述ブロック</a>の番号を指定します。<br>
 </p>
 
 
 </div>
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>���e�iContents�j</h3>
+<h3>内容（Contents）</h3>
 <p>
-n16x�����́A<var>address</var>�~2�Ԓn�A�������́A<var>sample</var>��2�Ԓn�ɁA
-<a href="mml_n163.html">n16x���F�g�`�L�q�u���b�N</a> <var>n</var>�Ԃ̉��F�g�`��]�����܂��B<br>
+n16x音源の、<var>address</var>×2番地、もしくは、<var>sample</var>÷2番地に、
+<a href="mml_n163.html">n16x音色波形記述ブロック</a> <var>n</var>番の音色波形を転送します。<br>
 </p>
 <p>
-n16x�̎g�����́A�ʓr�A<a href="n163.html">n16x (n160, n161, n162, n163) �̎g����</a>�����Q�Ƃ��������B<br>
+n16xの使い方は、別途、<a href="n163.html">n16x (n160, n161, n162, n163) の使い方</a>をご参照ください。<br>
 </p>
 
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>���ӁiNotes�j</h3>
+<h3>注意（Notes）</h3>
 <p>
-���̃R�}���h�́An16x�̃A�h���X��Ԃɉ��F�f�[�^��]�����邾���ŁA�`�����l���̉��F�Ƃ��Ă̐ݒ�͂��܂���B<br>
-���F�̓K�p�́A<a href="mml_N163set.html">@NS�R�}���h</a>�ŁA�J�n�ʒu�ƃT���v�������w�肷��K�v������܂��B<br>
-�܂��A<a href="mml_voice.html">@�R�}���h</a>�y�сA<a href="mml_sweep.html">s�R�}���h</a>�ł��\�ł��B<br>
-�Ȃ��A�����̐ݒ菇�Ԃ͖₢�܂���B<br>
+このコマンドは、n16xのアドレス空間に音色データを転送するだけで、チャンネルの音色としての設定はしません。<br>
+音色の適用は、<a href="mml_N163set.html">@NSコマンド</a>で、開始位置とサンプル長を指定する必要があります。<br>
+また、<a href="mml_voice.html">@コマンド</a>及び、<a href="mml_sweep.html">sコマンド</a>でも可能です。<br>
+なお、これらの設定順番は問いません。<br>
 </p>
 <p>
-�A�h���X����ł́A�e�`�����l���𐧌䂷�郌�W�X�^�ɂ���������ł��܂��܂��̂ŁA�A�h���X�ƃe�[�u���̃T�C�Y�ɂ͒��ӂ��ĉ������B<br>
+アドレス次第では、各チャンネルを制御するレジスタにも書き込んでしまいますので、アドレスとテーブルのサイズには注意して下さい。<br>
 </p>
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>��iSample�j</h3>
+<h3>例（Sample）</h3>
 
 <code><pre>
 N163(0){	<span style="color:green;">//Pipe organ</span>

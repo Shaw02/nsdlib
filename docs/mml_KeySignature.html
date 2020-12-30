@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
 <Title>MML reference: Key Signature</Title>
@@ -11,114 +11,114 @@
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-<a href="usage.html">�g����</a>�_
-<a href="usage_nsc.html">MML�R���p�C��</a>�_
-<a href="mml.html">MML���@</a>�_
-<a href="mml_sequence.html">MML�V�[�P���X</a>�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
 </div>
 
 <!-- contents start -->
 <div id='contents'>
 <h2>MML reference: Key Signature</h2>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>��`�iDefine�j</h3>
+<h3>定義（Define）</h3>
 <code><pre>
         K{<var>signature</var>}
 </pre></code>
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>�����iInputs�j</h3>
+<h3>引数（Inputs）</h3>
 
 <h4>signature</h4>
-<p>���Ŏw�肷��ꍇ�ł��B<br>
-<a href="mml_scale.html"><code>Scale</code>�R�}���h</a>���g�p����ۂ́A�K��������̕��@�Ŏw�肵�ĉ������B<br>
-���̕��@�Œ������w�肷��ꍇ�A�l�l�k�R���p�C�������݂̒��ƃX�P�[�����L�����܂��B<br>
-�����̏ꍇ�̓A�C�I�j�A���X�P�[���A�Z���̏ꍇ�̓G�I���A���X�P�[���Ƃ��܂��B<br>
+<p>調で指定する場合です。<br>
+<a href="mml_scale.html"><code>Scale</code>コマンド</a>を使用する際は、必ずこちらの方法で指定して下さい。<br>
+この方法で調号を指定する場合、ＭＭＬコンパイラが現在の調とスケールを記憶します。<br>
+長調の場合はアイオニアンスケール、短調の場合はエオリアンスケールとします。<br>
 </p>
 
 <dl>
-<dt>C-Dur �c	</dt><dd>�@�n�����ɐݒ肵�܂�</dd>
-<dt>Ds-Dur �c	</dt><dd>�σj�����ɐݒ肵�܂�</dd>
-<dt>D-Dur �c	</dt><dd>�@�j�����ɐݒ肵�܂�</dd>
-<dt>Es-Dur �c	</dt><dd>�σz�����ɐݒ肵�܂�</dd>
-<dt>E-Dur �c	</dt><dd>�@�z�����ɐݒ肵�܂�</dd>
-<dt>F-Dur �c	</dt><dd>�@�w�����ɐݒ肵�܂�</dd>
-<dt>Fis-Dur �c	</dt><dd>�d�w�����ɐݒ肵�܂�</dd>
-<dt>Gs-Dur �c	</dt><dd>�σg�����ɐݒ肵�܂�</dd>
-<dt>G-Dur �c	</dt><dd>�@�g�����ɐݒ肵�܂�</dd>
-<dt>As-Dur �c	</dt><dd>�σC�����ɐݒ肵�܂�</dd>
-<dt>A-Dur �c	</dt><dd>�@�C�����ɐݒ肵�܂�</dd>
-<dt>B-Dur �c	</dt><dd>�σ������ɐݒ肵�܂�</dd>
-<dt>H-Dur �c	</dt><dd>�@�������ɐݒ肵�܂�</dd>
+<dt>C-Dur …	</dt><dd>　ハ長調に設定します</dd>
+<dt>Ds-Dur …	</dt><dd>変ニ長調に設定します</dd>
+<dt>D-Dur …	</dt><dd>　ニ長調に設定します</dd>
+<dt>Es-Dur …	</dt><dd>変ホ長調に設定します</dd>
+<dt>E-Dur …	</dt><dd>　ホ長調に設定します</dd>
+<dt>F-Dur …	</dt><dd>　ヘ長調に設定します</dd>
+<dt>Fis-Dur …	</dt><dd>嬰ヘ長調に設定します</dd>
+<dt>Gs-Dur …	</dt><dd>変ト長調に設定します</dd>
+<dt>G-Dur …	</dt><dd>　ト長調に設定します</dd>
+<dt>As-Dur …	</dt><dd>変イ長調に設定します</dd>
+<dt>A-Dur …	</dt><dd>　イ長調に設定します</dd>
+<dt>B-Dur …	</dt><dd>変ロ長調に設定します</dd>
+<dt>H-Dur …	</dt><dd>　ロ長調に設定します</dd>
 
-<dt>c-moll �c	</dt><dd>�@�n�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>cis-moll �c	</dt><dd>�d�n�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>d-moll �c	</dt><dd>�@��Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>dis-moll �c	</dt><dd>�d��Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>es-moll �c	</dt><dd>�σz�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>e-moll �c	</dt><dd>�@�z�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>f-moll �c	</dt><dd>�@�w�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>fis-moll �c	</dt><dd>�d�w�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>g-moll �c	</dt><dd>�@�g�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>gis-moll �c	</dt><dd>�d�g�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>a-moll �c	</dt><dd>�@�C�Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>b-moll �c	</dt><dd>�σ��Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>bs-moll �c	</dt><dd>�σ��Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
-<dt>h-moll �c	</dt><dd>�@���Z���ɐݒ肵�܂��i���R�Z���K�j</dd>
+<dt>c-moll …	</dt><dd>　ハ短調に設定します（自然短音階）</dd>
+<dt>cis-moll …	</dt><dd>嬰ハ短調に設定します（自然短音階）</dd>
+<dt>d-moll …	</dt><dd>　二短調に設定します（自然短音階）</dd>
+<dt>dis-moll …	</dt><dd>嬰二短調に設定します（自然短音階）</dd>
+<dt>es-moll …	</dt><dd>変ホ短調に設定します（自然短音階）</dd>
+<dt>e-moll …	</dt><dd>　ホ短調に設定します（自然短音階）</dd>
+<dt>f-moll …	</dt><dd>　ヘ短調に設定します（自然短音階）</dd>
+<dt>fis-moll …	</dt><dd>嬰ヘ短調に設定します（自然短音階）</dd>
+<dt>g-moll …	</dt><dd>　ト短調に設定します（自然短音階）</dd>
+<dt>gis-moll …	</dt><dd>嬰ト短調に設定します（自然短音階）</dd>
+<dt>a-moll …	</dt><dd>　イ短調に設定します（自然短音階）</dd>
+<dt>b-moll …	</dt><dd>変ロ短調に設定します（自然短音階）</dd>
+<dt>bs-moll …	</dt><dd>変ロ短調に設定します（自然短音階）</dd>
+<dt>h-moll …	</dt><dd>　ロ短調に設定します（自然短音階）</dd>
 </dl>
 
 <h4>signature</h4>
 <p>
-���ځA�ǂ̉����𔼉����炷���w�肷��ꍇ�̎w����@�ł��B<br>
-��������g�p�����ꍇ�́AMML�R���p�C���֌��݂̒���ʒm���܂���B<br>
+直接、どの音程を半音ずらすか指定する場合の指定方法です。<br>
+こちらを使用した場合は、MMLコンパイラへ現在の調を通知しません。<br>
 </p>
 <dl>
-<dt># �c </dt><dd>�ȍ~�Ɏ����m�[�g�𔼉��グ�܂�</dd>
-<dt>+ �c </dt><dd>�ȍ~�Ɏ����m�[�g�𔼉��グ�܂�</dd>
-<dt>- �c </dt><dd>�ȍ~�Ɏ����m�[�g�𔼉������܂�</dd>
-<dt>= �c </dt><dd>�ȍ~�Ɏ����m�[�g�̒����𖳂��ɂ��܂��B</dd>
-<dt>a �c </dt><dd>A, La, ��</dd>
-<dt>b �c </dt><dd>H, Si, �V</dd>
-<dt>c �c </dt><dd>C, Do, �h</dd>
-<dt>d �c </dt><dd>D, Re, ��</dd>
-<dt>e �c </dt><dd>E, Mi, �~</dd>
-<dt>f �c </dt><dd>F, Fa, �t�@</dd>
-<dt>g �c </dt><dd>G, Sol, �\</dd>
-<dt>r �c </dt><dd>�x���i�L�[�I�t��̏������[�h�j</dd>
+<dt># … </dt><dd>以降に示すノートを半音上げます</dd>
+<dt>+ … </dt><dd>以降に示すノートを半音上げます</dd>
+<dt>- … </dt><dd>以降に示すノートを半音下げます</dd>
+<dt>= … </dt><dd>以降に示すノートの調号を無しにします。</dd>
+<dt>a … </dt><dd>A, La, ラ</dd>
+<dt>b … </dt><dd>H, Si, シ</dd>
+<dt>c … </dt><dd>C, Do, ド</dd>
+<dt>d … </dt><dd>D, Re, レ</dd>
+<dt>e … </dt><dd>E, Mi, ミ</dd>
+<dt>f … </dt><dd>F, Fa, ファ</dd>
+<dt>g … </dt><dd>G, Sol, ソ</dd>
+<dt>r … </dt><dd>休符（キーオフ後の処理モード）</dd>
 </dl>
 
 </div>
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>���e�iContents�j</h3>
+<h3>内容（Contents）</h3>
 <p>
-���݂̃g���b�N�̒������w�肵�܂��B<br>
+現在のトラックの調号を指定します。<br>
 </p>
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>���ӁiNotes�j</h3>
+<h3>注意（Notes）</h3>
 <p>
-�l�l�k�R���p�C���[�̋^�����߂ł��B<br>
-����K{}�R�}���h�Ⴕ���́A<a href="mml_scale.html"><code>Scale</code>�R�}���h</a>������܂ŁA
-�{�R�}���h�Ŏw�肳�ꂽ���K�ɁA�����ŗՎ��L�����t������ăR���p�C������܂��B<br>
+ＭＭＬコンパイラーの疑似命令です。<br>
+次にK{}コマンド若しくは、<a href="mml_scale.html"><code>Scale</code>コマンド</a>が来るまで、
+本コマンドで指定された音階に、自動で臨時記号が付加されてコンパイルされます。<br>
 </p>
 <p>
-�e�L�q�u���b�N�iSub, BGM, SE�j�ł́A�f�t�H���g�͒��������i�n�����A�A�C�I�j�A���X�P�[���j�ƂȂ�܂��B<br>
-�]���A�T�u���[�`���R�[������ꍇ�́A�T�u���[�`����������E�X�P�[�����w�肵�ĉ������B<br>
+各記述ブロック（Sub, BGM, SE）では、デフォルトは調号無し（ハ長調、アイオニアンスケール）となります。<br>
+従い、サブルーチンコールする場合は、サブルーチン先も調号・スケールを指定して下さい。<br>
 </p>
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>��iSample�j</h3>
+<h3>例（Sample）</h3>
 
 <code><pre>
     K{D-Dur}   defgab>cd    <span style="color:green;">/* D-Dur scale = K{+fc} */</span>

@@ -2,68 +2,68 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>�X�g�g���\�L�@�`���[�g���A���@���ɕ\������Ă݂�</Title>
+<Title>ストトン表記　チュートリアル　音に表情をつけてみる</Title>
 </HEAD>
 <BODY>
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-<a href="usage.html">�g����</a>�_
-<a href="tutorial.html">�`���[�g���A��</a>�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="tutorial.html">チュートリアル</a>＼
 </div>
 
-<!-- �������������������������������������������������������������������� -->
+<!-- ────────────────────────────────── -->
 <!-- contents start -->
 <div id='contents'>
-<h2>�`���[�g���A���@���ɕ\������Ă݂�</h2>
+<h2>チュートリアル　音に表情をつけてみる</h2>
 
 <p>
-�t�@�~�R�������́A�P���ȉ��F�Ȃ̂ł��̂܂܂ł͂܂�Ȃ����ɂȂ�܂��B<br>
-���܂ł́A�e���v���[�g�̐ݒ���g���Ă��܂������A���삵�Ă݂܂��傤�B<br>
+ファミコン音源は、単調な音色なのでそのままではつまらない音になります。<br>
+今までは、テンプレートの設定を使っていましたが、自作してみましょう。<br>
 </p>
 
 
 
-<!-- �������������������������������������������������������������������� -->
+<!-- ────────────────────────────────── -->
 
 <div class='block'>
-<h3>�G���x���[�v��ݒ肷��</h3>
+<h3>エンベロープを設定する</h3>
 <p>
-�������E�̊y��́A�����P���P���̒��ɂ����ʂ̕ω�������܂��B<br>
-�G���x���[�v�Ƃ́A���̉��ʂ̕ω��̃p�^�[���̂��Ƃ������܂��B<br>
-nsd.lib�ł́A����𐔒l�ŏ����Ă����܂��B<br>
+現実世界の楽器は、音符１音１音の中にも音量の変化があります。<br>
+エンベロープとは、その音量の変化のパターンのことを言います。<br>
+nsd.libでは、それを数値で書いていきます。<br>
 </p>
 <p>
-�Ⴆ�΁A�s�A�m���̊y��́A�ŏ��̃A�^�b�N�������A���̌�A���X�ɉ����������܂��B<br>
-�����}�ɕ\���ƈȉ��̂悤�ɂȂ�܂��B<br>
+例えば、ピアノ等の楽器は、最初のアタックが強く、その後、徐々に音が減衰します。<br>
+これを図に表すと以下のようになります。<br>
 </p>
 <img src="tutorial_envelope.png" width=75%>
 
 <p>
-�G���x���[�v��`�́A1/60�b�Ԗ��̉��ʕω����A0�`15�̐��l�ŗ��񂵂܂��B<br>
-�܂��A���ʂ��L�q���鑼�ɁA�֗��ȃR�}���h������܂��B<br>
+エンベロープ定義は、1/60秒間毎の音量変化を、0～15の数値で羅列します。<br>
+また、音量を記述する他に、便利なコマンドがあります。<br>
 </p>
 <dl>
-<dt>D<var>n</var> �c</dt><dd>(<var>n</var>+1)/60�b�����A���݂̃��x�����ێ����܂��B</dd>
-<dt>R �c			</dt><dd>�������̃p�^�[���ƁA�����I����̃p�^�[���̋�؂�ł��B<br>
-							����R�R�}���h�ȍ~�ŁA�c�����̃p�^�[����ݒ�ł��܂��B<br>
-							R�R�}���h�������Ȃ��ꍇ�́A�����I������葱���܂��̂Œ��ӂ��ĉ������B</dd>
-<dt>L �c			</dt><dd>R�R�}���h�̑O�ɏ������ꍇ�́A��������R�̂Ƃ���܂ŗ����ꍇ�̖߂��̃|�C���g�ł��B<br>
-							R�R�}���h�̌��ɏ������ꍇ�́A�������ɒ�`�̍Ō�܂ŗ����ꍇ�̖߂��̃|�C���g�ł��B	</dd>
+<dt>D<var>n</var> …</dt><dd>(<var>n</var>+1)/60秒だけ、現在のレベルを維持します。</dd>
+<dt>R …			</dt><dd>発音中のパターンと、発音終了後のパターンの区切りです。<br>
+							このRコマンド以降で、残響音のパターンを設定できます。<br>
+							Rコマンドを書かない場合は、発音終了後も鳴り続けますので注意して下さい。</dd>
+<dt>L …			</dt><dd>Rコマンドの前に書いた場合は、発音中にRのところまで来た場合の戻り先のポイントです。<br>
+							Rコマンドの後ろに書いた場合は、発音中に定義の最後まで来た場合の戻り先のポイントです。	</dd>
 </dl>
 <p>
-���̂悤�ɁA��̃O���t���G���x���[�v�p�^�[���ɒ�`����ƁA�ȉ��̂悤�ɂȂ�܂��B<br>
+このように、上のグラフをエンベロープパターンに定義すると、以下のようになります。<br>
 </p>
 <code><pre>
-�G���x���[�v�i�P�j�o 15 12 11 D0 10 D1 9 D2 8 D3 7 D4 6 D5 5 D8 L 4 R 3 2 1 L 0 �p
+エンベロープ（１）｛ 15 12 11 D0 10 D1 9 D2 8 D3 7 D4 6 D5 5 D8 L 4 R 3 2 1 L 0 ｝
 </pre></code>
 <p>
-����́A�G���x���[�v�́u�P�ԁv�Ƀs�A�m�̂悤�ȉ��ʕω��p�^�[�����`���܂����B<br>
+これは、エンベロープの「１番」にピアノのような音量変化パターンを定義しました。<br>
 </p>
 
 </div>
@@ -71,45 +71,45 @@ nsd.lib�ł́A����𐔒l�ŏ����Ă����܂��B<br>
 
 
 <div class='block'>
-<h3>�r�u���[�g��ݒ肷��</h3>
+<h3>ビブラートを設定する</h3>
 <p>
-���́A�����P���P���̒��ł̉����̕ω��ł��B<br>
-�����̊y��ł����Ƃ���̃r�u���[�g�A�����̗h�炬�����`�ł��܂��B<br>
-����̍��r�u���[�g�́A���𔭉����ď����o���Ă��特���̗h�炬�������܂��B<br>
+次は、音符１音１音の中での音程の変化です。<br>
+現実の楽器でいうところのビブラート、音程の揺らぎ等を定義できます。<br>
+今回の作るビブラートは、音を発音して少し経ってから音程の揺らぎをかけます。<br>
 </p>
 
 <img src="tutorial_vibrato.png" width=75%>
 
 <p>
-�G���x���[�v�Ɠ����悤�ɁA������r�u���[�g�p�^�[���ɒ�`����ƁA�ȉ��̂悤�ɂȂ�܂��B<br>
+エンベロープと同じように、これをビブラートパターンに定義すると、以下のようになります。<br>
 </p>
 <code><pre>
-�r�u���[�g�i�P�j�o 0 D20 L 1 2 3 3 2 1 0 -1 -2 -3 -3 -2 -1 0 �p
+ビブラート（１）｛ 0 D20 L 1 2 3 3 2 1 0 -1 -2 -3 -3 -2 -1 0 ｝
 </pre></code>
 
-<h4>�r�u���[�g�͉��y</h4>
+<h4>ビブラートは音楽</h4>
 
 <p>
-�r�u���[�g�̊|�������͔��ɏd�v�ł��B<br>
-��y�t�҂́A���̎��̉��y�̏�ʂɍ��킹�āA�����A�U�����R���g���[�����܂��B<br>
-�����ł́A���������A����Љ�܂��i���ł����āA���ׂĂ����̒ʂ�ł͂���܂���j�B<br>
+ビブラートの掛けかたは非常に重要です。<br>
+器楽奏者は、その時の音楽の場面に合わせて、周期、振幅をコントロールします。<br>
+ここでは、少しだけ、例を紹介します（一例であって、すべてがこの通りではありません）。<br>
 </p>
 
-<h5>�����O�g�[��</h5>
+<h5>ロングトーン</h5>
 <p>
-�ŏ��̓r�u���[�g���������A�����o���Ă���A�y���|���܂��B<br>
-���̃p�[�g���f���炵��������t�łĂ���̂ɁA�傫�ȃr�u���[�g�Ŏ咣����t�҂͗v��܂���B<br>
+最初はビブラートをかけず、少し経ってから、軽く掛けます。<br>
+他のパートが素晴らしい旋律を奏でているのに、大きなビブラートで主張する奏者は要りません。<br>
 </p>
 
-<h5>�X�^�b�J�[�g</h5>
+<h5>スタッカート</h5>
 <p>
-�ŏ������r�u���[�g�������A�r�u���[�g�̐U�������������邱�Ƃ������ł��B<br>
+最初だけビブラートをかけ、ビブラートの振幅も減衰させることが多いです。<br>
 </p>
 
-<h5>�N���b�V�F���h</h5>
+<h5>クレッシェンド</h5>
 <p>
-�N���b�V�F���h�Ƃ����C�^���A��̈Ӗ��́u��������v�ł��B<br>
-�܂�A�N���b�V�F���h���������܂��B�r�u���[�g�̐U�����ǂ�ǂ�Z�����邱�Ƃ������ł��B<br>
+クレッシェンドというイタリア語の意味は「成長する」です。<br>
+つまり、クレッシェンドも成長します。ビブラートの振幅もどんどん短くすることが多いです。<br>
 </p>
 
 
@@ -117,9 +117,9 @@ nsd.lib�ł́A����𐔒l�ŏ����Ă����܂��B<br>
 </div>
 
 <div class='block'>
-<h3>���y�ŃG���x���[�v�A�r�u���[�g���g���Ă݂�</h3>
+<h3>音楽でエンベロープ、ビブラートを使ってみる</h3>
 <p>
-�����A������G���x���[�v�p�^�[���ƁA�r�u���[�g�p�^�[�����g���Ă݂܂��B<br>
+さぁ、作ったエンベロープパターンと、ビブラートパターンを使ってみます。<br>
 </p>
 
 </div>
@@ -128,13 +128,13 @@ nsd.lib�ł́A����𐔒l�ŏ����Ă����܂��B<br>
 
 <div>
 <center>
-<a href="tutorial_track.html">�߂�</a>
+<a href="tutorial_track.html">戻る</a>
 <center>
 </div>
 
 
 
-<!-- �������������������������������������������������������������������� -->
+<!-- ────────────────────────────────── -->
 </div>
 
 </BODY>

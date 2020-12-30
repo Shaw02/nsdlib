@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
 <Title>MML reference: Release</Title>
@@ -11,21 +11,21 @@
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-<a href="usage.html">�g����</a>�_
-<a href="usage_nsc.html">MML�R���p�C��</a>�_
-<a href="mml.html">MML���@</a>�_
-<a href="mml_sequence.html">MML�V�[�P���X</a>�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
 </div>
 
 <!-- contents start -->
 <div id='contents'>
 <h2>MML reference: Release</h2>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>��`�iDefine�j</h3>
+<h3>定義（Define）</h3>
 <code><pre>
         R@<var>voice</var>
         Rv<var>volume</var>
@@ -33,62 +33,62 @@
 </pre></code>
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>�����iInputs�j</h3>
+<h3>引数（Inputs）</h3>
 
-<h4>voice�@�i`R@'���߂̈����j</h4>
+<h4>voice　（`R@'命令の引数）</h4>
 <p>
-Key Off���̉��F�ł��B�iDefault: <var>voice</var> = 0�j<br>
+Key Off時の音色です。（Default: <var>voice</var> = 0）<br>
 </p>
 
-<h4>volume�@�i`Rv'���߂̈����j</h4>
+<h4>volume　（`Rv'命令の引数）</h4>
 <p>
-Key Off���̉��ʂł��B�iDefault: <var>volume</var> = 2�j<br>
+Key Off時の音量です。（Default: <var>volume</var> = 2）<br>
 </p>
 
-<h4>mode�@�i`Rm'���߂̈����j</h4>
+<h4>mode　（`Rm'命令の引数）</h4>
 <p>
-<a href="mml_gate.html">�Q�[�g</a>�ɂ��Key Off���̉��̏������@�ł��B�iDefault: <var>mode</var> = 2�j<br>
-�i<a href="mml_rest.html">�x��</a>��Ԃ̉��̏����́A�x���ɗՎ��L��������Ȃǂ̕��@�ɂ��A�ʓr�ɔC�ӂ̃��[�h��ݒ肵�܂��B�j<br>
+<a href="mml_gate.html">ゲート</a>によるKey Off時の音の処理方法です。（Default: <var>mode</var> = 2）<br>
+（<a href="mml_rest.html">休符</a>区間の音の処理は、休符に臨時記号をつけるなどの方法により、別途に任意のモードを設定します。）<br>
 </p>
 <dl>
-<dt>0</dt><dd>�����I�ɁA���ʂ��O�ɂ��܂��B��PCM�̏ꍇ��KeyOff���܂��B</dd>
-<dt>1</dt><dd>���O�̃m�[�g���AR@, Rv�R�}���h�̒l�Ŗ炵�܂��B</dd>
-<dt>2</dt><dd>���O�̃m�[�g�̃G���x���[�v�i���F�E���ʁj���p�����܂��B�iDefault�j</dd>
+<dt>0</dt><dd>強制的に、音量を０にします。⊿PCMの場合はKeyOffします。</dd>
+<dt>1</dt><dd>直前のノートを、R@, Rvコマンドの値で鳴らします。</dd>
+<dt>2</dt><dd>直前のノートのエンベロープ（音色・音量）を継続します。（Default）</dd>
 </dl>
 
 </div>
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>���e�iContents�j</h3>
+<h3>内容（Contents）</h3>
 <p>
-KeyOff�������̉��̗]�C�̏�����ݒ�ł��܂��B<br>
-�ڍׂ́A�����̍��ڂ��Q�Ƃ��Ă��������B<br>
+KeyOffした時の音の余韻の処理を設定できます。<br>
+詳細は、引数の項目を参照してください。<br>
 </p>
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>���ӁiNotes�j</h3>
+<h3>注意（Notes）</h3>
 <p>
-Rm�R�}���h�́A<a href="mml_gate.html">q,u,Q�R�}���h���ɂ��Q�[�g</a>�ɂ��Key Off���ꂽ���̉��̏������@���w�肵�܂��B<br>
-<a href="mml_rest.html">�x��</a>�̋�Ԃ́A�x���ɗՎ��L��������Ȃǂ̕��@�ɂ��ʓr�Ɏw�肵�܂��B<br>
-�܂�A<a href="mml_gate.html">�Q�[�g</a>��Ԓ���<a href="mml_rest.html">�x��</a>�̋�Ԃł�
-���̏������@�Ƃ��ĈقȂ������[�h���w�肷�鎖���\�ƂȂ�܂��B<br>
-�Ⴆ�΁A�Q�[�g���̃��[�h���O(Rm0)�A�x�����̃��[�h���Q�ir=�j�Ƃ����ꍇ�A
-q,u,Q�R�}���h���ɂ��Q�[�g���͖����i���ʂO�j�ƂȂ�A�x���̓G���x���[�v���K�p����܂��B<br>
+Rmコマンドは、<a href="mml_gate.html">q,u,Qコマンド等によるゲート</a>によりKey Offされた時の音の処理方法を指定します。<br>
+<a href="mml_rest.html">休符</a>の区間は、休符に臨時記号をつけるなどの方法により別途に指定します。<br>
+つまり、<a href="mml_gate.html">ゲート</a>区間中と<a href="mml_rest.html">休符</a>の区間では
+音の処理方法として異なったモードを指定する事が可能となります。<br>
+例えば、ゲート時のモードを０(Rm0)、休符時のモードを２（r=）とした場合、
+q,u,Qコマンド等によるゲート時は無音（音量０）となり、休符はエンベロープが適用されます。<br>
 </p>
 
 <p>
-2A03�̎O�p�g�ł͖����ł��B<br>
+2A03の三角波では無効です。<br>
 </p>
 
 </div>
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>��iSample�j</h3>
+<h3>例（Sample）</h3>
 
 <code><pre>
     Rv2 R@2 Rm1 l4 o4 v13 q8 c,8. ccc cccc     <span style="color:green;">/* stacc. */</span>

@@ -2,34 +2,34 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>�o�͂���A�Z���u������\�[�X�ɂ���</Title>
+<Title>出力するアセンブリ言語ソースについて</Title>
 </HEAD>
 <BODY>
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-<a href="usage.html">�g����</a>�_
-<a href="usage_nsc.html">MML�R���p�C��</a>�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
 </div>
 
 <!-- contents start -->
 <div id='contents'>
-<h2>nes.exe���o�͂���A�Z���u������\�[�X�ɂ���</h2>
+<h2>nes.exeが出力するアセンブリ言語ソースについて</h2>
 
 <div class='block'>
-<h3><a name="label">���x���E�V���{��</a></h3>
+<h3><a name="label">ラベル・シンボル</a></h3>
 <p>
-MML�R���p�C���́A�A�Z���u������\�[�X�ɑ΂��āA�e�L�q�u���b�N�̐擪�Ƀ��x����t�^���܂��B<br>
-���̃��x���́AMML��"<code>#label</code>"�R�}���h�Őݒ肳�ꂽ�������擪�ɁA�ȉ��̖��O���t�^����܂��B<br>
+MMLコンパイラは、アセンブリ言語ソースに対して、各記述ブロックの先頭にラベルを付与します。<br>
+このラベルは、MMLの"<code>#label</code>"コマンドで設定された文字列を先頭に、以下の名前が付与されます。<br>
 </p>
 
 <table>
-<tr><th>�u���b�N</th><th>���x����					</th><th>export�錾	</th></tr>
+<tr><th>ブロック</th><th>ラベル名					</th><th>export宣言	</th></tr>
 <tr><td>Envelope</td><td>Envelope<var>number<var>	</td><td>	no		</td></tr>
 <tr><td>SUB		</td><td>SUB<var>number<var>		</td><td>	no		</td></tr>
 <tr><td>DPCM	</td><td>DPCMinfo					</td><td>	yes		</td></tr>
@@ -37,32 +37,32 @@ MML�R���p�C���́A�A�Z���u������\�[�X�ɑ΂��āA�e�L�q�u���b�N�̐擪�Ƀ��x����t�
 <tr><td>SE		</td><td>SE<var>number<var>			</td><td>	yes		</td></tr>
 </table>
 <p>
-<var>number</var>�́AMML�ŋL�q�����ԍ���10�i���ŕ\�L����܂��B<br>
+<var>number</var>は、MMLで記述した番号が10進数で表記されます。<br>
 </p>
 
 
 <p>
-���̃��x���������Ă���|�C���^�������ɁA<a href="func_nsd_play_bgm.html">nsd_play_bgm()�֐�</a>��A
-<a href="func_nsd_play_se.html">nsd_play_se()�֐�</a>���Ăяo�����ƂŁA�a�f�l�A���ʉ��f�[�^���Đ�����܂��B<br>
-6502�̃�������Ԃɂ������݂��Ă���΁i�o���N���Z���N�g����Ă���΁j�A�ǂ��ɔz�u����Ă��Ă��Đ��\�ł��B<br>
+このラベルが示しているポインタを引数に、<a href="func_nsd_play_bgm.html">nsd_play_bgm()関数</a>や、
+<a href="func_nsd_play_se.html">nsd_play_se()関数</a>を呼び出すことで、ＢＧＭ、効果音データが再生されます。<br>
+6502のメモリ空間にさえ存在していれば（バンクがセレクトされていれば）、どこに配置されていても再生可能です。<br>
 </p>
 
 </div>
 
 <div class='block'>
-<h3>�b����Ƃl�l�k�t�@�C���������N�����</h3>
+<h3>Ｃ言語とＭＭＬファイルをリンクする例</h3>
 <p>
-���ۂɂb���ꂩ�烊���N����T���v���́A"\sample\cc65"�t�H���_�A<br>
-�A�Z���u�����ꂩ�烊���N����T���v���́A"\sample\ca65"�t�H���_�����Q�Ɗ肢�܂��B
+実際にＣ言語からリンクするサンプルは、"\sample\cc65"フォルダ、<br>
+アセンブリ言語からリンクするサンプルは、"\sample\ca65"フォルダをご参照願います。
 </p>
 <hr>
-<h4>testmus.mml�@�i�l�l�k�\�[�X�j</h4>
+<h4>testmus.mml　（ＭＭＬソース）</h4>
 <code><pre>
 #title	"Test"
-#Label	"_Test_"	<span style="color:green">//�b���ꂩ�� extern �錾����̂ŁA�V���{���擪�ɂ�'_'��t����B</span>
+#Label	"_Test_"	<span style="color:green">//Ｃ言語から extern 宣言するので、シンボル先頭には'_'を付ける。</span>
 #bgm	1
 
-#offsetPCM	$C000	<span style="color:green">//��PCM�̔z�u�A�h���X�Bld65.exe�̃R���t�B�O�Őݒ肵���A�h���X�ƍ��킹��B</span>
+#offsetPCM	$C000	<span style="color:green">//⊿PCMの配置アドレス。ld65.exeのコンフィグで設定したアドレスと合わせる。</span>
 
 DPCM{
 	b1,	"../dmc/bd.dmc",14,0,64
@@ -94,7 +94,7 @@ BGM(0){
 }
 </pre></code>
 <hr>
-<h4>test.c�@�i�b����\�[�X�j</h4>
+<h4>test.c　（Ｃ言語ソース）</h4>
 <code><pre>
 #define	__NES__
 
@@ -102,29 +102,29 @@ BGM(0){
 #include	&lt;conio.h&gt;
 #include	"..\..\include\nsd.h"
 
-<span style="color:green">//�ȃf�[�^</span>
-extern	const	char		Test_BGM0[];		<span style="color:green">//�b����Ȃ̂ŁA�V���{���擪��'_'�͕s�v�B</span>
-extern	const	nsd_dpcm	Test_DPCMinfo[];	<span style="color:green">//�b����Ȃ̂ŁA�V���{���擪��'_'�͕s�v�B</span>
+<span style="color:green">//曲データ</span>
+extern	const	char		Test_BGM0[];		<span style="color:green">//Ｃ言語なので、シンボル先頭の'_'は不要。</span>
+extern	const	nsd_dpcm	Test_DPCMinfo[];	<span style="color:green">//Ｃ言語なので、シンボル先頭の'_'は不要。</span>
 
-<span style="color:green">//���C�����[�`��</span>
+<span style="color:green">//メインルーチン</span>
 void	main()
 {
 
-	nsd_init();			<span style="color:green">//�����h���C�o�̏������B�K���ĂԁB</span>
-	nsd_set_dpcm(Test_DPCMinfo);	<span style="color:green">//��PCM����\���̂̃Z�b�g</span>
+	nsd_init();			<span style="color:green">//音源ドライバの初期化。必ず呼ぶ。</span>
+	nsd_set_dpcm(Test_DPCMinfo);	<span style="color:green">//⊿PCM制御構造体のセット</span>
 
-	nsd_play_bgm(Test_BGM0);	<span style="color:green">//���t�J�n</span>
+	nsd_play_bgm(Test_BGM0);	<span style="color:green">//演奏開始</span>
 
 	while(1){
 		waitvblank();
-		nsd_main();		<span style="color:green">//V-Blank���ɌĂяo���B�i�����ɏ����Ȃ��Ă��ANMI���荞�݂ł���Ă��ǂ��B�j</span>
+		nsd_main();		<span style="color:green">//V-Blank毎に呼び出す。（ここに書かなくても、NMI割り込みでやっても良い。）</span>
 	}
 
 }
 </pre></code>
 <hr>
 
-<h4>config.cfg�@�i�����J�["ld65.exe"�̐ݒ�t�@�C���j</h4>
+<h4>config.cfg　（リンカー"ld65.exe"の設定ファイル）</h4>
 <code><pre>
 MEMORY {
     <span style="color:green"># INES Cartridge Header</span>
@@ -179,7 +179,7 @@ SYMBOLS {
 </pre></code>
 
 <hr>
-<h4>make.bat�@�i"test.nes"���r���h����o�b�`�j</h4>
+<h4>make.bat　（"test.nes"をビルドするバッチ）</h4>
 <code><pre>
 cl65 -t none -Oi -Os -Or -c -o test.o test.c
 nsc -a testmus.mml

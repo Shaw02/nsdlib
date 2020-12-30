@@ -2,48 +2,48 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>ƒf[ƒ^ƒtƒH[ƒ}ƒbƒg</Title>
+<Title>ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ</Title>
 </HEAD>
 <BODY>
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDLiNES Sound Driver Libraryj</h1>
-<a href="index.html">ƒgƒbƒv</a>_
-d—l_
+<h1>NSDLï¼ˆNES Sound Driver Libraryï¼‰</h1>
+<a href="index.html">ãƒˆãƒƒãƒ—</a>ï¼¼
+ä»•æ§˜ï¼¼
 </div>
 
 <!-- contents start -->
 <div id='contents'>
-<h2>ƒf[ƒ^ƒtƒH[ƒ}ƒbƒgiData Formatj</h2>
+<h2>ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆï¼ˆData Formatï¼‰</h2>
 
 
 <div class='block'>
-<h3>‹ÈEŒø‰Ê‰¹ƒV[ƒPƒ“ƒXƒf[ƒ^iMusic and SE Sequencej</h2>
+<h3>æ›²ãƒ»åŠ¹æœéŸ³ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ãƒ‡ãƒ¼ã‚¿ï¼ˆMusic and SE Sequenceï¼‰</h2>
 
 <div class='block'>
-<h4><u>ƒwƒbƒ_[@iHeaderj</u></h4>
+<h4><u>ãƒ˜ãƒƒãƒ€ãƒ¼ã€€ï¼ˆHeaderï¼‰</u></h4>
 <p>
 </p>
 <table>
 <tr><th>Address	</th><th>Size</th><th>Contents					</th></tr>
-<tr><td>0x0000	</td><td>BYTE	</td><td>ƒgƒ‰ƒbƒN” (BGM:max=5, SE:max=2)<br>
+<tr><td>0x0000	</td><td>BYTE	</td><td>ãƒˆãƒ©ãƒƒã‚¯æ•° (BGM:max=5, SE:max=2)<br>
 											Number of track		</td></tr>
-<tr><td>0x0001	</td><td>BYTE	</td><td>Œø‰Ê‰¹‚Ì—Dæ“x (Lv = 0`3)<br>
+<tr><td>0x0001	</td><td>BYTE	</td><td>åŠ¹æœéŸ³ã®å„ªå…ˆåº¦ (Lv = 0ï½3)<br>
 											Lower 2bit : Priority for SE</td></tr>
-<tr><td>0x0002	</td><td>WORD[n]</td><td>ƒV[ƒPƒ“ƒXƒf[ƒ^‚ÌƒIƒtƒZƒbƒgƒAƒhƒŒƒXiƒwƒbƒ_[‚ÌƒAƒhƒŒƒX0x0000‚ªŠî“_jB<br>
+<tr><td>0x0002	</td><td>WORD[n]</td><td>ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ãƒ‡ãƒ¼ã‚¿ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚¢ãƒ‰ãƒ¬ã‚¹ï¼ˆãƒ˜ãƒƒãƒ€ãƒ¼ã®ã‚¢ãƒ‰ãƒ¬ã‚¹0x0000ãŒåŸºç‚¹ï¼‰ã€‚<br>
 										Offser address for music sequence data. (Based on header address 0x0000.)	</td></tr>
 <tr><td>		</td><td> -	</td><td>Music sequence datas.	</td></tr>
 </table>
 </div>
 
 <div class='block'>
-<h4><u>‹Èƒf[ƒ^@iMusic Sequence Datasj</u></h4>
+<h4><u>æ›²ãƒ‡ãƒ¼ã‚¿ã€€ï¼ˆMusic Sequence Datasï¼‰</u></h4>
 <p>
-ƒ|ƒCƒ“ƒ^[‚Æ‹LÚ‚³‚ê‚½ê‡‚ÍAŒ»ƒAƒhƒŒƒX‚©‚ç‚Ì‘Š‘ÎƒAƒhƒŒƒX‚ğˆÓ–¡‚µ‚Ü‚·B<br>
+ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã¨è¨˜è¼‰ã•ã‚ŒãŸå ´åˆã¯ã€ç¾ã‚¢ãƒ‰ãƒ¬ã‚¹ã‹ã‚‰ã®ç›¸å¯¾ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’æ„å‘³ã—ã¾ã™ã€‚<br>
 "Pointer" meaning relative address from this memory address.<br>
 </p>
 <table>
@@ -210,12 +210,12 @@
 </div>	<!-- h3 -->
 
 <div class='block'>
-<h3>ƒGƒ“ƒxƒ[ƒvEƒpƒ^[ƒ“iEnvelope patternj</h3>
+<h3>ã‚¨ãƒ³ãƒ™ãƒ­ãƒ¼ãƒ—ãƒ»ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆEnvelope patternï¼‰</h3>
 <p>
 </p>
 
 <div class='block'>
-<h4><u>ƒf[ƒ^\‘¢iStructj</u></h4>
+<h4><u>ãƒ‡ãƒ¼ã‚¿æ§‹é€ ï¼ˆStructï¼‰</u></h4>
 <p>
 </p>
 <table>
@@ -227,7 +227,7 @@
 </div>
 
 <div class='block'>
-<h4><u>ƒpƒ^[ƒ“iPatternj</u></h4>
+<h4><u>ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆPatternï¼‰</u></h4>
 <p>
 </p>
 <table>
@@ -242,14 +242,14 @@
 
 
 <div class='block'>
-<h3>‚e‚c‚r‰¹Œ¹‰¹Fƒpƒ^[ƒ“iFDS career wave patternj</h3>
+<h3>ï¼¦ï¼¤ï¼³éŸ³æºéŸ³è‰²ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆFDS career wave patternï¼‰</h3>
 <p>
 This is 64[Bytes] data.
 </p>
 </div>	<!-- h3 -->
 
 <div class='block'>
-<h3>‚e‚c‚r‰¹Œ¹•Ï’²ƒpƒ^[ƒ“iFDS modulator wave patternj</h3>
+<h3>ï¼¦ï¼¤ï¼³éŸ³æºå¤‰èª¿ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆFDS modulator wave patternï¼‰</h3>
 <p>
 This is 32[Bytes] data.
 </p>
@@ -257,7 +257,7 @@ This is 32[Bytes] data.
 
 
 <div class='block'>
-<h3>‚‚P‚U‚˜‰¹Œ¹‰¹Fƒpƒ^[ƒ“iN16x wave patternj</h3>
+<h3>ï½ï¼‘ï¼–ï½˜éŸ³æºéŸ³è‰²ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆN16x wave patternï¼‰</h3>
 <p>
 </p>
 <table>
@@ -268,7 +268,7 @@ This is 32[Bytes] data.
 </div>	<!-- h3 -->
 
 <div class='block'>
-<h3>‚u‚q‚b‚V‰¹Œ¹‰¹Fƒpƒ^[ƒ“iVRC7 instruments dataj</h3>
+<h3>ï¼¶ï¼²ï¼£ï¼—éŸ³æºéŸ³è‰²ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆVRC7 instruments dataï¼‰</h3>
 <p>
 This is 8[Bytes] data based on register.
 </p>

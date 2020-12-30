@@ -2,43 +2,43 @@
 <HTML>
 <HEAD>
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
-<meta http-equiv='Content-Type' content='text/html;charset=Shift_JIS'>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 <meta http-equiv='Content-Style-Type' content='text/css'>
 <link rel="stylesheet" type="text/css" href="help.css">
-<Title>n16x (n160, n161, n162, n163) �̎g����</Title>
+<Title>n16x (n160, n161, n162, n163) の使い方</Title>
 </HEAD>
 <BODY>
 
 <!-- header start -->
 <div id='header'>
-<h1>NSDL�iNES Sound Driver Library�j</h1>
-<a href="index.html">�g�b�v</a>�_
-<a href="usage.html">�g����</a>�_
-<a href="usage_nsc.html">MML�R���p�C��</a>�_
-<a href="mml.html">MML���@</a>�_
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
 </div>
 
 <!-- contents start -->
 <div id='contents'>
-<h2>n16x (n160, n161, n162, n163) �̎g����</h2>
+<h2>n16x (n160, n161, n162, n163) の使い方</h2>
 
 <div class='block'>
-<h3>�A�h���X��Ԃɂ���</h3>
+<h3>アドレス空間について</h3>
 <p>
-n16x�̃A�h���X�\���ȉ��Ɏ����܂��B<br>
-<a href="mml_n163.html">n16x���F�g�`��`�u���b�N</a>�Œ�`�������F�g�`�́A
-<a href="mml_N163voice.html">@N�R�}���h�A@NL�R�}���h</a>�ŔC�ӂ̃A�h���X�ɓ]�����ėp���܂��B<br>
+n16xのアドレス表を以下に示します。<br>
+<a href="mml_n163.html">n16x音色波形定義ブロック</a>で定義した音色波形は、
+<a href="mml_N163voice.html">@Nコマンド、@NLコマンド</a>で任意のアドレスに転送して用います。<br>
 </p>
 
 <p>
-$00�`$3F��64byte�i128�T���v�����j�̗̈�́A��ɉ��F�g�`�e�[�u���Ƃ��Ďg�p���鎖���ł��܂��B<br>
-$40�`$77��56byte�i112�T���v�����j�̗̈�́Ach2�`ch8�̐��䃌�W�X�^�̗̈�Ƌ��p�ł���A
-<a href="mml_N163_channel.html">�L���`�����l����</a>�ɉ����āA���F�g�`�e�[�u���Ƃ��Ďg�����Ƃ��ł��܂��B<br>
-�Ⴆ�΁A<a href="mml_N163_channel.html">�L���`�����l����</a>��3�̏ꍇ��ch1�`ch3���`�����l�����䃌�W�X�^�Ƃ��ėp�����A
-ch4�`ch8�̗̈�i�A�h���X$40�`$67�j��40Byte�i80�T���v�����j�͉��F�g�`�e�[�u���̗̈�Ƃ��Ďg�p�\�ł��B<br>
+$00～$3Fの64byte（128サンプル分）の領域は、常に音色波形テーブルとして使用する事ができます。<br>
+$40～$77の56byte（112サンプル分）の領域は、ch2～ch8の制御レジスタの領域と共用であり、
+<a href="mml_N163_channel.html">有効チャンネル数</a>に応じて、音色波形テーブルとして使うことができます。<br>
+例えば、<a href="mml_N163_channel.html">有効チャンネル数</a>が3の場合はch1～ch3がチャンネル制御レジスタとして用いられ、
+ch4～ch8の領域（アドレス$40～$67）の40Byte（80サンプル分）は音色波形テーブルの領域として使用可能です。<br>
 </p>
 <p>
-�T���v���̗ʎq����4bit�i0�`15�͈̔́j�ł���A1byte�̗̈��2�T���v�������g���G���f�B�A���Ŋi�[���܂��B<br>
+サンプルの量子化は4bit（0～15の範囲）であり、1byteの領域に2サンプルをリトルエンディアンで格納します。<br>
 </p>
 
 <table>
@@ -56,54 +56,54 @@ ch4�`ch8�̗̈�i�A�h���X$40�`$67�j��40Byte�i80�T���v�����j�͉��F�g�`�e�[�u���̗�
 </div>
 
 <div class='block'>
-<h3>���F�ݒ���@</h3>
+<h3>音色設定方法</h3>
 <p>
-n16x�̉��F�֘A�̃R�}���h�́A�ȉ��̃R�}���h������܂��B<br>
-�����̃R�}���h�ɂĉ��F��ݒ肵�āA�n�߂Ă��̉��F��t�ł邱�Ƃ��ł��܂��i���[�h�ƑI���̏��͖₢�܂���j�B<br>
-����̃R�}���h�ɂ����Ă��A��q�̃A�h���X�\���傫���֌W���܂��B<br>
+n16xの音色関連のコマンドは、以下のコマンドがあります。<br>
+これらのコマンドにて音色を設定して、始めてその音色を奏でることができます（ロードと選択の順は問いません）。<br>
+何れのコマンドにおいても、上述のアドレス表が大きく関係します。<br>
 </p>
 
-<h4>�g�`�e�[�u���̃��[�h</h4>
+<h4>波形テーブルのロード</h4>
 <p>
-���F�g�`���An16x�ɓ]���i���[�h�j����R�}���h�ł��B<br>
+音色波形を、n16xに転送（ロード）するコマンドです。<br>
 </p>
 <dl>
-<dt><a href="mml_N163voice.html">@NL</a><var>a</var>,<var>n</var>	</dt><dd>�c <var>a</var>���Q�̃A�h���X�i�v�f���P�ʎw��j��擪�ɁA<a href="mml_n163.html">N163(<var>n</var>){}�u���b�N</a>�Œ�`�������F�g�`�����[�h���܂��B</dd>
-<dt><a href="mml_N163voice.html">@N</a><var>a</var>,<var>n</var>	</dt><dd>�c <var>a</var>�~�Q�̃A�h���X�i���W�X�^�P�ʎw��j��擪�ɁA<a href="mml_n163.html">N163(<var>n</var>){}�u���b�N</a>�Œ�`�������F�g�`�����[�h���܂��B</dd>
+<dt><a href="mml_N163voice.html">@NL</a><var>a</var>,<var>n</var>	</dt><dd>… <var>a</var>÷２のアドレス（要素数単位指定）を先頭に、<a href="mml_n163.html">N163(<var>n</var>){}ブロック</a>で定義した音色波形をロードします。</dd>
+<dt><a href="mml_N163voice.html">@N</a><var>a</var>,<var>n</var>	</dt><dd>… <var>a</var>×２のアドレス（レジスタ単位指定）を先頭に、<a href="mml_n163.html">N163(<var>n</var>){}ブロック</a>で定義した音色波形をロードします。</dd>
 </dl>
-<h4>�g�`�e�[�u���E�T���v�����̑I��</h4>
+<h4>波形テーブル・サンプル長の選択</h4>
 <p>
-���[�h����Ă��鉹�F�g�`��I������R�}���h�ł��B<br>
+ロードされている音色波形を選択するコマンドです。<br>
 </p>
 <dl>
-<dt><a href="mml_N163set.html">@NS</a><var>a</var>(,<var>s</var>)	</dt><dd>�c �g���b�N�ɓK�p���鉹�F�g�`�f�[�^�̂���擪�A�h���X��<var>a</var>���Q�ɐݒ肵�A<br>
-																			�����ɁA�g���b�N�ɓK�p���鉹�F�̃T���v�������A<var>s</var>�T���v���ɐݒ肵�܂��B</dd>
-<dt><a href="mml_voice.html">@</a><var>a</var>						</dt><dd>�c �g���b�N�ɓK�p���鉹�F�g�`�f�[�^�̂���擪�A�h���X��<var>a</var>�~�Q�ɐݒ肵�܂��B</dd>
-<dt><a href="mml_sweep.html">s</a><var>s</var>						</dt><dd>�c �g���b�N�ɓK�p���鉹�F�̃T���v�������A�i64�|<var>s</var>�j�~�S�T���v���ɐݒ肵�܂��B</dd>
+<dt><a href="mml_N163set.html">@NS</a><var>a</var>(,<var>s</var>)	</dt><dd>… トラックに適用する音色波形データのある先頭アドレスを<var>a</var>÷２に設定し、<br>
+																			同時に、トラックに適用する音色のサンプル長を、<var>s</var>サンプルに設定します。</dd>
+<dt><a href="mml_voice.html">@</a><var>a</var>						</dt><dd>… トラックに適用する音色波形データのある先頭アドレスを<var>a</var>×２に設定します。</dd>
+<dt><a href="mml_sweep.html">s</a><var>s</var>						</dt><dd>… トラックに適用する音色のサンプル長を、（64－<var>s</var>）×４サンプルに設定します。</dd>
 </dl>
 </div>
 
 <div class='block'>
-<h3>�����̕ϓ��ʂɂ���</h3>
+<h3>音程の変動量について</h3>
 <p>
-n16x�́A�ݒ肳�ꂽ<a href="mml_N163_channel.html">�L���`�����l����</a>�y��<a href="mml_sweep.html">�T���v����</a>�ɂ��A��������鉹�����ϓ����܂��B<br>
-�L���`�����l�����ƃT���v�����ɂ��A�����̕ϓ��ʂ��ȉ��\�Ɏ����܂��B<br>
-���l�́A�����P�ʂł��B100�{�����cent�P�ʂɂȂ�܂��B<br>
+n16xは、設定された<a href="mml_N163_channel.html">有効チャンネル数</a>及び<a href="mml_sweep.html">サンプル長</a>により、発音される音程が変動します。<br>
+有効チャンネル数とサンプル長による、音程の変動量を以下表に示します。<br>
+数値は、半音単位です。100倍すればcent単位になります。<br>
 </p>
 <p>
-�������ϓ����Ȃ��i�ϓ��ʂ��O�j�ݒ�l�͈ȉ��̒ʂ�ł��B
+音程が変動しない（変動量が０）設定値は以下の通りです。
 </p>
 <ul>
-<li>�L���`�����l�������W�A�T���v�������W�i 4 byte�j</li>
-<li>�L���`�����l�������S�A�T���v������16�i 8 byte�j</li>
-<li>�L���`�����l�������Q�A�T���v������32�i16 byte�j</li>
-<li>�L���`�����l�������P�A�T���v������64�i32 byte�j</li>
+<li>有効チャンネル数＝８、サンプル長＝８（ 4 byte）</li>
+<li>有効チャンネル数＝４、サンプル長＝16（ 8 byte）</li>
+<li>有効チャンネル数＝２、サンプル長＝32（16 byte）</li>
+<li>有効チャンネル数＝１、サンプル長＝64（32 byte）</li>
 </ul>
 
 <p>
-n16x�������\�ȉ����i�����j�� o8a ����A�ȉ��\�̕ϓ��ʂ����Z�����l�ł��B<br>
-�iMML�̎w���ŁA���K�A�ڒ��A�f�B�`���[���A�G���x���[�v�̕����܂߂āAo8a�܂łł��j�B<br>
-�Ⴆ�΁A�g�p�`�����l�������W�A�T���v������128�i64byte�j�̏ꍇ�́A-48�����A�܂�4�I�N�^�[�u����o4a�܂łƂȂ�܂��B<br>
+n16xが発音可能な音程（実音）は o8a から、以下表の変動量を加算した値です。<br>
+（MMLの指定上で、音階、移調、ディチューン、エンベロープの分を含めて、o8aまでです）。<br>
+例えば、使用チャンネル数が８、サンプル長が128（64byte）の場合は、-48半音、つまり4オクターブ下のo4aまでとなります。<br>
 </p>
 
 <table>
@@ -179,24 +179,24 @@ n16x�������\�ȉ����i�����j�� o8a ����A�ȉ��\�̕ϓ��ʂ����Z�����l�ł��B<br>
 </div>
 
 
-<!-- �������������������������������� -->
+<!-- ──────────────── -->
 <div class='block'>
-<h3>���ӁiNotes�j</h3>
+<h3>注意（Notes）</h3>
 
 <p>
-�ꕔ��NSF�v���C���[�́A32�T���v���𒴂���T���v�����ɑΉ����Ă��܂���B<br>
-�ȉ��A2014�N 1�� 3�����_�ł̑Ή��󋵂ł��B<br>
+一部のNSFプレイヤーは、32サンプルを超えるサンプル長に対応していません。<br>
+以下、2014年 1月 3日時点での対応状況です。<br>
 </p>
-<h4>32�T���v���𒴂���T���v�����Ή��v���C��</h4>
+<h4>32サンプルを超えるサンプル長対応プレイヤ</h4>
 <ul>
 <li>TNS-HFC3</li>
 <li>TNS-HFC4</li>
 <li>NSFPlay</li>
 <li>NEZPlug</li>
-<li>VirtuaNSF�@�iVersion 1.0.3.2�`�j</li>
-<li>hoot�@�i2013/06/02�Ł`�j</li>
+<li>VirtuaNSF　（Version 1.0.3.2～）</li>
+<li>hoot　（2013/06/02版～）</li>
 </ul>
-<h4>32�T���v���𒴂���T���v������Ή��v���C��</h4>
+<h4>32サンプルを超えるサンプル長非対応プレイヤ</h4>
 <ul>
 <li>VirtuaNES</li>
 <li>G-NSF</li>
