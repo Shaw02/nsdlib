@@ -34,8 +34,3 @@ cd rom
 call _make
 copy *.bin ..\..\bin\
 cd..
-
-rem --- nsdl.chm ---
-cd help
-copy *.chm ..\..\doc\
-cd..
