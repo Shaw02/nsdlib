@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: n16x (n160, n161, n162, n163)  sample wave block</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: n16x (n160, n161, n162, n163)  sample wave table</h2>
+
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+N163(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+
+<code><pre>
+@N(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>n</h4>
+<p>
+n16x波形の番号を指定します。
+</p>
+
+<h4>define</h4>
+<p>
+0～15の数値で、音色の波形を記述してください。<br>
+数値は、4～256個の範囲で４の倍数個、記述してください。。<br>
+</p>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+
+<p>
+n16xの音色波形を定義します。<br>
+</p>
+<p>
+n16xの使い方は、別途、<a href="n163.html">n16x (n160, n161, n162, n163) の使い方</a>をご参照ください。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+N163(0){	<span style="color:green;">//Pipe Organ</span>
+	8, 5, 4, 3, 8,11, 5, 8, 7, 8,11, 8, 8,12, 6,10,
+	4, 1, 0, 1, 4,10, 5, 7, 7, 9,14,11,10,15, 9,13
+}
+</pre></code>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

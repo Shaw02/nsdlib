@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ストトン表記：調</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="jmml.html">ストトン表記</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>ストトン表記：調</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        調{<var>調指定</var>}
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>調指定</h4>
+<dl>
+<dt># … </dt><dd>以降に続く音名を半音上げます</dd>
+<dt>＃ … </dt><dd>以降に続く音名を半音上げます</dd>
+<dt>+ … </dt><dd>以降に続く音名を半音上げます</dd>
+<dt>- … </dt><dd>以降に続く音名を半音下げます</dd>
+<dt>♭ … </dt><dd>以降に続く音名を半音上げます</dd>
+<dt>= … </dt><dd>以降に続く音名の調号を無しにします。</dd>
+<dt>ラ … </dt><dd>A, La, ラ</dd>
+<dt>シ … </dt><dd>H, Si, シ</dd>
+<dt>ド … </dt><dd>C, Do, ド</dd>
+<dt>レ … </dt><dd>D, Re, レ</dd>
+<dt>ミ … </dt><dd>E, Mi, ミ</dd>
+<dt>ファ … </dt><dd>F, Fa, ファ</dd>
+<dt>ソ … </dt><dd>G, Sol, ソ</dd>
+</dl>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+現在のトラックの調号を指定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+ＭＭＬコンパイラーの疑似命令です。<br>
+次に調{}コマンドが来るまで、本コマンドで指定された音階に、自動で臨時記号が付加されてコンパイルされます。<br>
+</p>
+<p>
+各記述ブロック（音楽, 効果音）では、デフォルトは調号無しとなります。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    調{#ファド}   レミファソラシ↑ドレ    <span style="color:green;">/* ニ長調スケール */</span>
+    調{=ファド}   ドレミファソラシ↑ド    <span style="color:green;">/* ハ長調スケール */</span>
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

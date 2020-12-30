@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Repeat(A)</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Repeat(A)</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<h4>記法１</h4>
+<code><pre>
+        [<var>count</var>
+	:
+	]<var>count</var>
+</pre></code>
+<h4>記法２</h4>
+<code><pre>
+        [:<var>count</var>
+	:
+	:]<var>count</var>
+</pre></code>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>count</h4>
+<p>
+リピートの回数を指定します。0～255の範囲で指定してください。<br>
+リピート開始、リピート終了のどちらにも記述できますが、かならず、どちらかの１つに記述して下さい。<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+リピート（繰り返し）を記述します。<br>
+</p>
+
+<table>
+<tr><th>コマンド</th><th>内容</th></tr>
+<tr><td style='text-align: center;='>[<br>[:	</td><td>リピートの開始位置を示します。</td></tr>
+<tr><td style='text-align: center;='>:			</td><td>最終リピート時に、リピートを終了します。<br>記法１、記法２で共通です（ＭＭＬコンパイラが自動で判別します）。</td></tr>
+<tr><td style='text-align: center;='>]<br>:]	</td><td>リピートの終了位置を示します。</td></tr>
+</table>
+
+<p>
+<code>#RepeatMode</code>コマンドで設定したリピートモードにより、リピートの展開方法が異なります。<br>
+</p>
+
+<h4>リピートモード 0 (Default)</h4>
+<p>
+記法１のリピートコマンドのみで、ネスティングを含めたリピート（繰り返し）を行えます。<br>
+本モード時は、自動でＭＭＬコンパイラがコンパイル方法を決定するため、
+ユーザーはドライバ実装のリピート、コンパイラ展開のリピートを意識する必要はありません。<br>
+</p>
+<p>
+具体的には、
+記法１によるリピートを記述した場合、標準ではドライバ実装のリピートを使用します。<br>
+但し、ネスティングした場合は、２段目以降のリピートコマンドはＭＭＬコンパイラにて展開します。<br>
+記法２によるリピートを記述した場合は、強制的にＭＭＬコンパイラにてリピートを展開します。<br>
+尚、サブルーチン記述ブロックの場合は、リピートモード２と同様の処理となります。<br>
+</p>
+
+<h4>リピートモード 1</h4>
+<p>
+リピートコマンドを、ドライバ実装のリピートを使用するか、ＭＭＬコンパイラで展開するかユーザで制御したい場合にご使用ください。<br>
+ユーザ・アプリケーションへの組込等、メモリの制約がある場合に、ご利用ください。<br>
+</p>
+<p>
+記法１によるリピートを記述した場合、ドライバ実装のリピートを使用します。ネスト不可です。<br>
+記法２によるリピートを記述した場合、ＭＭＬコンパイラにてリピートを展開します。<br>
+</p>
+
+<h4>リピートモード 2</h4>
+<p>
+リピートコマンドを、ドライバ実装のリピートを使用するか、ＭＭＬコンパイラで展開するかユーザで制御したい場合にご使用ください。<br>
+ユーザ・アプリケーションへの組込等、メモリの制約がある場合に、ご利用ください。<br>
+</p>
+<p>
+記法１によるリピートを記述した場合、ＭＭＬコンパイラにてリピートを展開します。<br>
+記法２によるリピートを記述した場合、ドライバ実装のリピートを使用します。ネスト不可です。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+
+<p>
+ドライバ実装のリピートは、ネスト不可となります。<br>
+</p>
+<p>
+本コマンド『リピート(A)』の区間で『<a href="mml_repeatB.html">リピート(B)</a>』を使用する場合、リピート(B)の区間を終了してからリピート(A)を終了してください。<br>
+</p>
+<p>
+ＭＭＬコンパイラによる展開を使用した場合、展開した分だけコンパイル後のシーケンスサイズが大きくなります。<br>
+なるべくＭＭＬコンパイラによるリピートの展開は使わず、サブルーチンに置き換えるなどの工夫をお勧めします。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    [8 : cr ] &lt;br&gt;     <span style="color:green;">/* = crcrcrcr crcrcr&lt;br&gt; */</span>
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

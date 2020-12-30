@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>nsd_load()</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsd.html">音源ドライバー</a>＼
+関数リファレンス＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>nsd_load()</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        void    __fastcall__    nsd_load(<var>void* buff</var> );
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+<p>
+</p>
+<table class='noline'>
+<tr>
+<td><var>void* buff</var> … </td>
+<td><a href="func_nsd_save.html">nsd_save()</a>関数で保存した制御用構造体のポインタを指定してください。<br>
+</td>
+</tr>
+</table>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>戻り値（Outputs）</h3>
+<p>
+	無し（no output）
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+<a href="func_nsd_save.html">nsd_save()</a>関数で保存した内容を制御用構造体へロードします。<br>
+本関数を呼び出し語、<a href="func_nsd_resume_bgm.html">nsd_resume_bgm()</a>関数にて再生を再開する事が可能です。<br>
+<br>
+</p>
+<p>
+
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+本関数を呼出すと、制御用構造体から指定ポインタへ転送するために、ＢＧＭ，効果音共に発音を停止します。<br>
+</p>
+<p>
+本関数により演奏状態が制御用構造体へロードされた後も、再生開始はしません。<br>
+その他に復帰が必要な処理（例えば、バンクの設定等）がある場合は、本関数呼び出し後に行い、
+その後、<a href="func_nsd_resume_bgm.html">nsd_resume_bgm()</a>関数にて再生を再開する事が可能です。<br>
+<p>
+転送元のメモリには、
+<a href="variable.html#nsd_work_zp">nsd_work_zp</a>構造体及び、
+<a href="variable.html#nsd_work">nsd_work</a>構造体の内容が入っている必要があります。
+</p>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>nsd_main()</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsd.html">音源ドライバー</a>＼
+関数リファレンス＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>nsd_main()</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        void    __fastcall__    nsd_main(void );
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+<p>
+	無し（no input）
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>戻り値（Outputs）</h3>
+<p>
+	無し（no output）
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+音源ドライバーのメインルーチンです。<br>
+1/60秒毎に呼び出してください。<br>
+</p>
+<p>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+一般的な手法としては、VBlank割り込み（NMI）ルーチンから呼び出します。<br>
+ただし、NMIの割り込みベクタに本関数`nes_main'のポインタを直接書かないで下さい。<br>
+本関数では、a,x,yレジスタの保存および、`rti'命令による割り込みの復帰は行っていません。<br>
+また、VBlank割り込み（NMI）を用いる場合は、ユーザーアプリケーション側にて、
+<code><a href="func_nsd_init.html">nsd_init()</a></code>関数を呼び出し後に、VBlank割り込みを`有効'にPPUを設定してください。<br>
+</p>
+<p>
+この関数は、ＢＧＭと効果音を両方再生します。<br>
+メモリには、ＢＧＭと効果音が両方マッピングされている必要があります。<br>
+マッパーＬＳＩ無しの場合や、ＢＧＭと効果音は同じバンクに配置される場合にご使用ください。<br>
+</p>
+<p>
+ＢＧＭと効果音のバンクが異なる場合は、
+<a href="func_nsd_main_bgm.html">nsd_main_bgm()</a>関数及び、
+<a href="func_nsd_main_se.html">nsd_main_se()</a>関数をご使用ください。
+</p>
+
+<h4>nsd_main(void)関数の呼び出し例</h4>
+<code><pre>
+        .import         _nsd_main
+.segment        "CODE"
+NMI_Start:
+        pha
+        txa
+        pha
+        tya
+        pha
+
+        <span style="color:green;">; PPU Control code.</span>
+        <span style="color:green;">; </span>
+        <span style="color:green;">; to do 垂直同期期間中にVRAMへアクセスするコードを配置してください。</span>
+        <span style="color:green;">;       通常、画面処理は、サウンド処理より先に行います。</span>
+        <span style="color:green;">; </span>
+
+        <span style="color:green;">; Bank change for sound. （曲データをメモリ空間にマッピングします。）</span>
+        <span style="color:green;">; 曲・効果音データがメモリ空間にマッピングされてない場合に必須です。</span>
+        lda     #music_bank
+        jsr     _bank_change            <span style="color:green;">;   bank_change(music_bank);</span>
+
+        <span style="color:green;">; Play BGM & SE. （曲・効果音の再生。）</span>
+        jsr     _nsd_main               <span style="color:green;">;   nsd_main();</span>
+
+        <span style="color:green;">; Return the bank number. （バンクを元に戻します。）</span>
+        <span style="color:green;">; 曲・効果音データ用にバンクを切り替えた場合に必須です。</span>
+        lda     #prog_bank
+        jsr     _bank_change            <span style="color:green;">;   bank_change(prog_bank);</span>
+
+        pla
+        tay
+        pla
+        tax
+        pla
+        rti
+</pre></code>
+</div>
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

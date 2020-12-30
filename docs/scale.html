@@ -1,0 +1,1135 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>Scale & Code</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+
+<h2>Scale & Code</h2>
+
+<!--───────────────────────────────────-->
+<div class='block'>
+<h3><a name="scale">旋法について</a></h3>
+
+<h4>教会旋法</h4>
+<p>
+教会楽の音階です。<br>
+教会楽は長い歴史があり、ルネサンス音楽期（15～16世紀）までは第１旋法～第８旋法の８つの音階がカトリック教会によって認められていました。<br>
+しかし、次第に調性音楽（長調や短調の音楽）にとってかわってゆき、カトリック教会も16世紀になって第９旋法～第12旋法の４つの音階を認めます。<br>
+また、この頃に、当時の音楽理論家によって旋法の名称が確立されたようです。<br>
+この頃から、調整を確立するために、次第に第１旋法～第８旋法は淘汰されてゆきます。<br>
+バロック音楽期（17世紀）になると、この12の旋法のうち、西洋和声と親和性が高かった
+第９旋法のイオニア旋法が「長調」、第11旋法のエオリア旋法が「短調」として残ります。<br>
+</p>
+<p><img src="Scale.png"></p>
+
+<table>
+<caption>教会楽の音階</caption>
+<tr><th colspan="2">旋法				</th><th>楽譜						</th><th colspan="2">旋法						</th><th>楽譜						</th></tr>
+<tr><th>第１旋法</th><td>ドリア			</td><td><img src="Scale_01.png">	</td><th>第２旋法	</th><td>ヒポドリア			</td><td><img src="Scale_02.png">	</td></tr>
+<tr><th>第３旋法</th><td>フリギア		</td><td><img src="Scale_03.png">	</td><th>第４旋法	</th><td>ヒポフリギア		</td><td><img src="Scale_04.png">	</td></tr>
+<tr><th>第５旋法</th><td>リディア		</td><td><img src="Scale_05.png">	</td><th>第６旋法	</th><td>ヒポリディア		</td><td><img src="Scale_06.png">	</td></tr>
+<tr><th>第７旋法</th><td>ミクソリディア	</td><td><img src="Scale_07.png">	</td><th>第８旋法	</th><td>ヒポミクソリディア	</td><td><img src="Scale_08.png">	</td></tr>
+<tr><th>第９旋法</th><td>エオリア		</td><td><img src="Scale_09.png">	</td><th>第10旋法	</th><td>ヒポエオリア		</td><td><img src="Scale_10.png">	</td></tr>
+<tr><th>第11旋法</th><td>イオニア		</td><td><img src="Scale_11.png">	</td><th>第12旋法	</th><td>ヒポイオニア		</td><td><img src="Scale_12.png">	</td></tr>
+</table>
+<p>
+※楽譜について。<br>
+白玉は終止音をしめします。終止音とは主音のようなもので、旋律はこの音を中心に動き、この音で終わります。<br>
+赤い音符は支配音（ドミナント）を示します。支配音とは終始音に次いで重要な音で、曲の中で繰り返し現れ、旋律を特性付けます。<br>
+</p>
+
+<h4>モード</h4>
+<p>
+１９６０年代頃から、主にJazzで長調、短調からの脱却で、再び教会旋法が利用されるようになってきました。<br>
+また、旋律的短音階、和声的短音階のスケールを回転した、新しいモードも使われます。<br>
+また、教会旋法では無かったことにされたロクリア旋法も使われます。<br>
+</p>
+<p>
+モードは、長調、短調からの脱却なので、この考え方は良いのか不明ですが、
+大まかには、長調系のスケールか、短調系のスケールかはⅲの音で判断できます。<br>
+♭がついてない場合は長調系、♭がつく場合は短調系のスケールです。<br>
+</p>
+<table>
+<caption>チャーチモード</caption>
+<tr><th>旋法				</th><th>楽譜<br>（※２小節目は、Ｃ調（ハ調）に移調した場合のスケールを記した。）	</th><th>備考</th></tr>
+<tr><th>エオリア旋法		</th><td><img src="Scale_Aeolian.png" ></td><td>現在の短調に相当。</td></tr>
+<tr><th>ロクリア旋法		</th><td><img src="Scale_Locrian.png" ></td><td>（教会旋法では、無い事にされた旋法。<br>後にロクリア旋法として作られました。）</td></tr>
+<tr><th>イオニア旋法		</th><td><img src="Scale_Ionian.png" ></td><td>現在の長調に相当。</td></tr>
+<tr><th>ドリア旋法			</th><td><img src="Scale_Dorius.png" ></td><td>平穏、静寂、厳粛、優雅。</td></tr>
+<tr><th>フリギア旋法		</th><td><img src="Scale_Phrygius.png" ></td><td>甘美、神聖、恍惚、永遠。</td></tr>
+<tr><th>リディア旋法		</th><td><img src="Scale_Lydius.png" ></td><td>流麗、端然、確固。</td></tr>
+<tr><th>ミクソリディア旋法	</th><td><img src="Scale_Mixolydius.png" ></td><td>明快、熱烈、感動。</td></tr>
+</table>
+
+</div>	<!-- h3 -->
+
+
+<!--───────────────────────────────────-->
+<div class='block'>
+<h3><a name="basic">古典和声（西洋和声）について</a></h3>
+
+<p>
+音楽理論（ポピューラ和声）の基礎は、古典和声にあります。<br>
+ここでは、ごく初歩しか解説していませんので、より詳細は、「和声」や「コード進行」の参考書などをご参照ください。<br>
+また、「対位法」もお勧めします。<br>
+</p>
+
+<p>
+コード名は、Ⅰ～Ⅶのローマ数字で記述します。<br>
+ハ長調の場合、ハ長調（Ｃ-Dur）の時は、ⅠをＣ、ⅡをＤ、…、ⅦをＢと読み替えます。<br>
+</p>
+
+
+<h4><u>【1】コードの機能</u></h4>
+<p>
+コードには、大きく分けると３つの役割があります。<br>
+</p>
+
+<div class='block'>
+<h5>トニック（トニカ）</h5>
+<p>
+Ⅰの和音です。（代理和音としてⅥ）<br>
+和声の中心となるコードで、その調の主役です。<br>
+強い安定性を持つ和音で、「落ち着き」、「解放」、「解決」といった印象が得られます。<br>
+多くの曲はコードで始まりこのコードで終わります。<br>
+トニックは、サブドミナント、ドミナントの両方へ進行できます。<br>
+</p>
+
+<h5>ドミナント</h5>
+<p>
+Ⅴの和音です。<br>
+トニックの５度上の和音で、属音（Ⅴ：ハ長調の場合Ｇ）が根の音にあります。
+トニックとは対照的に、「緊張」した印象が得られます。<br>
+不安定な和音でこの和音はトニックに進行したがる性質を持ちます。<br>
+そのように、ドミナントからトニックへ進行することを「解決」と呼び、
+Ⅴの和音からⅠの和音への進行を「全終始」と呼びます。<br>
+Ⅴの変わりに、Ⅴ7やⅤ9の和音も良く使われます。<br>
+ドミナントは、トニックへのみ進行できます。<br>
+</p>
+
+<h5>サブドミナント</h5>
+<p>
+Ⅳの和音です。（代理和音としてⅡ）<br>
+トニックの４度上（５度下）の和音です。<br>
+ドミナントより強くはないが、同様に「緊張」した印象が得られます。<br>
+この和音は、ドミナントに進行するか、トニックに進行します。<br>
+教会音楽などでは、Ⅰ（トニック）→Ⅳ（サブドミナント）→Ⅰ（トニック）といった進行（アーメン進行と呼ばれる）がよく使われ、
+Ⅳ→Ⅰへの進行は、「変終止」と呼ばれます。<br>
+サブドミナントは、ドミナント、トニックの両方へ進行できます。
+</p>
+<p>
+Ⅱの和音はドッペルドミナントとも呼ばれ、ドミナントへのドミナントです。<br>
+Ⅳは、Ⅱ（ドッペルドミナント）の代理和音という考え方もあります。<br>
+Ⅴ（ドミナント）→Ⅰ（トニック）への進行が４度上（５度下）に進行するものに対し、
+Ⅱ（ドッペルドミナント）→Ⅴ（ドミナント）も４度上（５度下）に進行します。<br>
+Ⅱ（ドッペルドミナント）はⅤ（ドミナント）へのみ進行できます。<br>
+</p>
+
+</div>
+
+<h4><u>【2】カデンツとコードの進行</u></h4>
+<p>
+和声は、トニックに戻ることでひと段落がつきます。<br>
+このトニックから始まってトニックで終わるまでの進行をカデンツと呼びます。<br>
+カデンツは、大きく分けると、以下の３通りになります。<br>
+</p>
+<ul>
+<li>トニック　→　ドミナント　→　トニック
+<li>トニック　→　サブドミナント　→　トニック
+<li>トニック　→　サブドミナント　→　ドミナント　→　トニック
+</ul>
+
+<h5>基本的なコード進行まとめ</h5>
+<p>
+ⅢやⅦは難しいので、専門書をご参照ください。<br>
+</p>
+<ul>
+<li>Ⅰは、どこにでも進行できます。</li>
+<li>Ⅱは、Ⅴへのみに行けます。</li>
+<li>Ⅳは、ⅠかⅡかⅤに進行できます。</li>
+<li>Ⅴは、ⅠかⅥ（トニック）に行けます</li>
+<li>Ⅵ（トニック）は、Ⅰ以外へ進行できます。</li>
+</ul>
+
+<!--
+<p>
+ちょっと発展する場合<br>
+（※※※メモ※※※　単純にこう使えたっけ？）
+</p>
+<ul>
+<li>Ⅲ（トニック）は、Ⅰへ進行するか、「Ⅵ→Ⅲ→Ⅳ」の進行で使えます。</li>
+<li>Ⅲ（ドミナント）は、ⅠかⅥ（トニック）へ進行できます。
+<li>Ⅵ（サブドミナント）は、Ⅰへ進行できます。</li>
+<li>Ⅶは、ⅠかⅥ（トニック）に進行できます。
+</ul>
+-->
+
+<p>
+※あえて、この法則に逆らい、独特な効果を狙う音楽も存在します。<br>
+</p>
+
+<!--
+
+<h5>基本的なカデンツ例</h5>
+<p>
+基本的なコードのみを使用し、また、転回したコードや、転調を使用しない場合のカデンツ一覧です。<br>
+</p>
+
+<ul>
+<li>Ⅰ→Ⅱ→Ⅴ→Ⅰ
+<li>Ⅰ→Ⅱ→Ⅴ→Ⅵ
+
+<li>Ⅰ→Ⅳ→Ⅰ
+<li>Ⅰ→Ⅳ→Ⅱ→Ⅴ→Ⅰ
+<li>Ⅰ→Ⅳ→Ⅱ→Ⅴ→Ⅵ
+<li>Ⅰ→Ⅳ→Ⅴ→Ⅰ
+<li>Ⅰ→Ⅳ→Ⅴ→Ⅵ
+<li>Ⅰ→Ⅴ→Ⅰ
+<li>Ⅰ→Ⅴ→Ⅵ
+
+<li>Ⅰ→Ⅵ→Ⅱ→Ⅴ→Ⅰ　（ゲーム音楽でよく使われる１６２５という進行）
+<li>Ⅰ→Ⅵ→Ⅱ→Ⅴ→Ⅵ
+
+<li>Ⅰ→Ⅵ→Ⅳ→Ⅰ
+<li>Ⅰ→Ⅵ→Ⅳ→Ⅱ→Ⅴ→Ⅰ
+<li>Ⅰ→Ⅵ→Ⅳ→Ⅱ→Ⅴ→Ⅵ
+<li>Ⅰ→Ⅵ→Ⅳ→Ⅴ→Ⅰ
+<li>Ⅰ→Ⅵ→Ⅳ→Ⅴ→Ⅵ
+
+<li>Ⅰ→Ⅵ→Ⅴ→Ⅰ
+<li>Ⅰ→Ⅵ→Ⅴ→Ⅵ
+</ul>
+
+<h4><u>【3】コードの転回</u></h4>
+<p>
+アラビア数字は、転回を意味します。<br>
+例えば、ハ長調においてⅠ2の場合は、Ｃのコード（構成音：ceg）でありバス（低音）はgです。<br>
+</p>
+
+<h5>バスが1音ずつ変化するコード進行</h5>
+<ul>
+<li>Ⅰ→Ⅴ2→Ⅰ1　…　トニックとして機能する
+<li>Ⅰ1→Ⅴ2→Ⅰ1　…　トニックとして機能する
+<li>Ⅳ1→Ⅰ2→Ⅳ　…　サブドミナントとして機能する
+<li>Ⅳ→Ⅰ2→Ⅳ1　…　ドミナントとして機能する
+</ul>
+
+<h5>バスが同音程のコード進行</h5>
+<ul>
+<li>Ⅰ→Ⅳ2→Ⅰ	…　トニックとして機能する
+<li>Ⅴ→Ⅰ2→Ⅴ	…　ドミナントとして機能する
+</ul>
+
+<h5>終止的Ⅰ2</h5>
+<p>
+「Ⅰ2→Ⅴ」は、ドミナントとして機能する。ただし、この次はⅠで無ければならない。
+</p>
+<ul>
+<li>Ⅰ→Ⅱ→Ⅰ2→Ⅴ→Ⅰ　…　終止の定型
+</ul>
+
+-->
+
+</div>	<!-- h3 -->
+
+<!--───────────────────────────────────-->
+<div class='block'>
+<h3><a name="code">スケールとコードの関係表</a></h3>
+<p>
+各スケール時に、どのコードになるのかの一覧表です。<br>
+ローマ数字はコード名を意味します。<br>
+</p>
+<p>
+<a href="mml_scale.html"><code>scale()</code>コマンド</a>を使う事で、
+臨時記号を書かずにこれらの複雑な和声（和音）を簡単に使う事ができます。<br>
+そして、音楽理論を知らなくても、その和音に辻褄の合う旋律が書けます。<br>
+（※但し、各トラックで違うスケールに設定したり、臨時記号をつけると、もちろんダメです。）<br>
+すると、プロの作曲家っぽい曲が作れるかもしれません！<br>
+</p>
+
+<p>
+例えば、ハ短調において、Ⅰ→Ⅵ→Ⅱ→Ⅴ→Ⅰの進行をするとします。<br>
+この時、ダイアトニックコードのみを使う場合、<br>
+「Ｃm→♭Ａ→Ｄm(♭-5)→Ｇm→Ｃm」となります。<br>
+ここで、Ⅵをメロディックマイナーから、Ⅴをハーモニックマイナーから借用し、<br>
+ドミナントであるＶと、ＶのドッペルドミナントであるⅡ、としてⅥ→ⅡをⅡm→Ｖ分割と捉えⅥもセブンスにすると、<br>
+「Ｃm→Ａm7(♭-5)→Ｄm7(♭-5)→Ｇ7→Ｃm」となります。<br>
+</p>
+
+<h4>チャーチモード</h4>
+
+<p>
+Ｃイオニアン・モード（ハ長調）におけるダイアトニックコードは、以下の通りです。<br>
+チャーチモードは、これがローテートした形になります。<br>
+</p>
+<p>
+《C Ionian Mode （C-Dur ／ ハ長調）》<br>
+<img src="chode3_Ionian.png">
+<img src="chode4_Ionian.png">
+</p>
+<p>
+例えば、Ｃエオリアンモード（ハ短調）は、以下の通りです。<br>
+イオニアンモードのⅥの時の和音が、エオリアンモードではⅠの和音、<br>
+イオニアンモードのⅦの時の和音が、エオリアンモードではⅡの和音、…<br>
+となります。<br>
+</p>
+<p>
+《C Aeolian Mode （c-moll ／ ハ短調）》<br>
+<img src="chode3_Aeolian.png">
+<img src="chode4_Aeolian.png">
+</p>
+
+<p>
+各モードの和音をまとめると、以下の通りです。<br>
+sus4系は割愛します。
+</p>
+
+<table>
+<caption>チャーチモード　３和音</caption>
+<tr><th>Scale name</th>
+	<th>Number	</th>
+	<th>Ⅰ</th>
+	<th>Ⅱ</th>
+	<th>Ⅲ</th>
+	<th>Ⅳ</th>
+	<th>Ⅴ</th>
+	<th>Ⅵ</th>
+	<th>Ⅶ</th>
+</tr>
+<tr><th>Ionian	（長音階）</th>
+	<td>0	</td>
+	<td>Ⅰ</td>
+	<td>Ⅱm</td>
+	<td>Ⅲm</td>
+	<td>Ⅳ</td>
+	<td>Ⅴ</td>
+	<td>Ⅵm</td>
+	<td>Ⅶm(♭5)</td>
+</tr>
+<tr><th>Dorian</th>
+	<td>1	</td>
+	<td>Ⅰm</td>
+	<td>Ⅱm</td>
+	<td>♭Ⅲ</td>
+	<td>Ⅳ</td>
+	<td>Ⅴm</td>
+	<td>Ⅵm(♭5)</td>
+	<td>♭Ⅶ</td>
+</tr>
+<tr><th>Phrygian</th>
+	<td>2	</td>
+	<td>Ⅰm</td>
+	<td>♭Ⅱ</td>
+	<td>♭Ⅲ</td>
+	<td>Ⅳm</td>
+	<td>Ⅴm(♭5)</td>
+	<td>♭Ⅵ</td>
+	<td>♭Ⅶm</td>
+</tr>
+<tr><th>Lydian</th>
+	<td>3	</td>
+	<td>Ⅰ</td>
+	<td>Ⅱ</td>
+	<td>Ⅲm</td>
+	<td>＃Ⅳm(♭5)</td>
+	<td>Ⅴ</td>
+	<td>Ⅵm</td>
+	<td>Ⅶm</td>
+</tr>
+<tr><th>Mixo-Lydian</th>
+	<td>4	</td>
+	<td>Ⅰ</td>
+	<td>Ⅱm</td>
+	<td>Ⅲm(♭5)</td>
+	<td>Ⅳ</td>
+	<td>Ⅴm</td>
+	<td>Ⅵm</td>
+	<td>♭Ⅶ</td>
+</tr>
+<tr><th>Aeolian	（自然短音階）</th>
+	<td>5	</td>
+	<td>Ⅰm</td>
+	<td>Ⅱm(♭5)</td>
+	<td>♭Ⅲ</td>
+	<td>Ⅳm</td>
+	<td>Ⅴm</td>
+	<td>♭Ⅵ</td>
+	<td>♭Ⅶ</td>
+</tr>
+<tr><th>Locrian</th>
+	<td>6	</td>
+	<td>Ⅰm(♭5)</td>
+	<td>♭Ⅱ</td>
+	<td>♭Ⅲm</td>
+	<td>Ⅳm</td>
+	<td>♭Ⅴ</td>
+	<td>♭Ⅵ</td>
+	<td>♭Ⅶm</td>
+</tr>
+</table>
+<br>
+
+<table>
+<caption>チャーチモード　４和音</caption>
+<tr><th>Scale name</th>
+	<th>Number	</th>
+	<th>Ⅰ</th>
+	<th>Ⅱ</th>
+	<th>Ⅲ</th>
+	<th>Ⅳ</th>
+	<th>Ⅴ</th>
+	<th>Ⅵ</th>
+	<th>Ⅶ</th>
+</tr>
+<tr><th>Ionian	（長音階）</th>
+	<td>0	</td>
+	<td>Ⅰmaj7</td>
+	<td>Ⅱm7</td>
+	<td>Ⅲm7</td>
+	<td>Ⅳmaj7</td>
+	<td>Ⅴ7</td>
+	<td>Ⅵm7</td>
+	<td>Ⅶm7(♭5)</td>
+</tr>
+<tr><th>Dorian</th>
+	<td>1	</td>
+	<td>Ⅰm7</td>
+	<td>Ⅱm7</td>
+	<td>♭Ⅲmaj7</td>
+	<td>Ⅳ7</td>
+	<td>Ⅴm7</td>
+	<td>Ⅵm7(♭5)</td>
+	<td>♭Ⅶmaj7</td>
+</tr>
+<tr><th>Phrygian</th>
+	<td>2	</td>
+	<td>Ⅰm7</td>
+	<td>♭Ⅱmaj7</td>
+	<td>♭Ⅲ7</td>
+	<td>Ⅳm7</td>
+	<td>Ⅴm7(♭5)</td>
+	<td>♭Ⅵmaj7</td>
+	<td>♭Ⅶm7</td>
+</tr>
+<tr><th>Lydian</th>
+	<td>3	</td>
+	<td>Ⅰmaj7</td>
+	<td>Ⅱ7</td>
+	<td>Ⅲm7</td>
+	<td>＃Ⅳm7(♭5)</td>
+	<td>Ⅴmaj7</td>
+	<td>Ⅵm7</td>
+	<td>Ⅶm7</td>
+</tr>
+<tr><th>Mixo-Lydian</th>
+	<td>4	</td>
+	<td>Ⅰ7</td>
+	<td>Ⅱm7</td>
+	<td>Ⅲm7(♭5)</td>
+	<td>Ⅳmaj7</td>
+	<td>Ⅴm7</td>
+	<td>Ⅵm7</td>
+	<td>♭Ⅶmaj7</td>
+</tr>
+<tr><th>Aeolian	（自然短音階）</th>
+	<td>5	</td>
+	<td>Ⅰm7</td>
+	<td>Ⅱm7(♭5)</td>
+	<td>♭Ⅲmaj7</td>
+	<td>Ⅳm7</td>
+	<td>Ⅴm7</td>
+	<td>♭Ⅵmaj7</td>
+	<td>♭Ⅶ7</td>
+</tr>
+<tr><th>Locrian</th>
+	<td>6	</td>
+	<td>Ⅰm7(♭5)</td>
+	<td>♭Ⅱmaj7</td>
+	<td>♭Ⅲm7</td>
+	<td>Ⅳm7</td>
+	<td>♭Ⅴmaj7</td>
+	<td>♭Ⅵ7</td>
+	<td>♭Ⅶm7</td>
+</tr>
+</table>
+<br>
+
+<h4>和声的短音階から派生するモード</h4>
+<p>
+和声的短音階についても、同様にローテートして、様々なモードを作ることができます。
+</p>
+
+<p>
+《C Harmonic Minor Mode ／ ハ短調における和声的短音階）<br>
+<img src="chode3_HarmonicMinor.png">
+<img src="chode4_HarmonicMinor.png">
+</p>
+
+<table>
+<caption>和声的音階　３和音</caption>
+<tr><th>Scale name</th>
+	<th>Number	</th>
+	<th>Ⅰ</th>
+	<th>Ⅱ</th>
+	<th>Ⅲ</th>
+	<th>Ⅳ</th>
+	<th>Ⅴ</th>
+	<th>Ⅵ</th>
+	<th>Ⅶ</th>
+</tr>
+<tr><th>Harmonic minor	（和声的短音階）</th>
+	<td>10	</td>
+	<td>Ⅰm</td>
+	<td>Ⅱm(♭5)</td>
+	<td>♭Ⅲaug</td>
+	<td>Ⅳm</td>
+	<td>Ⅴ</td>
+	<td>♭Ⅵ</td>
+	<td>Ⅶm(♭5)</td>
+</tr>
+<tr><th>Locrian natural13</th>
+	<td>11	</td>
+	<td>Ⅰm(♭5)</td>
+	<td>♭Ⅱaug</td>
+	<td>♭Ⅲm</td>
+	<td>Ⅳ</td>
+	<td>♭Ⅴ</td>
+	<td>Ⅵm(♭5)</td>
+	<td>♭Ⅶm</td>
+</tr>
+<tr><th>Ionian ＃5</th>
+	<td>12	</td>
+	<td>Ⅰaug</td>
+	<td>Ⅱm</td>
+	<td>Ⅲ</td>
+	<td>Ⅳ</td>
+	<td>＃Ⅴm(♭5)</td>
+	<td>Ⅵm</td>
+	<td>Ⅶm(♭5)</td>
+</tr>
+<tr><th>Dorian ＃11</th>
+	<td>13	</td>
+	<td>Ⅰm</td>
+	<td>Ⅱ</td>
+	<td>♭Ⅲ</td>
+	<td>＃Ⅳm(♭5)</td>
+	<td>Ⅴm</td>
+	<td>Ⅵm(♭5)</td>
+	<td>♭Ⅶaug</td>
+</tr>
+<tr><th>Harmonic minor perfect 5th below</th>
+	<td>14	</td>
+	<td>Ⅰ</td>
+	<td>♭Ⅱ</td>
+	<td>Ⅲm(♭5)</td>
+	<td>Ⅳm</td>
+	<td>Ⅴm(♭5)</td>
+	<td>♭Ⅵaug</td>
+	<td>♭Ⅶm</td>
+</tr>
+<tr><th>Lydian ＃9</th>
+	<td>15	</td>
+	<td>Ⅰ</td>
+	<td>＃Ⅱm(♭5)</td>
+	<td>Ⅲm</td>
+	<td>＃Ⅳm(♭5)</td>
+	<td>Ⅴaug</td>
+	<td>Ⅵm</td>
+	<td>Ⅶ</td>
+</tr>
+<tr><th>Altered ♭7</th>
+	<td>16	</td>
+	<td>Ⅰm(♭5)</td>
+	<td>♭Ⅱm</td>
+	<td>♭Ⅲm(♭5)</td>
+	<td>♭Ⅳaug</td>
+	<td>♭Ⅴm</td>
+	<td>♭Ⅵ</td>
+	<td>♭♭Ⅶ</td>
+</tr>
+</table>
+<br>
+
+<table>
+<caption>和声的音階　４和音</caption>
+<tr><th>Scale name</th>
+	<th>Number	</th>
+	<th>Ⅰ</th>
+	<th>Ⅱ</th>
+	<th>Ⅲ</th>
+	<th>Ⅳ</th>
+	<th>Ⅴ</th>
+	<th>Ⅵ</th>
+	<th>Ⅶ</th>
+</tr>
+<tr><th>Harmonic minor	（和声的短音階）</th>
+	<td>10	</td>
+	<td>Ⅰmmaj7</td>
+	<td>Ⅱm7(♭5)</td>
+	<td>♭Ⅲmaj7(♯5)</td>
+	<td>Ⅳm7</td>
+	<td>Ⅴ7</td>
+	<td>♭Ⅵmaj7</td>
+	<td>Ⅶdim</td>
+</tr>
+<tr><th>Locrian natural13</th>
+	<td>11	</td>
+	<td>Ⅰm7(♭5)</td>
+	<td>♭Ⅱmaj7(♯5)</td>
+	<td>♭Ⅲm7</td>
+	<td>Ⅳ7</td>
+	<td>♭Ⅴmaj7</td>
+	<td>Ⅵdim</td>
+	<td>♭Ⅶmmaj7</td>
+</tr>
+<tr><th>Ionian ＃5</th>
+	<td>12	</td>
+	<td>Ⅰmaj7(♯5)</td>
+	<td>Ⅱm7</td>
+	<td>Ⅲ7</td>
+	<td>Ⅳmaj7</td>
+	<td>＃Ⅴdim</td>
+	<td>Ⅵmmaj7</td>
+	<td>Ⅶm7(♭5)</td>
+</tr>
+<tr><th>Dorian ＃11</th>
+	<td>13	</td>
+	<td>Ⅰm7</td>
+	<td>Ⅱ7</td>
+	<td>♭Ⅲmaj7</td>
+	<td>＃Ⅳdim</td>
+	<td>Ⅴmmaj7</td>
+	<td>Ⅵm7(♭5)</td>
+	<td>♭Ⅶmaj7(♯5)</td>
+</tr>
+<tr><th>Harmonic minor perfect 5th below</th>
+	<td>14	</td>
+	<td>Ⅰ7</td>
+	<td>♭Ⅱmaj7</td>
+	<td>Ⅲdim</td>
+	<td>Ⅳmmaj7</td>
+	<td>Ⅴm7(♭5)</td>
+	<td>♭Ⅵmaj7(♯5)</td>
+	<td>♭Ⅶm7</td>
+</tr>
+<tr><th>Lydian ＃9</th>
+	<td>15	</td>
+	<td>Ⅰmaj7</td>
+	<td>＃Ⅱdim</td>
+	<td>Ⅲmmaj7</td>
+	<td>＃Ⅳm7(♭5)</td>
+	<td>Ⅴmaj7(♯5)</td>
+	<td>Ⅵm7</td>
+	<td>Ⅶ7</td>
+</tr>
+<tr><th>Altered ♭7</th>
+	<td>16	</td>
+	<td>Ⅰdim</td>
+	<td>♭Ⅱmmaj7</td>
+	<td>♭Ⅲm7(♭5)</td>
+	<td>♭Ⅳmaj7(♯5)</td>
+	<td>♭Ⅴm7</td>
+	<td>♭Ⅵ7</td>
+	<td>♭♭Ⅶmaj7</td>
+</tr>
+</table>
+<br>
+
+<h4>旋律的短音階から派生するモード</h4>
+<p>
+旋律的短音階についても、同様にローテートして、様々なモードを作ることができます。
+</p>
+
+<p>
+《C Melodic Minor Mode ／ ハ短調における旋律的短音階）<br>
+<img src="chode3_MerodicMinor.png">
+<img src="chode4_MerodicMinor.png">
+</p>
+
+<table>
+<caption>旋律的音階　３和音</caption>
+<tr><th>Scale name</th>
+	<th>Number	</th>
+	<th>Ⅰ</th>
+	<th>Ⅱ</th>
+	<th>Ⅲ</th>
+	<th>Ⅳ</th>
+	<th>Ⅴ</th>
+	<th>Ⅵ</th>
+	<th>Ⅶ</th>
+</tr>
+<tr><th>Melodic minor	（旋律的短音階）</th>
+	<td>20	</td>
+	<td>Ⅰm</td>
+	<td>Ⅱm</td>
+	<td>♭Ⅲaug</td>
+	<td>Ⅳ</td>
+	<td>Ⅴ</td>
+	<td>Ⅵm(♭5)</td>
+	<td>Ⅶm(♭5)</td>
+</tr>
+<tr><th>Dorian ♭9</th>
+	<td>21	</td>
+	<td>Ⅰm</td>
+	<td>♭Ⅱaug</td>
+	<td>♭Ⅲ</td>
+	<td>Ⅳ</td>
+	<td>Ⅴm(♭5)</td>
+	<td>Ⅵm(♭5)</td>
+	<td>♭Ⅶm</td>
+</tr>
+<tr><th>Lydian ＃5<br></th>
+	<td>22	</td>
+	<td>Ⅰaug</td>
+	<td>Ⅱ</td>
+	<td>Ⅲ</td>
+	<td>＃Ⅳm(♭5)</td>
+	<td>＃Ⅴm(♭5)</td>
+	<td>Ⅵm</td>
+	<td>Ⅶm</td>
+</tr>
+<tr><th>Mixo-Lydian ＃11 (Lydian ♭7)</th>
+	<td>23	</td>
+	<td>Ⅰ</td>
+	<td>Ⅱ</td>
+	<td>Ⅲm(♭5)</td>
+	<td>＃Ⅳm(♭5)</td>
+	<td>Ⅴm</td>
+	<td>Ⅵm</td>
+	<td>♭Ⅶaug</td>
+</tr>
+<tr><th>Mixo-Lydian ♭13<br></th>
+	<td>24	</td>
+	<td>Ⅰ</td>
+	<td>Ⅱm(♭5)</td>
+	<td>Ⅲm(♭5)</td>
+	<td>Ⅳm</td>
+	<td>Ⅴm</td>
+	<td>♭Ⅵaug</td>
+	<td>♭Ⅶ7</td>
+</tr>
+<tr><th>Aeolian ♭5 (Super Locrian)<br></th>
+	<td>25	</td>
+	<td>Ⅰm(♭5)</td>
+	<td>Ⅱm(♭5)</td>
+	<td>♭Ⅲm</td>
+	<td>Ⅳm</td>
+	<td>♭Ⅴaug</td>
+	<td>♭Ⅵ</td>
+	<td>♭Ⅶ</td>
+</tr>
+<tr><th>Altered<br></th>
+	<td>26	</td>
+	<td>Ⅰm(♭5)</td>
+	<td>♭Ⅱm</td>
+	<td>♭Ⅲm</td>
+	<td>♭Ⅳaug</td>
+	<td>♭Ⅴ</td>
+	<td>♭Ⅵ</td>
+	<td>♭Ⅶm(♭5)</td>
+</tr>
+</table>
+<br>
+
+<table>
+<caption>旋律的音階　４和音</caption>
+<tr><th>Scale name</th>
+	<th>Number	</th>
+	<th>Ⅰ</th>
+	<th>Ⅱ</th>
+	<th>Ⅲ</th>
+	<th>Ⅳ</th>
+	<th>Ⅴ</th>
+	<th>Ⅵ</th>
+	<th>Ⅶ</th>
+</tr>
+<tr><th>Melodic minor	（旋律的短音階）</th>
+	<td>20	</td>
+	<td>Ⅰmmaj7</td>
+	<td>Ⅱm7</td>
+	<td>♭Ⅲmaj7(♯5)</td>
+	<td>Ⅳ7</td>
+	<td>Ⅴ7</td>
+	<td>Ⅵm7(♭5)</td>
+	<td>Ⅶm7(♭5)</td>
+</tr>
+<tr><th>Dorian ♭9</th>
+	<td>21	</td>
+	<td>Ⅰm7</td>
+	<td>♭Ⅱmaj7(♯5)</td>
+	<td>♭Ⅲ7</td>
+	<td>Ⅳ7</td>
+	<td>Ⅴm7(♭5)</td>
+	<td>Ⅵm7(♭5)</td>
+	<td>♭Ⅶmmaj7</td>
+</tr>
+<tr><th>Lydian ＃5<br></th>
+	<td>22	</td>
+	<td>Ⅰmaj7(♯5)</td>
+	<td>Ⅱ7</td>
+	<td>Ⅲ7</td>
+	<td>＃Ⅳm7(♭5)</td>
+	<td>＃Ⅴm7(♭5)</td>
+	<td>Ⅵmmaj7</td>
+	<td>Ⅶm7</td>
+</tr>
+<tr><th>Mixo-Lydian ＃11 (Lydian ♭7)</th>
+	<td>23	</td>
+	<td>Ⅰ7</td>
+	<td>Ⅱ7</td>
+	<td>＃Ⅲm7(♭5)</td>
+	<td>Ⅳm7(♭5)</td>
+	<td>Ⅴmmaj7</td>
+	<td>Ⅵm7</td>
+	<td>♭Ⅶmaj7(♯5)</td>
+</tr>
+<tr><th>Mixo-Lydian ♭13<br></th>
+	<td>24	</td>
+	<td>Ⅰ7</td>
+	<td>Ⅱm7(♭5)</td>
+	<td>Ⅲm7(♭5)</td>
+	<td>Ⅳmmaj7</td>
+	<td>Ⅴm7</td>
+	<td>♭Ⅵmaj7(♯5)</td>
+	<td>♭Ⅶ7</td>
+</tr>
+<tr><th>Aeolian ♭5 (Super Locrian)<br></th>
+	<td>25	</td>
+	<td>Ⅰm7(♭5)</td>
+	<td>Ⅱm7(♭5)</td>
+	<td>♭Ⅲmmaj7</td>
+	<td>Ⅳm7</td>
+	<td>♭Ⅴmaj7(♯5)</td>
+	<td>♭Ⅵ7</td>
+	<td>♭Ⅶ7</td>
+</tr>
+<tr><th>Altered<br></th>
+	<td>26	</td>
+	<td>Ⅰm7(♭5)</td>
+	<td>♭Ⅱmmaj7</td>
+	<td>♭Ⅲm7</td>
+	<td>♭Ⅳmaj7(♯5)</td>
+	<td>♭Ⅴ7</td>
+	<td>♭Ⅵ7</td>
+	<td>♭Ⅶm7(♭5)</td>
+</tr>
+</table>
+<br>
+
+</div>	<!-- h3 -->
+
+<!--───────────────────────────────────-->
+<div class='block'>
+<h3><a name="scale">コードとスケールの関係表</a></h3>
+<p>
+コードと、そのコードにて使用可能なスケールです。<br>
+</p>
+
+<table>
+<tr>
+	<th rowspan=2></th>
+	<th colspan=2></th>
+	<th colspan=2>m</th>
+	<th colspan=2>m(♭5)</th>
+	<th>aug</th>
+</tr>
+<tr>
+	<th>7</th>
+	<th>maj7</th>
+	<th>m7</th>
+	<th>mmaj7</th>
+	<th>m7(♭5)</th>
+	<th>dim7</th>
+	<th>maj7(♯5)</th>
+</tr>
+<tr>
+	<th>Ⅰ（Ｃ）</th>
+	<td>Mixo-Lydian<br>
+		Mixo-Lydian ＃11 (Lydian ♭7)<br>
+		Mixo-Lydian ♭13<br>
+		Harmonic minor perfect 5th below</td>
+	<td>Ionian<br>
+		Lydian<br>
+		Lydian ＃9</td>
+	<td>Aeolian<br>
+		Dorian<br>
+		Dorian ＃11<br>
+		Dorian ♭9<br>
+		Phrygian</td>
+	<td>Harmonic minor<br>
+		Melodic minor</td>
+	<td>Locrian<br>
+		Locrian natural13<br>
+		Aeolian ♭5 (Super Locrian)<br>
+		Altered</td>
+	<td>Altered ♭7</td>
+	<td>Ionian ＃5<br>
+		Lydian ＃5</td>
+</tr>
+<tr>
+	<th>♭Ⅱ（♭Ｄ）</th>
+	<td></td>
+	<td>Phrygian<br>
+		Locrian<br>
+		Harmonic minor perfect 5th below</td>
+	<td></td>
+	<td>Altered<br>
+		Altered ♭7</td>
+	<td></td>
+	<td></td>
+	<td>Locrian natural13<br>
+		Dorian ♭9</td>
+</tr>
+<tr>
+	<th>Ⅱ（Ｄ）</th>
+	<td>Lydian<br>
+		Dorian ＃11<br>
+		Lydian ＃5<br>
+		Mixo-Lydian ＃11 (Lydian ♭7)</td>
+	<td></td>
+	<td>Ionian<br>
+		Dorian<br>
+		Mixo-Lydian<br>
+		Ionian ＃5<br>
+		Melodic minor</td>
+	<td></td>
+	<td>Aeolian<br>
+		Harmonic minor<br>
+		Mixo-Lydian ♭13<br>
+		Aeolian ♭5 (Super Locrian)</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<th>＃Ⅱ（＃Ｄ）</th>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>Lydian ＃9</td>
+	<td></td>
+</tr>
+<tr>
+	<th>♭Ⅲ（♭Ｅ）</th>
+	<td>Phrygian<br>
+		Dorian ♭9</td>
+	<td>Dorian<br>
+		Dorian ＃11<br>
+		Aeolian</td>
+	<td>Locrian<br>
+		Locrian natural13<br>
+		Altered</td>
+	<td>Aeolian ♭5 (Super Locrian)</td>
+	<td>Altered ♭7</td>
+	<td></td>
+	<td>Harmonic minor<br>
+		Melodic minor</td>
+</tr>
+<tr>
+	<th>Ⅲ（Ｅ）</th>
+	<td>Ionian ＃5<br>
+		Lydian ＃5</td>
+	<td></td>
+	<td>Ionian<br>
+		Lydian</td>
+	<td>Lydian ＃9</td>
+	<td>Mixo-Lydian<br>
+		Mixo-Lydian ♭13</td>
+	<td>Harmonic minor perfect 5th below</td>
+	<td></td>
+</tr>
+<tr>
+	<th>＃Ⅲ（＃Ｅ）</th>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>Mixo-Lydian ＃11 (Lydian ♭7)</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<th>♭Ⅳ（♭Ｆ）</th>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>Altered<br>
+		Altered ♭7</td>
+</tr>
+<tr>
+	<th>Ⅳ（Ｆ）</th>
+	<td>Dorian<br>
+		Locrian natural13<br>
+		Melodic minor<br>
+		Dorian ♭9</td>
+	<td>Ionian<br>
+		Ionian ＃5<br>
+		Mixo-Lydian</td>
+	<td>Phrygian<br>
+		Aeolian<br>
+		Locrian<br>
+		Harmonic minor<br>
+		Aeolian ♭5 (Super Locrian)</td>
+	<td>Harmonic minor perfect 5th below<br>
+		Mixo-Lydian ♭13</td>
+	<td>Mixo-Lydian ＃11 (Lydian ♭7)</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<th>＃Ⅳ（＃Ｆ）</th>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>Lydian<br>
+		Lydian ＃5<br>
+		Lydian ＃9</td>
+	<td>Dorian ＃11</td>
+	<td></td>
+</tr>
+<tr>
+	<th>♭Ⅴ（♭Ｇ）</th>
+	<td>Altered</td>
+	<td>Locrian<br>
+		Locrian natural13</td>
+	<td>Altered ♭7</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>Aeolian ♭5 (Super Locrian)</td>
+</tr>
+<tr>
+	<th>Ⅴ（Ｇ）</th>
+	<td>Ionian<br>
+		Harmonic minor<br>
+		Melodic minor</td>
+	<td>Lydian</td>
+	<td>Dorian<br>
+		Aeolian<br>
+		Mixo-Lydian<br>
+		Mixo-Lydian ♭13</td>
+	<td>Dorian ＃11<br>
+		Mixo-Lydian ＃11 (Lydian ♭7)</td>
+	<td>Phrygian<br>
+		Harmonic minor perfect 5th below<br>
+		Dorian ♭9</td>
+	<td></td>
+	<td>Lydian ＃9</td>
+</tr>
+<tr>
+	<th>＃Ⅴ（＃Ｇ）</th>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>Lydian ＃5</td>
+	<td>Ionian ＃5</td>
+	<td></td>
+</tr>
+<tr>
+	<th>♭Ⅵ（♭Ａ）</th>
+	<td>Locrian<br>
+		Aeolian ♭5 (Super Locrian)<br>
+		Altered ♭7<br>
+		Altered</td>
+	<td>Phrygian<br>
+		Aeolian<br>
+		Harmonic minor</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>Harmonic minor perfect 5th below<br>
+		Mixo-Lydian ♭13</td>
+</tr>
+<tr>
+	<th>Ⅵ（Ａ）</th>
+	<td></td>
+	<td></td>
+	<td>Ionian<br>
+		Lydian<br>
+		Mixo-Lydian<br>
+		Lydian ＃9<br>
+		Mixo-Lydian ＃11 (Lydian ♭7)</td>
+	<td>Ionian ＃5<br>
+		Lydian ＃5</td>
+	<td>Dorian<br>
+		Dorian ＃11<br>
+		Dorian ♭9<br>
+		Melodic minor</td>
+	<td>Locrian natural13</td>
+	<td></td>
+</tr>
+<tr>
+	<th>♭♭Ⅶ（♭♭Ｂ）</th>
+	<td></td>
+	<td>Altered ♭7</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<th>♭Ⅶ（♭Ｂ）</th>
+	<td>Mixo-Lydian
+	♭13<br>
+		Aeolian<br>
+		Aeolian ♭5 (Super Locrian)</td>
+	<td>Dorian<br>
+		Mixo-Lydian</td>
+	<td>Phrygian<br>
+		Locrian<br>
+		Harmonic minor perfect 5th below</td>
+	<td>Locrian natural13<br>
+		Dorian ♭9</td>
+	<td>Altered</td>
+	<td></td>
+	<td>Dorian ＃11<br>
+		Mixo-Lydian ＃11 (Lydian ♭7)</td>
+</tr>
+<tr>
+	<th>Ⅶ（Ｂ）</th>
+	<td>Lydian ＃9</td>
+	<td></td>
+	<td>Lydian<br>
+		Lydian ＃5</td>
+	<td></td>
+	<td>Ionian<br>
+		Ionian ＃5<br>
+		Melodic minor</td>
+	<td>Harmonic minor</td>
+	<td></td>
+</tr>
+</table>
+
+</div>	<!-- h3 -->
+
+<!--───────────────────────────────────-->
+
+</div>	<!-- contents -->
+
+</BODY>
+</HTML>

@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>音源ドライバーの制御用変数</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+仕様＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>音源ドライバーの制御用変数</h2>
+
+<div id='block'>
+<p>
+音源ドライバーの制御用変数です。<br>
+本音源ドライバーを用いたアプリケーションを開発する際に、
+音源ドライバーの制御状態を知りたい時にご参照ください。<br>
+尚、音源ドライバーの制御用変数にアクセスするには、アセンブリ言語中にて以下の通り外部宣言することで可能です。<br>
+</p>
+
+<code><pre>
+        .include        "nsd.inc"
+</pre></code>
+
+<p>
+パート毎のメンバー変数は、2Byte毎に配置しています。<br>
+xレジスタ等に、（トラック番号－１）×２の値を書くと、アクセスに便利です。<br>
+</p>
+
+<p>
+<strong>ヴァージョンアップにより制御変数の構造体の構成が変わる場合があるため、制御変数へのアクセスは以下表の変数名でアクセスの程、お願いいたします。</strong><br>
+又、拡張音源用のメンバー変数は割愛します（拡張音源を使用しない場合は、拡張音源用のメンバー変数は構造体のメンバーに入りません）。<br>
+</p>
+
+
+</div>
+
+<div id='block'>
+<h3>Segment "zeropage" に配置される変数</h3>
+
+<div id='block'>
+<h4><a name="nsd_work_zp">nsd_work_zp</a></h4>
+<p>
+Zeropageに置かれる制御用変数（構造体）です。<br>
+頻度に（1tick中で何度も）使用するため、アクセス速度の速いZeropage領域に配置しています。<br>
+</p>
+
+<table>
+<caption>変数の内容　（共通／Common）</caption>
+<tr><th>変数名</th><th>内容</th></tr>
+<tr><td>__ptr</td>
+	<td>汎用変数（ポインター用）<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
+<tr><td>__tmp</td>
+	<td>汎用変数（計算用）<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
+<tr><td>channel</td>
+	<td>現在制御中のチャンネル<br>
+		尚、内容を保持する必要はありません。<br>
+		ユーザーがこの領域を一時的な変数領域として使用して構いませんが、
+		本音源ドライバのライブラリ関数を呼んだ場合、内容は破壊される旨、ご留意ください。</td></tr>
+<tr><td>__flag</td>
+	<td><code>D... ....</code> :	再生制御無効<br>
+		<code>...J ....</code> :	早送り中<br>
+		<code>.... PP..</code> :	効果音の優先度<br>
+		<code>.... ..S.</code> :	ＳＥ再生中<br>
+		<code>.... ...B</code> :	ＢＧＭが再生中	</td></tr>
+<tr><td>__Tempo</td>
+	<td>テンポ（tコマンドの数値）</td></tr>
+<tr><td>__Tempo_ctr</td>
+	<td>テンポカウンタ</td></tr>
+</table>
+<p>
+</p>
+<table>
+<caption>変数の内容　（パート毎／Each part）</caption>
+<tr><td>__Sequence_ptr</td>
+	<td>演奏ポインタ</td></tr>
+<tr><td>__Length_ctr</td>
+	<td>音長カウンタ</td></tr>
+<tr><td>__Gate</td>
+	<td>現在の音符のゲートタイム</td></tr>
+<tr><td>__Envelop_V</td>
+	<td>エンベロープのホールドタイム用のカウンタ<br>
+		<code>iiii ....</code> :	音色<br>
+		<code>.... vvvv</code> :	音量</td></tr>
+<tr><td>__Envelop_F</td>
+	<td>エンベロープのホールドタイム用のカウンタ<br>
+		<code>nnnn ....</code> :	ノート<br>
+		<code>.... ffff</code> :	音程</td></tr>
+</table>
+
+</div>
+
+</div>
+
+<div id='block'>
+<h3>Segment "bss" に配置される変数</h3>
+
+<div id='block'>
+<h4><a name="nsd_work">nsd_work</a></h4>
+<p>
+通常のRAM領域に置かれる制御用変数（構造体）です。<br>
+音源ドライバーだけでzeropageを占有できないので、通常のRAM領域に配置します。<br>
+</p>
+
+<table>
+<caption>変数の内容　（パート毎／Each part）</caption>
+<tr><th>変数名</th><th>内容</th></tr>
+<tr><td>__chflag</td>
+	<td><code>..V. ....</code> :	VRC7：Sustain<br>
+		<code>...V ....</code> :	VRC7：KeyOn/Off制御<br>
+		<code>...S ....</code> :	SN5B：ハードウェアエンベロープ<br>
+		<code>.... FF..</code> :	FDS ：マスター音量<br>
+		<code>.... .V..</code> :	VRC7：KeyOff時にハードウェアのKeyOffをするかどうか<br>
+		<code>.... ..KK</code> :	エンベロープ処理のフェーズ<br></td></tr>
+<tr><td>__gatemode</td>
+	<td><code>vvvv ....</code> :	リリース時の音色（R@コマンドの数値）<br>
+		<code>.... e...</code> :	音色エンベロープのスイッチ<br>
+		<code>.... .s..</code> :	サブルーチンから復帰<br>
+		<code>.... ..rr</code> :	ゲートモード（Rmコマンドの設定値）</td></tr>
+<tr><td>__length</td>
+	<td>音長省略時の音長（lコマンドの設定値）</td></tr>
+<tr><td>__tai</td>
+	<td>スラー・タイ制御</td></tr>
+<tr><td>__gate_q</td>
+	<td>ゲートタイム（qコマンドの設定値）</td></tr>
+<tr><td>__gate_u</td>
+	<td>ゲートタイム（uコマンドの設定値）</td></tr>
+<tr><td>__note</td>
+	<td>現在発音しているノートナンバー</td></tr>
+<tr><td>__octave</td>
+	<td>現在のオクターブ（oコマンドの数値×12）</td></tr>
+<tr><td>__detune_cent</td>
+	<td>cent単位のディチューン（Dコマンドの数値）</td></tr>
+<tr><td>__detune_fine</td>
+	<td>レジスタ単位のディチューン（D%コマンドの数値）</td></tr>
+<tr><td>__por_target</td>
+	<td>ポルタメント制御用（目標値）</td></tr>
+<tr><td>__por_depth</td>
+	<td>ポルタメント制御用（一回の変化量）</td></tr>
+<tr><td>__por_ctr</td>
+	<td>ポルタメント制御用（カウンター）</td></tr>
+<tr><td>__por_rate</td>
+	<td>ポルタメント制御用（何フレームで変化するか？）</td></tr>
+<tr><td>__por_now</td>
+	<td>ポルタメント制御用（現在の変位）</td></tr>
+<tr><td>__trans</td>
+	<td>移調（_コマンドの数値）</td></tr>
+<tr><td>__trans_one</td>
+	<td>一回限りの移調（', "コマンド制御用）</td></tr>
+<tr><td>__repeat_ctr</td>
+	<td>リピートＡのカウンタ</td></tr>
+<tr><td>__repeat_ctr2</td>
+	<td>リピートＢのカウンタ</td></tr>
+<tr><td>__volume</td>
+	<td><code>rrrr ....</code> :	リリース時の音量（Rvコマンドの数値）<br>
+		<code>.... vvvv</code> :	音量（vコマンドの数値）</td></tr>
+<tr><td>__env_vol_now</td>
+	<td>音量エンベロープの現在値</td></tr>
+<tr><td>__env_freq_now</td>
+	<td>音程エンベロープの現在値</td></tr>
+<tr><td>__env_note_now</td>
+	<td>ノートエンベロープの現在値</td></tr>
+<tr><td>__env_vol_ptr</td>
+	<td>音量エンベロープの推移制御用のポインタ</td></tr>
+<tr><td>__env_voi_ptr</td>
+	<td>音色エンベロープの推移制御用のポインタ</td></tr>
+<tr><td>__env_freq_ptr</td>
+	<td>音程エンベロープの推移制御用のポインタ</td></tr>
+<tr><td>__env_note_ptr</td>
+	<td>ノートエンベロープの推移制御用のポインタ</td></tr>
+<tr><td>__env_volume</td>
+	<td>音量エンベロープ・テーブルのポインタ</td></tr>
+<tr><td>__env_voice</td>
+	<td>音色エンベロープ・テーブルのポインタ</td></tr>
+<tr><td>__env_frequency</td>
+	<td>周波数エンベロープ・テーブルのポインタ</td></tr>
+<tr><td>__env_note</td>
+	<td>ノートエンベロープ・テーブルのポインタ</td></tr>
+<tr><td>__frequency</td>
+	<td>現在発音している音程（音程・ノートエンベロープ適用後）</td></tr>
+<tr><td>__subroutine</td>
+	<td>サブルーチンの戻りアドレス</td></tr>
+<tr><td>__repeat2</td>
+	<td>リピートＢでの次のジャンプ先アドレス</td></tr>
+<tr><td>__dpcm_info</td>
+	<td>⊿PCM制御構造体のポインタ</td></tr>
+<tr><td>__apu_voice_set1</td>
+	<td>APU ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_voice_set2</td>
+	<td>APU ch2の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_tri_time</td>
+	<td>APU ch3のリニアカウンター値</td></tr>
+<tr><td>__apu_voice_set4</td>
+	<td>APU ch4の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_voice_set1</td>
+	<td>SE ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_voice_set2</td>
+	<td>SE ch1の音色（レジスタ書込みの為の論理演算用）</td></tr>
+<tr><td>__apu_frequency1</td>
+	<td>APU ch1の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
+<tr><td>__apu_frequency2</td>
+	<td>APU ch2の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
+<tr><td>__apu_frequency3</td>
+	<td>APU ch3の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
+<tr><td>__se_frequency</td>
+	<td>SE ch1の音程上位8bitの保存用（音程レジスタ上位8bit更新によるプチノイズ発生防止）。</td></tr>
+<tr><td>__sweep_ch1</td>
+	<td>APU ch1のsweepレジスタの現在値</td></tr>
+<tr><td>__sweep_ch2</td>
+	<td>APU ch2のsweepレジスタの現在値</td></tr>
+</table>
+
+<p></p>
+
+</div>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

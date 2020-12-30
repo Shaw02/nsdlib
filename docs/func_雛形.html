@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>nsd_play_BGM()</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsd.html">音源ドライバー</a>＼
+関数リファレンス＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>nsd_xxxxxxx()</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        void    __fastcall__    nsd_play_BGM(<var>void* bgm</var> );
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+<p>
+	無し（no input）
+</p>
+<table class='noline'>
+<tr>
+<td><var>void* bgm</var> … </td>
+<td>曲データのポインターを指定してください。<br>
+	Please set the pointer of music data.</td>
+</tr>
+</table>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>戻り値（Outputs）</h3>
+<p>
+	無し（no output）
+</p>
+<table class='noline'>
+<tr>
+<td><var>unsigned int</var> … </td>
+<td>結果<br>
+	Result.</td>
+</tr>
+</table>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+引数<var>void* bgm</var>で指定されたポインターの曲データの再生を開始します。<br>
+</p>
+<p>
+Sound driver will start the playing music that was set to <var>void* bgm</var>.
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+内部で、nsd_stop_BGM()関数を呼んでいますので、再生停止は必要ありません。<br>
+また、曲データ以外のポインターを指定しないで下さい。暴走する可能性があります。<br>
+</p>
+<p>
+Do not need to stop the music because function `nsd_stop_BGM()' are called by this function.<br>
+And, MUST NOT set the other pointer to the <var>void* bgm</var>. If set the other pointer, sound driver may 暴走.<br>
+</p>
+</div>
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

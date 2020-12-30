@@ -1,0 +1,330 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>目次</Title>
+</HEAD>
+<BODY>
+
+<div id='contents'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+
+<h2>概要（Summary）</h2>
+
+<div class='block'>
+<p>
+任天堂ファミリーコンピューターにて、ＢＧＭ、効果音（SE）を制御するための音源ドライバーです。<br>
+ライブラリとして開発されており、ユーザーのアプリケーションから制御することができます。<br>
+</p>
+<p>
+This is a sound driver for the Nintendo Entertainment System (NES).<br>
+This can playing the Back-Ground Music(BGM) and the Sound Effect(SE).<br>
+This is developed as object library, and user application can control it.<br>
+</p>
+</div>
+
+<div class='block'>
+<h3>特徴（Characteristic）</h3>
+<ul>
+<li>
+	音源ドライバー本体は、アセンブリ言語にてＣＰＵ負荷・コードサイズ共に最適化して開発。<br>
+	また、曲データサイズについても、ＭＭＬの記述次第で小さくなるように設計。<br>
+	これにより、限りあるＲＯＭ領域の圧迫を防ぎます。<br>
+</li>
+<li>
+	アセンブリ言語及びＣ言語から呼び出し可能な、ライブラリ関数。<br>
+	※関数呼出規約は、CC65における <code>__fastcall__</code> です。<br>
+</li>
+<li>
+	ＭＭＬコンパイラーによる曲データの作成環境。<br>
+</li>
+<li>
+	且つ、様々な音楽表現を可能とすべく、多岐にわたる機能を実装。<br>
+</li>
+</ul>
+<ul>
+<li>
+	The sound driver are optimized for code size and processing speed by asembly langage.<br>
+	Moreover, this music data is designed to get samll data and code size.<br>
+	So, this desine has preventive occupation of ROM area.<br>
+</li>
+<li>
+	C-Langage source code can coll this library functions.<br>
+	* The calling conversion of this library functions are <code>__fastcall__</code> of `cc65'.<br>
+</li>
+<li>
+	MML Compiler can make the music data.<br>
+</li>
+<li>
+	For the music expression, this sound driver has various music function.<br>
+</li>
+</ul>
+</div>
+
+<div class='block'>
+<h3>付属品（Appurtenances）</h3>
+<p>
+アーカイブ中のファイル構成です。
+</p>
+<table>
+<tr><th colspan='2'>Directory	</th>
+	<th>File					</th>
+	<th>Contents				</th></tr>
+<tr><td rowspan='2' colspan='2'>bin\	</td>
+	<td>nsc.exe					</td>
+	<td>MMLコンパイラ (Microsoft(R) Windows 32bit application)	</td></tr>
+<tr><td>*.bin					</td>
+	<td>NSF用のコンパイル済み音源ドライバー＆プレイヤ	</td></tr>
+<tr><td rowspan='2' colspan='2'>doc\</td>
+	<td>readme.txt				</td>
+	<td>概要（転載の際のヘッダーにご利用ください）</td></tr>
+<tr><td>nsd.chm					</td>
+	<td>取扱説明書（コンパイル済みhtmlファイル）	</td></tr>
+<tr><td rowspan='2' colspan='2'>include\</td>
+	<td>nsd.h					</td>
+	<td>Ｃ言語用ヘッダーファイル（nsd.libのライブラリ関数の宣言等がされています）	</td></tr>
+<tr><td>nsd.inc					</td>
+	<td>アセンブリ言語用ヘッダーファイル（nsd.libのライブラリ関数、制御用変数の宣言等がされています）	</td></tr>
+<tr><td colspan='2'>lib\		</td>
+	<td>*.lib					</td>
+	<td>音源ドライバー本体（6502用開発環境`cc65'用のオブジェクト・ライブラリ）	</td></tr>
+<tr><td rowspan='8'>sample\		</td>
+	<td>cc65\					</td>
+	<td>*.*						</td>
+	<td>cc65.exe用のＣ言語からnsd.libを使用する例</td></tr>
+<tr><td>ca65\					</td>
+	<td>*.*						</td>
+	<td>ca65.exe用のアセンブリ言語からnsd.libを使用する例</td></tr>
+<tr><td rowspan='2'>template\	</td>
+	<td>template.mml			</td>
+	<td>ＭＭＬ記法のテンプレート</td></tr>
+<tr><td>すととん.mml			</td>
+	<td>ストトン記法のテンプレート</td></tr>
+<tr><td>dmc\		</td>
+	<td>*.dmc					</td>
+	<td>⊿PCMサンプルデータ
+		<dl>
+		<dt>bd.dmc</dt><dd>Bass Drum</dd>
+		<dt>sd.dmc</dt><dd>Snare Drum (Standard)</dd>
+		<dt>sd2.dmc</dt><dd>Snare Drum (Dance)</dd>
+		<dt>tom.dmc</dt><dd>Tom Tom</dd>
+		<dt>hhc.dmc</dt><dd>Hi Hat Close</dd>
+		<dt>hho.dmc</dt><dd>Hi Hat Open</dd>
+		<dt>cymbal.dmc</dt><dd>Cymbal</dd>
+		</dl>	</td></tr>
+<tr><td rowspan='2'>voice\		</td>
+	<td>n163.mml				</td>
+	<td>n16x(n160,n161,n162,n163)音色データ・サンプル</td></tr>
+<tr><td>vrc7.mml				</td>
+	<td>vrc7音色データ・サンプル</td></tr>
+<tr><td>その他\					</td>
+	<td>						</td>
+	<td>ユーザー様より戴いたサンプルデータ	</td></tr>
+<tr><td rowspan='14'>src\		</td>
+	<td rowspan='5'>help\		</td>
+	<td>*.html					</td>
+	<td>取扱説明書のhtmlソース	</td></tr>
+<tr><td>help.css				</td>
+	<td>取扱説明書のスタイルシート	</td></tr>
+<tr><td>nsdl.hhp				</td>
+	<td>HTML HELP Workshop Version 4用のプロジェクト・ファイル	</td></tr>
+<tr><td>nsdl.hhc				</td>
+	<td>helpファイルのコンテンツ・ツリー</td></tr>
+<tr><td>nsdl.hhk				</td>
+	<td>helpファイルの索引		</td></tr>
+<tr><td rowspan='4'>nsc\		</td>
+	<td>*.cpp, *.h				</td>
+	<td>MMLコンパイラのソース（C++の標準関数のみで記述）	</td></tr>
+<tr><td>nsc.sln					</td>
+	<td>Visual C++.net 2003用のソリューション・ファイル	</td></tr>
+<tr><td>nsc.vcproj					</td>
+	<td>Visual C++.net 2003用のプロジェクト・ファイル	</td></tr>
+<tr><td>makefile				</td>
+	<td>makeとgccでビルドする場合のmakefile	</td></tr>
+<tr><td rowspan='2'>nsd\		</td>
+	<td>*.s, *.inc				</td>
+	<td>音源ドライバ本体（ライブラリ）のソース（6502のアセンブリ言語）	</td></tr>
+<tr><td>makefile				</td>
+	<td>nmake.exe用のmakefile	</td></tr>
+<tr><td rowspan='3'>rom\		</td>
+	<td>*.s						</td>
+	<td>NSF用の.binのソース（6502のアセンブリ言語）	</td></tr>
+<tr><td>*.cfg				</td>
+	<td>ld65.exe用のconfig file	</td></tr>
+<tr><td>makefile				</td>
+	<td>nmake.exe用のmakefile	</td></tr>
+</table>
+
+</div>
+
+
+<div class='block'>
+<h3>目次（index）</h3>
+
+<h4><a href="start.html">1. はじめに（Start）</a></h4>
+
+<h4><a href="usage.html">2. 使い方（Usage）</a></h4>
+
+<ol type='a'>
+<li><a href="tutorial.html">チュートリアル</a><strong>（※執筆中）</strong></li>
+	<ul>
+	<li><a href="tutorial_start.html">準備</a></li>
+	<li><a href="tutorial_music.html">曲を書いてみる</a></li>
+	<li><a href="tutorial_track.html">音を増やしてみる</a></li>
+	<li><a href="tutorial_envelope.html">音に表情をつけてみる</a></li>
+	<li>ＭＭＬ（Music Macro Language）を使う</li>
+	</ul>
+<li><a href="usage_nsc.html">MMLコンパイラ （nsc.exe）について</a></li>
+	<ul>
+	<li><a href="nsc_option.html">コマンドラインオプション</a></li>
+	<li><a href="jmml.html">すととん記法</a>
+			<ul>
+			<li><a href="jmml_note.html">ラ,シ,ド,レ,ミ,ファ,ソ：音符</a></li>
+			<li><a href="jmml_tie.html">ー：タイ</a></li>
+			<li><a href="jmml_rest.html">ン,ッ：休符</a></li>
+			<li><a href="jmml_length.html">音符：省略時の音長</a></li>
+			<li><a href="jmml_voice.html">音色</a></li>
+			<li><a href="jmml_octave.html">音階：オクターブ</a></li>
+			<li><a href="jmml_relative_octave.html">↑,↓：相対オクターブ</a></li>
+			<li><a href="jmml_volume.html">音量</a></li>
+			<li><a href="jmml_relative_volume.html">小さく,大きく：相対ボリューム</a></li>
+			<li><a href="jmml_KeySignature.html">調{}：調号</a></li>
+			<li><a href="jmml_echo.html">エコー</a></li>
+			<li><a href="jmml_envelop.html">エンベロープ</a></li>
+			<li><a href="jmml_gate.html">ゲート：クオンタイズ</a></li>
+			<li><a href="jmml_detune.html">ディチューン</a></li>
+			<li><a href="jmml_tempo.html">テンポ</a></li>
+			<li><a href="jmml_tempo.html">←,→：相対的なテンポ</a></li>
+			<li><a href="jmml_TR.html">TR：トラック</a></li>
+			<li><a href="jmml_vibrato.html">ビブラート</a></li>
+			<li><a href="jmml_portamento.html">ポルタメント</a></li>
+			<li><a href="jmml_loop.html">∞：無限ループ</a></li>
+			<li><a href="jmml_repeatA.html">【　　：　　】　：リピートＡ</a></li>
+			<li><a href="jmml_repeatB.html">｜：　￥　：｜　：リピートＢ</a></li>
+			</ul>
+	</li>
+	<li><a href="mml.html">MML(Music Macro Language)文法</a>
+		<ul>
+		<li><a href="mml_envelope.html">エンベロープ記述ブロック</a></li>
+		<li><a href="mml_patch.html">パッチ定義記述ブロック</a></li>
+		<li><a href="mml_dpcm.html">⊿PCM記述ブロック</a></li>
+		<li><a href="mml_FDSC.html">FDSキャリア波形定義</a></li>
+		<li><a href="mml_FDSM.html">FDSモジュレータ波形定義</a></li>
+		<li><a href="mml_vrc7.html">VRC7音色波形記述ブロック</a></li>
+		<li><a href="mml_n163.html">n16x(n160,n161,n162,n163)音色波形記述ブロック</a></li>
+		<li><a href="mml_sequence.html">シーケンス記述ブロック</a>
+			<ul>
+			<li><a href="mml_note.html">a,b,c,d,e,f,g：音符</a></li>
+			<li><a href="mml_keyshift.html">k：キーシフト</a></li>
+			<li><a href="mml_jump2.html">j：早送り</a></li>
+			<li><a href="mml_length.html">l：省略時の音長</a></li>
+			<li><a href="mml_octave.html">o：オクターブ</a></li>
+			<li><a href="mml_gate.html">q,u：省略時のゲートタイム</a></li>
+			<li><a href="mml_rest.html">r：休符</a></li>
+			<li><a href="mml_sweep.html">s：スイープ(APU)</a></li>
+			<li><a href="mml_sweep.html">s：サスティン(VRC7)</a></li>
+			<li><a href="mml_sweep.html">s：サンプル長設定(n16x)</a></li>
+			<li><a href="mml_sweep.html">s：ハードウェアエンベロープ（Sunsoft 5B）</a></li>
+			<li><a href="mml_tempo.html">t：テンポ</a></li>
+			<li><a href="mml_volume.html">v：音量</a></li>
+			<li><a href="mml_poke.html">y：メモリ書き込み</a></li>
+			<li><a href="mml_VRC7write.html">yV：VRC7レジスタ書き込み</a></li>
+			<li><a href="mml_detune.html">D,D%：ディチューン</a></li>
+			<li><a href="mml_envelop.html">E@,Ev,Em,En：エンベロープ（ビブラート）</a></li>
+			<li><a href="mml_echo.html">EC：疑似エコー</a></li>
+			<li><a href="mml_echo_buffer.html">EC：疑似エコー（バッファ制御）</a></li>
+			<li><a href="mml_s5b_envelope.html">F：Sunsoft 5Bエンベロープ周波数</a></li>
+			<li><a href="mml_KeySignature.html">K{}：調号</a></li>
+			<li><a href="mml_scale.html">scale()：スケール</a></li>
+			<li><a href="mml_jump.html">J：音符・休符の無効化</a></li>
+			<li><a href="mml_jump2.html">j：早送りの有効・無効化</a></li>
+			<li><a href="mml_loop.html">L：無限ループ</a></li>
+			<li><a href="mml_N163_channel.html">NC:n16x(n160,n161,n162,n163)チャンネル数設定</a></li>
+			<li><a href="mml_portamento.html">P：ポルタメント</a></li>
+			<li><a href="mml_portamento2.html">{}：ポルタメント２</a></li>
+			<li><a href="mml_release.html">Rm,R@,Rv：リリース処理</a></li>
+			<li><a href="mml_sub.html">S：サブルーチン・コール</a></li>
+			<li><a href="mml_se.html">SE：効果音コール</a></li>
+			<li><a href="mml_TR.html">TR：トラック</a></li>
+			<li><a href="mml_macro.html">$：マクロ呼出し</a></li>
+			<li><a href="mml_local_macro.html">$$：ローカルマクロ設定。</a></;o>
+			<li><a href="mml_voice.html">@：音色</a></li>
+			<li><a href="mml_patch_seq.html">@P：パッチ</a>
+			<li><a href="mml_VRC7voice.html">@V：VRC7ユーザ定義音色</a></li>
+			<li><a href="mml_FDS_career.html">@FC：FDSキャリア波形設定</a></li>
+			<li><a href="mml_FDS_modulator.html">@FM：FDSモジュレータ波形定義</a></li>
+			<li><a href="mml_FDS_frequency.html">@FF：FDSモジュレータ周波数設定</a></li>
+			<li><a href="mml_FDS_volume.html">@FV：FDSマスター音量</a></li>
+			<li><a href="mml_N163voice.html">@N：n16x(n160,n161,n162,n163)音色波形転送（ロード）</a></li>
+			<li><a href="mml_N163voice.html">@NL：n16x(n160,n161,n162,n163)音色波形転送（ロード）</a></li>
+			<li><a href="mml_N163set.html">@NS：n16x(n160,n161,n162,n163)音色波形設定＆サンプル長指定</a></li>
+			<li><a href="mml_relative_volume.html">(,)：相対ボリューム</a></li>
+			<li><a href="mml_relative_octave.html">&lt;,&gt;,&quot;,'：相対オクターブ</a></li>
+			<li><a href="mml_repeatA.html">[ : ]：リピート(A)</a></li>
+			<li><a href="mml_repeatB.html">|: \ :|：リピート(B)</a></li>
+			<li><a href="mml_tie.html">^：タイ</a></li>
+			<li><a href="mml_transpose.html">_.__：移調</a></li>
+			</ul>
+		</li>
+		<li>Tips<br>
+			<ul>
+			<li><a href="mml_tips.html">最適化のためのヒント</a></li>
+			<li><a href="n163.html">n16x(n160,n161,n162,n163)の使い方</a></li>
+			<li><a href="scale.html">スケールとコード</a></li>
+			</ul>
+		</ul>
+	</li>
+	<li><a href="nsc_asm.html">出力アセンブリ言語ソースの仕様</a></li>
+	</ul>
+
+<li><a href="usage_nsd.html">音源ドライバー （nsd.lib）について</a></li>
+	<ul>
+	<li>関数リファレンス<br>
+		<ul>
+		<li><a href="func_nsd_init.html">nsd_init()</a></li>
+		<li><a href="func_nsd_set_dpcm.html">nsd_set_dpcm(<var>void* dpcm</var>)</a></li>
+		<li><a href="func_nsd_main.html">nsd_main()</a></li>
+		<li><a href="func_nsd_main_bgm.html">nsd_main_bgm()</a></li>
+		<li><a href="func_nsd_main_se.html">nsd_main_se()</a></li>
+		<li><a href="func_nsd_play_bgm.html">nsd_play_bgm(<var>void *bgm</var>)</a></li>
+		<li><a href="func_nsd_stop_bgm.html">nsd_stop_bgm()</a></li>
+		<li><a href="func_nsd_play_se.html">nsd_play_se(<var>void *se</var>)</a></li>
+		<li><a href="func_nsd_stop_se.html">nsd_stop_se()</a></li>
+		<li><a href="func_nsd_pause_bgm.html">nsd_pause_bgm()</a></li>
+		<li><a href="func_nsd_resume_bgm.html">nsd_resume_bgm()</a></li>
+		<li><a href="func_nsd_save.html">nsd_load(<var>void *buff</var>)</a></li>
+		<li><a href="func_nsd_load.html">nsd_save(<var>void *buff</var>)</a></li>
+		</ul>
+	</li>
+	</ul>
+</ol>
+
+<h4>3. 仕様（Specifications）</h4>
+
+<ul>
+<li><a href="spec.html">各.bin/.libの仕様</a></li>
+<li><a href="diagram.html">ブロック図</a></li>
+<li><a href="variable.html">制御用変数</a></li>
+<li><a href="format_music.html">データフォーマット</a></li>
+</ul>
+
+<h4><a href="faq.html">4. FAQ</a></h4>
+
+<h4><a href="thanks.html">5. Special Thanks</a></h4>
+
+<h4><a href="licence.html">6. ライセンス・著作権（Licence）</a></h4>
+
+<h4><a href="revision.html">7. 改訂履歴（Revision）</a></h4>
+
+
+</div>
+
+
+
+</div>
+
+</BODY>
+</HTML>

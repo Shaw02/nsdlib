@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ストトン表記：ポルタメント</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="jmml.html">ストトン表記</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>ストトン表記：ポルタメント</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        ポルタメント<var>遅延</var>,<var>速さ</var>,<var>深さ</var>,<var>目標</var>
+</pre></code>
+</div>
+
+
+
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>遅延</h4>
+<p>
+ポルタメントがかかるまでの遅延時間です。<br>
+フレーム単位で指定してください。<br>
+</p>
+
+
+<h4>速さ</h4>
+<p>
+<var>深さ</var>を加算する周期です。<br>
+フレーム単位で指定してください。<br>
+</p>
+
+<h4>深さ</h4>
+<p>
+<var>速さ</var>フレーム毎に加算する値です。<br>
+16で100 centを意味します。<br>
+</p>
+
+
+<h4>目標</h4>
+<p>
+最終的な変化量です。1で半音に相当します。<br>
+</p>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+次の音符に対して、ポルタメントをかけます。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+<var>深さ</var>と<var>目標</var>の符号は合わせて下さい。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    ポルタメント20,1,-7,-24    ド1  ド1     <span style="color:green;">/* Portamento */</span>
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Release</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Release</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        R@<var>voice</var>
+        Rv<var>volume</var>
+        Rm<var>mode</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>voice　（`R@'命令の引数）</h4>
+<p>
+Key Off時の音色です。（Default: <var>voice</var> = 0）<br>
+</p>
+
+<h4>volume　（`Rv'命令の引数）</h4>
+<p>
+Key Off時の音量です。（Default: <var>volume</var> = 2）<br>
+</p>
+
+<h4>mode　（`Rm'命令の引数）</h4>
+<p>
+<a href="mml_gate.html">ゲート</a>によるKey Off時の音の処理方法です。（Default: <var>mode</var> = 2）<br>
+（<a href="mml_rest.html">休符</a>区間の音の処理は、休符に臨時記号をつけるなどの方法により、別途に任意のモードを設定します。）<br>
+</p>
+<dl>
+<dt>0</dt><dd>強制的に、音量を０にします。⊿PCMの場合はKeyOffします。</dd>
+<dt>1</dt><dd>直前のノートを、R@, Rvコマンドの値で鳴らします。</dd>
+<dt>2</dt><dd>直前のノートのエンベロープ（音色・音量）を継続します。（Default）</dd>
+</dl>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+KeyOffした時の音の余韻の処理を設定できます。<br>
+詳細は、引数の項目を参照してください。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+Rmコマンドは、<a href="mml_gate.html">q,u,Qコマンド等によるゲート</a>によりKey Offされた時の音の処理方法を指定します。<br>
+<a href="mml_rest.html">休符</a>の区間は、休符に臨時記号をつけるなどの方法により別途に指定します。<br>
+つまり、<a href="mml_gate.html">ゲート</a>区間中と<a href="mml_rest.html">休符</a>の区間では
+音の処理方法として異なったモードを指定する事が可能となります。<br>
+例えば、ゲート時のモードを０(Rm0)、休符時のモードを２（r=）とした場合、
+q,u,Qコマンド等によるゲート時は無音（音量０）となり、休符はエンベロープが適用されます。<br>
+</p>
+
+<p>
+2A03の三角波では無効です。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    Rv2 R@2 Rm1 l4 o4 v13 q8 c,8. ccc cccc     <span style="color:green;">/* stacc. */</span>
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
