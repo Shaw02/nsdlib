@@ -16,6 +16,10 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#ifdef _OPENMP
+	#include	<omp.h>
+#endif
+
 #ifdef	_UNICODE
 	#define	_CHAR	wchar_t
 	#define _T(x)	L ## x

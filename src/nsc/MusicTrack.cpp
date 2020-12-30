@@ -46,15 +46,10 @@ MusicTrack::MusicTrack(size_t _id, MMLfile* MML, const _CHAR _strName[]):
 	cnt_Repert_B(0)
 
 {
-	unsigned	int	i = 0;
-
 	nsd.init();
 	nsd.length = -1;
 
-	while(i < 256){
-		oldNote[i] = -1;
-		i++;
-	}
+	ResetEcho();
 
 	Reset_opt();
 
@@ -3195,12 +3190,11 @@ void	MusicTrack::SetEchoBuffer(MMLfile* MML,int note)
 //==============================================================
 void	MusicTrack::ResetEcho()
 {
-	unsigned	int	i = 0;
 
-	while(i < 256){
+	for(size_t i=0; i<256; i++){
 		oldNote[i] = -1;
-		i++;
 	}
+
 //	echo_flag	= false;
 	pt_oldNote	= 0;
 }
