@@ -29,9 +29,9 @@
 	<td>●音源ドライバ本体<br>
 		・エミュレータmesenで再生できない現象を修正した。<br>
 		●ＭＭＬコンパイラ<br>
-		・オプションスイッチ<code>/X</code>により、Extended NSF (NSFe)へのコンパイルに対応した。<br>
-		・オプションスイッチ<code>/V</code>により、NSFのヴァージョン指定に対応した。<br>
-		　従来のNSF Version 1以外にNSF Version 2へのコンパイルに対応し、デフォルトのコンパイルをNSF Level 2に変更した。<br>
+		・オプションスイッチ<code>-x</code>により、Extended NSF (NSFe)へのコンパイルに対応した。<br>
+		・オプションスイッチ<code>-v</code>により、NSFのヴァージョン指定に対応した。<br>
+		　従来のNSF Version 1以外にNSF Version 2へのコンパイルに対応し、デフォルトのコンパイルをNSF version 2に変更した。<br>
 		・各種メタデータに対応し、メタデータ用のコマンドを実装した（以下）。<br>
 		<ul>
 		<li><code>#maker</code>：制作者の名前を記述できます。</li>
@@ -44,6 +44,22 @@
 		<li><code>#author</code> ：曲毎の作曲者を指定します(MMLシーケンス記述ブロックにて)。</li>
 		<li><code>#time</code> ：各曲の再生時間を設定します(MMLシーケンス記述ブロックにて)。</li>
 		<li><code>#fade</code> ：各曲のフェードアウト時間を設定します(MMLシーケンス記述ブロックにて)。</li>
+		</ul>
+		・<code>#title</code>, <code>#composer</code>, <code>#copyright</code>, <code>#maker</code>, <code>#text</code>, <code>#label</code>, <code>#author</code>コマンドは、以下のエスケープシーケンスに対応した。<br>
+		<ul>
+		<li><code>\a</code> ：	ベル文字（アラート）</li>
+		<li><code>\b</code> ：	１文字分戻る</li>
+		<li><code>\f</code> ：	ページ送り（クリア）</li>
+		<li><code>\n</code> ：	改行、復帰</li>
+		<li><code>\r</code> ：	同じ行の先頭に戻る</li>
+		<li><code>\t</code> ：	水平タブ</li>
+		<li><code>\v</code> ：	垂直タブ</li>
+		<li><code>\\</code> ：	\を表示</li>
+		<li><code>\?</code> ：	?を表示</li>
+		<li><code>\'</code> ：	シングルクォーテーション(')を表示</li>
+		<li><code>\"</code> ：	ダブルクォーテーション(")を表示</li>
+		<li><code>\N</code> ：	8進定数（Nは8進数の定数）</li>
+		<li><code>\xN</code> ：	16進定数(Nは16進数の定数）</li>
 		</ul>
 	</td>
 	<td width=120>2020年12月29日</td></tr>
