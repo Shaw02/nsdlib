@@ -14,6 +14,7 @@ class FileInput :
 {
 protected:
 //メンバー変数
+		bool	f_error;				//エラー発生の有無
 				string		strFilename;
 	unsigned	int			iLine;		//現在のライン
 	unsigned	char		readData;

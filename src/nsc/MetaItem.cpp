@@ -26,7 +26,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 MetaItem::MetaItem(const char _strName[]):
 	m_identifier(_strName),
 	m_size(0),
-	m_offset(0)
+	m_offset(0),
+	f_error(false)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->iDebug & DEBUG_Meta_Create){

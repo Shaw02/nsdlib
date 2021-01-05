@@ -18,7 +18,8 @@
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-FileOutput::FileOutput(void)
+FileOutput::FileOutput(void):
+	f_error(false)
 {
 //#ifdef	_WIN32
 	imbue( std::locale::classic() );

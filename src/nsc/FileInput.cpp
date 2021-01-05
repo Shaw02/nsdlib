@@ -24,6 +24,7 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //				無し
 //==============================================================
 FileInput::FileInput(void):
+	f_error(false),
 	iLine(1),
 	readData(0)
 {

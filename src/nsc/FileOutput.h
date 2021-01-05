@@ -12,7 +12,12 @@
 class FileOutput :
 	public ofstream
 {
+protected:
+//メンバー変数
+		bool	f_error;					//エラー発生の有無
+
 public:
+//メンバー関数
 		FileOutput(void);
 		~FileOutput(void);
 void	fileopen(const char*	strFileName);

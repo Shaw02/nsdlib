@@ -73,8 +73,5 @@ public:
 //ƒƒ“ƒo[ŠÖ”
 			NSD_WORK(void);
 			~NSD_WORK(void);
-
 	void	init(void);
-	void	set(NSD_WORK* work);
-	void	get(NSD_WORK* work) { work->set(this); };
 };

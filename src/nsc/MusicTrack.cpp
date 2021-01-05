@@ -106,13 +106,13 @@ MusicTrack::~MusicTrack(void)
 //	●返値
 //			unsigned	int			Tick数
 //==============================================================
-unsigned int	MusicTrack::TickCount(MusicFile* MUS, NSD_WORK* work)
+int	MusicTrack::TickCount(MusicFile* MUS, NSD_WORK* work)
 {
-	unsigned int	itick;
+	int	itick;
 
-	nsd.set(work);				//サブルーチン元から、パラメータを取得
+	nsd = *work;				//サブルーチン元から、パラメータを取得
 	itick = TickCount(MUS);
-	nsd.get(work);				//サブルーチン元へ、パラメータを通知
+	*work = nsd;				//サブルーチン元へ、パラメータを通知
 
 	return(itick);
 }
@@ -123,9 +123,9 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS, NSD_WORK* work)
 //	●引数
 //			MusicFile*	MUS			
 //	●返値
-//			unsigned	int			Tick数
+//						int			Tick数
 //==============================================================
-unsigned int	MusicTrack::TickCount(MusicFile* MUS)
+int	MusicTrack::TickCount(MusicFile* MUS)
 {
 
 	//----------------------
@@ -250,8 +250,8 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 								f_ERR = true;
 							} else {
 								iTickCount += MUS->ptcSub[_no]->TickCount(MUS, &nsd);	//サブルーチン先をシミュレート
+								MUS->ptcSub[_no]->setUse();								//サブルーチン先を使うフラグを立てる
 								if(adrObj->chkUse() == false){
-									MUS->ptcSub[_no]->setUse();			//使うフラグを立てる
 									adrObj->setUse();
 									vec_ptc_Sub.push_back(adrObj);		//アドレス解決するオブジェクトとして登録
 								}
@@ -1575,46 +1575,32 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 		//リピートの展開
 		{
 			unsigned	int				iRepeatCount = (*it_ct_repeat_c) - 1;
-			unsigned	char			cOpCode;
-			string						sOpCode;
 
 			while(iRepeatCount>0){
 				pt_itMusic	=	(*it_it_repeat_c_s);
 				if(pt_itMusic != *it_it_repeat_c_e){
 					do{
+						unsigned char	cOpCode;
 						pt_itMusic++;
 						cOpCode		=	(*pt_itMusic)->getCode((size_t)0);
-						sOpCode.clear();
-										(*pt_itMusic)->getCode(&sOpCode);
 						switch(cOpCode){
 							//--------------------------
-							//Envelope Object
-							case(nsd_Envelop_Voice):
-							case(nsd_Envelop_Volume):
-							case(nsd_Envelop_Frequency):
-							case(nsd_Envelop_Note):
-								CopyEnvEvent(&sOpCode, pt_itMusic);
-								break;
-							//--------------------------
-							//Address Object 
+							//Call Subroutine 
 							case(nsd_Call):
-								CopySubEvent(&sOpCode, pt_itMusic);
-								break;
-							case(nsd_Call_SE):
-							case(nsc_VRC7):
-							case(nsc_N163):
-							case(nsd_FDS_Career):
-							case(nsd_FDS_Modlator):
-								CopyAddressEvent(&sOpCode, pt_itMusic);
+								{
+									//このクラス特有のメンバー変数があるため、個別にコピーする。
+									mml_CallSub* _event = new mml_CallSub(*(mml_CallSub*)(*pt_itMusic));
+									SetEvent(_event);
+								}
 								break;
 							//--------------------------
 							//Repeat
 							case(nsd_Repeat_A_Start):
-							{
-								mml_repeat* _event = (mml_repeat*)(*pt_itMusic);
-								SetEvent_Repeat_A_Start(_event->get_count());
+								{
+									mml_repeat* _event = (mml_repeat*)(*pt_itMusic);
+									SetEvent_Repeat_A_Start(_event->get_count());
+								}
 								break;
-							}
 							case(nsd_Repeat_A_Branch):
 								SetEvent_Repeat_A_Branch();
 								break;
@@ -1632,8 +1618,7 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 								break;
 							default:
 								{
-									mml_general*	_event	=	new	mml_general(cOpCode);
-									_event->setCode(&sOpCode);
+									MusicEvent* _event = new MusicEvent(*(MusicEvent*)*pt_itMusic);
 									SetEvent(_event);
 								}
 								break;
@@ -1669,41 +1654,6 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 		it_repeat_type--;
 		repeat_type.pop_back();
 	}
-}
-
-//--------------------------------------------------------------
-void	MusicTrack::CopyAddressEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
-{
-	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
-	mml_Address*	_event		=	new mml_Address(ptAdrItem->get_id(), (*sOpCode)[0]);
-	_event->setCode(sOpCode);
-	SetEvent(_event);
-}
-
-//--------------------------------------------------------------
-void	MusicTrack::CopySubEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
-{
-	mml_CallSub*	ptAdrItem	=	(mml_CallSub*)(*pt_itMusic);
-	mml_CallSub*	_event		=	new mml_CallSub(ptAdrItem->get_id());
-	_event->setPatch(ptAdrItem->getPatch());
-	_event->setCode(sOpCode);
-	SetEvent(_event);
-}
-
-//--------------------------------------------------------------
-void	MusicTrack::CopyEnvEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
-{
-	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
-	mml_Address*	_event;
-
-	if(ptAdrItem->get_flag() == true){
-		_event		=	new mml_Address(ptAdrItem->get_id(), (*sOpCode)[0]);
-	} else {
-		//Envelop Off
-		_event		=	new mml_Address((*sOpCode)[0]);
-	}
-	_event->setCode(sOpCode);
-	SetEvent(_event);
 }
 
 //==============================================================

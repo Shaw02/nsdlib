@@ -122,38 +122,3 @@ void	mml_Address::set_Address(size_t _addr)
 	
 
 }
-
-//==============================================================
-//		アドレスの取得
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-/*
-size_t	mml_Address::get_Address(void)
-{
-	size_t	i;
-
-	switch(iSize){
-		case(3):
-			i = (unsigned char)code[1] + ((unsigned char)code[2]<<8);
-			break;
-		case(4):
-			i = (unsigned char)code[2] + ((unsigned char)code[3]<<8);
-			break;
-		default:
-			_CERR << _T("mml_Address::set_Address()関数でエラーが発生しました。") << endl;
-			nsc_exit(EXIT_FAILURE);
-			break;
-	}
-	if (i & 0x8000){
-		i |= 0xFFFF0000;
-	}
-	return(i);
-}
-*/
-
-
-

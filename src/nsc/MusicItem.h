@@ -34,7 +34,7 @@ protected:
 				bool		f_id;			//ID番号がセットされた事を示すflag
 
 				bool		f_necessary;	//最適化フラグ
-
+				bool		f_error;		//エラー発生の有無
 
 //メンバー関数
 public:

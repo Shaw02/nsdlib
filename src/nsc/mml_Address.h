@@ -28,5 +28,4 @@ public:
 	~mml_Address(void);
 
 				void	set_Address(size_t _addr);
-//				size_t	get_Address(void);
 };
