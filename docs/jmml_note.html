@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ストトン表記：音名</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="jmml.html">ストトン表記</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>ストトン表記：音名</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        ラ<span style="color:blue;">(</span><var>臨時記号</var><span style="color:blue;">)(</span><var>音長</var><span style="color:blue;">)(</span><var>タイ・スラー</var><span style="color:blue;">|</span>,<var>ゲートタイム</var><span style="color:blue;">)</span>
+        シ<span style="color:blue;">(</span><var>臨時記号</var><span style="color:blue;">)(</span><var>音長</var><span style="color:blue;">)(</span><var>タイ・スラー</var><span style="color:blue;">|</span>,<var>ゲートタイム</var><span style="color:blue;">)</span>
+        ド<span style="color:blue;">(</span><var>臨時記号</var><span style="color:blue;">)(</span><var>音長</var><span style="color:blue;">)(</span><var>タイ・スラー</var><span style="color:blue;">|</span>,<var>ゲートタイム</var><span style="color:blue;">)</span>
+        レ<span style="color:blue;">(</span><var>臨時記号</var><span style="color:blue;">)(</span><var>音長</var><span style="color:blue;">)(</span><var>タイ・スラー</var><span style="color:blue;">|</span>,<var>ゲートタイム</var><span style="color:blue;">)</span>
+        ミ<span style="color:blue;">(</span><var>臨時記号</var><span style="color:blue;">)(</span><var>音長</var><span style="color:blue;">)(</span><var>タイ・スラー</var><span style="color:blue;">|</span>,<var>ゲートタイム</var><span style="color:blue;">)</span>
+        ファ<span style="color:blue;">(</span><var>臨時記号</var><span style="color:blue;">)(</span><var>音長</var><span style="color:blue;">)(</span><var>タイ・スラー</var><span style="color:blue;">|</span>,<var>ゲートタイム</var><span style="color:blue;">)</span>
+        ソ<span style="color:blue;">(</span><var>臨時記号</var><span style="color:blue;">)(</span><var>音長</var><span style="color:blue;">)(</span><var>タイ・スラー</var><span style="color:blue;">|</span>,<var>ゲートタイム</var><span style="color:blue;">)</span>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+<p>
+音名以外は省略可能です。<br>
+</p>
+
+<h4>音名</h4>
+<p>音名は、以下が使えます。</p>
+<table>
+<tr><td>ド	</td><td>ど		</td><td>ハ</td></tr>
+<tr><td>レ	</td><td>れ		</td><td>ニ</td></tr>
+<tr><td>ミ	</td><td>み		</td><td>ホ</td></tr>
+<tr><td>ファ</td><td>ふぁ	</td><td>ヘ</td></tr>
+<tr><td>ソ	</td><td>そ		</td><td>ト</td></tr>
+<tr><td>ラ	</td><td>ら		</td><td>イ</td></tr>
+<tr><td>シ	</td><td>し		</td><td>ロ</td></tr>
+</table>
+
+<h4>臨時記号</h4>
+<p>必ず、半角で記述して下さい。<br>
+<dl>
+<dt>+ … </dt><dd>&#9839; Sharp</dd>
+<dt># … </dt><dd>&#9839; Sharp</dd>
+<dt>- … </dt><dd>&#9837; Flat</dd>
+<dt>= … </dt><dd>&#9838; Natural</dd>
+</dl>
+
+<h4>音長</h4>
+<p>
+<var>音長</var>分音符となります。<br>
+<code>.</code>を付与することで付点の音長を表現可能です。<br>
+この<code>.</code>は複数指定可能です。<br>
+付点のみを付けた場合は、<a href="jmml_length.html">音符コマンド</a>で指定した数値に付点が付いた音長となります。<br>
+</p>
+<p>
+また、演算子 <code>+</code> 及び <code>-</code> を用いて音長の加減算が可能です。
+</p>
+<p>
+<var>音長</var>を省略時は、<a href="jmml_length.html">音符コマンド</a>で指定した数値が適用されます。<br>
+</p>
+
+<h4>タイ・スラー</h4>
+<p>
+半角の<code>&</code>を記述する事で、タイ（次の音と繋げる）・スラー（次の音と滑らかに繋げる）を意味します。<br>
+音源ドライバー内部では、この音符ではKey-Off処理をせず、次の音符ではKey-On処理をしません。<br>
+</p>
+
+<h4>ゲートタイム</h4>
+<p>
+実際に発音する長さを指定します。<br>
+指定した場合、<a href="jmml_gate.html">ゲートコマンド</a>のゲートタイムに優先されます。<br>
+０はゲートタイム無効で、<var>音長</var>の長さで発音します。<br>
+</p>
+<p>
+引数<var>音長</var>と同様の指定が可能です。
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+音符を意味します。
+</p>
+<h4>ノイズチェンネルの仕様</h4>
+<p>
+ノートナンバーの下位4bitが音階として適用されます。<br>
+具体的には以下表の通りです。<br>
+</p>
+<table>
+<tr><th>音階		</th><th>音階番号	</th><th>ノイズの音階</th></tr>
+<tr><td>音階5 ド	</td><td>0x30		</td><td>音階1 ラ	</td></tr>
+<tr><td>音階5 ド#	</td><td>0x31		</td><td>音階2 ラ	</td></tr>
+<tr><td>音階5 レ	</td><td>0x32		</td><td>音階3 ラ	</td></tr>
+<tr><td>音階5 レ#	</td><td>0x33		</td><td>音階4 レ	</td></tr>
+<tr><td>音階5 ミ	</td><td>0x34		</td><td>音階4 ラ	</td></tr>
+<tr><td>音階5 ファ	</td><td>0x35		</td><td>音階5 レ	</td></tr>
+<tr><td>音階5 ファ#	</td><td>0x36		</td><td>音階5 ラ	</td></tr>
+<tr><td>音階5 ソ	</td><td>0x37		</td><td>音階6 ド	</td></tr>
+<tr><td>音階5 ソ#	</td><td>0x38		</td><td>音階6 ファ	</td></tr>
+<tr><td>音階5 ラ	</td><td>0x39		</td><td>音階6 ラ	</td></tr>
+<tr><td>音階5 ラ#	</td><td>0x3A		</td><td>音階7 レ	</td></tr>
+<tr><td>音階5 シ	</td><td>0x3B		</td><td>音階7 ラ	</td></tr>
+<tr><td>音階6 ド	</td><td>0x3C		</td><td>音階8 ラ	</td></tr>
+<tr><td>音階6 ド#	</td><td>0x3D		</td><td>音階9 ラ	</td></tr>
+<tr><td>音階6 レ	</td><td>0x3E		</td><td>音階10 ラ	</td></tr>
+<tr><td>音階6 レ#	</td><td>0x3F		</td><td>音階11 ラ	</td></tr>
+</table>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+<var>音長</var>は、1～255[tick]の間に収めてください。<br>
+また、<var>音長</var>に<code>0</code>を指定しないでください。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    ド#4.         <span style="color:green;">/* ド＃（嬰ハ）の付点四分音符 */</span>
+    ミ1+2.-%1     <span style="color:green;">/* 音長 = 96 + 48*1.5 - 1 = 167[tick] */</span>
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

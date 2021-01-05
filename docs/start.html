@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>はじめに</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+
+<h2>はじめに</h2>
+
+<p>
+本ファミリーコンピューター用音源ドライバーをダウンロードしていただき、ありがとうございます。<br>
+</p>
+<p>
+本ソフトウェアは、ファミリーコンピューターにて音楽・効果音を制御するサウンドドライバーに、
+本サウンドドライバー用の音楽・効果音データを作成するＭＭＬコンパイラにて構成されています。<br>
+サウンドドライバー本体はライブラリ形式として開発しており、ユーザー様のアプリケーション（ゲームなど）に組み込み可能です。<br>
+また、MMLコンパイラは、様々なプレイヤーで再生可能な"NSF music format"への出力もサポートしており、音楽・効果音データの開発工数を削減する事ができます。<br>
+</p>
+
+<p>
+ファミコンでの曲つくりに関するトピックスは、<a href="http://wikiwiki.jp/mck/" target="_blank">mck wiki</a>にてよくまとめられております。<br>
+ぜひ、ご参照ください。</br>
+</p>
+
+<div class='block'>
+<h3>別途必要なもの</h3>
+
+<div class='block'>
+<h4>Windows 2000～</h4>
+<p>
+本ソフトウェアに付属のMMLコンパイラは、Windows 2000以降～用の32bitアプリケーションとして開発しています。<br>
+従いまして、音楽・効果音データの開発にはWindows 2000以降が稼動しているＰＣが必要です。<br>
+</p>
+<ul>
+<li><a href="http://www.microsoft.co.jp/" target="_blank">Microsoft (Japanese)</a></li>
+<li><a href="http://www.microsoft.com/" target="_blank">Microsoft (English)</a></li>
+</ul>
+<p>
+尚、MMLコンパイラはＣ＋＋にて開発されており、ソースファイルもアーカイブに含まれています。<br>
+ご自身でビルドして頂ければ、マッキントシュ、Ｌｉｎｕｘ等でもご利用いただけます。<br>
+</p>
+<p>
+また、付属のMMLコンパイラ（nsc.exe）は、
+<a href="http://www.microsoft.com/japan/msdn/vstudio/previous/2003/overview/eaoverview.aspx" target="_blank">
+Microsoft Visual C++.net 2003</a>にてビルドされております。<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>ＮＳＦプレイヤー</h4>
+<p>
+NSF music formatを再生する場合には、別途、ＮＳＦプレイヤーが必要となります。<br>
+本アーカイブには含まれておりませんので、別途、ご用意ください。<br>
+</p>
+<ul>
+<li><a href="http://dmpsoft.s17.xrea.com/hoot/index.html" target="_blank">hoot</a></li>
+<li><a href="http://virtuanes.s1.xrea.com/" target="_blank">VirtuaNES, VirtuaNSF</a></li>
+<li><a href="http://gigo.retrogames.com/" target="_blank">GNES</a></li>
+<li><a href="http://rainwarrior.ca/projects/nsfplay/" target="_blank">NSFPlay, NSFPlug</a></li>
+</ul>
+</div>
+
+<div class='block'>
+<h4>テキストエディタ</h4>
+<p>
+本ソフトウェアには、ＩＤＥ（統合開発環境）はありません。<br>
+音楽・効果音データの作成は、何らかのテキストエディタでＭＭＬを記述していただき、
+その後コマンドプロンプトからＭＭＬコンパイラを実行してください。<br>
+</p>
+<ul>
+<li>note pad</li>
+<li><a href="http://sakura-editor.sourceforge.net/" target="_blank">サクラエディタ</a></li>
+<li><a href="http://hide.maruo.co.jp/software/hidemaru.html" target="_blank">秀丸エディタ（シェアウェア）</a></li>
+</ul>
+</div>
+
+<div class='block'>
+<h4>⊿PCMファイル(*.dmc)の開発環境</h4>
+<p>
+本アーカイブには含まれておりませんので、別途、ご用意ください。<br>
+</p>
+<ul>
+<li><a href="http://www.geocities.co.jp/Playtown-Denei/9628/" target="_blank">dmccomv.exe</a></li>
+<li><a href="http://ddssjp.web.fc2.com/" target="_blank">MakeDPCM</a></li>
+</ul>
+</div>
+
+
+
+<div class='block'>
+<h4>開発環境</h4>
+
+<p>
+音源ドライバー nsd.lib は、6502クロス開発環境<a href="http://www.cc65.org/" target="_blank">cc65</a>
+にて開発しており、オブジェクト・ライブラリとして配布しています。<br>
+本音源ドライバーを用いたファミコン用アプリケーション（ゲームなど）を開発するには、別途、
+6502クロス開発環境<a href="http://www.cc65.org/" target="_blank">cc65</a>が必要となります。<br>
+</p>
+
+</div>
+
+
+
+
+
+</div>	<!-- h3 -->
+
+
+</div>	<!-- contents -->
+
+</BODY>
+</HTML>

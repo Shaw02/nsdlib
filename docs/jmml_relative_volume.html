@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ストトン表記：相対的な音量</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="jmml.html">ストトン表記</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>ストトン表記：相対的な音量</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        小さく<span style="color:blue;">(</span><var>音量</var><span style="color:blue;">)</span>
+        （<span style="color:blue;">(</span><var>音量</var><span style="color:blue;">)</span>
+        大きく<span style="color:blue;">(</span><var>音量</var><span style="color:blue;">)</span>
+        ）<span style="color:blue;">(</span><var>音量</var><span style="color:blue;">)</span>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>音量</h4>
+<p>
+引数を書いた場合は、指定の値だけ音量を相対変化させます。<br>
+省略した場合のデフォルトは、1です。<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<dl>
+<dt>小さく	</dt><dd>音量を下げます。</dd>
+<dt>（		</dt><dd>音量を下げます。</dd>
+<dt>大きく	</dt><dd>音量を上げます。</dd>
+<dt>）		</dt><dd>音量を上げます。</dd>
+</dl>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+引数を書いた場合は、その数量だけ相対音量コマンドを出力します。<br>
+リピート中などでない場合は、音量コマンドで書いた方がシーケンスのサイズは小さくなります。<br>
+</p>
+<p>
+2A03の三角波では音量指定はできません。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    【4　ド&　小さく　】     <span style="color:green;">/* クレッシェンド */</span>
+    【4　ド&　大きく　】     <span style="color:green;">/* デクレッシェンド */</span>
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

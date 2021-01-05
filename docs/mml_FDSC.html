@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: FDS career wave table</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: FDS career wave table</h2>
+
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+FDSC(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+
+<code><pre>
+@FM(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>n</h4>
+<p>
+FDS音源のキャリア（音色）の波形番号を指定します。
+</p>
+
+<h4>define</h4>
+<p>
+0～63の数値を64個記述しFDS音源の波形を定義します。<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+
+<p>
+FDS音源のキャリアの波形（音色）を定義します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+FDSC(0){	<span style="color:green;">//Square wave</span>
+	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 
+	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 
+	63,63,63,63, 63,63,63,63, 63,63,63,63, 63,63,63,63,
+	63,63,63,63, 63,63,63,63, 63,63,63,63, 63,63,63,63
+}
+</pre></code>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Transpose</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Transpose</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        _<var>transpose</var>
+        __<var>relative</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>transpose</h4>
+<p>
+移調です。-128～127の範囲で指定してください。（Default: <var>transpose</var> = 0）<br>
+</p>
+
+<h4>relative</h4>
+<p>
+相対移調です。-128～127の範囲で指定してください。<br>
+尚、演算結果におけるオーバーフローのチェックはしていません。<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+移調の度合いを指定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    _16 [16 c16 __-1 ]       <span style="color:green;">/* down */</span>
+
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

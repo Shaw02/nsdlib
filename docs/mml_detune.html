@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Detune</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Detune</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        D<var>detune1</var>
+        D_<var>relative1</var>
+        D%<var>detune2</var>
+        D%_<var>relative2</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>detune1</h4>
+<p>
+cent単位のディチューンです。<br>
+-128～127の範囲で指定してください。<br>
+16が100[cent]（半音）に相当します。（Default: <var>detune1</var> = 0）<br>
+</p>
+
+<h4>relative1</h4>
+<p>
+cent単位の相対ディチューンです。<br>
+尚、演算結果におけるオーバーフローのチェックはしていません。<br>
+</p>
+
+<h4>detune2</h4>
+<p>
+レジスター単位のディチューンです。<br>
+-128～127の範囲で指定してください。（Default: <var>detune2</var> = 0）<br>
+</p>
+
+<h4>relative2</h4>
+<p>
+レジスター単位の相対ディチューンです。<br>
+尚、演算結果におけるオーバーフローのチェックはしていません。<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+ディチューンを指定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    D%-1     <span style="color:green;">/* register detune = -1 */</span>
+
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

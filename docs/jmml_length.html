@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ストトン表記：音符</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="jmml.html">ストトン表記</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>ストトン表記：音符</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        音符<var>音長</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>音長</h4>
+<p>
+音符・休符にて音長を省略時の音長を<var>音長</var>分音符とします。<br>
+<code>.</code>を付与することで付点の音長を表現可能です。<br>
+この<code>.</code>は複数指定可能です。<br>
+</p>
+<p>
+数値の頭に<code>%</code>を記述した場合は、<var>音長</var>[Tick]の長さとなります。<br>
+</p>
+<p>
+また、演算子 <code>+</code> 及び <code>-</code> を用いて音長の加減算が可能です。
+</p>
+<p>
+（Default: <var>音長</var> = %24）
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+音長を省略した時に適用する音長を設定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+<var>音長</var>は、1～255[tick]の間に収めてください。<br>
+また、<var>音長</var>に<code>0</code>を指定しないでください。<br>
+</p>
+<p>
+無限ループやリピートで戻った際も適用されますので、注意してください。<br>
+但し、音長を省略して付点のみを記述した音符・休符に関しては、無限ループやリピート前の音符コマンドの値に付点がつきます。<br>
+音符コマンドは音源ドライバー側の機能、付点はＭＭＬコンパイラ側の機能です。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    音符4     <span style="color:green;">/* 四分音符 or 四分休符 */</span>
+
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

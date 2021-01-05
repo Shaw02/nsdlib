@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Call SE</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Call SE</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        SE<var>n</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>n</h4>
+<p>
+呼び出す効果音（SE）の番号です。<br>
+</p>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+<var>n</var>番の効果音（SE）を呼び出します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+効果音で使用しているトラック（APUパルス波ch2及び、APUノイズ）の発音は一時的に停止します。<br>
+音源ドライバーの内部的には、<a href="func_nsd_play_se.html">nsd_play_se(void *se)</a>関数を呼び出しているだけです。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+<span style="color:green;">/* Block of BGM[0] */</span>
+bgm(0){
+	TR1	Ev11	v15	o4		l1	SE0	cdef	SE1	gab`c
+	TR2	Ev11	v8	o4	r8.	l1		cdef		gab`c
+	TR4	Ev10	v12	o6		l16		[32	cc"gc	]
+}
+
+<span style="color:green;">/* Block of SE[0] */</span>
+SE(0){
+	TR1	t255	v11	Ev1	Em101	E@201	l4	c.d.e f.g.a 
+}
+
+<span style="color:green;">/* Block of SE[1] */</span>
+SE(1){
+	TR2	t255	v15	Ev10	[8	c4	]
+}
+
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

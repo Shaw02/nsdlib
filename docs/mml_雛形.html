@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Note</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Note</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        a<span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>length</var><span style="color:blue;">(</span><var>dot</var><span style="color:blue;">)</span><span style="color:blue;">(</span><var>Tai/Slur</var><span style="color:blue;">)</span><span style="color:blue;">(</span>,<var>Gatetime</var><span style="color:blue;">)</span>
+        b<span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>length</var><span style="color:blue;">(</span><var>dot</var><span style="color:blue;">)</span><span style="color:blue;">(</span><var>Tai/Slur</var><span style="color:blue;">)</span><span style="color:blue;">(</span>,<var>Gatetime</var><span style="color:blue;">)</span>
+        c<span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>length</var><span style="color:blue;">(</span><var>dot</var><span style="color:blue;">)</span><span style="color:blue;">(</span><var>Tai/Slur</var><span style="color:blue;">)</span><span style="color:blue;">(</span>,<var>Gatetime</var><span style="color:blue;">)</span>
+        d<span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>length</var><span style="color:blue;">(</span><var>dot</var><span style="color:blue;">)</span><span style="color:blue;">(</span><var>Tai/Slur</var><span style="color:blue;">)</span><span style="color:blue;">(</span>,<var>Gatetime</var><span style="color:blue;">)</span>
+        e<span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>length</var><span style="color:blue;">(</span><var>dot</var><span style="color:blue;">)</span><span style="color:blue;">(</span><var>Tai/Slur</var><span style="color:blue;">)</span><span style="color:blue;">(</span>,<var>Gatetime</var><span style="color:blue;">)</span>
+        f<span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>length</var><span style="color:blue;">(</span><var>dot</var><span style="color:blue;">)</span><span style="color:blue;">(</span><var>Tai/Slur</var><span style="color:blue;">)</span><span style="color:blue;">(</span>,<var>Gatetime</var><span style="color:blue;">)</span>
+        g<span style="color:blue;">(</span><var>Accidentals</var><span style="color:blue;">)</span><var>length</var><span style="color:blue;">(</span><var>dot</var><span style="color:blue;">)</span><span style="color:blue;">(</span><var>Tai/Slur</var><span style="color:blue;">)</span><span style="color:blue;">(</span>,<var>Gatetime</var><span style="color:blue;">)</span>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+<p>
+	無し
+</p>
+
+<p>
+音名以外は省略可能です。<br>
+</p>
+
+<h4>Note</h4>
+<dl>
+<dt>a … </dt><dd>A, La, ラ</dd>
+<dt>b … </dt><dd>H, Si, シ</dd>
+<dt>c … </dt><dd>C, Do, ド</dd>
+<dt>d … </dt><dd>D, Re, レ</dd>
+<dt>e … </dt><dd>E, Mi, ミ</dd>
+<dt>f … </dt><dd>F, Fa, ファ</dd>
+<dt>g … </dt><dd>G, Sol, ソ</dd>
+</dl>
+
+<h4>Accidentals</h4>
+<dl>
+<dt>+ … </dt><dd>&#9839; Sharp</dd>
+<dt># … </dt><dd>&#9839; Sharp</dd>
+<dt>- … </dt><dd>&#9837; Flat</dd>
+<dt>= … </dt><dd>&#9838; Natural</dd>
+</dl>
+
+<h4>Length</h4>
+<p>
+音長。<br>
+<var>length</var>分音符となります。<br>
+また、省略時は、lコマンドで指定した数値が適用されます。<br>
+</p>
+<p>
+また、数値の頭に<code>%</code>を記述した場合は、<var>length</var>[Tick]の長さとなります。<br>
+なお、timebase（４分音符の分割数）は24固定です。<br>
+</p>
+
+<h4>Dot</h4>
+<p>
+<code>.</code>を記述する事で、付点を意味します。<br>
+何個でも付与可能です。<br>
+</p>
+
+<h4>Tai/Slur</h4>
+<p>
+<code>&</code>を記述する事で、タイ（次の音と繋げる）・スラー（次の音と滑らかに繋げる）を意味します。<br>
+音源ドライバー内部では、この音符ではKey-Off処理をせず、次の音符ではKey-On処理をしません。<br>
+</p>
+
+<h4>Gatetime</h4>
+<p>
+ゲートタイムを指定します。<br>
+実際に発音する長さは<var>Gatetime</var>分音符と同等の長さになります。<br>
+指定したばあい、q, uコマンドのゲートタイムに優先されます。<br>
+</p>
+<p>
+また、数値の頭に<code>%</code>を記述した場合は、<var>Gatetime</var>[Tick]の長さとなります。<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+音符を意味します。
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+<var>length</var>及び<var>Gatetime</var>に、<code>0</code>及び<code>%0</code>を指定しないでください。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    c#4.     <span style="color:green;">/* A dotted quarter note of Cis (Do-Sharp). */</span>
+
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>FAQ</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+
+<h2>FAQ</h2>
+
+<p>
+今まで、質問のあった内容をまとめています。<br>
+是非、ご参照下さい。<br>
+</p>
+
+<div class='block'>
+<h3>NSD.libによる曲の打ち込み</h3>
+
+<div class='block'>
+<h4>休符で音量が０じゃなくて２になる</h4>
+<p>
+音量エンベロープが無効な場合、キーオフ後の音量は<a href="mml_release.html">Rvコマンド</a>で指定した値が適用されます。<br>
+<a href="mml_release.html">Rvコマンド</a>の初期値は２であるため、音量が２となります。<br>
+解決策としては、音量エンベロープを使う、<a href="mml_release.html">Rvコマンド</a>で設定する、もしくは<a href="mml_rest.html">r(休符)</a>コマンドに臨時記号`-'を付けてください。<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>休符なのに、音が鳴りっぱなしになる</h4>
+<p>
+音量エンベロープで、リリースのパターンを定義していない可能性があります。<br>
+各系統のエンベロープにおいてリリースのパターンを指定しない場合、そのままエンベロープが継続されます。<br>
+解決策としては、音量エンベロープにはリリースのパターンを定義する、もしくは<a href="mml_rest.html">r(休符)</a>コマンドに臨時記号`-'か`+'を付けてください。<br>
+なお、<a href="mml_gate.html">`q',`u'（ゲートタイム）</a>コマンドによってキーオフされた後の挙動は、<a href="mml_release.html">Rmコマンド</a>で設定します。<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>周波数エンベロープのかかり方が変</h4>
+<p>
+NSD.libの周波数エンベロープは、現在の音階（ドレミ）を基準とした値で指定します。<br>
+また、NSD.libは6.25[cent]単位で音程を制御する設計であり、音源・音階による変化量の差はほとんどありません。<br>
+（但し、6.25[cent]単位の制御ができない音源（ノイズ、⊿PCM）や、音域（APUの高音域等）もあります。）<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>⊿PCMトラックが、休符・ゲートタイムでキーオフされない。</h4>
+<p>
+デフォルトでは、MIDIのトラック10（パーカッショントラック）と同様に、キーオフしない設計となっております。<br>
+<a href="mml_release.html">Rmコマンド</a>にて０を指定することで、キーオフされます。<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>⊿PCMの発音時にプチノイズが載る。</h4>
+<p>
+デフォルトでは、発音時に初期ボリュームを０に設定しているため、前回の⊿PCM終了時点のボリュームとの差が大きい時にプチノイズが発生します。<br>
+回避策としては、<a href="mml_dpcm.html">⊿PCM定義ブロック</a>にて初期ボリュームを`-1'にすることで、
+⊿PCMの初期ボリュームを設定せず、プチノイズが軽減されます。<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>n106/n163の音色設定方法が分からない。</h4>
+<p>
+別途、<a href="n163.html">n106/n163の使い方</a>をご参照ください。<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>MMLコンパイラのオプションでファイル名を記述するとエラーになる。</h4>
+<p>
+オプションとファイル名の間にスペースが入っている場合、ファイル名を認識しません。<br>
+スペースを開けずにファイル名を記述して下さい。<br>
+これはＣ言語で書かれたアプリケーションの一般的な仕様で、スペースは次のオプションへの区切りになります。<br>
+</p>
+</div>
+
+<div class='block'>
+<h4>特定のNSFプレイヤーで正常に演奏されない事がある。</h4>
+<p>
+本音源ドライバーは、実機での動作を正確に再現するNSFプレイヤー（最新版のVirtuaNSFなど）や、
+実機で動作するNSFプレイヤー（TNS-HFCシリーズなど）のご使用を強く推奨します。<br>
+</p>
+</div>
+
+
+</div>	<!-- h3 -->
+
+
+<div class='block'>
+<h3>NSD.libを用いたアプリケーション開発</h3>
+
+
+<div class='block'>
+<h4>外部から現在のテンポ等の演奏状態の取得、および設定（変更）をしたい。</h4>
+<p>
+音源ドライバーの<a href="variable.html">制御用変数</a>をアクセスする事で可能です。<br>
+尚、シーケンス中で再設定された場合は、その値に書き換わりますので注意して下さい。<br>
+（シーケンス上は、相対系のコマンドを使うなどで対処して下さい。）<br>
+</p>
+<p>
+以下、テンポの取得・設定の例（`ca65.exe'のアセンブリ言語ソース）を示します。<br>
+</p>
+<code><pre>
+
+        .include        "nsd.inc"
+
+.proc   _get_tempo
+
+        lda     __Tempo
+        rts
+
+.endproc
+
+.proc   _set_tempo
+
+        sta     __Tempo
+        rts
+
+.endproc
+
+</pre></code>
+</div>
+
+
+<div class='block'>
+<h4>自作ゲーム用に音源ドライバーを改造したい</h4>
+<p>
+可ですが、<a href="licence.html">ライセンス条文</a>を遵守した上でお願い致します。<br>
+</p>
+</div>
+
+
+
+</div>	<!-- h3 -->
+
+
+</div>	<!-- contents -->
+
+</BODY>
+</HTML>

@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Voice</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Voice</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        @<var>voice</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>voice</h4>
+<p>
+音色を指定します。（Default: <var>volume</var> = 2　（APUノイズは0））<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+以下の通り、音色を指定します。<br>
+また、このコマンドにより、音色エンベロープが無効になります。<br>
+</p>
+
+<dl>
+<dt>APU	パルス波	</dt><dd>0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
+<dt>APU	三角波		</dt><dd>音色エンベロープはありません。</dd>
+<dt>APU	ノイズ		</dt><dd>0～1　（0=長周期 / 1=短周期）</dd>
+<dt>APU	⊿PCM		</dt><dd>音色エンベロープはありません。</dd>
+<dt>FDS				</dt><dd>0～63　モジュレータのゲイン（ＬＦＯの振幅）</dd>
+<dt>VRC6 パルス波	</dt><dd>0～7　（0=6.25% ～ 7=50%）</dd>
+<dt>VRC6 SAW		</dt><dd>音色エンベロープはありません。</dd>
+<dt>VRC7			</dt><dd>0～15 … 音色選択<br>
+							32～47 … ユーザ音色ML(M) （32を減算した値）<br>
+							48～63 … ユーザ音色ML(C) （48を減算した値）<br>
+							64～127 … ユーザ音色TL （64を減算した値）<br>
+<dt>MMC5			</dt><dd>0～3　（0=12.5% / 1=25% / 2=50% / 3=75%）</dd>
+<dt>N16x			</dt><dd>0～63　（指定数値の2倍のアドレスを音色波形にします。）</dd>
+<dt>Sunsoft 5B		</dt><dd> 0～31 … ノイズ（値はノイズの周期です）<br>
+							32～63 … トーン＆ノイズ（値はノイズの周期です）<br>
+							64 … トーン<br>
+							96 … 無音</dd>
+</dl>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+2A03の三角波では、音色指定はできません。<br>
+</p>
+<p>
+n16x (n160, n161, n162, n163) の場合は、別途<a href="mml_N163set.html">@NSコマンド</a>にて、サンプル長と同時に音色を選択可能です。<br>
+n16xの使い方は、別途、<a href="n163.html">n16x (n160, n161, n162, n163) の使い方</a>をご参照ください。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    TR1 @2     <span style="color:green;">/* voice = DT=50% */</span>
+
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ストトン表記：音階</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="jmml.html">ストトン表記</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>ストトン表記：音階</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        音階<var>オクターブ</var>
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>オクターブ</h4>
+<p>
+オクターブです。2～9の範囲（o4＝中央）で指定してください。（Default: <var>オクターブ</var> = 4）<br>
+</p>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+オクターブを指定します。<br>
+なお、音源によって、オクターブが異なりますので注意して下さい。
+</p>
+<table>
+<tr><th>音源			</th><th>オクターブ</th></tr>
+<tr><td>APU　パルス波	</td><td>指定通り</td></tr>
+<tr><td>APU　三角波		</td><td>１オクターブ低くなります。</td></tr>
+<tr><td>APU　ノイズ		</td><td>─</td></tr>
+</table>
+
+<p>
+また、音源により、発音可能範囲が異なります。<br>
+なお、2を下回るオクターブは、相対オクターブコマンドをご使用ください。<br>
+</p>
+
+<table>
+<tr><th>音源			</th><th>発音可能範囲（実音）</th></tr>
+<tr><td>APU　パルス波	</td><td>音階1　ラ～</td></tr>
+<tr><td>APU　三角波		</td><td>音階1　ラ～（音階0　ラ～）</td></tr>
+<tr><td>APU　ノイズ		</td><td>─</td></tr>
+</table>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+2A03（内蔵音源）は高い音程になるほど、音程が悪く（音痴に）なります。<br>
+<code>音階6</code>で、楽器初心者が演奏したようなピッチになり、<br>
+<code>音階7</code>では、場合によっては音階そのものが違ってきます。<br>
+</p>
+<p>
+無限ループやリピートで戻った際も適用されますので、注意してください。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+    音階4     <span style="color:green;">/* オクターブ = 4 */</span>
+
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

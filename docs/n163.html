@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>n16x (n160, n161, n162, n163) の使い方</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>n16x (n160, n161, n162, n163) の使い方</h2>
+
+<div class='block'>
+<h3>アドレス空間について</h3>
+<p>
+n16xのアドレス表を以下に示します。<br>
+<a href="mml_n163.html">n16x音色波形定義ブロック</a>で定義した音色波形は、
+<a href="mml_N163voice.html">@Nコマンド、@NLコマンド</a>で任意のアドレスに転送して用います。<br>
+</p>
+
+<p>
+$00～$3Fの64byte（128サンプル分）の領域は、常に音色波形テーブルとして使用する事ができます。<br>
+$40～$77の56byte（112サンプル分）の領域は、ch2～ch8の制御レジスタの領域と共用であり、
+<a href="mml_N163_channel.html">有効チャンネル数</a>に応じて、音色波形テーブルとして使うことができます。<br>
+例えば、<a href="mml_N163_channel.html">有効チャンネル数</a>が3の場合はch1～ch3がチャンネル制御レジスタとして用いられ、
+ch4～ch8の領域（アドレス$40～$67）の40Byte（80サンプル分）は音色波形テーブルの領域として使用可能です。<br>
+</p>
+<p>
+サンプルの量子化は4bit（0～15の範囲）であり、1byteの領域に2サンプルをリトルエンディアンで格納します。<br>
+</p>
+
+<table>
+<caption>n16x address (register) table</caption>
+<tr><th></th><th>$00</th><th>$01</th><th>$02</th><th>$03</th><th>$04</th><th>$05</th><th>$06</th><th>$07</th><th>$08</th><th>$09</th><th>$0A</th><th>$0B</th><th>$0C</th><th>$0D</th><th>$0E</th><th>$0F</th></tr>
+<tr><th>$00</th><td colspan="16" rowspan="4">Voice wave table (64 byte / 128 sample)</td></tr>
+<tr><th>$10</th></tr>
+<tr><th>$20</th></tr>
+<tr><th>$30</th></tr>
+<tr><th>$40</th><td colspan="8">ch8 control register (8 byte / 16 sample)</td><td colspan="8">ch7 control register (8 byte / 16 sample)</td></tr>
+<tr><th>$50</th><td colspan="8">ch6 control register (8 byte / 16 sample)</td><td colspan="8">ch5 control register (8 byte / 16 sample)</td></tr>
+<tr><th>$60</th><td colspan="8">ch4 control register (8 byte / 16 sample)</td><td colspan="8">ch3 control register (8 byte / 16 sample)</td></tr>
+<tr><th>$70</th><td colspan="8">ch2 control register (8 byte / 16 sample)</td><td colspan="8">ch1 control register (8 byte)</td></tr>
+</table>
+</div>
+
+<div class='block'>
+<h3>音色設定方法</h3>
+<p>
+n16xの音色関連のコマンドは、以下のコマンドがあります。<br>
+これらのコマンドにて音色を設定して、始めてその音色を奏でることができます（ロードと選択の順は問いません）。<br>
+何れのコマンドにおいても、上述のアドレス表が大きく関係します。<br>
+</p>
+
+<h4>波形テーブルのロード</h4>
+<p>
+音色波形を、n16xに転送（ロード）するコマンドです。<br>
+</p>
+<dl>
+<dt><a href="mml_N163voice.html">@NL</a><var>a</var>,<var>n</var>	</dt><dd>… <var>a</var>÷２のアドレス（要素数単位指定）を先頭に、<a href="mml_n163.html">N163(<var>n</var>){}ブロック</a>で定義した音色波形をロードします。</dd>
+<dt><a href="mml_N163voice.html">@N</a><var>a</var>,<var>n</var>	</dt><dd>… <var>a</var>×２のアドレス（レジスタ単位指定）を先頭に、<a href="mml_n163.html">N163(<var>n</var>){}ブロック</a>で定義した音色波形をロードします。</dd>
+</dl>
+<h4>波形テーブル・サンプル長の選択</h4>
+<p>
+ロードされている音色波形を選択するコマンドです。<br>
+</p>
+<dl>
+<dt><a href="mml_N163set.html">@NS</a><var>a</var>(,<var>s</var>)	</dt><dd>… トラックに適用する音色波形データのある先頭アドレスを<var>a</var>÷２に設定し、<br>
+																			同時に、トラックに適用する音色のサンプル長を、<var>s</var>サンプルに設定します。</dd>
+<dt><a href="mml_voice.html">@</a><var>a</var>						</dt><dd>… トラックに適用する音色波形データのある先頭アドレスを<var>a</var>×２に設定します。</dd>
+<dt><a href="mml_sweep.html">s</a><var>s</var>						</dt><dd>… トラックに適用する音色のサンプル長を、（64－<var>s</var>）×４サンプルに設定します。</dd>
+</dl>
+</div>
+
+<div class='block'>
+<h3>音程の変動量について</h3>
+<p>
+n16xは、設定された<a href="mml_N163_channel.html">有効チャンネル数</a>及び<a href="mml_sweep.html">サンプル長</a>により、発音される音程が変動します。<br>
+有効チャンネル数とサンプル長による、音程の変動量を以下表に示します。<br>
+数値は、半音単位です。100倍すればcent単位になります。<br>
+</p>
+<p>
+音程が変動しない（変動量が０）設定値は以下の通りです。
+</p>
+<ul>
+<li>有効チャンネル数＝８、サンプル長＝８（ 4 byte）</li>
+<li>有効チャンネル数＝４、サンプル長＝16（ 8 byte）</li>
+<li>有効チャンネル数＝２、サンプル長＝32（16 byte）</li>
+<li>有効チャンネル数＝１、サンプル長＝64（32 byte）</li>
+</ul>
+
+<p>
+n16xが発音可能な音程（実音）は o8a から、以下表の変動量を加算した値です。<br>
+（MMLの指定上で、音階、移調、ディチューン、エンベロープの分を含めて、o8aまでです）。<br>
+例えば、使用チャンネル数が８、サンプル長が128（64byte）の場合は、-48半音、つまり4オクターブ下のo4aまでとなります。<br>
+</p>
+
+<table>
+<caption>n16x sample length and pitch shift value by a numbers of enable channels.</caption>
+<tr><th rowspan="2">s	</th><th colspan="2">Sample		</th><th colspan="8">A number of enable channels	</th></tr>
+<tr>			<th>lengths</th><th>bytes</th><th>1</th><th>2		</th><th>3		</th><th>4		</th><th>5		</th><th>6		</th><th>7		</th><th>8		</th></tr>
+<tr><th>63	</th><td>4	</td><td>2	</td><td>48.00	</td><td>36.00	</td><td>28.98	</td><td>24.00	</td><td>20.14	</td><td>16.98	</td><td>14.31	</td><td>12.00</td></tr>
+<tr><th>62	</th><td>8	</td><td>4	</td><td>36.00	</td><td>24.00	</td><td>16.98	</td><td>12.00	</td><td>8.14	</td><td>4.98	</td><td>2.31	</td><td>0.00</td></tr>
+<tr><th>61	</th><td>12	</td><td>6	</td><td>28.98	</td><td>16.98	</td><td>9.96	</td><td>4.98	</td><td>1.12	</td><td>-2.04	</td><td>-4.71	</td><td>-7.02</td></tr>
+<tr><th>60	</th><td>16	</td><td>8	</td><td>24.00	</td><td>12.00	</td><td>4.98	</td><td>0.00	</td><td>-3.86	</td><td>-7.02	</td><td>-9.69	</td><td>-12.00</td></tr>
+<tr><th>59	</th><td>20	</td><td>10	</td><td>20.14	</td><td>8.14	</td><td>1.12	</td><td>-3.86	</td><td>-7.73	</td><td>-10.88	</td><td>-13.55	</td><td>-15.86</td></tr>
+<tr><th>58	</th><td>24	</td><td>12	</td><td>16.98	</td><td>4.98	</td><td>-2.04	</td><td>-7.02	</td><td>-10.88	</td><td>-14.04	</td><td>-16.71	</td><td>-19.02</td></tr>
+<tr><th>57	</th><td>28	</td><td>14	</td><td>14.31	</td><td>2.31	</td><td>-4.71	</td><td>-9.69	</td><td>-13.55	</td><td>-16.71	</td><td>-19.38	</td><td>-21.69</td></tr>
+<tr><th>56	</th><td>32	</td><td>16	</td><td>12.00	</td><td>0.00	</td><td>-7.02	</td><td>-12.00	</td><td>-15.86	</td><td>-19.02	</td><td>-21.69	</td><td>-24.00</td></tr>
+<tr><th>55	</th><td>36	</td><td>18	</td><td>9.96	</td><td>-2.04	</td><td>-9.06	</td><td>-14.04	</td><td>-17.90	</td><td>-21.06	</td><td>-23.73	</td><td>-26.04</td></tr>
+<tr><th>54	</th><td>40	</td><td>20	</td><td>8.14	</td><td>-3.86	</td><td>-10.88	</td><td>-15.86	</td><td>-19.73	</td><td>-22.88	</td><td>-25.55	</td><td>-27.86</td></tr>
+<tr><th>53	</th><td>44	</td><td>22	</td><td>6.49	</td><td>-5.51	</td><td>-12.53	</td><td>-17.51	</td><td>-21.38	</td><td>-24.53	</td><td>-27.20	</td><td>-29.51</td></tr>
+<tr><th>52	</th><td>48	</td><td>24	</td><td>4.98	</td><td>-7.02	</td><td>-14.04	</td><td>-19.02	</td><td>-22.88	</td><td>-26.04	</td><td>-28.71	</td><td>-31.02</td></tr>
+<tr><th>51	</th><td>52	</td><td>26	</td><td>3.59	</td><td>-8.41	</td><td>-15.42	</td><td>-20.41	</td><td>-24.27	</td><td>-27.42	</td><td>-30.09	</td><td>-32.41</td></tr>
+<tr><th>50	</th><td>56	</td><td>28	</td><td>2.31	</td><td>-9.69	</td><td>-16.71	</td><td>-21.69	</td><td>-25.55	</td><td>-28.71	</td><td>-31.38	</td><td>-33.69</td></tr>
+<tr><th>49	</th><td>60	</td><td>30	</td><td>1.12	</td><td>-10.88	</td><td>-17.90	</td><td>-22.88	</td><td>-26.75	</td><td>-29.90	</td><td>-32.57	</td><td>-34.88</td></tr>
+<tr><th>48	</th><td>64	</td><td>32	</td><td>0.00	</td><td>-12.00	</td><td>-19.02	</td><td>-24.00	</td><td>-27.86	</td><td>-31.02	</td><td>-33.69	</td><td>-36.00</td></tr>
+<tr><th>47	</th><td>68	</td><td>34	</td><td>-1.05	</td><td>-13.05	</td><td>-20.07	</td><td>-25.05	</td><td>-28.91	</td><td>-32.07	</td><td>-34.74	</td><td>-37.05</td></tr>
+<tr><th>46	</th><td>72	</td><td>36	</td><td>-2.04	</td><td>-14.04	</td><td>-21.06	</td><td>-26.04	</td><td>-29.90	</td><td>-33.06	</td><td>-35.73	</td><td>-38.04</td></tr>
+<tr><th>45	</th><td>76	</td><td>38	</td><td>-2.98	</td><td>-14.98	</td><td>-21.99	</td><td>-26.98	</td><td>-30.84	</td><td>-33.99	</td><td>-36.66	</td><td>-38.98</td></tr>
+<tr><th>44	</th><td>80	</td><td>40	</td><td>-3.86	</td><td>-15.86	</td><td>-22.88	</td><td>-27.86	</td><td>-31.73	</td><td>-34.88	</td><td>-37.55	</td><td>-39.86</td></tr>
+<tr><th>43	</th><td>84	</td><td>42	</td><td>-4.71	</td><td>-16.71	</td><td>-23.73	</td><td>-28.71	</td><td>-32.57	</td><td>-35.73	</td><td>-38.40	</td><td>-40.71</td></tr>
+<tr><th>42	</th><td>88	</td><td>44	</td><td>-5.51	</td><td>-17.51	</td><td>-24.53	</td><td>-29.51	</td><td>-33.38	</td><td>-36.53	</td><td>-39.20	</td><td>-41.51</td></tr>
+<tr><th>41	</th><td>92	</td><td>46	</td><td>-6.28	</td><td>-18.28	</td><td>-25.30	</td><td>-30.28	</td><td>-34.15	</td><td>-37.30	</td><td>-39.97	</td><td>-42.28</td></tr>
+<tr><th>40	</th><td>96	</td><td>48	</td><td>-7.02	</td><td>-19.02	</td><td>-26.04	</td><td>-31.02	</td><td>-34.88	</td><td>-38.04	</td><td>-40.71	</td><td>-43.02</td></tr>
+<tr><th>39	</th><td>100</td><td>50	</td><td>-7.73	</td><td>-19.73	</td><td>-26.75	</td><td>-31.73	</td><td>-35.59	</td><td>-38.75	</td><td>-41.41	</td><td>-43.73</td></tr>
+<tr><th>38	</th><td>104</td><td>52	</td><td>-8.41	</td><td>-20.41	</td><td>-27.42	</td><td>-32.41	</td><td>-36.27	</td><td>-39.42	</td><td>-42.09	</td><td>-44.41</td></tr>
+<tr><th>37	</th><td>108</td><td>54	</td><td>-9.06	</td><td>-21.06	</td><td>-28.08	</td><td>-33.06	</td><td>-36.92	</td><td>-40.08	</td><td>-42.75	</td><td>-45.06</td></tr>
+<tr><th>36	</th><td>112</td><td>56	</td><td>-9.69	</td><td>-21.69	</td><td>-28.71	</td><td>-33.69	</td><td>-37.55	</td><td>-40.71	</td><td>-43.38	</td><td>-45.69</td></tr>
+<tr><th>35	</th><td>116</td><td>58	</td><td>-10.30	</td><td>-22.30	</td><td>-29.32	</td><td>-34.30	</td><td>-38.16	</td><td>-41.32	</td><td>-43.98	</td><td>-46.30</td></tr>
+<tr><th>34	</th><td>120</td><td>60	</td><td>-10.88	</td><td>-22.88	</td><td>-29.90	</td><td>-34.88	</td><td>-38.75	</td><td>-41.90	</td><td>-44.57	</td><td>-46.88</td></tr>
+<tr><th>33	</th><td>124</td><td>62	</td><td>-11.45	</td><td>-23.45	</td><td>-30.47	</td><td>-35.45	</td><td>-39.31	</td><td>-42.47	</td><td>-45.14	</td><td>-47.45</td></tr>
+<tr><th>32	</th><td>128</td><td>64	</td><td>-12.00	</td><td>-24.00	</td><td>-31.02	</td><td>-36.00	</td><td>-39.86	</td><td>-43.02	</td><td>-45.69	</td><td>-48.00</td></tr>
+<tr><th>31	</th><td>132</td><td>66	</td><td>-12.53	</td><td>-24.53	</td><td>-31.55	</td><td>-36.53	</td><td>-40.40	</td><td>-43.55	</td><td>-46.22	</td><td>-48.53</td></tr>
+<tr><th>30	</th><td>136</td><td>68	</td><td>-13.05	</td><td>-25.05	</td><td>-32.07	</td><td>-37.05	</td><td>-40.91	</td><td>-44.07	</td><td>-46.74	</td><td>-49.05</td></tr>
+<tr><th>29	</th><td>140</td><td>70	</td><td>-13.55	</td><td>-25.55	</td><td>-32.57	</td><td>-37.55	</td><td>-41.41	</td><td>-44.57	</td><td>-47.24	</td><td>-49.55</td></tr>
+<tr><th>28	</th><td>144</td><td>72	</td><td>-14.04	</td><td>-26.04	</td><td>-33.06	</td><td>-38.04	</td><td>-41.90	</td><td>-45.06	</td><td>-47.73	</td><td>-50.04</td></tr>
+<tr><th>27	</th><td>148</td><td>74	</td><td>-14.51	</td><td>-26.51	</td><td>-33.53	</td><td>-38.51	</td><td>-42.38	</td><td>-45.53	</td><td>-48.20	</td><td>-50.51</td></tr>
+<tr><th>26	</th><td>152</td><td>76	</td><td>-14.98	</td><td>-26.98	</td><td>-33.99	</td><td>-38.98	</td><td>-42.84	</td><td>-45.99	</td><td>-48.66	</td><td>-50.98</td></tr>
+<tr><th>25	</th><td>156</td><td>78	</td><td>-15.42	</td><td>-27.42	</td><td>-34.44	</td><td>-39.42	</td><td>-43.29	</td><td>-46.44	</td><td>-49.11	</td><td>-51.42</td></tr>
+<tr><th>24	</th><td>160</td><td>80	</td><td>-15.86	</td><td>-27.86	</td><td>-34.88	</td><td>-39.86	</td><td>-43.73	</td><td>-46.88	</td><td>-49.55	</td><td>-51.86</td></tr>
+<tr><th>23	</th><td>164</td><td>82	</td><td>-16.29	</td><td>-28.29	</td><td>-35.31	</td><td>-40.29	</td><td>-44.15	</td><td>-47.31	</td><td>-49.98	</td><td>-52.29</td></tr>
+<tr><th>22	</th><td>168</td><td>84	</td><td>-16.71	</td><td>-28.71	</td><td>-35.73	</td><td>-40.71	</td><td>-44.57	</td><td>-47.73	</td><td>-50.40	</td><td>-52.71</td></tr>
+<tr><th>21	</th><td>172</td><td>86	</td><td>-17.12	</td><td>-29.12	</td><td>-36.13	</td><td>-41.12	</td><td>-44.98	</td><td>-48.13	</td><td>-50.80	</td><td>-53.12</td></tr>
+<tr><th>20	</th><td>176</td><td>88	</td><td>-17.51	</td><td>-29.51	</td><td>-36.53	</td><td>-41.51	</td><td>-45.38	</td><td>-48.53	</td><td>-51.20	</td><td>-53.51</td></tr>
+<tr><th>19	</th><td>180</td><td>90	</td><td>-17.90	</td><td>-29.90	</td><td>-36.92	</td><td>-41.90	</td><td>-45.77	</td><td>-48.92	</td><td>-51.59	</td><td>-53.90</td></tr>
+<tr><th>18	</th><td>184</td><td>92	</td><td>-18.28	</td><td>-30.28	</td><td>-37.30	</td><td>-42.28	</td><td>-46.15	</td><td>-49.30	</td><td>-51.97	</td><td>-54.28</td></tr>
+<tr><th>17	</th><td>188</td><td>94	</td><td>-18.66	</td><td>-30.66	</td><td>-37.67	</td><td>-42.66	</td><td>-46.52	</td><td>-49.67	</td><td>-52.34	</td><td>-54.66</td></tr>
+<tr><th>16	</th><td>192</td><td>96	</td><td>-19.02	</td><td>-31.02	</td><td>-38.04	</td><td>-43.02	</td><td>-46.88	</td><td>-50.04	</td><td>-52.71	</td><td>-55.02</td></tr>
+<tr><th>15	</th><td>196</td><td>98	</td><td>-19.38	</td><td>-31.38	</td><td>-38.40	</td><td>-43.38	</td><td>-47.24	</td><td>-50.40	</td><td>-53.06	</td><td>-55.38</td></tr>
+<tr><th>14	</th><td>200</td><td>100</td><td>-19.73	</td><td>-31.73	</td><td>-38.75	</td><td>-43.73	</td><td>-47.59	</td><td>-50.75	</td><td>-53.41	</td><td>-55.73</td></tr>
+<tr><th>13	</th><td>204</td><td>102</td><td>-20.07	</td><td>-32.07	</td><td>-39.09	</td><td>-44.07	</td><td>-47.93	</td><td>-51.09	</td><td>-53.76	</td><td>-56.07</td></tr>
+<tr><th>12	</th><td>208</td><td>104</td><td>-20.41	</td><td>-32.41	</td><td>-39.42	</td><td>-44.41	</td><td>-48.27	</td><td>-51.42	</td><td>-54.09	</td><td>-56.41</td></tr>
+<tr><th>11	</th><td>212</td><td>106</td><td>-20.74	</td><td>-32.74	</td><td>-39.75	</td><td>-44.74	</td><td>-48.60	</td><td>-51.75	</td><td>-54.42	</td><td>-56.74</td></tr>
+<tr><th>10	</th><td>216</td><td>108</td><td>-21.06	</td><td>-33.06	</td><td>-40.08	</td><td>-45.06	</td><td>-48.92	</td><td>-52.08	</td><td>-54.75	</td><td>-57.06</td></tr>
+<tr><th>9	</th><td>220</td><td>110</td><td>-21.38	</td><td>-33.38	</td><td>-40.40	</td><td>-45.38	</td><td>-49.24	</td><td>-52.40	</td><td>-55.06	</td><td>-57.38</td></tr>
+<tr><th>8	</th><td>224</td><td>112</td><td>-21.69	</td><td>-33.69	</td><td>-40.71	</td><td>-45.69	</td><td>-49.55	</td><td>-52.71	</td><td>-55.38	</td><td>-57.69</td></tr>
+<tr><th>7	</th><td>228</td><td>114</td><td>-21.99	</td><td>-33.99	</td><td>-41.01	</td><td>-45.99	</td><td>-49.86	</td><td>-53.01	</td><td>-55.68	</td><td>-57.99</td></tr>
+<tr><th>6	</th><td>232</td><td>116</td><td>-22.30	</td><td>-34.30	</td><td>-41.32	</td><td>-46.30	</td><td>-50.16	</td><td>-53.32	</td><td>-55.98	</td><td>-58.30</td></tr>
+<tr><th>5	</th><td>236</td><td>118</td><td>-22.59	</td><td>-34.59	</td><td>-41.61	</td><td>-46.59	</td><td>-50.45	</td><td>-53.61	</td><td>-56.28	</td><td>-58.59</td></tr>
+<tr><th>4	</th><td>240</td><td>120</td><td>-22.88	</td><td>-34.88	</td><td>-41.90	</td><td>-46.88	</td><td>-50.75	</td><td>-53.90	</td><td>-56.57	</td><td>-58.88</td></tr>
+<tr><th>3	</th><td>244</td><td>122</td><td>-23.17	</td><td>-35.17	</td><td>-42.19	</td><td>-47.17	</td><td>-51.03	</td><td>-54.19	</td><td>-56.86	</td><td>-59.17</td></tr>
+<tr><th>2	</th><td>248</td><td>124</td><td>-23.45	</td><td>-35.45	</td><td>-42.47	</td><td>-47.45	</td><td>-51.31	</td><td>-54.47	</td><td>-57.14	</td><td>-59.45</td></tr>
+<tr><th>1	</th><td>252</td><td>126</td><td>-23.73	</td><td>-35.73	</td><td>-42.75	</td><td>-47.73	</td><td>-51.59	</td><td>-54.75	</td><td>-57.42	</td><td>-59.73</td></tr>
+<tr><th>0	</th><td>256</td><td>128</td><td>-24.00	</td><td>-36.00	</td><td>-43.02	</td><td>-48.00	</td><td>-51.86	</td><td>-55.02	</td><td>-57.69	</td><td>-60.00</td></tr>
+</table>
+
+</div>
+
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+
+<p>
+一部のNSFプレイヤーは、32サンプルを超えるサンプル長に対応していません。<br>
+以下、2014年 1月 3日時点での対応状況です。<br>
+</p>
+<h4>32サンプルを超えるサンプル長対応プレイヤ</h4>
+<ul>
+<li>TNS-HFC3</li>
+<li>TNS-HFC4</li>
+<li>NSFPlay</li>
+<li>NEZPlug</li>
+<li>VirtuaNSF　（Version 1.0.3.2～）</li>
+<li>hoot　（2013/06/02版～）</li>
+</ul>
+<h4>32サンプルを超えるサンプル長非対応プレイヤ</h4>
+<ul>
+<li>VirtuaNES</li>
+<li>G-NSF</li>
+<li>Nintendulater</li>
+<li>Nestopia</li>
+<li>FCEUX</li>
+</ul>
+
+
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>

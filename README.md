@@ -35,6 +35,7 @@ For further documentation, explore the site all of these links lead to.
 
 ## Application Manual
 
+- [Application Manual (Japanese)](https://shaw02.github.io/nsdlib/)
 - [Wiki Home](https://github.com/Shaw02/nsdlib/wiki)
   - [Developers Guide](https://github.com/Shaw02/nsdlib/wiki/DevelopersGuide)
 

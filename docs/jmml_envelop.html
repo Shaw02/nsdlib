@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ストトン表記：エンベロープ</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="jmml.html">ストトン表記</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>ストトン表記：エンベロープ</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        エンベロープ<var>定義番号</var>
+        エンベロープオフ
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>定義番号</h4>
+<p>
+エンベロープのパターン番号を指定して下さい。<br>
+</p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+<a href="jmml.html#envelope">エンベロープ()記述ブロック</a>にて定義したパターンを指定します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+エンベロープ定義において、リリース後のパターンを指定しない場合、キーオフ後もそのエンベロープが継続されます。<br>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+<span style="color:green;">// 音量推移パターン</span>
+エンベロープ(0){ 15 D10 14 13 12  L 11 11 10 10 9 9 10 10 R 9 8 7 6 5 L 4 4 3 3 2 2 3 3 }
+
+<span style="color:green;">// 音程推移パターン</span>
+ビブラート(0){ 0 D15 L 0 1 2 3 3 2 1 0  -1 -2 -3 -3 -2 -1 }
+
+音楽(0){
+    音符1 音階4 音量15 ゲート3	エンベロープ0	ビブラート0
+    ドレミファソラシ　↑
+    エンベロープオフ	ビブラートオフ
+    ド1,2
+}
+</pre></code>
+
+</div>
+
+
+</div>
+
+</BODY>
+</HTML>
+
+
+
+

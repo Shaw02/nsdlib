@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ＭＭＬ文法</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>ＭＭＬ文法</h2>
+
+<p>
+MMLの全体的な構文は、`#'で始まる定義、疑似命令及び、
+データ（音色データ、エンベロープパターン、シーケンスデータ等）を記述する記述ブロックで構成されます。<br>
+MMLコンパイラは、ASCIIコード0x00～0x20（改行、ＴＡＢ、スペース等）を無視します。<br>
+</p>
+
+<p>
+MMLは、ASCIIと互換性のある文字コード（Shift-JIS、UTF-8等）で記述してください。<br>
+</p>
+
+<div class='block'>
+<h3><a name="common">共通のコマンド</a></h3>
+<p>
+曲や効果音の設定・記述をするためのコマンド群です。<br>
+</p>
+
+<table>
+<caption>コマンド一覧</caption>
+<tr><th>Command</th><th>Default</th><th>Contens</th></tr>
+<tr><td>#include　"<var>filename</var>"	</td><td>-</td><td>外部ファイルを呼び込みます。</td></tr>
+<tr><td>#bgm <var>n</var>				</td><td>1</td><td>BGM（曲）の数を設定します。</td></tr>
+<tr><td>#se <var>n</var>				</td><td>0</td><td>SE（効果音）の数を設定します。</td></tr>
+<tr><td>#priority <var>n</var>			</td><td>0</td><td>以降のSE（効果音）の優先度を設定します。<br>
+												SE（効果音）を再生開始した時、既に優先度が高いSE（効果音）が再生中であった場合は、再生しません。<br>
+												　（0 : 優先度高 ～ 3:優先度低）</td></tr>
+<tr><td>#timebase <var>n</var>			</td><td>24</td><td>以降のシーケンス記述ブロック（BGM, SE, Sub）の４分音符の分解能を設定します。<br>
+												何度でも指定可能であり、各シーケンス記述ブロック毎に設定することもできます。<br>
+												音符、休符において、この数値<var>n</var>の４倍の値を割り切ることが可能なｍ分音符を使用することができます。<br>
+												それ以外のｍ分音符を使用した場合、割り切れない旨のWarning（警告）となり、小数点を切り捨ててコンパイルします。</td></tr>
+<tr><td>#QMax <var>n</var>				</td><td>8</td><td>シーケンス記述ブロック内における<a href="mml_gate.html">Q コマンド</a>の分母を設定します。<br>
+												Qコマンド使用時、実際の発音音長は、音長 × <a href="mml_gate.html">Q コマンド</a>の値 ÷ <var>n</var> となります。</td></tr>
+<tr><td>#QReverse						</td><td>-</td><td>本コマンドを記述することで、シーケンス記述ブロック内におけるゲートクオンタイズコマンド
+												`<a href="mml_gate.html">Q</a>'と`<a href="mml_gate.html">q</a>'を入れ替えます。</td></tr>
+<tr><td>#octaveReverse					</td><td>-</td><td>本コマンドを記述することで、シーケンス記述ブロック内における相対オクターブコマンド
+												`<a href="mml_relative_octave.html">&lt;</a>'と`<a href="mml_relative_octave.html">&gt;</a>'を入れ替えます。</td></tr>
+<tr><td>#RepeatMode <var>n</var>		</td><td>0</td><td>シーケンス記述ブロック内における<a href="mml_repeatA.html">リピート(A)コマンド</a>のコンパイル方法を設定します。<br>
+												　0 … MMLコンパイラが自動的に、リピートコマンドのコンパイル方法を選択します。<br>
+												　1 … ユーザーにて明示的に、リピートコマンドのコンパイル方法を選択します。<br>
+												　2 … ユーザーにて明示的に、リピートコマンドのコンパイル方法を選択します。<br>
+												数値の詳細は、<a href="mml_repeatA.html">リピート(A)コマンド</a>を参照。</td></tr>
+<tr><td>#TieMode <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内における<b> ^ </b>コマンドのコンパイル方法を設定します。<br>
+												　0 … <b> ^ </b>コマンドは、すべての場合において<a href="mml_tie.html">「タイ」</a>としてコンパイルします。<br>
+												　1 … 音符の直後に^コマンドが記述された場合は、直前の音符に対する音長を加算する演算子として処理します。<br>
+												　　　　（※加算結果が255[tick]を超えるとエラーになります。）</td></tr>
+<tr><td>#rest <var>n</var>				</td><td>2</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">r コマンド</a>による休符のコンパイル方法を設定します。<br>
+												　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。<br>
+												　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
+												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br>
+												　3 … <a href="mml_release.html">Rmコマンド</a>に従います。<br></td></tr>
+<tr><td>#wait <var>n</var>				</td><td>0</td><td>シーケンス記述ブロック内における<a href="mml_rest.html">w コマンド</a>による休符のコンパイル方法を設定します。<br>
+												　0 … 強制的に、音量を０にします。⊿PCMの場合はKeyOffします。<br>
+												　1 … 直前のノートを、<a href="mml_release.html">R@, Rvコマンド</a>の値で鳴らします。<br>
+												　2 … 直前のノートのエンベロープ（音色・音量）を継続し、リリースパターンが定義されている場合それに従います。<br>
+												　3 … <a href="mml_release.html">Rmコマンド</a>に従います。<br></td></tr>
+<tr><td>#ReleaseVolume <var>n</var>		</td><td>2</td><td>シーケンス記述ブロック内における<a href="mml_release.html">Rvコマンド</a>の初期値を設定します。<br>
+												nは0～15の範囲で指定します。<br>
+												※音源ドライバ側のデフォルトは2であるため、2以外を指定した場合は各トラックの先頭に自動でRvコマンドを出力します。</td></tr>
+<tr><td>#offsetE@ <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">E@コマンド</a>の引数を指定数値だけずらします。</td></tr>
+<tr><td>#offsetEv <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">Evコマンド</a>の引数を指定数値だけずらします。</td></tr>
+<tr><td>#offsetEm <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">Emコマンド</a>の引数を指定数値だけずらします。</td></tr>
+<tr><td>#offsetEn <var>n</var>			</td><td>0</td><td>シーケンス記述ブロック内にて、<a href="mml_envelop.html">Enコマンド</a>の引数を指定数値だけずらします。</td></tr>
+<tr><td>#offsetPCM	<var>address</var>	</td><td>$10000<br>(⊿PCM無し)</td><td>⊿PCMを配置するアドレスを指定します。<br>
+												シーケンスデータはこのコマンドで指定したアドレス-1の領域まで使えます。<br>
+												NSF music formatを出力する場合は、このアドレスよりΔPCMの実体が配置されます。<br>
+												アセンブリ言語ソースを出力する場合は、リンカー"ld65.exe"のコンフィグファイルにて、
+												"#segmentPCM"コマンドで指定したセグメントの配置アドレスと、同じアドレスに設定して下さい。</td></tr>
+<tr><td>BGM(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
+	<td>-</td>
+	<td><var>n</var>番目のBGMのシーケンスの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
+		番号は0からカウントします。</td></tr>
+<tr><td>SE(<var>n</var>){<br> <var>Sequence data</var><br>}		</td>
+	<td>-</td>
+	<td><var>n</var>番目のSE のシーケンスの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。<br>
+		番号は0からカウントします。</td></tr>
+<tr><td>Sub(<var>n</var>){<br> <var>Sequence data</var><br>}	</td>
+	<td>-</td>
+	<td><var>n</var>番のサブルーチンの記述ブロックです。<br>
+		シーケンスパターンの記述は、<a href="mml_sequence.html">シーケンスデータ（Sequence data）</a>の項を参照ください。</td></tr>
+<tr><td>$<var>name</var>{<br> <var>Sequence data</var><br>}		</td>
+	<td>-</td>
+	<td>シーケンス用のマクロ定義です。どのシーケンス記述ブロックでも使用可能な、グローバルマクロです。<br>
+			<var>name</var>は、`$'から、キャラクターコード0x00～0x20の文字か`{'が来るまでをマクロ名として認識します。</td></tr>
+<tr><td>Envelope(<var>n</var>){<br> <var>Envelope data</var><br>}	</td>
+	<td>-</td>
+	<td><var>n</var>番のエンベロープパターン定義の記述ブロックです。<br>
+		エンベロープパターンの記述は、<a href="mml_envelope.html">エンベロープパターン（Envelop pattern）</a>の項を参照ください。</td></tr>
+<tr><td>Patch(<var>n</var>){<br> <var>Patch data</var><br>}	</td>
+	<td>-</td>
+	<td><var>n</var>番のパッチ定義の記述ブロックです。<br>
+		パッチ定義の記述は、<a href="mml_patch.html">パッチ定義（Patch define）</a>の項を参照ください。</td></tr>
+<tr><td>DPCM{<br> <var>Delta PCM define</var><br>}	</td>
+	<td>-</td>
+	<td>⊿PCM定義の記述ブロックです。<br>
+		⊿PCM定義の記述は、<a href="mml_dpcm.html">⊿PCM定義（Delta PCM define）</a>の項を参照ください。</td></tr>
+<tr><td>FDSC(<var>n</var>){<br> <var>wave table</var><br>}	</td>
+	<td>-</td>
+	<td>FDSのキャリア側（音色）の波形データ定義の記述ブロックです。<br>
+		FDSのキャリア側の波形定義の記述は、<a href="mml_FDSC.html">FDSキャリア波形定義（FDS career wave table）</a>の項を参照ください。</td></tr>
+<tr><td>FDSM(<var>n</var>){<br> <var>wave table</var><br>}	</td>
+	<td>-</td>
+	<td>FDSのモジュレータ側（ＬＦＯ）の波形データ定義の記述ブロックです。<br>
+		FDSのモジュレータ側の波形定義の記述は、<a href="mml_FDSM.html">FDSモジュレータ波形定義（FDS modulator wave table）</a>の項を参照ください。</td></tr>
+<tr><td>VRC7(<var>n</var>){<br> <var>VRC7 define</var><br>}	</td>
+	<td>-</td>
+	<td>VRC7ユーザー音色定義の記述ブロックです。<br>
+		VRC7ユーザー音色定義の記述は、<a href="mml_vrc7.html">VRC7 ユーザー音色定義（VRC7 User Instrument define）</a>の項を参照ください。</td></tr>
+<tr><td>N163(<var>n</var>){<br> <var>wave table</var><br>}	</td>
+	<td>-</td>
+	<td>n16x(n160,n161,n162,n163)の音色波形定義の記述ブロックです。<br>
+		n16x音色波形定義の記述は、<a href="mml_n163.html">n16x音色波形定義（N16x sample wave block）</a>の項を参照ください。</td></tr>
+<tr><td>;<span style="color:green;">comments</span>		</td><td>-</td><td>１行コメントです。改行までの記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
+<tr><td>//<span style="color:green;">comments</span>	</td><td>-</td><td>１行コメントです。改行までの記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
+<tr><td>/*<span style="color:green;">comments</span>*/	</td><td>-</td><td>範囲コメントです。 /* と */ の間の記述を無視します。<br>（各記述ブロック内でも有効です）</td></tr>
+</table>
+<br>
+</div>
+
+<div class='block'>
+<h3><a name="nsf">NSF music formatを出力する際に有効なコマンド</a></h3>
+
+<p>
+NSF music format用の設定コマンドです。<br>
+NSFヘッダー、またはメタデータに設定されます。<br>
+</p>
+
+<table>
+<caption>コマンド一覧</caption>
+<tr><th>Command</th>
+	<th>Default</th>
+	<th>NSF</th>
+	<th>NSFe</th>
+	<th>Contens</th>
+</tr>
+<tr><td>#title		"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>タイトル名を設定します（エスケープシーケンス利用可）。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
+</tr>
+<tr><td>#composer	"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>作曲者を設定します（エスケープシーケンス利用可）。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
+</tr>
+<tr><td>#copyright	"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>著作権者を設定します（エスケープシーケンス利用可）。<br>
+		NSFではヘッダーに埋め込まれ、NSFeではメタデータを生成します。<br>
+		また、NSF2で、且つ、32文字を超える場合、メタデータを生成します。</td>
+</tr>
+<tr><td>#maker	"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>製作者を設定します（エスケープシーケンス利用可）。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#text	"<var>strings</var>"	</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>テキストを設定します（エスケープシーケンス利用可）。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#plst	{<var>list</var>}	</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>BGMの演奏順番を指定します。<br>
+		演奏する順番にBGM番号を0~255で指定し、番号と番号の間はスペース、TAB、もしくはカンマで区切ってください。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#psfx	{<var>list</var>}	</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>SEの演奏順番を指定します。<br>
+		演奏する順番にBGM番号を0~255で指定し、番号と番号の間はスペース、TAB、もしくはカンマで区切ってください。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。</td>
+</tr>
+<tr><td>#mixe	{<br>
+	    <var>id</var> = <var>volume</var>,<br>
+	    <var>id</var> = <var>volume</var><br>
+	}</td>
+	<td>		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>各拡張音源の音量バランスを指定します。<br>
+		NSF2, NSFe共にメタデータを生成します。NSF1では未対応です。<br>
+		<var>id</var>は、音源タイプを指定します(DefaultはNSFeの仕様で標準化された規格です)。<br>
+		　APU1 : Squares - Default: 0<br>
+		　APU2 : Triangle / Noise / DPCM - Comparison: Triangle - Default: -20<br>
+		　VRC6 : Default: 0<br>
+		　VRC7 : Comparison: Pseudo-square - Default: 1100<br>
+		　FDS  : Default: 700<br>
+		　MMC5 : Default: 0<br>
+		　N163 : Comparison: 1-Channel mode - Default: 1100 or 1900<br>
+		　SN5B : Comparison: Volume 12 ($C) - Default: -130<br>
+		<var>volume</var>は音量を、-32768～32767で指定します（単位；1/100dB）。</td>
+</tr>
+<tr><td>#code		"<var>name</var>"		</td>
+	<td>nsd.bin</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>リンクするＮＳＦ用のＲＯＭコードを指定します。<br>
+		<a href="nsc_option.html">コンパイルオプション</a>`-l'でROMコードの指定がある場合は、コンパイルオプションを優先します。<br>
+		各ROMコードの詳細は、<a href="spec.html">各.lib/.binの仕様</a>を参照ねがいます。<br>
+		NSFe作成時は、各.binの設定を元に、NSFeのメタデータを生成します。</td>
+</tr>
+<tr><td>#External	<var>n</var>			</td>
+	<td>各.binによる</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>NSFのヘッダーに設定する拡張音源フラグを、この値に書き換えます（初期値は各.binで異なります）。<br></td>
+</tr>
+<tr><td>#VRC7	<var>n</var>			</td>
+	<td>0		</td>
+	<td>2		</td>
+	<td>v		</td>
+	<td>VRC7の換装を設定します（NSFプレイヤーが対応している場合、VRC7がOPLLの音色に切り替わります。）。<br>
+	　0 - VRC7<br>
+	　1 - YM2413 (`nsd_opll.bin'を使用する場合、こちらを指定してください)</td>
+</tr>
+<tr><td>#Bank								</td>
+	<td>非指定	</td>
+	<td>1		</td>
+	<td>v		</td>
+	<td>⊿PCMのバンク切り替えに対応した.bin（nsd_all.bin, nsd_all2.bin）をリンクする場合に、各コマンドを記述する前に必ず指定してください。<br></td>
+</tr>
+</table>
+<br>
+<p>エスケープシーケンス利用可と記載されたコマンドについては、以下のエスケープシーケンスを使用できます。</p>
+	<table>
+<caption>エスケープシーケンス一覧</caption>
+<tr><th>記述</th><th>意味</th></tr>
+<tr><td>\a	</td><td>ベル文字（アラート）</td></tr>
+<tr><td>\b	</td><td>１文字分戻る</td></tr>
+<tr><td>\f	</td><td>ページ送り（クリア）</td></tr>
+<tr><td>\n	</td><td>改行、復帰</td></tr>
+<tr><td>\r	</td><td>同じ行の先頭に戻る</td></tr>
+<tr><td>\t	</td><td>水平タブ</td></tr>
+<tr><td>\v	</td><td>垂直タブ</td></tr>
+<tr><td>\\	</td><td>\を表示</td></tr>
+<tr><td>\?	</td><td>?を表示</td></tr>
+<tr><td>\'	</td><td>シングルクォーテーション(')を表示</td></tr>
+<tr><td>\"	</td><td>ダブルクォーテーション(")を表示</td></tr>
+<tr><td>\N	</td><td>8進定数（Nは8進数の定数）</td></tr>
+<tr><td>\xN	</td><td>16進定数(Nは16進数の定数）</td></tr>
+</table>
+<br>
+</div>
+
+<div class='block'>
+<h3><a name="asm">アセンブリ言語ソースを出力する際に有効なコマンド</a></h3>
+<p>
+アセンブリ言語ソースにて出力する際の設定コマンドです。<br>
+主に、6502開発環境"cc65"に付属の、アセンブラ"ca65.exe"用の疑似命令の出力を制御します。<br>
+ユーザー・アプリケーションに組み込む場合に、設定して下さい。<br>
+</p>
+
+<table>
+<caption>コマンド一覧</caption>
+<tr><th>Command</th><th>Default</th><th>Contens</th></tr>
+<tr><td>#segment	"<var>name</var>"<br>
+		#segmentSEQ	"<var>name</var>"</td>
+	<td>RODATA</td>
+	<td>曲、効果音、エンベロープ、音色データ等（⊿PCM以外）を配置するセグメント名を指定します。<br>
+		これらのデータは、アセンブリ言語ソースにて、『.segment "<var>name</var>"』とセグメント名が指定されます。<br>
+		複数のMMLファイルから生成したアセンブリ言語ソースを、同一のファイルにリンクする場合、
+		異なるセグメント名（"ld65.exe"のコンフィグファイルにて異なるバンクマッピングされた）に設定することで、
+		バンク（32kByteを超える容量）に対応したNESファイルはもちろん、NSFを生成する事も可能です。</td></tr>
+<tr><td>#segmentPCM	"<var>name</var>"	</td>
+	<td>PCMDATA</td>
+	<td>⊿PCMの実体を配置するセグメント名を指定します。<br>
+		⊿PCMの実体を出力する際は、アセンブリ言語ソースにて、『.segment "<var>name</var>"』とセグメント名が指定されます。<br>
+		このセグメントは、リンカー"ld65.exe"のコンフィグファイルにて、
+		#offsetPCMコマンドで設定したアドレスと、同じアドレスに設定して下さい。<br>
+		名前を""（何も無し）に設定した場合は、⊿PCMの実体をアセンブリ言語ソースへ出力しません。<br>
+		これは、同一の⊿PCMを使用する複数のMMLファイルから生成したアセンブリ言語ソースを、
+		同一のファイルにリンクする場合において、どれか１つのMMLのみ、⊿PCMの実体を出力すればよいためです。</td></tr>
+<tr><td>#label		"<var>name</var>"	</td>
+	<td>_nsd_</td>
+	<td>ラベル名（シンボル名）の先頭に付与する文字列を指定します。<br>
+		Ｃコンパイラは、Ｃ言語で記述されたラベル（シンボル）名の先頭に`_'を付加します。<br>
+		従い、Ｃ言語から曲データを参照する場合、MML側で設定するラベル名は先頭に`_'を追加してください。<br>
+		複数のMMLファイルから生成したアセンブリ言語ソースを、同一のファイルにリンクする場合は、
+		必ず、各MMLファイル中で異なるラベル名を設定して下さい。</td></tr>
+</table>
+
+<p>
+複数のMMLから変換したアセンブリ言語ソースを、同一のプロジェクト・ファイルにリンクしてビルドする場合でも、
+エンベロープ定義、音色定義、⊿ＰＣＭの定義は、各MMLファイル毎に設定して下さい（異なる設定も可能です）。<br>
+</p>
+<p>
+曲・効果音は、以下の手順で再生して下さい。
+</p>
+<ol type='1'>
+<li>6502のメモリ空間に、これから再生するデータがあるバンクをマッピング。もしくはロード。<br>
+	（※既に6502のメモリ空間に存在している場合は不要）</li>
+<li><a href="func_nsd_set_dpcm.html">nsd_set_dpcm()</a>関数にて⊿PCM制御構造体を設定<br>
+	（※⊿ＰＣＭを使用しない場合、及び、現在再生中のデータと同じＭＭＬファイルに記述された曲・効果音を再生する際は不要）</li>
+<li><a href="func_nsd_play_bgm.html">nsd_play_bgm()</a>関数、<a href="func_nsd_play_se.html">nsd_play_se()</a>関数にて再生開始<br>
+	（※尚、関数呼び出し後は、バンクを切り替えても問題ありません。）</li>
+</ol>
+<p>
+データの再生中は、シーケンスデータが常時6502のメモリ空間に存在している必要はありません。<br>
+<a href="func_nsd_main.html">nsd_main()</a>関数を呼び出す際に、
+6502のメモリ空間に再生するデータがあるバンクをマッピングし、
+呼び出した後はバンクを切り替えても問題ありません。<br>
+但し、⊿PCMを使用する場合は、⊿PCMの実体が存在するバンクは常時6502のメモリ空間にマッピングして下さい。<br>
+</p>
+
+</div>
+
+<div class='block'>
+<h3><a name="num">数値の記法</a></h3>
+<p>
+0～9で始まる数値は、10進数とみなします。<br>
+$で始まる数値は、16進数とみなします。<br>
+%で始まる数値は、2進数とみなします。<br>
+</p>
+</div>
+
+</div>
+
+</BODY>
+</HTML>

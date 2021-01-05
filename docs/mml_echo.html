@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: Echo</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+<a href="mml_sequence.html">MMLシーケンス</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: Echo</h2>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+        EC<var>delay</var>,<var>volume</var><span style="color:blue;">(</span>,<var>length</var><span style="color:blue;">)</span>
+        EC*
+</pre></code>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<p>
+引数の替わりに`*'を指定することで、疑似エコーを無効化できます。（Default: Disable）<br>
+</p>
+
+<h4>delay</h4>
+<p>
+何音前のノートを、エコーとして発音するかを指定します。<br>
+0（直前のノート）～255（255個前のノート）で指定してください。<br>
+</p>
+
+<h4>volume</h4>
+<p>
+疑似エコーで鳴らす音符の音量、もしくはモードを指定します。<br>
+-1 … 直前のノートのエンベロープをそのまま引き継ぎます（スラーで繋げます）。<br>
+0 ～ 15 … 指定の音量で発音（Key on）し直します。<br>
+</p>
+
+<h4>length</h4>
+<p>
+疑似エコーで鳴らす音符の音長、もしくはモードを指定します。<br>
+-1 … 休符が疑似エコーに置き換わります（パラメータ省略時のデフォルトです）。<br>
+1 ～ … 前の音符の音長を指定分だけ減らし、指定の音長の疑似エコーに置き換えます。r ,w コマンドは休符になります。<br>
+</p>
+
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+<p>
+疑似エコーです。<br>
+休符（rコマンド）が記述された箇所を、疑似エコーに置き換えます。<br>
+r-コマンド及びr+コマンドが記述された場合は、指定通りの休符となります。<br>
+ＭＭＬコンパイラの疑似命令であり、シーケンス上は、<br>
+・音符コマンド<br>
+・音量コマンド<br>
+・相対オクターブコマンド<br>
+により、疑似エコーのシーケンスを作成します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+
+<h4>※疑似エコーは、ＭＭＬコンパイラ側実装のコマンドです</h4>
+<p>
+ドライバ側実装のコマンドと組み合わせた際に、意図通りの動作にならない可能性がございます。<br>
+</p>
+
+<p>
+例えば、リピートコマンドはドライバ側の実装となります。<br>
+従い、"v12 g4 EC1,3 [2 cr dr : er ] gr "といったMMLは、"v12 g4 [2 v12 c <strong>v3 g</strong> v12 d v3 c : v12 e v3 d ] v12 g <strong>v3 e</strong>"と同等のデータに変換される旨、留意してください。<br>
+対応策としては、リピートの開始位置、終了位置、分岐位置をうまく調整する、
+もしくは、リピート開始時及び終了時に、EC-コマンドにて疑似エコーのバッファをリセットしてください。<br>
+</p>
+
+<p>
+また、リピートコマンド内において、リピート毎に以下のような変化がある場合、正常に疑似エコーのシーケンスを作成できない旨、留意してください。<br>
+</p>
+
+<ol>
+<li><a href="mml_relative_volume.html">相対音量コマンド</a>により、音量変化がある場合</li>
+<li><a href="mml_transpose.html">相対移調コマンド</a>により、移調度の変化がある場合</li>
+<li><a href="mml_relative_octave.html">相対オクターブ</a>により、オクターブの変化がある場合</li>
+</ol>
+
+<h4>※タイ（^）使用時における注意</h4>
+<p>
+第３パラメータ<var>length</var>の指定時、休符には疑似エコーを生成しませんが、
+<a href="mml_tie.html">タイ^</a>についても疑似エコーは生成しません（タイはスラー及び休符コマンドにコンパイルするため）。<br>
+例えば、#TieModeが0の条件下において、"EC- EC1,3,%3 v12 l16 c^^^ d^^^ e^^^"といったMMLは、タイの前の音符に対して疑似エコーを生成してしまうため、<br>
+"v12 l16 c^^^ d16-%3 <strong>v3 c%3 ^^^</strong> v12 e16-%3 <strong>v3 d%3 ^^^</strong>"と同等のデータに変換される旨、留意してください。<br>
+音長を加算したい場合は、+演算子により音長を加算してください。<br>
+なお、#TieModeを1にすることで、^はタイではなく、音長加算の演算子として動作します。<br>
+この場合、上述のMMLは"v12 l16 c4 d4-%3 v3 c%3 v12 e4-%3 v3 d%3"と同等のデータに変換されます。<br>
+</p>
+
+<h4>※サブルーチン使用時における注意</h4>
+<p>
+サブルーチン内で使う場合は、音量を指定し直して下さい（MMLコンパイラに現在の音量を通知するため）。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+	v15	EC1,2	<span style="color:green;">//疑似エコー有り</span>
+	l16	crdrerfrgrarbr>	crdrerfrgrarbr `cr brargr frerdrcr < brargrfr erdrcr "br c1	
+		EC*	<span style="color:green;">//疑似エコー無効</span>
+</pre></code>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

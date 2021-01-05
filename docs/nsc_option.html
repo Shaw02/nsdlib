@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>コマンドラインオプション（Command line option）</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>コマンドラインオプション（Command line option）</h2>
+
+<div class='block'>
+<p>
+本MMLコンパイラは、CUI（Command line User Interface）のアプリケーションです。<br>
+以下のように、記述してください。<br>
+何も指定しない場合は、ＮＳＦに変換します。<br>
+</p>
+</div>
+
+<div class='block'>
+<h3><a name="overview">概要（Overview）</a></h3>
+
+<code><pre>
+	nsc <var>-option</var> <var>filename(*.mml)</var>
+</pre></code>
+
+<dl>
+<dt>-a</dt><dd>Compile to assembly langage. (*.s) </dd>
+<dt>-n</dt><dd>Compile to NSF music format. (*.nsf) </dd>
+<dt>-x</dt><dd>Compile to NSFe music format. (*.nsfe) </dd>
+<dt>-v<var>version</var></dt><dd>Specify the NSF Version.</dd>
+<dt>-od<var>switch</var></dt><dd>Optimize of Delta-PCM.</dd>
+<dt>-oo<var>switch</var></dt><dd>Optimize of object.</dd>
+<dt>-os<var>switch</var></dt><dd>Optimize of sequence.</dd>
+<dt>-e</dt><dd>Error/Warning messages out the Stadard error (stderr).</dd>
+<dt>-s</dt><dd>Enable outout the search pass result.</dd>
+<dt>-l<var>filename</var></dt><dd>Set the filename of the rom code for NSF.</dd>
+<dt>-fa<var>filename</var></dt><dd>Set the filename of the output assembly langage file.</dd>
+<dt>-fn<var>filename</var></dt><dd>Set the filename of the output NSF music format.</dd>
+<dt>-c<var>dir</var></dt><dd>Set the search pass of the rom code for NSF. (*.bin)</dd>
+<dt>-p<var>dir</var></dt><dd>Set the search pass of the delta-pcm file. (*.dmc)</dd>
+<dt>-i<var>dir</var></dt><dd>Set the search pass of the include file.</dd>
+<dt>-h</dt><dd>Print the this help.</dd>
+</dl>
+</div>
+
+<div class='block'>
+<h3><a name="detail">詳細（Detail）</a></h3>
+<h4>-a</h4>
+<p>
+MMLファイルをアセンブリ言語ソース（ca65.exe用）へ変換します。<br>
+出力されるアセンブリ言語ソースは、そのままca65.exeでアセンブル可能なソースになっており編集不要です。<br>
+ソースを編集すると、再生に影響を及ぼす可能性がありますので、編集せずにアセンブルしてください。<br>
+ユーザー・アプリケーションのビルドの際に、そのオブジェクト・ファイルをリンクして下さい。<br>
+</p>
+<p>
+出力するアセンブリ言語ソースの詳細は、<a href="nsc_asm.html">出力するアセンブリ言語ソースについて</a>を参照して下さい。<br>
+
+</p>
+
+<h4>-n</h4>
+<p>
+NSF (Nintendo Sound Format)へ変換します。<br>
+</p>
+
+<h4>-x</h4>
+<p>
+NSFe (Extended Nintendo Sound Format)へ変換します。<br>
+</p>
+
+<h4>-n, -xオプションにおける注意事項</h4>
+<p>
+バンク切り替え非対応版の.binを用いてコンパイラで直接ＮＳＦを生成する場合、
+実行コード、シーケンスデータ、⊿ＰＣＭデータの合計が32kByteまでとなります。<br>
+バンク切り替え対応版の.binを用いる場合は、1024kByteまでのデータを作成する事が可能です。<br>
+各.binの詳細は、<a href="spec.html">各.lib／.binの仕様</a>を参照願います。
+</p>
+	
+<h4>-v<var>version</var></h4>
+<p>
+NSFのヴァージョンを1~2で指定可能です。省略した場合は、Version 2となります。<br>
+</p>
+
+<h4>-od<var>switch</var></h4>
+<p>
+バンク構成の最適化のスイッチです。<br>
+<var>switch</var>にて<var>+</var>を指定した場合、バンク構成を最適化します。<br>
+<var>switch</var>にて<var>-</var>を指定した場合、バンク構成を最適化しません（デフォルト）。<br>
+</p>
+<p>
+NSFファイルにビルドする際に、バンク構成を最適化しファイルサイズを小さくします。<br>
+⊿PCMを用いるＭＭＬをコンパイルする場合に、効果が得られる場合があります。<br>
+但し、バンクが不連続に配置されたnsfに非対応の実機再生環境では、⊿PCMの再生が正常に行われない場合があります。<br>
+（現状、TNS-HFC3にて確認しています）。<br>
+</p>
+<p>
+このオプションスイッチでは、未使用のメモリ空間のバンクは作らず、必要なバンクだけを作成します。<br>
+これは、⊿PCMを使用する際に発生します。<br>
+たとえば、シーケンスデータが$9FFF番地で終わり⊿PCMが$C000番地から配置される場合$A000～$BFFFのメモリ領域は不要となります。<br>
+その領域をnsfファイル化せず、$8000～$9FFF, $C000～を領域のみをnsfファイル化して、ファイルサイズを小さくするためのオプションです。<br>
+Version 0.10β～0.17βでのデフォルトの動作です。<br>
+</p>
+<p>
+また、⊿PCMでバンクに対応した.binを使用時において、このオプションスイッチを指定しない場合は、
+ＮＳＦのバンク数が最低８バンク（NSFヘッダーを除き32kByte）になるように調整します。<br>
+このオプションスイッチを指定する場合は、８バンク（NSFヘッダーを除き32kByte）以下のＮＳＦも作成可能ですが、
+バンクが不連続に配置されたnsfに非対応の実機再生環境では、正常に再生できない可能性があります。<br>
+</p>
+
+<h4>-oo<var>switch</var></h4>
+<p>
+未使用のサブルーチン、エンベロープ等を削除するスイッチです。<br>
+<var>switch</var>にて<var>+</var>を指定した場合、未使用のエンベロープ、FDS, n163, VRC7の音色をコンパイルしません（デフォルト）。<br>
+<var>switch</var>にて<var>-</var>を指定した場合、未使用であっても削除しないでコンパイルします。<br>
+</p>
+
+<h4>-os<var>switch</var></h4>
+<p>
+シーケンスデータにおける最適化のスイッチです。<br>
+<var>switch</var>にて<var>+</var>を指定した場合、BGM, 効果音, 及びサブルーチンのシーケンスデータを最適化します（デフォルト）。<br>
+<var>switch</var>にて<var>-</var>を指定した場合、シーケンスデータを最適化しません。<br>
+</p>
+
+<h4>-e</h4>
+<p>
+エラー／ワーニングを、標準エラー出力に出力します。<br>
+デフォルトでは標準出力に返しますが、ファイルに関するエラーのみは、標準エラー出力固定となります。<br>
+</p>
+
+<h4>-s</h4>
+<p>
+検索パスの検索結果を出力します。<br>
+</p>
+
+<h4>-l<var>filename</var></h4>
+<p>
+NSF Music formatへ変換する際の実行コードファイルを指定します。<br>
+このオプションを指定した場合、MML中の"#code"コマンドは無視されます。<br>
+ファイル名は、スペースを開けずに記述してください。<br>
+</p>
+
+<h4>-fa<var>filename</var></h4>
+<p>
+アセンブリ言語ソースのファイル名を指定できます。<br>
+指定がない場合は、入力されたmmlのファイル名で、拡張子を`.s'にして出力します。<br>
+ファイル名は、スペースを開けずに記述してください。<br>
+</p>
+
+<h4>-fn<var>filename</var></h4>
+<p>
+NSF Music formatのファイル名を指定できます。<br>
+指定がない場合は、入力されたmmlのファイル名で、拡張子を`.nsf'にして出力します。<br>
+ファイル名は、スペースを開けずに記述してください。<br>
+</p>
+
+<h4>-c<var>dir</var></h4>
+<p>
+NSF Music formatへ変換する際の実行コードファイルの検索パスを設定します。<br>
+;で区切ることにより、複数の検索パスを指定可能です。<br>
+パス名は、スペースを開けずに記述してください。<br>
+検索優先順位は、以下の通りです。<br>
+</p>
+<ol>
+<li>カレントディレクトリ</li>
+<li>指定のMMLファイルにディレクトリ名を含んでいた場合、そのディレクトリ</li>
+<li>環境変数`PATH'にて指定されたディレクトリ</li>
+<li>このオプションで指定されたディレクトリ</li>
+</ol>
+
+<h4>-p<var>dir</var></h4>
+<p>
+⊿ＰＣＭファイル（*.dmc）の検索パスを設定します。<br>
+;で区切ることにより、複数の検索パスを指定可能です。<br>
+パス名は、スペースを開けずに記述してください。<br>
+検索優先順位は、以下の通りです。<br>
+</p>
+<ol>
+<li>カレントディレクトリ</li>
+<li>指定のMMLファイルにディレクトリ名を含んでいた場合、そのディレクトリ</li>
+<li>環境変数`DMC_INCLUDE'にて指定されたディレクトリ</li>
+<li>このオプションで指定されたディレクトリ</li>
+</ol>
+
+<h4>-i<var>dir</var></h4>
+<p>
+ＭＭＬ中の#includeディレクティブで指定されたインクルードファイルの検索パスを設定します。<br>
+;で区切ることにより、複数の検索パスを指定可能です。<br>
+パス名は、スペースを開けずに記述してください。<br>
+検索優先順位は、以下の通りです。<br>
+</p>
+<ol>
+<li>カレントディレクトリ</li>
+<li>指定のMMLファイルにディレクトリ名を含んでいた場合、そのディレクトリ</li>
+<li>このオプションで指定されたディレクトリ</li>
+</ol>
+
+<h4>-h</h4>
+<p>
+簡易ヘルプを表示します。<br>
+</p>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>

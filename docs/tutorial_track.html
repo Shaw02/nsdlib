@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>ストトン表記　チュートリアル　音を増やしてみる</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="tutorial.html">チュートリアル</a>＼
+</div>
+
+<!-- ────────────────────────────────── -->
+<!-- contents start -->
+<div id='contents'>
+<h2>チュートリアル　音を増やしてみる</h2>
+
+<p>
+前回は、１音だけの曲を作ってみましたが、それじゃつまらないですね。<br>
+今回は、ファミコンの３音を使ってみたいと思います。<br>
+今回のお題は、『』です。<br>
+</p>
+
+
+
+<!-- ────────────────────────────────── -->
+
+<div class='block'>
+<h3>パートを増やそう</h3>
+<p>
+複数のパートを書くには、『トラックコマンド』を使います。<br>
+ファミコンには３つのメロディーチャンネルがあります。<br>
+ただし、その中でもトラック３は特殊で、このトラックは三角波と呼ばれる音色で、
+多くの場合は、低音パートに使います。<br>
+</p>
+</div>
+
+<div class='block'>
+<h3>トラック３（三角波）について</h3>
+<p>
+このトラックは三角波しか出せないので、「音色」コマンドは使えません。<br>
+また、音量も一定なため、「音量」コマンドも使えません。<br>
+</p>
+<p>
+このように大きな制約がありますが、低音域での独特な音、
+また、高音域で使うとフルートのような音と、
+トラック１～２では出せない音が出るため、色々と使い道があります。<br>
+是非、活用方法を研究してみてください。<br>
+</p>
+</div>
+
+
+<div>
+<center>
+<a href="tutorial_music.html">戻る</a>
+<a href="tutorial_envelope.html">次へ</a>
+<center>
+</div>
+
+
+
+<!-- ────────────────────────────────── -->
+</div>
+
+</BODY>
+</HTML>

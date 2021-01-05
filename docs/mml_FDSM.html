@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta http-equiv='Content-Style-Type' content='text/css'>
+<link rel="stylesheet" type="text/css" href="help.css">
+<Title>MML reference: FDS modulator wave table</Title>
+</HEAD>
+<BODY>
+
+<!-- header start -->
+<div id='header'>
+<h1>NSDL（NES Sound Driver Library）</h1>
+<a href="index.html">トップ</a>＼
+<a href="usage.html">使い方</a>＼
+<a href="usage_nsc.html">MMLコンパイラ</a>＼
+<a href="mml.html">MML文法</a>＼
+</div>
+
+<!-- contents start -->
+<div id='contents'>
+<h2>MML reference: FDS modulator wave table</h2>
+
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>定義（Define）</h3>
+<code><pre>
+FDSM(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+
+<code><pre>
+@MW(<var>n</var>){
+	<var>define</var>
+}
+</pre></code>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>引数（Inputs）</h3>
+
+<h4>n</h4>
+<p>
+FDS音源のモジュレータ（ＬＦＯ）の波形番号を指定します。
+</p>
+
+<h4>define</h4>
+<p>
+0～7の数値を32個記述し波形を定義します。<br>
+</p>
+<table>
+<tr><th>数値	</th><th>変化量	</th></tr>
+<tr><th>0		</th><td>±0	</td></tr>
+<tr><th>1		</th><td>＋1	</td></tr>
+<tr><th>2		</th><td>＋2	</td></tr>
+<tr><th>3		</th><td>＋4	</td></tr>
+<tr><th>4		</th><td>変位を0へリセット		</td></tr>
+<tr><th>5		</th><td>－4	</td></tr>
+<tr><th>6		</th><td>－2	</td></tr>
+<tr><th>7		</th><td>－1	</td></tr>
+</table>
+<p>※変化量は、現在発音しているピッチ（周波数）からの相対値です。<br></p>
+
+</div>
+<!-- ──────────────── -->
+<div class='block'>
+<h3>内容（Contents）</h3>
+
+<p>
+FDS音源のモジュレータの波形（ＬＦＯ形状）を定義します。<br>
+</p>
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>注意（Notes）</h3>
+<p>
+</p>
+
+</div>
+
+<!-- ──────────────── -->
+<div class='block'>
+<h3>例（Sample）</h3>
+
+<code><pre>
+FDSC(0){	<span style="color:green;">//Triangle wave</span>
+	0,7,0,7, 0,7,0,7, 0,1,0,1, 0,1,0,1, 
+	0,1,0,1, 0,1,0,1, 0,7,0,7, 0,7,0,7
+}
+</pre></code>
+
+</div>
+
+</div>
+
+</BODY>
+</HTML>
