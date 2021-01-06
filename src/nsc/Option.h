@@ -34,6 +34,7 @@
 class OPSW {
 //メンバー変数
 public:
+				bool		fOptionError;	//オプションでエラーがあった場合
 				bool		fHelp;			//ヘルプを指定したか？
 				bool		fErr;			//エラー出力先	true:標準エラー出力／false:標準出力
 				bool		saveNSF;		//.nsf を出力するか

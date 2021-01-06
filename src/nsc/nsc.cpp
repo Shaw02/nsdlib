@@ -44,7 +44,7 @@
 		OPSW*			cOptionSW = NULL;	//どっからでもアクセスする。
 
 //==============================================================
-//		エラー
+//		エラー			■■■ To Do:	廃止予定
 //--------------------------------------------------------------
 //	●引数
 //		int			エラーコード
@@ -66,12 +66,8 @@ void nsc_exit(int no)
 //==============================================================
 int	main(int argc, char* argv[])
 {
-		size_t	i;
-		int		iResult	= EXIT_SUCCESS;
-	MMLfile		*cMML	= NULL;
-	MusicFile	*cSND	= NULL;
 
-	try {
+	int		iResult	= EXIT_SUCCESS;
 
 #ifdef	_WIN32
 		locale::global(std::locale(""));
@@ -80,19 +76,33 @@ int	main(int argc, char* argv[])
 		setlocale(LC_ALL, "");
 #endif
 
-
 //		locale::global(std::locale(""));	//g++ だと、ランタイム エラーになる。
 
+	//==================================
+	_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
+				_T("    Version 1.30\n")
+				_T("        Copyright (c) 2012-2020 S.W.\n")	<<	endl;
 
-		//==================================
-		_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
-					_T("    Version 1.30\n")
-					_T("        Copyright (c) 2012-2020 S.W.\n")	<<	endl;
+	//==================================
+	//オプションの処理
+	cOptionSW	= new OPSW(argc,argv);
 
+	if(cOptionSW->fOptionError == true){
+		iResult	= EXIT_FAILURE;
+	}
+
+	//オプションでエラーが発生している、若しくはヘルプを表示していたらコンパイルしない。
+	if((iResult	!= EXIT_FAILURE) && (cOptionSW->fHelp == false)){
+
+		size_t		i;
+		MMLfile		*cMML	= NULL;
+		MusicFile	*cSND	= NULL;
+
+	//■■■ To Do:	並列化のため、try は並列化された各スレッドに移動する。
+	try {
 
 		//==================================
 		//クラスの作成
-		cOptionSW	= new OPSW(argc,argv);							//オプション処理
 		_COUT << _T("------------------------------------------------------------") << endl;
 		_COUT << _T("*Object creating process") << endl;
 
@@ -131,6 +141,8 @@ int	main(int argc, char* argv[])
 
 		_COUT << endl;
 
+
+
 		//==================================
 		//保存
 		//NSF
@@ -161,12 +173,14 @@ int	main(int argc, char* argv[])
 		}
 	}
 
-	//==================================
-	//クラスの削除
-	if (cSND)
-		delete	cSND;
-	if (cMML)
-		delete	cMML;
+		//==================================
+		//クラスの削除
+		if (cSND)
+			delete	cSND;
+		if (cMML)
+			delete	cMML;
+	}
+
 	if (cOptionSW)
 		delete	cOptionSW;
 

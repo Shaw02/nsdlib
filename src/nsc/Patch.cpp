@@ -25,7 +25,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //					無し
 //==============================================================
 Patch::Patch(MMLfile* MML, size_t _id):
-	m_id(_id)
+	m_id(_id),
+	f_error(false)
 {
 	//----------------------
 	//Local変数
