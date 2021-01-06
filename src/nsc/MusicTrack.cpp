@@ -235,27 +235,31 @@ int	MusicTrack::TickCount(MusicFile* MUS)
 
 					//----------------------------------------------
 					case(nsd_Call):					//0x02
-						_no = adrObj->get_id();
-						if((no_sub != _no) || (sw_sub == false) || (cOptionSW->flag_OptSeq == false) || (((mml_CallSub*)adrObj)->getPatch() == false)){
-							if(((mml_CallSub*)adrObj)->getPatch() == true){
-								no_sub = _no;
-								sw_sub = true;
-							}
-							if( MUS->ptcSub.count(_no) == 0){
-								if(cOptionSW->fErr == true){
-									_CERR << endl << _T("Sub(") << _no << _T(")番が存在しません。");
+						{
+							bool	f_Patch	= ((mml_CallSub*)adrObj)->isPatch();
+							_no = adrObj->get_id();
+							if((no_sub != _no) || (sw_sub == false) || (cOptionSW->flag_OptSeq == false) || (((mml_CallSub*)adrObj)->isDisableOptimize() == true) || (f_Patch == false)){
+								if(f_Patch == true){
+									no_sub = _no;
+									sw_sub = true;
+								}
+								if( MUS->ptcSub.count(_no) == 0){
+									if(cOptionSW->fErr == true){
+										_CERR << endl << _T("Sub(") << _no << _T(")番が存在しません。");
+									} else {
+										_COUT << endl << _T("Sub(") << _no << _T(")番が存在しません。");
+									}
+									f_ERR = true;
 								} else {
-									_COUT << endl << _T("Sub(") << _no << _T(")番が存在しません。");
-								}
-								f_ERR = true;
-							} else {
-								iTickCount += MUS->ptcSub[_no]->TickCount(MUS, &nsd);	//サブルーチン先をシミュレート
-								MUS->ptcSub[_no]->setUse();								//サブルーチン先を使うフラグを立てる
-								if(adrObj->chkUse() == false){
-									adrObj->setUse();
-									vec_ptc_Sub.push_back(adrObj);		//アドレス解決するオブジェクトとして登録
+									iTickCount += MUS->ptcSub[_no]->TickCount(MUS, &nsd);	//サブルーチン先をシミュレート
+									MUS->ptcSub[_no]->setUse();								//サブルーチン先を使うフラグを立てる
+									if(adrObj->chkUse() == false){
+										adrObj->setUse();
+										vec_ptc_Sub.push_back(adrObj);		//アドレス解決するオブジェクトとして登録
+									}
 								}
 							}
+							
 						}
 						break;
 
@@ -1693,14 +1697,17 @@ void	MusicTrack::SetSubroutine(size_t _no)
 //==============================================================
 //		S	サブルーチン呼び出し（パッチから）
 //--------------------------------------------------------------
-void	MusicTrack::SetSubWithParch(size_t _no,bool _f)
+//	●引数
+//		size_t	_no,			呼出No
+//		bool	_f_Disable_Opt	最適化が無効か？
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetSubWithParch(size_t _no,bool _f_Disable_Opt)
 {
 	if(jump_flag==false){
 		mml_CallSub*	_event = new mml_CallSub(_no, _T("Call Subroutine for Patch"));
-		_event->setPatch();
-		if(_f == true){
-			_event->setUse();
-		}
+		_event->setPatch(_f_Disable_Opt);
 		SetEvent(_event);
 	};
 }

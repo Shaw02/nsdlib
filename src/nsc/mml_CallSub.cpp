@@ -26,7 +26,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //==============================================================
 mml_CallSub::mml_CallSub(size_t _id, const _CHAR _strName[]):
 	mml_Address(_id, nsd_Call, _strName),
-	by_Patch(false)
+	by_Patch(false),
+	f_disable_opt(false)
 {
 }
 
