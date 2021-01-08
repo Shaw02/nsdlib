@@ -400,7 +400,11 @@ const	static	Command_Info	Command[] = {
 					MML->Err(_T("DPCMブロックは１つまでです。"));
 				}
 				cDPCMinfo = new DPCMinfo(MML, Header.bank);
-				ptcItem.push_back(cDPCMinfo);
+				if(cDPCMinfo->isError() == true){
+					f_error = true;
+				} else {
+					ptcItem.push_back(cDPCMinfo);
+				}
 				break;
 			case(id_FDSC):
 				{
@@ -1439,6 +1443,8 @@ void	MusicFile::saveASM(const char*	strFileName)
 //==============================================================
 void	MusicFile::Err(const _CHAR msg[])
 {
+	f_error = true;
+
 	if(cOptionSW->fErr == true){
 		_CERR << _T("[ ERROR ] : ") << msg << endl;
 	} else {

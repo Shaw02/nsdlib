@@ -46,8 +46,6 @@ OPSW::OPSW(int argc, char* argv[]):
 	iDebug(0)
 {
 
-	wstring	str_err_msg = _T("");
-
 	try {
 
 		//----------------------------------

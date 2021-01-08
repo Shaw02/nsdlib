@@ -52,11 +52,10 @@ void	FileInput::fileopen(const char*	_strFileName){
 
 	open(_strFileName,ios_base::in | ios_base::binary);
 	if(good()==false){
-		perror(_strFileName);
 		f_error	= true;
-		nsc_exit(EXIT_FAILURE);
+		perror(_strFileName);
 	}
-	strFilename = _strFileName;
+	strFilename.append(_strFileName);
 };
 
 //--------------------------------
@@ -131,11 +130,11 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 	};
 
 	if(f_error == true){
-		_CERR << _T("全ての検索パスで、ファイルが見つかりませんでした。") << endl;
 		if(cOptionSW->flag_SearchPass == false){
 			perror(_strFileName);
 		}
-		nsc_exit(EXIT_FAILURE);
+	} else {
+		strFilename.append(_strFileName);	
 	}
 }
 

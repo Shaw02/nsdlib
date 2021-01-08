@@ -85,6 +85,10 @@ MMLfile::~MMLfile(void)
 	//開いたファイルを全部閉じる
 	itFiles = ptcFiles.begin();
 	while(itFiles != ptcFiles.end()){
+		if(cOptionSW->iDebug & DEBUG_Close_Inc){
+			_COUT << _T("Close include file :");
+			cout << (*itFiles)->GetFilename()->c_str() << endl;
+		}
 		(*itFiles)->close();
 		delete *itFiles;
 		itFiles++;
@@ -161,6 +165,7 @@ void	MMLfile::include()
 	//Local変数
 	vector	<FileInput*>::iterator	itFiles;
 	string	_name = GetString(false);
+	FileInput*	_incFile;
 
 	//----------------------
 	//同じファイルが開かれていないかチェック
@@ -174,12 +179,18 @@ void	MMLfile::include()
 
 	//----------------------
 	//File open
-	nowFile	= new FileInput();
+	_incFile	= new FileInput();
 
-	nowFile->fileopen(_name.c_str(), &cOptionSW->m_pass_inc);
-	ptcFiles.push_back(nowFile);
-
-	iFiles++; 
+	_incFile->fileopen(_name.c_str(), &cOptionSW->m_pass_inc);
+	if(_incFile->isError() == true){
+		f_error = true;
+		delete _incFile;		//読み込みに失敗したので、ここでクラスを解放させる。
+		Err(_T("インクルードするファイルが見つかりませんでした。"));
+	} else {
+		nowFile = _incFile;
+		ptcFiles.push_back(_incFile);
+		iFiles++; 
+	}
 }
 
 //==============================================================
@@ -1191,6 +1202,7 @@ int	MMLfile::GetCommandID(const Command_Info _command[], size_t _size)
 //==============================================================
 void	MMLfile::Err(const _CHAR msg[])
 {
+	f_error = true;
 
 	//エラー内容を表示
 	if(cOptionSW->fErr == true){

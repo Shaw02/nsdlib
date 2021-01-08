@@ -141,21 +141,26 @@ int	main(int argc, char* argv[])
 
 			//==================================
 			//アドレスの解決
-			_COUT << _T("------------------------------------------------------------") << endl;
-			_COUT << _T("*Address settlement process") << endl;
+			if((cSND->isError() == true) || (cMML->isError() == true)){
+				//エラーが発生していたら保存しない。
+				iResult = EXIT_FAILURE;
 
-			//アドレスの計算 ＆ サイズの出力
-			i = cSND->SetOffset(0);
-			cout << "  Music Size = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
+			} else {
+				_COUT << _T("------------------------------------------------------------") << endl;
+				_COUT << _T("*Address settlement process") << endl;
 
-			i = cSND->SetDPCMOffset(i);
-			cout << "  DPCM Size  = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
+				//アドレスの計算 ＆ サイズの出力
+				i = cSND->SetOffset(0);
+				cout << "  Music Size = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
 
-			//アドレスを引数にもつオペコードのアドレス解決
-			cSND->Fix_Address();
+				i = cSND->SetDPCMOffset(i);
+				cout << "  DPCM Size  = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
 
-			_COUT << endl;
+				//アドレスを引数にもつオペコードのアドレス解決
+				cSND->Fix_Address();
 
+				_COUT << endl;
+			}
 
 
 			//==================================
@@ -168,31 +173,40 @@ int	main(int argc, char* argv[])
 			//==================================
 			//保存
 			//NSF
-			if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
-				cSND->saveNSF(cOptionSW->strNSFname.c_str());
-			}
+			if((cSND->isError() == true) || (cMML->isError() == true)){
+				//エラーが発生していたら保存しない。
+				iResult = EXIT_FAILURE;
 
-			//NSFe
-			if(cOptionSW->saveNSFe == true){
-				cSND->saveNSFe(cOptionSW->strNSFename.c_str());
-			}
+			} else {
+				if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
+					cSND->saveNSF(cOptionSW->strNSFname.c_str());
+				}
 
-			//Assembly
-			if(cOptionSW->saveASM == true){
-				cSND->saveASM(cOptionSW->strASMname.c_str());
-			}
+				//NSFe
+				if(cOptionSW->saveNSFe == true){
+					cSND->saveNSFe(cOptionSW->strNSFename.c_str());
+				}
 
-			_COUT << endl;
+				//Assembly
+				if(cOptionSW->saveASM == true){
+					cSND->saveASM(cOptionSW->strASMname.c_str());
+				}
+
+				_COUT << endl;
+			}
 
 			//==================================
 			//クラスの削除
 			if (cSND)
+			//	cout << "delete cSND" << endl; 
 				delete	cSND;
 		}
 		if (cMML)
+		//	cout << "delete cMML" << endl; 
 			delete	cMML;
 	}
 	if (cOptionSW)
+	//	cout << "delete cOptionSW" << endl; 
 		delete	cOptionSW;
 
 	return(iResult);

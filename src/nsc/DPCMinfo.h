@@ -41,6 +41,7 @@ class DPCMinfo :
 {
 //メンバー変数
 private:
+	bool				f_error;				//エラー発生の有無
 	bool				bank;
 	unsigned	char	max_number;
 	nsd_dpcm_info		infoDPCM[256];
@@ -56,4 +57,5 @@ public:
 				size_t	setDPCMoffset(size_t _offset, unsigned char _MusBank);
 				void	getDPCMCode(string* _str);
 				void	getAsm(MusicFile* MUS);
+				bool	isError(){return(f_error);};
 };

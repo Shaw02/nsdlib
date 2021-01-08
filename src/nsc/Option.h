@@ -24,6 +24,7 @@
 #define	DEBUG_Delete		0x40	//0x40:	Phase [5] : Delete Class Object
 #define DEBUG_Meta_Delete	0x80	//0x80:	Phase [5] : Delete Class Object
 
+#define DEBUG_Close_Inc		0x100	//0x100:Phase [5] : Close Include File
 
 
 /****************************************************************/
