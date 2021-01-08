@@ -18,9 +18,10 @@ protected:
 
 public:
 //ÉÅÉìÉoÅ[ä÷êî
-		FileOutput(void);
-		~FileOutput(void);
-void	fileopen(const char*	strFileName);
-void	StreamPointerAdd(std::streamoff iSize);
-void	StreamPointerMove(std::streamoff iSize);
+					FileOutput(void);
+					~FileOutput(void);
+			void	fileopen(const char*	strFileName);
+			void	StreamPointerAdd(std::streamoff iSize);
+			void	StreamPointerMove(std::streamoff iSize);
+			bool	isError(){return(f_error);};
 };

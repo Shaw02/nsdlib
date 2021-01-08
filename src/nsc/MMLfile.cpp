@@ -24,31 +24,42 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //				無し
 //==============================================================
 MMLfile::MMLfile(const char*	strFileName):
-	p_macro(0),
-	f_macro(false),
-	f_2to1(false),
-	offset_Ei(0),
-	offset_Ev(0),
-	offset_En(0),
-	offset_Em(0),
-	iReleaseVolume(2),
-	iRepeatMode(0),
-	iTieMode(0),
-	timebase(24),
-	octave_reverse(false),
-	q_reverse(false),
-	rest(2),
-	wait(0),
-	QMax(8),
-	priority(0)
-	{
-	//File open
-	nowFile	= new FileInput();
+p_macro(0),
+f_macro(false),
+f_2to1(false),
+f_error(false),
+offset_Ei(0),
+offset_Ev(0),
+offset_En(0),
+offset_Em(0),
+iReleaseVolume(2),
+iRepeatMode(0),
+iTieMode(0),
+timebase(24),
+octave_reverse(false),
+q_reverse(false),
+rest(2),
+wait(0),
+QMax(8),
+priority(0)
+{
+	try {
+		//File open
+		nowFile	= new FileInput();
+		nowFile->fileopen(strFileName);
 
-	nowFile->fileopen(strFileName);
-	ptcFiles.push_back(nowFile);
+		//読み込み失敗？
+		f_error = nowFile->isError();
+		if(f_error == false){
+			ptcFiles.push_back(nowFile);
+			iFiles = 0;
+		}
 
-	iFiles = 0;
+	} catch (int no) {
+		if (no != EXIT_SUCCESS){
+			f_error = true;	//エラーが発生した。
+		}
+	}
 }
 
 //==============================================================

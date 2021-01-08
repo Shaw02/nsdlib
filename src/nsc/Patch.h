@@ -108,4 +108,5 @@ public:
 				bool	get_sw_Em(void){	return(m_now_Patch->sw_Em);};
 				bool	get_sw_En(void){	return(m_now_Patch->sw_En);};
 
+				bool	isError(){return(f_error);};
 };

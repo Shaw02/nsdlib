@@ -47,8 +47,9 @@ void	FileOutput::fileopen(const char*	strFileName){
 	open(strFileName,ios_base::out | ios_base::binary);
 	if(good()==false){
 		perror(strFileName);
+		f_error	= true;
 		nsc_exit(EXIT_FAILURE);
-	};
+	}
 };
 
 //--------------------------------
@@ -64,4 +65,3 @@ void	FileOutput::StreamPointerAdd(std::streamoff iSize){
 void	FileOutput::StreamPointerMove(std::streamoff iSize){
 	seekp(iSize,ios::beg);
 };
-

@@ -53,8 +53,9 @@ void	FileInput::fileopen(const char*	_strFileName){
 	open(_strFileName,ios_base::in | ios_base::binary);
 	if(good()==false){
 		perror(_strFileName);
+		f_error	= true;
 		nsc_exit(EXIT_FAILURE);
-	};
+	}
 	strFilename = _strFileName;
 };
 
@@ -63,7 +64,7 @@ void	FileInput::fileopen(const char*	_strFileName){
 //--------------------------------
 void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 {
-	bool	success	= false;
+	f_error	= true;
 
 	//先ずは、そのまま
 	errno = 0;	//グローバル変数 errno を０に初期化
@@ -74,7 +75,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 	}
 
 	if(good()==true){
-		success = true;
+		f_error	= false;
 	} else {
 
 		//検索パス
@@ -104,7 +105,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 				perror(name.c_str());
 			}
 			if(good()==true){
-				success = true;
+				f_error	= false;
 				break;
 			};
 #endif
@@ -120,7 +121,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 				perror(name.c_str());
 			}
 			if(good()==true){
-				success = true;
+				f_error	= false;
 				break;
 			};
 
@@ -129,7 +130,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 
 	};
 
-	if(success == false){
+	if(f_error == true){
 		_CERR << _T("全ての検索パスで、ファイルが見つかりませんでした。") << endl;
 		if(cOptionSW->flag_SearchPass == false){
 			perror(_strFileName);

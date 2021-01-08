@@ -29,7 +29,6 @@ protected:
 				string		m_data;				//実体
 	list<MetaItem*>			ptcItem;			//構造化
 				size_t		m_offset;			//SNDファイルポインタ
-				bool		f_error;			//エラー発生の有無
 
 //メンバー関数
 public:

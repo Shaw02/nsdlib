@@ -46,6 +46,8 @@ OPSW::OPSW(int argc, char* argv[]):
 	iDebug(0)
 {
 
+	wstring	str_err_msg = _T("");
+
 	try {
 
 		//----------------------------------
@@ -98,7 +100,7 @@ OPSW::OPSW(int argc, char* argv[]):
 									fTemp = false;
 									break;
 								default :
-									opError(_T("-o"));
+									throw argv[iCount];
 									break;
 							}
 							switch(argv[iCount][2]){
@@ -115,7 +117,7 @@ OPSW::OPSW(int argc, char* argv[]):
 									flag_OptSeq = fTemp;
 									break;
 								default :
-									opError(_T("-o"));
+									throw argv[iCount];
 									break;
 							}
 							break;
@@ -157,7 +159,7 @@ OPSW::OPSW(int argc, char* argv[]):
 								iNSF_version = 2;
 								break;
 							default :
-								opError(_T("-v"));
+								throw argv[iCount];
 								break;
 						}
 						break;
@@ -185,7 +187,7 @@ OPSW::OPSW(int argc, char* argv[]):
 						iResult=sscanf(argv[iCount],"-D%d",&i);
 						iDebug = i;
 						if((iResult==0)||(iResult==EOF)){
-							opError(_T("-D"));
+							throw argv[iCount];
 							break;
 						};
 						break;
@@ -207,7 +209,7 @@ OPSW::OPSW(int argc, char* argv[]):
 								strCodeName+=".bin";
 							};
 						} else {
-							opError(_T("-l Code ファイルが2回以上指定されました。"));
+							throw _T("-l Code ファイルが2回以上指定されました。");
 							break;
 						};
 						break;
@@ -238,7 +240,7 @@ OPSW::OPSW(int argc, char* argv[]):
 					case 'F' :
 						//先に、ファイル名が書いてあるかチェック。
 						if(argv[iCount][3]==0){
-							opError(_T("/F ファイル名が書いてありません。"));
+							throw _T("-f ファイル名が書いてありません。");
 							break;
 						};
 						switch(argv[iCount][2]){
@@ -260,7 +262,7 @@ OPSW::OPSW(int argc, char* argv[]):
 									strASMname+=".s";
 								};
 							} else {
-								opError(_T("-fa ASM ファイルが2回以上指定されました。"));
+								throw _T("-fa ASM ファイルが2回以上指定されました。");
 								break;
 							};
 							break;
@@ -282,7 +284,7 @@ OPSW::OPSW(int argc, char* argv[]):
 									strNSFname+=".nsf";
 								};
 							} else {
-								opError(_T("-fn NSF ファイルが2回以上指定されました。"));
+								throw _T("-fn NSF ファイルが2回以上指定されました。");
 								break;
 							};
 							break;
@@ -304,19 +306,19 @@ OPSW::OPSW(int argc, char* argv[]):
 									strNSFename+=".nsfe";
 								};
 							} else {
-								opError(_T("-fn NSFe ファイルが2回以上指定されました。"));
+								throw _T("-fn NSFe ファイルが2回以上指定されました。");
 								break;
 							};
 							break;
 						default :
-							opError(_T("-f"));
+							throw argv[iCount];
 							break;
 						};
 					break;
 					//--------
 					//デフォルト
 					default :
-						opError(_T(""));
+						throw argv[iCount];
 						break;
 				};
 
@@ -338,7 +340,7 @@ OPSW::OPSW(int argc, char* argv[]):
 						strMMLname+=".mml";
 					};
 				} else {
-					opError(_T("MMLファイルが2回以上指定されました。"));
+					throw _T("MMLファイルが2回以上指定されました。");
 					break;
 				};
 
@@ -452,11 +454,46 @@ OPSW::OPSW(int argc, char* argv[]):
 
 	} catch (int no) {
 		if (no != EXIT_SUCCESS){
+			if(fErr == true){
+				_CERR << _T("Error!:") << no << _T(": オプション処理中にエラーが発生しました。") << endl;
+			} else {
+				_COUT << _T("Error!:") << no << _T(": オプション処理中にエラーが発生しました。") << endl;
+			}
 			fOptionError = true;	//オプション処理でエラーが発生した。
 		}
+
+	} catch (const char *stErrMsg) {
+		if(fErr == true){
+			_CERR	<<	_T("オプションが不正です。：");
+			cerr	<<	stErrMsg	<<endl;
+		} else {
+			_COUT << _T("オプションが不正です。：");
+			cout	<<	stErrMsg	<<endl;
+		}
+		fOptionError = true;	//オプション処理でエラーが発生した。
+
+	} catch (const _CHAR *stErrMsg) {
+		if(fErr == true){
+			_CERR	<<	_T("オプションが不正です。：") << stErrMsg << endl;
+		} else {
+			_COUT	<<	_T("オプションが不正です。：") << stErrMsg << endl;
+		}
+		fOptionError = true;	//オプション処理でエラーが発生した。
 	}
+};
+
+//==============================================================
+//		デストラクト
+//--------------------------------------------------------------
+//	●引数
+//			なし
+//	●返値
+//			無し
+//==============================================================
+OPSW::~OPSW(){
 
 };
+
 //==============================================================
 //		ヘルプメッセージ
 //--------------------------------------------------------------
@@ -491,33 +528,4 @@ void	OPSW::print_help(){
 				_T("  -H			Print the this help.")	<<	endl;
 
 	throw EXIT_SUCCESS;
-};
-//==============================================================
-//		デストラクト
-//--------------------------------------------------------------
-//	●引数
-//			なし
-//	●返値
-//			無し
-//==============================================================
-OPSW::~OPSW(){
-
-};
-//==============================================================
-//		エラー処理	（プロセスも終了する）
-//--------------------------------------------------------------
-//	●引数
-//			const	_CHAR	*stErrMsg	エラーメッセージ
-//	●返値
-//			無し
-//==============================================================
-void OPSW::opError(const _CHAR *stErrMsg){
-
-	if(fErr == true){
-		_CERR << _T("オプションが不正です。：") << stErrMsg << endl;
-	} else {
-		_COUT << _T("オプションが不正です。：") << stErrMsg << endl;
-	}
-
-	throw EXIT_FAILURE;
 };

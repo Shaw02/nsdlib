@@ -55,6 +55,18 @@ void nsc_exit(int no)
 {
 	throw no;
 }
+
+//==============================================================
+//		エラー出力
+//--------------------------------------------------------------
+void nsc_error(int no, int& iResult)
+{
+	if (no != EXIT_SUCCESS){
+		_COUT	<<	_T("Error!:") << no << endl;
+		iResult = EXIT_FAILURE;
+	}
+}
+
 //==============================================================
 //		メイン関数
 //--------------------------------------------------------------
@@ -86,101 +98,100 @@ int	main(int argc, char* argv[])
 	//==================================
 	//オプションの処理
 	cOptionSW	= new OPSW(argc,argv);
-
-	if(cOptionSW->fOptionError == true){
+	if(cOptionSW->isError() == true){
 		iResult	= EXIT_FAILURE;
 	}
-
 	//オプションでエラーが発生している、若しくはヘルプを表示していたらコンパイルしない。
 	if((iResult	!= EXIT_FAILURE) && (cOptionSW->fHelp == false)){
 
-		size_t		i;
-		MMLfile		*cMML	= NULL;
-		MusicFile	*cSND	= NULL;
+		//MMLファイルのクラスオブジェクト作成
+		MMLfile	*cMML = new MMLfile(cOptionSW->strMMLname.c_str());
 
-	//■■■ To Do:	並列化のため、try は並列化された各スレッドに移動する。
-	try {
+		//MMLファイルの読み込みに失敗したらコンパイルしない。
+		if(cMML->isError() == false){
 
-		//==================================
-		//クラスの作成
-		_COUT << _T("------------------------------------------------------------") << endl;
-		_COUT << _T("*Object creating process") << endl;
+			size_t		i;
+			MusicFile* cSND = NULL;
 
-		cMML = new MMLfile(cOptionSW->strMMLname.c_str());
-		cSND = new MusicFile(cMML, cOptionSW->strCodeName);
+			//==================================
+			//MML構文解析しながら、クラスオブジェクトの作成
+			_COUT << _T("------------------------------------------------------------") << endl;
+			_COUT << _T("*Object creating process") << endl;
 
-		_COUT << endl;
+			//■■■ To Do:	並列化のため、try は並列化された各スレッドに移動する。
+			try {
 
+			//曲データオブジェクトの作成
+			cSND = new MusicFile(cMML, cOptionSW->strCodeName);
 
-
-		//==================================
-		//Optimize & Tick Count
-		_COUT << _T("------------------------------------------------------------") << endl;
-		_COUT << _T("*Optimize & Tick counting process") << endl;
-
-		cSND->TickCount();
-
-		_COUT << endl;
+			_COUT << endl;
 
 
 
-		//==================================
-		//アドレスの解決
-		_COUT << _T("------------------------------------------------------------") << endl;
-		_COUT << _T("*Address settlement process") << endl;
+			//==================================
+			//Optimize & Tick Count
+			_COUT << _T("------------------------------------------------------------") << endl;
+			_COUT << _T("*Optimize & Tick counting process") << endl;
 
-		//アドレスの計算 ＆ サイズの出力
-		i = cSND->SetOffset(0);
-		cout << "  Music Size = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
+			cSND->TickCount();
 
-		i = cSND->SetDPCMOffset(i);
-		cout << "  DPCM Size  = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
-
-		//アドレスを引数にもつオペコードのアドレス解決
-		cSND->Fix_Address();
-
-		_COUT << endl;
+			_COUT << endl;
 
 
 
-		//==================================
-		//保存
-		//NSF
-		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
-			cSND->saveNSF(cOptionSW->strNSFname.c_str());
+			//==================================
+			//アドレスの解決
+			_COUT << _T("------------------------------------------------------------") << endl;
+			_COUT << _T("*Address settlement process") << endl;
+
+			//アドレスの計算 ＆ サイズの出力
+			i = cSND->SetOffset(0);
+			cout << "  Music Size = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
+
+			i = cSND->SetDPCMOffset(i);
+			cout << "  DPCM Size  = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
+
+			//アドレスを引数にもつオペコードのアドレス解決
+			cSND->Fix_Address();
+
+			_COUT << endl;
+
+
+
+			//==================================
+			} catch (int no) {
+				nsc_error(no, iResult);
+			}
+
+
+
+			//==================================
+			//保存
+			//NSF
+			if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
+				cSND->saveNSF(cOptionSW->strNSFname.c_str());
+			}
+
+			//NSFe
+			if(cOptionSW->saveNSFe == true){
+				cSND->saveNSFe(cOptionSW->strNSFename.c_str());
+			}
+
+			//Assembly
+			if(cOptionSW->saveASM == true){
+				cSND->saveASM(cOptionSW->strASMname.c_str());
+			}
+
+			_COUT << endl;
+
+			//==================================
+			//クラスの削除
+			if (cSND)
+				delete	cSND;
 		}
-
-		//NSFe
-		if(cOptionSW->saveNSFe == true){
-			cSND->saveNSFe(cOptionSW->strNSFename.c_str());
-		}
-
-		//Assembly
-		if(cOptionSW->saveASM == true){
-			cSND->saveASM(cOptionSW->strASMname.c_str());
-		}
-
-		_COUT << endl;
-
-
-
-		//==================================
-
-	} catch (int no) {
-		if (no != EXIT_SUCCESS){
-			_COUT	<<	_T("Error!:") << no << endl;
-			iResult	= EXIT_FAILURE;
-		}
-	}
-
-		//==================================
-		//クラスの削除
-		if (cSND)
-			delete	cSND;
 		if (cMML)
 			delete	cMML;
 	}
-
 	if (cOptionSW)
 		delete	cOptionSW;
 

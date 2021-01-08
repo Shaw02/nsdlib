@@ -42,6 +42,7 @@ private:
 
 				bool				f_macro;			//マクロ処理を終えた時に立つフラグ
 				bool				f_2to1;				//マルチバイト文字を変換した？
+				bool				f_error;			//エラー発生の有無
 public:
 	map		<size_t,	Patch*>	ptcPatch;			//Patch
 
@@ -102,7 +103,8 @@ public:
 	unsigned	int		GetLine(void){return(nowFile->GetLine());};
 				void	SetLine(unsigned int i){nowFile->SetLine(i);};
 
+				void	Err(const _CHAR msg[]);
+				void	Warning(const _CHAR msg[]);
 
-	void		Err(const _CHAR msg[]);
-	void		Warning(const _CHAR msg[]);
+				bool	isError(){return(f_error);};
 };

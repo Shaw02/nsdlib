@@ -236,10 +236,10 @@ int	MusicTrack::TickCount(MusicFile* MUS)
 					//----------------------------------------------
 					case(nsd_Call):					//0x02
 						{
-							bool	f_Patch	= ((mml_CallSub*)adrObj)->isPatch();
+							bool	f_isPatch	= ((mml_CallSub*)adrObj)->isPatch();
 							_no = adrObj->get_id();
-							if((no_sub != _no) || (sw_sub == false) || (cOptionSW->flag_OptSeq == false) || (((mml_CallSub*)adrObj)->isDisableOptimize() == true) || (f_Patch == false)){
-								if(f_Patch == true){
+							if((no_sub != _no) || (sw_sub == false) || (cOptionSW->flag_OptSeq == false) || (((mml_CallSub*)adrObj)->isDisableOptimize() == true) || (f_isPatch == false)){
+								if(f_isPatch == true){
 									no_sub = _no;
 									sw_sub = true;
 								}

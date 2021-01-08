@@ -60,10 +60,11 @@ public:
 
 //メンバー関数
 public:
-		OPSW();								//初期化のみ
-		OPSW(int argc, char* argv[]);		//引数内容から、クラスを初期化＆ファイルオープン
-		~OPSW();							//ファイルクローズ
+						OPSW();								//初期化のみ
+						OPSW(int argc, char* argv[]);		//引数内容から、クラスを初期化＆ファイルオープン
+						~OPSW();							//ファイルクローズ
+
+				bool	isError(){return(fOptionError);};
 private:
-void	opError(const _CHAR *stErrMsg);		//オプションエラー
-void	print_help();						//help message
+				void	print_help();						//help message
 };
