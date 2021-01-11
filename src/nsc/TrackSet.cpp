@@ -451,10 +451,12 @@ const	static	Command_Info	Command[] = {
 
 			//for NSF output
 			case(mml_label):
-				label = MML->GetString(true);
+				label.clear();
+				MML->GetString(&label, true);
 				break;
 			case(mml_author):
-				author = MML->GetString(true);
+				author.clear();
+				MML->GetString(&author, true);
 				break;
 			case(mml_time):
 				time = MML->GetInt();

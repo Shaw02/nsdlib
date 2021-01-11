@@ -297,7 +297,8 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		MML->Err(_T("⊿PCM定義のパラメータが足りません。"));
 	}
 
-	infoDPCM[note].file = MML->GetString(false);
+	infoDPCM[note].file.clear();
+	MML->GetString(&infoDPCM[note].file, false);
 	if(ptcDPCM.count(infoDPCM[note].file) == 0){
 		//新しいファイルだったら、DPCMオブジェクトを生成する。
 		_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);

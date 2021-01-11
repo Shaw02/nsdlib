@@ -168,8 +168,10 @@ void	MMLfile::include()
 	//----------------------
 	//Local変数
 	vector	<FileInput*>::iterator	itFiles;
-	string	_name = GetString(false);
+	string		_name = "";
 	FileInput*	_incFile;
+
+	GetString(&_name, false);
 
 	//----------------------
 	//同じファイルが開かれていないかチェック
@@ -780,11 +782,10 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 //	●処理
 //			MML中で"と"で囲まれた文字列を取得する。
 //==============================================================
-string	MMLfile::GetString(bool	f_ESC)
+void	MMLfile::GetString(string* _str, bool	f_ESC)
 {
 	int		i;
 	char	cData;
-	string	_str;
 
 	cData = GetChar();
 	if(cData != '"'){
@@ -851,13 +852,12 @@ string	MMLfile::GetString(bool	f_ESC)
 					cData = (char)(i & 0xFF);
 					break;
 				default:
-					_str += '\\';
+					*_str += '\\';
 					break;
 			}
 		}
-		_str += cData;
+		*_str += cData;
 	}
-	return(_str);
 }
 
 //==============================================================
