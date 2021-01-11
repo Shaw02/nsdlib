@@ -1272,8 +1272,7 @@ MusicTrack*	TrackSet::getTrack(MMLfile* MML, int _track)
 		if(ptcTrack.count(i) == 0){
 			_getTrack	= makeTrack(MML, i);
 		} else {
-			_CERR << _T("MusicTrack* TrackSet::getTrack()関数でエラーが発生しました。") << endl;
-			nsc_exit(EXIT_FAILURE);
+			throw invalid_argument("TrackSet::getTrack()");
 		}
 	}
 	maxTrack = i;	//トラックの最大値を記憶。

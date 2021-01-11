@@ -30,9 +30,11 @@ MusicFile::MusicFile(MMLfile* MML, string _code, const _CHAR _strName[]):
 	Header(_code),
 	cDPCMinfo(NULL)
 {
+
+	try {
+
 	//----------------------
 	//Local変数
-
 
 //	定数定義
 enum	Command_ID_MusicFile {
@@ -231,365 +233,379 @@ const	static	Command_Info	Command[] = {
 		{	"　",				id_Null			},
 	};
 
-				size_t		i;
-//	unsigned	char		cData;
-	string		msg;
+					size_t		i;
+	//	unsigned	char		cData;
+		string		msg;
 
-	map<size_t,	Envelop*	>::iterator	itEnvelop;
-	map<size_t,	BGM*		>::iterator	itBGM;
-	map<size_t,	SE*			>::iterator	itSE;
-	map<size_t,	Sub*		>::iterator	itSub;
+		map<size_t,	Envelop*	>::iterator	itEnvelop;
+		map<size_t,	BGM*		>::iterator	itBGM;
+		map<size_t,	SE*			>::iterator	itSE;
+		map<size_t,	Sub*		>::iterator	itSub;
 
-//	iSize = 0;
+	//	iSize = 0;
 
-	//このオブジェクトは必ず使う（最適化対象外）。
-	setUse();
+		//このオブジェクトは必ず使う（最適化対象外）。
+		setUse();
 
-	//メタデータチェック用のフラグ初期化
-	f_is_track_time		= false;
-	f_is_track_fade		= false;
-	f_is_track_label	= false;
-	f_is_track_auth		= false;
+		//メタデータチェック用のフラグ初期化
+		f_is_track_time		= false;
+		f_is_track_fade		= false;
+		f_is_track_label	= false;
+		f_is_track_auth		= false;
 
-	do{
-		//１文字読み込み（コメントチェック、includeファイルの終端チェックもあり）
-//		cData = MML->GetChar();
-		MML->GetChar();
+		do{
+			//１文字読み込み（コメントチェック、includeファイルの終端チェックもあり）
+	//		cData = MML->GetChar();
+			MML->GetChar();
 
-		//[EOF]チェック
-		if( MML->eom() ){
-			break;
+			//[EOF]チェック
+			if( MML->eom() ){
+				break;
+			}
+
+			//１つ戻る
+			MML->Back();
+
+			//コマンド文字列のチェック
+			switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
+				//for NSF output
+				case(id_Code):
+					Header.Set_RomCode(MML);
+					break;
+				case(id_Title):
+					Header.Set_Title(MML);
+					break;
+				case(id_Composer):
+					Header.Set_Composer(MML);
+					break;
+				case(id_Copyright):
+					Header.Set_Copyright(MML);
+					break;
+				case(id_Maker):
+					Header.Set_Maker(MML);
+					break;
+				case(id_Text):
+					Header.Text_Append(MML);
+					break;
+				case(id_plst):
+					Header.Set_plst(MML);
+					break;
+				case(id_psfx):
+					Header.Set_psfx(MML);
+					break;
+				case(id_mixe):
+					Header.Set_mixe(MML);
+					break;
+				case(id_vrc7_chg):
+					Header.Ser_VRC7(MML);
+					break;
+				case(id_OffsetPCM):
+					Header.Set_OffsetPCM(MML);
+					break;
+				case(id_External):
+					Header.Set_External(MML);
+					break;
+				case(id_Bank):
+					Header.Set_Bank();
+					break;
+				//for ASM output
+				case(id_SegmentSEQ):
+					Header.Set_SegmentSEQ(MML);
+					break;
+				case(id_SegmentPCM):
+					Header.Set_SegmentPCM(MML);
+					break;
+				case(id_Label):
+					Header.Set_Label(MML);
+					break;
+				//General
+				case(id_include):
+					MML->include();
+					break;
+				case(id_bgm_num):
+					Header.Set_Number_BGM(MML);
+					break;
+				case(id_se_num):
+					Header.Set_Number_SE(MML);
+					break;
+				case(id_timebase):
+					MML->timebase = MML->GetInt();	//これは、MMLファイルの属性。
+					break;
+				case(id_OctaveReverse):
+					MML->octave_reverse = true;		//これは、MMLファイルの属性。
+					break;
+				case(id_QReverse):
+					MML->q_reverse = true;			//これは、MMLファイルの属性。
+					break;
+				case(id_releaseVolume):
+					MML->iReleaseVolume	=  MML->GetInt();
+					if((MML->iReleaseVolume<0) || (MML->iReleaseVolume>15)){
+						MML->Err(_T("#ReleaseVolumeコマンドは、0～15の範囲で指定してください。"));
+					}
+					break;
+				case(id_repeatMode):
+					MML->iRepeatMode	=  MML->GetInt();
+					if((MML->iRepeatMode<0) || (MML->iRepeatMode>2)){
+						MML->Err(_T("#RepeatModeコマンドは、0～2の範囲で指定してください。"));
+					}
+					break;
+				case(id_TieMode):
+					MML->iTieMode	=  MML->GetInt();
+					if((MML->iTieMode<0) || (MML->iTieMode>1)){
+						MML->Err(_T("#TieModeコマンドは、0～1の範囲で指定してください。"));
+					}
+					break;
+				case(id_offset_Ei):
+					MML->offset_Ei = MML->GetInt();
+					break;
+				case(id_offset_Ev):
+					MML->offset_Ev = MML->GetInt();
+					break;
+				case(id_offset_En):
+					MML->offset_En = MML->GetInt();
+					break;
+				case(id_offset_Em):
+					MML->offset_Em = MML->GetInt();
+					break;
+				case(id_Priority):
+					i = MML->GetInt();
+					if((i<0) || (i>3)){
+						MML->Err(_T("#priorityコマンドは、0～3の範囲で指定してください。"));
+					} else {
+						MML->priority = (unsigned char)i;
+					}
+					break;
+				case(id_QMax):
+					MML->QMax = MML->GetInt();
+					break;
+				case(id_rest):
+					MML->rest = MML->GetInt();
+					if((MML->rest<0) || (MML->rest>3)){
+						MML->Err(_T("#Restコマンドは、0～3の範囲で指定してください。"));
+					}
+					break;
+				case(id_wait):
+					MML->wait = MML->GetInt();
+					if((MML->rest<0) || (MML->rest>3)){
+						MML->Err(_T("#Waitコマンドは、0～3の範囲で指定してください。"));
+					}
+					break;
+				case(id_Macro):
+					MML->SetMacro(0);
+					break;
+				case(id_Patch):
+					MML->SetPatch();
+					break;
+				//MML
+				case(id_DPCM):
+					if(cDPCMinfo != NULL){
+						MML->Err(_T("DPCMブロックは１つまでです。"));
+					}
+					cDPCMinfo = new DPCMinfo(MML, Header.bank);
+					if(cDPCMinfo->isError() == true){
+						f_error = true;
+					} else {
+						ptcItem.push_back(cDPCMinfo);
+					}
+					break;
+				case(id_FDSC):
+					{
+						FDSC*	_fdsc;
+						i = MML->GetNum();
+						//重複チェック
+						if(ptcFDSC.count(i) != 0){
+							MML->Err(_T("FDSC()ブロックで同じ番号が指定されました。"));
+						}
+						_fdsc = new FDSC(MML, i);
+						ptcItem.push_back(_fdsc);
+						ptcFDSC[i] = _fdsc;
+					}
+					break;
+				case(id_FDSM):
+					{
+						FDSM*	_fdsm;
+						i = MML->GetNum();
+						//重複チェック
+						if(ptcFDSM.count(i) != 0){
+							MML->Err(_T("FDSM()ブロックで同じ番号が指定されました。"));
+						}
+						_fdsm = new FDSM(MML, i);
+						ptcItem.push_back(_fdsm);
+						ptcFDSM[i] = _fdsm;
+					}
+					break;
+				case(id_VRC7):
+					{
+						VRC7*	_vrc7;
+						i = MML->GetNum();
+						//重複チェック
+						if(ptcVRC7.count(i) != 0){
+							MML->Err(_T("VRC7()ブロックで同じ番号が指定されました。"));
+						}
+						_vrc7 = new VRC7(MML, i);
+						ptcItem.push_back(_vrc7);
+						ptcVRC7[i] = _vrc7;
+					}
+					break;
+				case(id_N163):
+					{
+						N163*	_n163;
+						i = MML->GetNum();
+						//重複チェック
+						if(ptcN163.count(i) != 0){
+							MML->Err(_T("N163()ブロックで同じ番号が指定されました。"));
+						}
+						_n163 = new N163(MML, i);
+						ptcItem.push_back(_n163);
+						ptcN163[i] = _n163;
+					}
+					break;
+				case(id_Envelop):
+					{
+						Envelop*	_env;
+						i = MML->GetNum();
+						//重複チェック
+						if(ptcEnv.count(i) != 0){
+							MML->Err(_T("Envelope()ブロックで同じ番号が指定されました。"));
+						}
+						_env = new Envelop(MML, i);
+						ptcItem.push_back(_env);
+						ptcEnv[i] = _env;
+					}
+					break;
+				case(id_Vibrato):
+					{
+						Envelop*	_env;
+						MML->offset_Em = 1000000;
+						i = MML->GetNum() + MML->offset_Em;
+						//重複チェック
+						if(ptcEnv.count(i) != 0){
+							MML->Err(_T("ビブラート()ブロックで同じ番号が指定されました。"));
+						}
+						_env = new Envelop(MML, i);
+						ptcItem.push_back(_env);
+						ptcEnv[i] = _env;
+					}
+					break;
+				case(id_Sub):
+					{
+						Sub*	_sub;
+						i = MML->GetNum();
+						//重複チェック
+						if(ptcSub.count(i) != 0){
+							MML->Err(_T("Sub()ブロックで同じ番号が指定されました。"));
+						}
+						//範囲チェック
+						_sub = new Sub(MML, i);
+						ptcItem.push_back(_sub);
+						ptcSub[i] = _sub;
+					}
+					break;
+				case(id_BGM):
+					{
+						BGM*	_bgm;
+						i = MML->GetNum();
+						//重複チェック
+						if(ptcBGM.count(i) != 0){
+							MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
+						}
+						//範囲チェック
+						if((Header.iBGM <= i) || (i<0)){
+							MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
+						}
+						_bgm = new BGM(MML, i);
+						ptcItem.push_back(_bgm);
+						ptcBGM[i] = _bgm;
+						//メタデータがあったかチェック
+						if(_bgm->isLabel() == true){
+							f_is_track_label = true;
+						}
+						if(_bgm->isAuthor() == true){
+							f_is_track_auth	= true;
+						}
+						if(_bgm->isTime() == true){
+							f_is_track_time	= true;
+						}
+						if(_bgm->isFade() == true){
+							f_is_track_fade	= true;
+						}
+					}
+					break;
+				case(id_SE):
+					{
+						SE*	_se;
+						i = MML->GetNum();
+						//重複チェック
+						if(ptcSE.count(i) != 0){
+							MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
+						}
+						//範囲チェック
+						if((Header.iSE <= i) || (i<0)){
+							MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
+						}
+						_se = new SE(MML, i);
+						ptcItem.push_back(_se);
+						ptcSE[i] = _se;
+						//メタデータがあったかチェック
+						if(_se->isLabel() == true){
+							f_is_track_label = true;
+						}
+						if(_se->isAuthor() == true){
+							f_is_track_auth	= true;
+						}
+						if(_se->isTime() == true){
+							f_is_track_time	= true;
+						}
+						if(_se->isFade() == true){
+							f_is_track_fade	= true;
+						}
+					}
+					break;
+				case(id_Null):
+					break;
+				default:
+					MML->Err(_T("unknown command"));
+					break;
+			}
+			
+		} while( !MML->eom() );
+
+		//==============================
+		//Check
+		if( Header.iBGM + Header.iSE > 255){
+			Err(_T("BGMとSEの数が合計で255を越えました。"));
 		}
 
-		//１つ戻る
-		MML->Back();
-
-		//コマンド文字列のチェック
-		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
-			//for NSF output
-			case(id_Code):
-				Header.Set_RomCode(MML);
-				break;
-			case(id_Title):
-				Header.Set_Title(MML);
-				break;
-			case(id_Composer):
-				Header.Set_Composer(MML);
-				break;
-			case(id_Copyright):
-				Header.Set_Copyright(MML);
-				break;
-			case(id_Maker):
-				Header.Set_Maker(MML);
-				break;
-			case(id_Text):
-				Header.Text_Append(MML);
-				break;
-			case(id_plst):
-				Header.Set_plst(MML);
-				break;
-			case(id_psfx):
-				Header.Set_psfx(MML);
-				break;
-			case(id_mixe):
-				Header.Set_mixe(MML);
-				break;
-			case(id_vrc7_chg):
-				Header.Ser_VRC7(MML);
-				break;
-			case(id_OffsetPCM):
-				Header.Set_OffsetPCM(MML);
-				break;
-			case(id_External):
-				Header.Set_External(MML);
-				break;
-			case(id_Bank):
-				Header.Set_Bank();
-				break;
-			//for ASM output
-			case(id_SegmentSEQ):
-				Header.Set_SegmentSEQ(MML);
-				break;
-			case(id_SegmentPCM):
-				Header.Set_SegmentPCM(MML);
-				break;
-			case(id_Label):
-				Header.Set_Label(MML);
-				break;
-			//General
-			case(id_include):
-				MML->include();
-				break;
-			case(id_bgm_num):
-				Header.Set_Number_BGM(MML);
-				break;
-			case(id_se_num):
-				Header.Set_Number_SE(MML);
-				break;
-			case(id_timebase):
-				MML->timebase = MML->GetInt();	//これは、MMLファイルの属性。
-				break;
-			case(id_OctaveReverse):
-				MML->octave_reverse = true;		//これは、MMLファイルの属性。
-				break;
-			case(id_QReverse):
-				MML->q_reverse = true;			//これは、MMLファイルの属性。
-				break;
-			case(id_releaseVolume):
-				MML->iReleaseVolume	=  MML->GetInt();
-				if((MML->iReleaseVolume<0) || (MML->iReleaseVolume>15)){
-					MML->Err(_T("#ReleaseVolumeコマンドは、0～15の範囲で指定してください。"));
-				}
-				break;
-			case(id_repeatMode):
-				MML->iRepeatMode	=  MML->GetInt();
-				if((MML->iRepeatMode<0) || (MML->iRepeatMode>2)){
-					MML->Err(_T("#RepeatModeコマンドは、0～2の範囲で指定してください。"));
-				}
-				break;
-			case(id_TieMode):
-				MML->iTieMode	=  MML->GetInt();
-				if((MML->iTieMode<0) || (MML->iTieMode>1)){
-					MML->Err(_T("#TieModeコマンドは、0～1の範囲で指定してください。"));
-				}
-				break;
-			case(id_offset_Ei):
-				MML->offset_Ei = MML->GetInt();
-				break;
-			case(id_offset_Ev):
-				MML->offset_Ev = MML->GetInt();
-				break;
-			case(id_offset_En):
-				MML->offset_En = MML->GetInt();
-				break;
-			case(id_offset_Em):
-				MML->offset_Em = MML->GetInt();
-				break;
-			case(id_Priority):
-				i = MML->GetInt();
-				if((i<0) || (i>3)){
-					MML->Err(_T("#priorityコマンドは、0～3の範囲で指定してください。"));
-				} else {
-					MML->priority = (unsigned char)i;
-				}
-				break;
-			case(id_QMax):
-				MML->QMax = MML->GetInt();
-				break;
-			case(id_rest):
-				MML->rest = MML->GetInt();
-				if((MML->rest<0) || (MML->rest>3)){
-					MML->Err(_T("#Restコマンドは、0～3の範囲で指定してください。"));
-				}
-				break;
-			case(id_wait):
-				MML->wait = MML->GetInt();
-				if((MML->rest<0) || (MML->rest>3)){
-					MML->Err(_T("#Waitコマンドは、0～3の範囲で指定してください。"));
-				}
-				break;
-			case(id_Macro):
-				MML->SetMacro(0);
-				break;
-			case(id_Patch):
-				MML->SetPatch();
-				break;
-			//MML
-			case(id_DPCM):
-				if(cDPCMinfo != NULL){
-					MML->Err(_T("DPCMブロックは１つまでです。"));
-				}
-				cDPCMinfo = new DPCMinfo(MML, Header.bank);
-				if(cDPCMinfo->isError() == true){
-					f_error = true;
-				} else {
-					ptcItem.push_back(cDPCMinfo);
-				}
-				break;
-			case(id_FDSC):
-				{
-					FDSC*	_fdsc;
-					i = MML->GetNum();
-					//重複チェック
-					if(ptcFDSC.count(i) != 0){
-						MML->Err(_T("FDSC()ブロックで同じ番号が指定されました。"));
-					}
-					_fdsc = new FDSC(MML, i);
-					ptcItem.push_back(_fdsc);
-					ptcFDSC[i] = _fdsc;
-				}
-				break;
-			case(id_FDSM):
-				{
-					FDSM*	_fdsm;
-					i = MML->GetNum();
-					//重複チェック
-					if(ptcFDSM.count(i) != 0){
-						MML->Err(_T("FDSM()ブロックで同じ番号が指定されました。"));
-					}
-					_fdsm = new FDSM(MML, i);
-					ptcItem.push_back(_fdsm);
-					ptcFDSM[i] = _fdsm;
-				}
-				break;
-			case(id_VRC7):
-				{
-					VRC7*	_vrc7;
-					i = MML->GetNum();
-					//重複チェック
-					if(ptcVRC7.count(i) != 0){
-						MML->Err(_T("VRC7()ブロックで同じ番号が指定されました。"));
-					}
-					_vrc7 = new VRC7(MML, i);
-					ptcItem.push_back(_vrc7);
-					ptcVRC7[i] = _vrc7;
-				}
-				break;
-			case(id_N163):
-				{
-					N163*	_n163;
-					i = MML->GetNum();
-					//重複チェック
-					if(ptcN163.count(i) != 0){
-						MML->Err(_T("N163()ブロックで同じ番号が指定されました。"));
-					}
-					_n163 = new N163(MML, i);
-					ptcItem.push_back(_n163);
-					ptcN163[i] = _n163;
-				}
-				break;
-			case(id_Envelop):
-				{
-					Envelop*	_env;
-					i = MML->GetNum();
-					//重複チェック
-					if(ptcEnv.count(i) != 0){
-						MML->Err(_T("Envelope()ブロックで同じ番号が指定されました。"));
-					}
-					_env = new Envelop(MML, i);
-					ptcItem.push_back(_env);
-					ptcEnv[i] = _env;
-				}
-				break;
-			case(id_Vibrato):
-				{
-					Envelop*	_env;
-					MML->offset_Em = 1000000;
-					i = MML->GetNum() + MML->offset_Em;
-					//重複チェック
-					if(ptcEnv.count(i) != 0){
-						MML->Err(_T("ビブラート()ブロックで同じ番号が指定されました。"));
-					}
-					_env = new Envelop(MML, i);
-					ptcItem.push_back(_env);
-					ptcEnv[i] = _env;
-				}
-				break;
-			case(id_Sub):
-				{
-					Sub*	_sub;
-					i = MML->GetNum();
-					//重複チェック
-					if(ptcSub.count(i) != 0){
-						MML->Err(_T("Sub()ブロックで同じ番号が指定されました。"));
-					}
-					//範囲チェック
-					_sub = new Sub(MML, i);
-					ptcItem.push_back(_sub);
-					ptcSub[i] = _sub;
-				}
-				break;
-			case(id_BGM):
-				{
-					BGM*	_bgm;
-					i = MML->GetNum();
-					//重複チェック
-					if(ptcBGM.count(i) != 0){
-						MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
-					}
-					//範囲チェック
-					if((Header.iBGM <= i) || (i<0)){
-						MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
-					}
-					_bgm = new BGM(MML, i);
-					ptcItem.push_back(_bgm);
-					ptcBGM[i] = _bgm;
-					//メタデータがあったかチェック
-					if(_bgm->isLabel() == true){
-						f_is_track_label = true;
-					}
-					if(_bgm->isAuthor() == true){
-						f_is_track_auth	= true;
-					}
-					if(_bgm->isTime() == true){
-						f_is_track_time	= true;
-					}
-					if(_bgm->isFade() == true){
-						f_is_track_fade	= true;
-					}
-				}
-				break;
-			case(id_SE):
-				{
-					SE*	_se;
-					i = MML->GetNum();
-					//重複チェック
-					if(ptcSE.count(i) != 0){
-						MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
-					}
-					//範囲チェック
-					if((Header.iSE <= i) || (i<0)){
-						MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
-					}
-					_se = new SE(MML, i);
-					ptcItem.push_back(_se);
-					ptcSE[i] = _se;
-					//メタデータがあったかチェック
-					if(_se->isLabel() == true){
-						f_is_track_label = true;
-					}
-					if(_se->isAuthor() == true){
-						f_is_track_auth	= true;
-					}
-					if(_se->isTime() == true){
-						f_is_track_time	= true;
-					}
-					if(_se->isFade() == true){
-						f_is_track_fade	= true;
-					}
-				}
-				break;
-			case(id_Null):
-				break;
-			default:
-				MML->Err(_T("unknown command"));
-				break;
+		i = 0;
+		while(i < Header.iBGM){
+			if(ptcBGM.count(i) == 0){
+				Err(_T("BGMデータが足りません。"));
+			};
+			i++;
 		}
-		
-	} while( !MML->eom() );
 
-	//==============================
-	//Check
-	if( Header.iBGM + Header.iSE > 255){
-		Err(_T("BGMとSEの数が合計で255を越えました。"));
+		i = 0;
+		while(i < Header.iSE){
+			if(ptcSE.count(i) == 0){
+				Err(_T("SE データが足りません。"));
+			};
+			i++;
+		}
+
+	} catch (int no) {
+		nsc_ErrMsg(no);
+		f_error = true;
+	} catch (const exception& e){
+		nsc_ErrMsg(e);
+		f_error = true;
+	} catch (const _CHAR *stErrMsg) {
+		if(cOptionSW->fErr == true){
+			_CERR	<<	_T("致命的なエラー：") << stErrMsg << endl;
+		} else {
+			_COUT	<<	_T("致命的なエラー：") << stErrMsg << endl;
+		}
+		f_error = true;
 	}
-
-	i = 0;
-	while(i < Header.iBGM){
-		if(ptcBGM.count(i) == 0){
-			Err(_T("BGMデータが足りません。"));
-		};
-		i++;
-	}
-
-	i = 0;
-	while(i < Header.iSE){
-		if(ptcSE.count(i) == 0){
-			Err(_T("SE データが足りません。"));
-		};
-		i++;
-	}
-
 }
 
 //==============================================================
@@ -630,39 +646,43 @@ void	MusicFile::TickCount(void)
 	//Tick Count & 最適化のための情報収集
 
 	while(iBGM < Header.iBGM){
-		BGM* _BGM = ptcBGM[iBGM];
-		_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
-		_BGM->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
-		if(f_is_track_label == true){
-			Header.Set_tlbl(_BGM->getLabel());
-		}
-		if(f_is_track_auth == true){
-			Header.Set_taut(_BGM->getAuthor());
-		}
-		if(f_is_track_time == true){
-			Header.Set_time(_BGM->getTime());
-		}
-		if(f_is_track_fade == true){
-			Header.Set_fade(_BGM->getFade());
+		if(ptcBGM.count(iBGM) == 1){
+			BGM* _BGM = ptcBGM[iBGM];
+			_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
+			_BGM->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
+			if(f_is_track_label == true){
+				Header.Set_tlbl(_BGM->getLabel());
+			}
+			if(f_is_track_auth == true){
+				Header.Set_taut(_BGM->getAuthor());
+			}
+			if(f_is_track_time == true){
+				Header.Set_time(_BGM->getTime());
+			}
+			if(f_is_track_fade == true){
+				Header.Set_fade(_BGM->getFade());
+			}
 		}
 		iBGM++;
 	}
 
 	while(iSE < Header.iSE){
-		SE*	_SE = ptcSE[iSE];
-		_COUT << _T("---- SE(") << iSE << _T(") ----") <<endl;
-		_SE->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
-		if(f_is_track_label == true){
-			Header.Set_tlbl(_SE->getLabel());
-		}
-		if(f_is_track_auth == true){
-			Header.Set_taut(_SE->getAuthor());
-		}
-		if(f_is_track_time == true){
-			Header.Set_time(_SE->getTime());
-		}
-		if(f_is_track_fade == true){
-			Header.Set_fade(_SE->getFade());
+		if(ptcSE.count(iSE) == 1){
+			SE*	_SE = ptcSE[iSE];
+			_COUT << _T("---- SE(") << iSE << _T(") ----") <<endl;
+			_SE->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
+			if(f_is_track_label == true){
+				Header.Set_tlbl(_SE->getLabel());
+			}
+			if(f_is_track_auth == true){
+				Header.Set_taut(_SE->getAuthor());
+			}
+			if(f_is_track_time == true){
+				Header.Set_time(_SE->getTime());
+			}
+			if(f_is_track_fade == true){
+				Header.Set_fade(_SE->getFade());
+			}
 		}
 		iSE++;
 	}
@@ -679,77 +699,81 @@ void	MusicFile::TickCount(void)
 	//==============================
 	//最適化
 
-	//----------------------
-	//不要なコマンドの削除
-	if(cOptionSW->flag_OptSeq == true){		//コマンドの最適化が無効だったら、最適化しない。
+	//エラーが発生していたら最適化はしない。
+	if(f_error == false){
 
-		iBGM	= 0;
-		while(iBGM < Header.iBGM){
-			ptcBGM[iBGM]->clear_Optimize();
-			iBGM++;
-		}
+		//----------------------
+		//不要なコマンドの削除
+		if(cOptionSW->flag_OptSeq == true){		//コマンドの最適化が無効だったら、最適化しない。
 
-		iSE		= 0;
-		while(iSE < Header.iSE){
-			ptcSE[iSE]->clear_Optimize();
-			iSE++;
-		}
-
-		if(!ptcSub.empty()){
-			itSub = ptcSub.begin();
-			while(itSub != ptcSub.end()){
-				itSub->second->clear_Optimize();
-				itSub++;
+			iBGM	= 0;
+			while(iBGM < Header.iBGM){
+				ptcBGM[iBGM]->clear_Optimize();
+				iBGM++;
 			}
-		}
-	}
 
-	//----------------------
-	//使っていない定義の削除
-	if(cOptionSW->flag_OptObj == true){		//定義の最適化が無効だったら、最適化しない。
+			iSE		= 0;
+			while(iSE < Header.iSE){
+				ptcSE[iSE]->clear_Optimize();
+				iSE++;
+			}
 
-		//エンベロープ
-		if(!ptcEnv.empty()){
-			itEnv = ptcEnv.begin();
-			while(itEnv != ptcEnv.end()){
-				itEnv->second->clear_Optimize();
-				itEnv++;
+			if(!ptcSub.empty()){
+				itSub = ptcSub.begin();
+				while(itSub != ptcSub.end()){
+					itSub->second->clear_Optimize();
+					itSub++;
+				}
 			}
 		}
 
-		//FDSC
-		if(!ptcFDSC.empty()){
-			itFDSC = ptcFDSC.begin();
-			while(itFDSC != ptcFDSC.end()){
-				itFDSC->second->clear_Optimize();
-				itFDSC++;
-			}
-		}
+		//----------------------
+		//使っていない定義の削除
+		if(cOptionSW->flag_OptObj == true){		//定義の最適化が無効だったら、最適化しない。
 
-		//FDSM
-		if(!ptcFDSM.empty()){
-			itFDSM = ptcFDSM.begin();
-			while(itFDSM != ptcFDSM.end()){
-				itFDSM->second->clear_Optimize();
-				itFDSM++;
+			//エンベロープ
+			if(!ptcEnv.empty()){
+				itEnv = ptcEnv.begin();
+				while(itEnv != ptcEnv.end()){
+					itEnv->second->clear_Optimize();
+					itEnv++;
+				}
 			}
-		}
 
-		//VRC7
-		if(!ptcVRC7.empty()){
-			itVRC7 = ptcVRC7.begin();
-			while(itVRC7 != ptcVRC7.end()){
-				itVRC7->second->clear_Optimize();
-				itVRC7++;
+			//FDSC
+			if(!ptcFDSC.empty()){
+				itFDSC = ptcFDSC.begin();
+				while(itFDSC != ptcFDSC.end()){
+					itFDSC->second->clear_Optimize();
+					itFDSC++;
+				}
 			}
-		}
 
-		//N163
-		if(!ptcN163.empty()){
-			itN163 = ptcN163.begin();
-			while(itN163 != ptcN163.end()){
-				itN163->second->clear_Optimize();
-				itN163++;
+			//FDSM
+			if(!ptcFDSM.empty()){
+				itFDSM = ptcFDSM.begin();
+				while(itFDSM != ptcFDSM.end()){
+					itFDSM->second->clear_Optimize();
+					itFDSM++;
+				}
+			}
+
+			//VRC7
+			if(!ptcVRC7.empty()){
+				itVRC7 = ptcVRC7.begin();
+				while(itVRC7 != ptcVRC7.end()){
+					itVRC7->second->clear_Optimize();
+					itVRC7++;
+				}
+			}
+
+			//N163
+			if(!ptcN163.empty()){
+				itN163 = ptcN163.begin();
+				while(itN163 != ptcN163.end()){
+					itN163->second->clear_Optimize();
+					itN163++;
+				}
 			}
 		}
 	}
@@ -1030,7 +1054,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 	code_size = read_bin(NSF_Data, NSF_Hed);
 	if(isError() == true){
 		//BINファイルの読み込みに失敗していたら終了する
-		throw EXIT_FAILURE;
+			throw ios_base::failure(Header.romcode + ": " + strerror(errno));
 
 	} else {
 
@@ -1221,7 +1245,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::saveNSF(const char*	strFileName)
+void	MusicFile::saveNSF(string&	strFileName)
 {
 	NSF_Header*			NSF_Hed			= new NSF_Header;
 				string	NSF_Data;
@@ -1269,9 +1293,9 @@ void	MusicFile::saveNSF(const char*	strFileName)
 		//NSF書き込み
 		//----------------------
 		//Open File
-		fileopen(strFileName);
+		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw EXIT_FAILURE;
+			throw ios_base::failure(strFileName + ": " + strerror(errno));
 		} else {
 			//----------------------
 			//Write File
@@ -1286,13 +1310,13 @@ void	MusicFile::saveNSF(const char*	strFileName)
 			close();
 		}
 
-	} catch (int no){
-		_COUT	<<	_T("Error!:") << no << _T(":NSFファイルを生成中にエラーが発生しました。") << endl;
+	} catch (const exception& e){
+		nsc_ErrMsg(e);
 	}
 
-		//==============================
-		//Exit
-		delete[]	NSF_Hed;
+	//==============================
+	//Exit
+	delete[]	NSF_Hed;
 }
 
 //==============================================================
@@ -1303,7 +1327,7 @@ void	MusicFile::saveNSF(const char*	strFileName)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::saveNSFe(const char*	strFileName)
+void	MusicFile::saveNSFe(string&	strFileName)
 {
 
 	const		char	NSFE_Head[4]	= {0x4E, 0x53, 0x46, 0x45};		//NSFE
@@ -1351,9 +1375,9 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 		//NSFE書き込み
 		//----------------------
 		//Open File
-		fileopen(strFileName);
+		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw EXIT_FAILURE;
+			throw ios_base::failure(strFileName + ": " + strerror(errno));
 		} else {
 			//----------------------
 			//Write File
@@ -1365,8 +1389,8 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 			close();
 		}
 
-	} catch (int no){
-		_COUT	<<	_T("Error!:") << no << _T(":NSFeファイルを生成中にエラーが発生しました。") << endl;
+	} catch (const exception& e){
+		nsc_ErrMsg(e);
 	}
 
 	//==============================
@@ -1383,7 +1407,7 @@ void	MusicFile::saveNSFe(const char*	strFileName)
 //	●返値
 //				無し
 //==============================================================
-void	MusicFile::saveASM(const char*	strFileName)
+void	MusicFile::saveASM(string&	strFileName)
 {
 	size_t	iBGM	= 0;
 	size_t	iSE		= 0;
@@ -1392,9 +1416,9 @@ void	MusicFile::saveASM(const char*	strFileName)
 
 		//----------------------
 		//File open
-		fileopen(strFileName);
+		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw EXIT_FAILURE;
+			throw ios_base::failure(strFileName + ": " + strerror(errno));
 		} else {
 
 			//Header
@@ -1428,8 +1452,8 @@ void	MusicFile::saveASM(const char*	strFileName)
 			close();
 		}
 
-	} catch (int no){
-		_COUT	<<	_T("Error!:") << no << _T(":Sファイルを生成中にエラーが発生しました。") << endl;
+	} catch (const exception& e){
+		nsc_ErrMsg(e);
 	}
 }
 

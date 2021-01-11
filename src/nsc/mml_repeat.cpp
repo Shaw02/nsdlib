@@ -67,8 +67,7 @@ mml_repeat::~mml_repeat(void)
 void	mml_repeat::set_count(unsigned char count)
 {
 	if(	iSize != 2){
-		_CERR << _T("mml_repeat::set_count()関数で、エラーが発生しました。") << endl;
-		nsc_exit(EXIT_FAILURE);
+		throw invalid_argument("mml_repeat::set_count()");
 	}
 	code[1] = count;
 }
@@ -85,8 +84,7 @@ unsigned	char	mml_repeat::get_count(void)
 	unsigned	char	count;
 
 	if(	iSize != 2){
-		_CERR << _T("mml_repeat::set_count()関数で、エラーが発生しました。") << endl;
-		nsc_exit(EXIT_FAILURE);
+		throw invalid_argument("mml_repeat::get_count()");
 	}
 	count = code[1];
 	return(count);

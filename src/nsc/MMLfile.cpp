@@ -23,7 +23,7 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //	●返値
 //				無し
 //==============================================================
-MMLfile::MMLfile(const char*	strFileName):
+MMLfile::MMLfile(string&	strFileName):
 p_macro(0),
 f_macro(false),
 f_2to1(false),
@@ -46,19 +46,23 @@ priority(0)
 	try {
 		//File open
 		nowFile	= new FileInput();
-		nowFile->fileopen(strFileName);
+		nowFile->fileopen(strFileName.c_str());
 
 		//読み込み失敗？
 		f_error = nowFile->isError();
-		if(f_error == false){
+		if(f_error == true){
+			throw ios_base::failure(strFileName + ": " + strerror(errno));
+		} else {
 			ptcFiles.push_back(nowFile);
 			iFiles = 0;
 		}
 
 	} catch (int no) {
-		if (no != EXIT_SUCCESS){
-			f_error = true;	//エラーが発生した。
-		}
+		nsc_ErrMsg(no);
+		f_error = true;	//エラーが発生した。
+	} catch (const exception& e){
+		nsc_ErrMsg(e);
+		f_error = true;	//エラーが発生した。
 	}
 }
 
@@ -86,7 +90,7 @@ MMLfile::~MMLfile(void)
 	itFiles = ptcFiles.begin();
 	while(itFiles != ptcFiles.end()){
 		if(cOptionSW->iDebug & DEBUG_Close_Inc){
-			_COUT << _T("Close include file :");
+			_COUT << _T("Close file :");
 			cout << (*itFiles)->GetFilename()->c_str() << endl;
 		}
 		(*itFiles)->close();

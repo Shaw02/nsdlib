@@ -115,8 +115,7 @@ void	mml_Address::set_Address(size_t _addr)
 			code[3] = (unsigned char)((_addr >> 8) & 0xFF);
 			break;
 		default:
-			_CERR << _T("mml_Address::set_Address()ŠÖ”‚ÅƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B") << endl;
-			nsc_exit(EXIT_FAILURE);
+			throw invalid_argument("mml_Address::set_Address()");
 			break;
 	}
 	

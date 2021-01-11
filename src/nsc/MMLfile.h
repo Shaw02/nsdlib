@@ -63,7 +63,7 @@ public:
 
 //メンバー関数
 public:
-	MMLfile(const char*	strFileName);
+	MMLfile(string&	strFileName);
 	~MMLfile(void);
 
 				bool	eof(void);				//現在のファイルのEOFチェック

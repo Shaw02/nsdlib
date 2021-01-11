@@ -59,11 +59,22 @@ void nsc_exit(int no)
 //==============================================================
 //		エラー出力
 //--------------------------------------------------------------
-void nsc_error(int no, int& iResult)
+void nsc_ErrMsg(int no)
 {
-	if (no != EXIT_SUCCESS){
-		_COUT	<<	_T("Error!:") << no << endl;
-		iResult = EXIT_FAILURE;
+	if(cOptionSW->fErr == true){
+		cerr << "Error!: " << strerror(no) << endl;
+	} else {
+		cout << "Error!: " << strerror(no) << endl;
+	}
+}
+
+//--------------------------------------------------------------
+void nsc_ErrMsg(const exception& e)
+{
+	if(cOptionSW->fErr == true){
+		cerr << "Error!: " << e.what() << endl;
+	} else {
+		cout << "Error!: " << e.what() << endl;
 	}
 }
 
@@ -105,7 +116,7 @@ int	main(int argc, char* argv[])
 	if((iResult	!= EXIT_FAILURE) && (cOptionSW->fHelp == false)){
 
 		//MMLファイルのクラスオブジェクト作成
-		MMLfile	*cMML = new MMLfile(cOptionSW->strMMLname.c_str());
+		MMLfile	*cMML = new MMLfile(cOptionSW->strMMLname);
 
 		//MMLファイルの読み込みに失敗したらコンパイルしない。
 		if(cMML->isError() == false){
@@ -118,9 +129,6 @@ int	main(int argc, char* argv[])
 			_COUT << _T("------------------------------------------------------------") << endl;
 			_COUT << _T("*Object creating process") << endl;
 
-			//■■■ To Do:	並列化のため、try は並列化された各スレッドに移動する。
-			try {
-
 			//曲データオブジェクトの作成
 			cSND = new MusicFile(cMML, cOptionSW->strCodeName);
 
@@ -130,6 +138,9 @@ int	main(int argc, char* argv[])
 
 			//==================================
 			//Optimize & Tick Count
+			//■■■ To Do:	並列化のため、try は並列化された各スレッドに移動する。
+			try {
+
 			_COUT << _T("------------------------------------------------------------") << endl;
 			_COUT << _T("*Optimize & Tick counting process") << endl;
 
@@ -165,9 +176,12 @@ int	main(int argc, char* argv[])
 
 			//==================================
 			} catch (int no) {
-				nsc_error(no, iResult);
+				iResult = EXIT_FAILURE;
+				nsc_ErrMsg(no);
+			} catch (const exception& e){
+				iResult = EXIT_FAILURE;
+				nsc_ErrMsg(e);
 			}
-
 
 
 			//==================================
@@ -179,17 +193,17 @@ int	main(int argc, char* argv[])
 
 			} else {
 				if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
-					cSND->saveNSF(cOptionSW->strNSFname.c_str());
+					cSND->saveNSF(cOptionSW->strNSFname);
 				}
 
 				//NSFe
 				if(cOptionSW->saveNSFe == true){
-					cSND->saveNSFe(cOptionSW->strNSFename.c_str());
+					cSND->saveNSFe(cOptionSW->strNSFename);
 				}
 
 				//Assembly
 				if(cOptionSW->saveASM == true){
-					cSND->saveASM(cOptionSW->strASMname.c_str());
+					cSND->saveASM(cOptionSW->strASMname);
 				}
 
 				_COUT << endl;
@@ -198,15 +212,15 @@ int	main(int argc, char* argv[])
 			//==================================
 			//クラスの削除
 			if (cSND)
-			//	cout << "delete cSND" << endl; 
+				cout << "delete cSND" << endl; 		//Debug用
 				delete	cSND;
 		}
 		if (cMML)
-		//	cout << "delete cMML" << endl; 
+			cout << "delete cMML" << endl; 			//Debug用
 			delete	cMML;
 	}
 	if (cOptionSW)
-	//	cout << "delete cOptionSW" << endl; 
+		cout << "delete cOptionSW" << endl; 		//Debug用
 		delete	cOptionSW;
 
 	return(iResult);

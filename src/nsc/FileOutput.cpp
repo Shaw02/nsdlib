@@ -48,7 +48,6 @@ void	FileOutput::fileopen(const char*	strFileName){
 	if(good()==false){
 		perror(strFileName);
 		f_error	= true;
-		nsc_exit(EXIT_FAILURE);
 	}
 };
 

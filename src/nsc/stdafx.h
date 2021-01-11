@@ -16,10 +16,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#ifdef _OPENMP
-	#include	<omp.h>
-#endif
-
 #ifdef	_UNICODE
 	#define	_CHAR	wchar_t
 	#define _T(x)	L ## x
@@ -42,28 +38,35 @@
 	#define _PATH_SPLIT	':'	// UNIXånÇÕ :
 #endif
 
+#ifdef _OPENMP
+	#include	<omp.h>
+#endif
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-//#include <tchar.h>
+#include <algorithm>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include <string>
+#include <exception>
+#include <stdexcept>
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <list>
 #include <map>
-
-#include <iomanip>
+#include <string>
 
 /****************************************************************/
 /*			ÉvÉçÉgÉ^ÉCÉv										*/
 /****************************************************************/
 
-void nsc_exit(int no);
-
 using namespace std;
+
+void nsc_exit(int no);		//Å°Å°Å°Å° To Do:	îpé~ó\íË
+void nsc_ErrMsg(int no);
+void nsc_ErrMsg(const exception& e);
 
 class	MusicHeader;
 class	MusicFile;
