@@ -1310,7 +1310,9 @@ void	MusicFile::saveNSF(string&	strFileName)
 			close();
 		}
 
-	} catch (const exception& e){
+	} catch (int no) {
+		nsc_ErrMsg(no);
+	} catch (const exception& e) {
 		nsc_ErrMsg(e);
 	}
 
@@ -1389,7 +1391,9 @@ void	MusicFile::saveNSFe(string&	strFileName)
 			close();
 		}
 
-	} catch (const exception& e){
+	} catch (int no) {
+		nsc_ErrMsg(no);
+	} catch (const exception& e) {
 		nsc_ErrMsg(e);
 	}
 
@@ -1452,7 +1456,9 @@ void	MusicFile::saveASM(string&	strFileName)
 			close();
 		}
 
-	} catch (const exception& e){
+	} catch (int no) {
+		nsc_ErrMsg(no);
+	} catch (const exception& e) {
 		nsc_ErrMsg(e);
 	}
 }

@@ -152,6 +152,9 @@ void	FileInput::StreamPointerMove(std::streamoff iSize){
 	seekg(iSize,ios::beg);
 };
 
+//--------------------------------
+//1ByteñﬂÇÈ
+//--------------------------------
 void	FileInput::Back(void)
 {
 	StreamPointerAdd(-1);
@@ -163,6 +166,7 @@ void	FileInput::Back(void)
 	read((char*)&readData, sizeof(unsigned char));
 	StreamPointerAdd(-1);
 }
+
 //--------------------------------
 //1Byteì«Ç›çûÇ›
 //--------------------------------
@@ -175,6 +179,7 @@ unsigned	char	FileInput::cRead()
 
 	return(readData);
 };
+
 //--------------------------------
 //ÉTÉCÉY
 //--------------------------------
