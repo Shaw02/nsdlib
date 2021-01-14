@@ -25,7 +25,7 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //==============================================================
 FileInput::FileInput(void):
 	f_error(false),
-	iLine(1),
+	nowLine(1),
 	readData(0)
 {
 }
@@ -159,7 +159,7 @@ void	FileInput::Back(void)
 {
 	StreamPointerAdd(-1);
 	if(readData == 0x0A){
-		iLine--;
+		nowLine--;
 	}
 
 	//更新
@@ -174,7 +174,7 @@ unsigned	char	FileInput::cRead()
 {
 	read((char*)&readData, sizeof(unsigned char));
 	if(readData == 0x0A){
-		iLine++;
+		nowLine++;
 	}
 
 	return(readData);

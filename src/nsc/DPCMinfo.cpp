@@ -215,9 +215,9 @@ const	static	Command_Info	Command[] = {
 
 	//Ç±Ç±Ç≈ämï€ÇµÇƒÇ®Ç≠ÅB
 	if(bank == true){
-		iSize = (max_number+1)*6;
+		iSize = ((size_t)max_number + (size_t)1) * 6;
 	} else {
-		iSize = (max_number+1)*4;
+		iSize = ((size_t)max_number + (size_t)1) * 4;
 	}
 	code.resize(iSize);
 }

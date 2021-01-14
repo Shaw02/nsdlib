@@ -852,8 +852,8 @@ void	MusicFile::Fix_Address(void)
 //==============================================================
 size_t	MusicFile::read_bin(string* _str, NSF_Header* nsf_hed)
 {
-	size_t		bin_size;			//.binファイルのサイズ
-	size_t		code_size;			//うち、ドライバー（コード）のサイズ
+	size_t		bin_size = 0;		//.binファイルのサイズ
+	size_t		code_size = 0;		//うち、ドライバー（コード）のサイズ
 	FileInput*	_romcode	= new FileInput();	
 
 	//----------------------
@@ -1137,7 +1137,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 				if(flag_Optimize == true){
 					//シーケンスデータのバンク領域
 					//⊿PCMのバンク内の開始オフセットまで
-					NSF_Data->resize((size_t)(mus_bank<<12) + (Header.offsetPCM & 0x0FFF));		
+					NSF_Data->resize(((size_t)mus_bank<<12) + (Header.offsetPCM & 0x0FFF));
 				} else {
 					//⊿PCMの開始位置まで
 					NSF_Data->resize(Header.offsetPCM - 0x8000);
@@ -1145,7 +1145,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			} else {
 				//シーケンスデータのバンク領域
 				//⊿PCMの開始位置まで
-				NSF_Data->resize((size_t)((mus_bank + code_bank)<<12) + (Header.offsetPCM - 0xC000));
+				NSF_Data->resize((((size_t)mus_bank + (size_t)code_bank)<<12) + (Header.offsetPCM - 0xC000));
 			}
 		}
 
@@ -1214,7 +1214,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			}
 		} else {
 			//バンク内を0でpaddingする。
-			NSF_size = (size_t)((mus_bank + pcm_bank + code_bank)<<12);
+			NSF_size = ((size_t)mus_bank + (size_t)pcm_bank + (size_t)code_bank)<<12;
 			//BANK対応の.binを使う場合で、且つ、32kByte未満の場合、32kByteにする。
 			if(NSF_size < 0x8000){
 				NSF_size = 0x8000;
@@ -1318,7 +1318,7 @@ void	MusicFile::saveNSF(string&	strFileName)
 
 	//==============================
 	//Exit
-	delete[]	NSF_Hed;
+	delete	NSF_Hed;
 }
 
 //==============================================================
@@ -1399,7 +1399,7 @@ void	MusicFile::saveNSFe(string&	strFileName)
 
 	//==============================
 	//Exit
-	delete[]	NSF_Hed;
+	delete	NSF_Hed;
 
 }
 

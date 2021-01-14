@@ -14,10 +14,10 @@
 /*			定数定義											*/
 /*																*/
 /****************************************************************/
-struct	Macro_Stack {
+typedef	struct {
 		string				name;
 		size_t				line;
-};
+} Macro_Stack;
 
 /****************************************************************/
 /*																*/
@@ -81,11 +81,11 @@ public:
 
 		std::streamoff	tellg(void);					//現在のファイルのポインタ取得
 				void	StreamPointerMove(std::streamoff iSize);	//現在のファイルのポインタ移動
-				void	Back_one(void);					//1文字戻し
-				void	Back(void);						//1文字戻し（全角・半角変換対応）
+private:		void	Back_one(void);					//1文字戻し
+public:			void	Back(void);						//1文字戻し（全角・半角変換対応）
 
-				char	read_char(void);				//1Byte読み込み
-				char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
+private:		char	read_char(void);				//1Byte読み込み
+public:			char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
 				char	GetChar(void);					//1Byte読み込み（with EOF & Commend check）
 				void	GetString(string* _str, bool f_ESC);	//""付 文字列 読み込み
 				int		GetNum(void);					//()付  数値  読み込み
@@ -100,8 +100,8 @@ public:
 
 				int		GetCommandID(const Command_Info _command[], size_t _size);	//コマンドIDを取得
 
-	unsigned	int		GetLine(void){return(nowFile->GetLine());};
-				void	SetLine(unsigned int i){nowFile->SetLine(i);};
+				size_t	GetLine(void){return(nowFile->GetLine());};
+				void	SetLine(size_t i){nowFile->SetLine(i);};
 
 				void	Err(const _CHAR msg[]);
 				void	Warning(const _CHAR msg[]);

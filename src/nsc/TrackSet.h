@@ -34,7 +34,7 @@ protected:
 				bool			fSub;		//サブルーチン記述ブロックかどうかのフラグ
 				bool			fSE;		//SEかどうかのフラグ
 				std::streamoff	TrackPt;	//
-	unsigned	int				TrackLine;	//
+				size_t			TrackLine;	//
 	unsigned	char			Priority;	//効果音優先順位
 
 //メンバー関数
