@@ -71,34 +71,54 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MinimalRebuild />
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>false</OmitFramePointers>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <MinimalRebuild />
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,18 +127,32 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild />
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,7 +165,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ExpandAttributedSource>false</ExpandAttributedSource>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
@@ -139,13 +173,14 @@
       <OmitFramePointers>true</OmitFramePointers>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>
       </MinimalRebuild>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -207,7 +242,8 @@
     <ClInclude Include="..\nsc\SE.h" />
     <ClInclude Include="..\nsc\SearchPass.h" />
     <ClInclude Include="..\nsc\stdafx.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\nsc\Sub.h" />
     <ClInclude Include="..\nsc\TrackSet.h" />
@@ -259,7 +295,10 @@
     <ClCompile Include="..\nsc\Patch.cpp" />
     <ClCompile Include="..\nsc\SE.cpp" />
     <ClCompile Include="..\nsc\SearchPass.cpp" />
-    <ClCompile Include="..\nsc\stdafx.cpp" />
+    <ClCompile Include="..\nsc\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\nsc\Sub.cpp" />
     <ClCompile Include="..\nsc\TrackSet.cpp" />
     <ClCompile Include="..\nsc\VRC7.cpp" />
