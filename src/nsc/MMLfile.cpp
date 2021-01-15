@@ -292,9 +292,11 @@ void	MMLfile::DeleteMacro(int i_Lv)
 		
 	//----------------------
 	//“–ŠYLv‚Ìƒ}ƒNƒ‚ğ‰ğ•ú‚·‚éB
-	for(map<string,string>::iterator it=ptcMac.begin(), e=ptcMac.end(); it!=e; ++it){
-		macro_name	= it->first;
+	map<string,string>::iterator itMac = ptcMac.begin();
+	while(itMac != ptcMac.end()){
+		macro_name	= itMac->first;
 		macro_lv	= lv_Mac[macro_name];
+		itMac++;
 		if(i_Lv == macro_lv){
 			ptcMac.erase(macro_name);
 			lv_Mac.erase(macro_name);
