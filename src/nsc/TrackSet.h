@@ -46,7 +46,6 @@ public:
 		void	TickCountPrint(MusicFile* MUS, int iStart, int iEnd);
 		void	getAsm(MusicFile* MUS);
 
-		void	clear_Optimize();
 		void	Fix_Address(MusicFile* MUS);
 
 		void	TrackChk(MMLfile* MML);

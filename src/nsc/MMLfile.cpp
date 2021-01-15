@@ -15,6 +15,10 @@
 /****************************************************************/
 extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 
+#ifdef _OPENMP
+	extern	omp_lock_t		lock_cout;
+#endif
+
 /*
 Memo:
 	read_char();		//ファイル or マクロから、1Byte読み込み
@@ -90,47 +94,31 @@ MMLfile::~MMLfile(void)
 {
 
 	//----------------------
-	//Local変数
-	vector	<FileInput*			>::iterator	itFiles;
-	map		<string,	string	>::iterator	itMac;
-	map		<size_t,	Patch*	>::iterator	itPatch;
-
-	//----------------------
 	//Delete Class
 
 	//開いたファイルを全部閉じる
-	itFiles = ptcFiles.begin();
-	while(itFiles != ptcFiles.end()){
+	for(vector<FileInput*>::iterator it=ptcFiles.begin(), e=ptcFiles.end(); it!=e; ++it){
 		if(cOptionSW->iDebug & DEBUG_Close_Inc){
 			_COUT << _T("Close file :");
-			cout << (*itFiles)->GetFilename()->c_str() << endl;
+			cout << (*it)->GetFilename()->c_str() << endl;
 		}
-		(*itFiles)->close();
-		delete *itFiles;
-		itFiles++;
+		(*it)->close();
+		delete *it;
 	}
 	ptcFiles.clear();
 
 	//マクロを全部解放する。
-	if(!ptcMac.empty()){
-		itMac = ptcMac.begin();
-		while(itMac != ptcMac.end()){
-			itMac->second.clear();
-			itMac++;
-		}
-		ptcMac.clear();
+	for(map<string,string>::iterator it=ptcMac.begin(), e=ptcMac.end(); it!=e; ++it){
+		it->second.clear();
 	}
+	ptcMac.clear();
 	lv_Mac.clear();
 
 	//パッチを全部解放する。
-	if(!ptcPatch.empty()){
-		itPatch = ptcPatch.begin();
-		while(itPatch != ptcPatch.end()){
-			delete	itPatch->second;
-			itPatch++;
-		}
-		ptcPatch.clear();
+	for(map<size_t,Patch*>::iterator it=ptcPatch.begin(), e=ptcPatch.end(); it!=e; ++it){
+		delete	it->second;
 	}
+	ptcPatch.clear();
 
 }
 
@@ -179,7 +167,6 @@ void	MMLfile::include()
 {
 	//----------------------
 	//Local変数
-	vector	<FileInput*>::iterator	itFiles;
 	string		_name = "";
 	FileInput*	_incFile;
 
@@ -187,12 +174,10 @@ void	MMLfile::include()
 
 	//----------------------
 	//同じファイルが開かれていないかチェック
-	itFiles = ptcFiles.begin();
-	while(itFiles != ptcFiles.end()){
-		if( *(*itFiles)->GetFilename() == _name ){
+	for(vector<FileInput*>::iterator it=ptcFiles.begin(), e=ptcFiles.end(); it!=e; ++it){
+		if( *(*it)->GetFilename() == _name ){
 			Err(_T("既に同じファイルが#includeで開かれています。"));
 		}
-		itFiles++;
 	}
 
 	//----------------------
@@ -297,7 +282,6 @@ void	MMLfile::DeleteMacro(int i_Lv)
 
 	//----------------------
 	//Local変数
-	map		<string,		string	>::iterator	itMac;
 	string	macro_name;
 	int		macro_lv;
 
@@ -308,19 +292,15 @@ void	MMLfile::DeleteMacro(int i_Lv)
 		
 	//----------------------
 	//当該Lvのマクロを解放する。
-	if(!ptcMac.empty()){
-		itMac = ptcMac.begin();
-		while(itMac != ptcMac.end()){
-			macro_name	= itMac->first;
-			macro_lv	= lv_Mac[macro_name];
-			itMac++;
-			if(i_Lv == macro_lv){
-				ptcMac.erase(macro_name);
-				lv_Mac.erase(macro_name);
-				//Debug用
-				if(cOptionSW->iDebug & DEBUG_Macros){
-					cout << "	ptcMac[" << macro_name << "]" << endl;
-				}
+	for(map<string,string>::iterator it=ptcMac.begin(), e=ptcMac.end(); it!=e; ++it){
+		macro_name	= it->first;
+		macro_lv	= lv_Mac[macro_name];
+		if(i_Lv == macro_lv){
+			ptcMac.erase(macro_name);
+			lv_Mac.erase(macro_name);
+			//Debug用
+			if(cOptionSW->iDebug & DEBUG_Macros){
+				cout << "	ptcMac[" << macro_name << "]" << endl;
 			}
 		}
 	}
@@ -365,7 +345,7 @@ void	MMLfile::CallMacro(void)
 		cData = cRead();
 		_name += cData;
 		n = 0;			//ヒット数
-		if((cData > 0x20) && (!vecMac.empty())){
+		if(cData > 0x20){
 			vector<const char*>::iterator	it = vecMac.begin();
 			while(it != vecMac.end()){
 				char c = (*it)[i];
@@ -1202,24 +1182,22 @@ int	MMLfile::GetCommandID(const Command_Info _command[], size_t _size)
 	//走査
 	i = 0;
 	do{
+		map<const char*, int>::iterator	it = mapCmdInfo.begin();
 		char cData = cRead();
 		n = 0;
-		if(!mapCmdInfo.empty()){
-			map<const char*, int>::iterator	it = mapCmdInfo.begin();
-			while(it != mapCmdInfo.end()){
-				char c = (it->first)[i];
-				if(c == cData){
-					n++;
-					it++;
-				} else if(c == 0){
-					Back();
-					ptCmdEnd = tellg();		//ヒットしたところのファイルポインタを記憶
-					cRead();
-					iResult = it->second;	//ヒットしたコマンドID
-					mapCmdInfo.erase(it++);
-				} else {
-					mapCmdInfo.erase(it++);
-				}
+		while(it != mapCmdInfo.end()){
+			char c = (it->first)[i];
+			if(c == cData){
+				n++;
+				it++;
+			} else if(c == 0){
+				Back();
+				ptCmdEnd = tellg();		//ヒットしたところのファイルポインタを記憶
+				cRead();
+				iResult = it->second;	//ヒットしたコマンドID
+				mapCmdInfo.erase(it++);
+			} else {
+				mapCmdInfo.erase(it++);
 			}
 		}
 		i++;
@@ -1243,6 +1221,7 @@ int	MMLfile::GetCommandID(const Command_Info _command[], size_t _size)
 //==============================================================
 void	MMLfile::Err(const _CHAR msg[])
 {
+	_OMP_SET_LOCK_COUT
 	f_error = true;
 
 	//エラー内容を表示
@@ -1255,6 +1234,7 @@ void	MMLfile::Err(const _CHAR msg[])
 		cout << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 		_COUT << msg << endl;
 	}
+	_OMP_UNSET_LOCK_COUT
 
 	//異常終了
 	nsc_exit(EXIT_FAILURE);
@@ -1270,7 +1250,7 @@ void	MMLfile::Err(const _CHAR msg[])
 //==============================================================
 void	MMLfile::Warning(const _CHAR msg[])
 {
-
+	_OMP_SET_LOCK_COUT
 	//ワーニング内容を表示
 	if(cOptionSW->fErr == true){
 		//現在のファイル名と、行数を表示
@@ -1281,4 +1261,5 @@ void	MMLfile::Warning(const _CHAR msg[])
 		cout << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 		_COUT << msg << endl;
 	}
+	_OMP_UNSET_LOCK_COUT
 }

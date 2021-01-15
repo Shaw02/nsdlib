@@ -43,6 +43,10 @@
 /****************************************************************/
 		OPSW*			cOptionSW = NULL;	//どっからでもアクセスする。
 
+#ifdef _OPENMP
+		omp_lock_t		lock_cout;
+#endif
+
 //==============================================================
 //		エラー			■■■ To Do:	廃止予定
 //--------------------------------------------------------------
@@ -61,21 +65,37 @@ void nsc_exit(int no)
 //--------------------------------------------------------------
 void nsc_ErrMsg(int no)
 {
+_OMP_SET_LOCK_COUT
 	if(cOptionSW->fErr == true){
 		cerr << "Error!: " << strerror(no) << endl;
 	} else {
 		cout << "Error!: " << strerror(no) << endl;
 	}
+_OMP_UNSET_LOCK_COUT
 }
 
 //--------------------------------------------------------------
 void nsc_ErrMsg(const exception& e)
 {
+_OMP_SET_LOCK_COUT
 	if(cOptionSW->fErr == true){
 		cerr << "Error!: " << e.what() << endl;
 	} else {
 		cout << "Error!: " << e.what() << endl;
 	}
+_OMP_UNSET_LOCK_COUT
+}
+
+//--------------------------------------------------------------
+void nsc_ErrMsg(const _CHAR *stErrMsg)
+{
+_OMP_SET_LOCK_COUT
+	if(cOptionSW->fErr == true){
+		_CERR << _T("Error!: ") << stErrMsg << endl;
+	} else {
+		_COUT << _T("Error!: ") << stErrMsg << endl;
+	}
+_OMP_UNSET_LOCK_COUT
 }
 
 //==============================================================
@@ -100,6 +120,10 @@ int	main(int argc, char* argv[])
 #endif
 
 //		locale::global(std::locale(""));	//g++ だと、ランタイム エラーになる。
+
+#ifdef _OPENMP
+		omp_init_lock(&lock_cout);
+#endif
 
 	//==================================
 	_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
@@ -138,9 +162,6 @@ int	main(int argc, char* argv[])
 
 			//==================================
 			//Optimize & Tick Count
-			//■■■ To Do:	並列化のため、try は並列化された各スレッドに移動する。
-			try {
-
 			_COUT << _T("------------------------------------------------------------") << endl;
 			_COUT << _T("*Optimize & Tick counting process") << endl;
 
@@ -173,15 +194,6 @@ int	main(int argc, char* argv[])
 				_COUT << endl;
 			}
 
-
-			//==================================
-			} catch (int no) {
-				iResult = EXIT_FAILURE;
-				nsc_ErrMsg(no);
-			} catch (const exception& e){
-				iResult = EXIT_FAILURE;
-				nsc_ErrMsg(e);
-			}
 
 
 			//==================================
@@ -222,6 +234,10 @@ int	main(int argc, char* argv[])
 	if (cOptionSW)
 		cout << "delete cOptionSW" << endl; 		//Debug用
 		delete	cOptionSW;
+
+#ifdef _OPENMP
+		omp_destroy_lock(&lock_cout);
+#endif
 
 	return(iResult);
 }

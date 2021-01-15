@@ -61,6 +61,7 @@ public:
 	void	saveASM(string& strFileName);
 
 	void	Err(const _CHAR msg[]);
+	void	Err(const _CHAR msg[], size_t no);
 	void	Warning(const _CHAR msg[]);
 
 };

@@ -15,6 +15,10 @@
 /****************************************************************/
 extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 
+#ifdef _OPENMP
+	extern	omp_lock_t		lock_cout;
+#endif
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -234,7 +238,6 @@ const	static	Command_Info	Command[] = {
 	};
 
 					size_t		i;
-	//	unsigned	char		cData;
 		string		msg;
 
 		map<size_t,	Envelop*	>::iterator	itEnvelop;
@@ -573,23 +576,19 @@ const	static	Command_Info	Command[] = {
 		//==============================
 		//Check
 		if( Header.iBGM + Header.iSE > 255){
-			Err(_T("BGMとSEの数が合計で255を越えました。"));
+			MML->Err(_T("BGMとSEの数が合計で255を越えました。"));
 		}
 
-		i = 0;
-		while(i < Header.iBGM){
-			if(ptcBGM.count(i) == 0){
-				Err(_T("BGMデータが足りません。"));
+		for(size_t n=0, e=Header.iBGM; n<e; ++n){
+			if(ptcBGM.count(n) == 0){
+				MML->Err(_T("BGMデータが足りません。"));
 			};
-			i++;
 		}
 
-		i = 0;
-		while(i < Header.iSE){
-			if(ptcSE.count(i) == 0){
-				Err(_T("SE データが足りません。"));
+		for(size_t n=0, e=Header.iSE; n<e; ++n){
+			if(ptcSE.count(n) == 0){
+				MML->Err(_T("SE データが足りません。"));
 			};
-			i++;
 		}
 
 	} catch (int no) {
@@ -599,11 +598,7 @@ const	static	Command_Info	Command[] = {
 		nsc_ErrMsg(e);
 		f_error = true;
 	} catch (const _CHAR *stErrMsg) {
-		if(cOptionSW->fErr == true){
-			_CERR	<<	_T("致命的なエラー：") << stErrMsg << endl;
-		} else {
-			_COUT	<<	_T("致命的なエラー：") << stErrMsg << endl;
-		}
+		nsc_ErrMsg(stErrMsg);
 		f_error = true;
 	}
 }
@@ -632,23 +627,14 @@ MusicFile::~MusicFile(void)
 //==============================================================
 void	MusicFile::TickCount(void)
 {
-	map<size_t, FDSC*		>::iterator	itFDSC;		//FDS  wave table (career)
-	map<size_t, FDSM*		>::iterator	itFDSM;		//FDS  wave table (modulator)
-	map<size_t, VRC7*		>::iterator	itVRC7;		//VRC7 User Instrument
-	map<size_t, N163*		>::iterator	itN163;		//N163 wave table
-	map<size_t, Envelop*	>::iterator	itEnv;		//Envelop
-	map<size_t, Sub*		>::iterator	itSub;		//Subroutine
-
-				size_t		iBGM	= 0;
-				size_t		iSE		= 0;
-
 	//==============================
 	//Tick Count & 最適化のための情報収集
+	//（ここは並列化しないで、順番に処理する事）
 
-	while(iBGM < Header.iBGM){
-		if(ptcBGM.count(iBGM) == 1){
-			BGM* _BGM = ptcBGM[iBGM];
-			_COUT << _T("---- BGM(") << iBGM << _T(") ----") <<endl;
+	for(size_t n=0, e=Header.iBGM; n<e; ++n){
+		if(ptcBGM.count(n) == 1){
+			BGM* _BGM = ptcBGM[n];
+			_COUT << _T("---- BGM(") << n << _T(") ----") <<endl;
 			_BGM->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
 			if(f_is_track_label == true){
 				Header.Set_tlbl(_BGM->getLabel());
@@ -663,13 +649,12 @@ void	MusicFile::TickCount(void)
 				Header.Set_fade(_BGM->getFade());
 			}
 		}
-		iBGM++;
 	}
 
-	while(iSE < Header.iSE){
-		if(ptcSE.count(iSE) == 1){
-			SE*	_SE = ptcSE[iSE];
-			_COUT << _T("---- SE(") << iSE << _T(") ----") <<endl;
+	for(size_t n=0, e=Header.iSE; n<e; ++n){
+		if(ptcSE.count(n) == 1){
+			SE*	_SE = ptcSE[n];
+			_COUT << _T("---- SE(") << n << _T(") ----") <<endl;
 			_SE->TickCount(this);				//カウンティングしながら、不要なコマンドが無いかチェック
 			if(f_is_track_label == true){
 				Header.Set_tlbl(_SE->getLabel());
@@ -684,7 +669,6 @@ void	MusicFile::TickCount(void)
 				Header.Set_fade(_SE->getFade());
 			}
 		}
-		iSE++;
 	}
 
 
@@ -698,81 +682,68 @@ void	MusicFile::TickCount(void)
 
 	//==============================
 	//最適化
+	//（カウントした後は、並列化して良い）
 
 	//エラーが発生していたら最適化はしない。
-	if(f_error == false){
+	if (f_error == false) {
 
 		//----------------------
 		//不要なコマンドの削除
-		if(cOptionSW->flag_OptSeq == true){		//コマンドの最適化が無効だったら、最適化しない。
+		if (cOptionSW->flag_OptSeq == true) {		//コマンドの最適化が無効だったら、最適化しない。
 
-			iBGM	= 0;
-			while(iBGM < Header.iBGM){
-				ptcBGM[iBGM]->clear_Optimize();
-				iBGM++;
-			}
+			#pragma omp parallel
+			{
+				#pragma omp for nowait
+				for (int n = 0; n < Header.iBGM; ++n) {
+					ptcBGM[n]->clear_Optimize();
+				}
 
-			iSE		= 0;
-			while(iSE < Header.iSE){
-				ptcSE[iSE]->clear_Optimize();
-				iSE++;
-			}
+				#pragma omp for nowait
+				for (int n = 0; n < Header.iSE; ++n) {
+					ptcSE[n]->clear_Optimize();
+				}
 
-			if(!ptcSub.empty()){
-				itSub = ptcSub.begin();
-				while(itSub != ptcSub.end()){
-					itSub->second->clear_Optimize();
-					itSub++;
+				#pragma omp single
+				for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
 			}
 		}
 
 		//----------------------
 		//使っていない定義の削除
-		if(cOptionSW->flag_OptObj == true){		//定義の最適化が無効だったら、最適化しない。
+		if (cOptionSW->flag_OptObj == true) {		//定義の最適化が無効だったら、最適化しない。
 
-			//エンベロープ
-			if(!ptcEnv.empty()){
-				itEnv = ptcEnv.begin();
-				while(itEnv != ptcEnv.end()){
-					itEnv->second->clear_Optimize();
-					itEnv++;
+			#pragma omp parallel sections
+			{
+				//エンベロープ
+				#pragma omp section
+				for (map<size_t, Envelop*>::iterator it = ptcEnv.begin(), e = ptcEnv.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
-			}
 
-			//FDSC
-			if(!ptcFDSC.empty()){
-				itFDSC = ptcFDSC.begin();
-				while(itFDSC != ptcFDSC.end()){
-					itFDSC->second->clear_Optimize();
-					itFDSC++;
+				//FDSC
+				#pragma omp section
+				for (map<size_t, FDSC*>::iterator it = ptcFDSC.begin(), e = ptcFDSC.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
-			}
 
-			//FDSM
-			if(!ptcFDSM.empty()){
-				itFDSM = ptcFDSM.begin();
-				while(itFDSM != ptcFDSM.end()){
-					itFDSM->second->clear_Optimize();
-					itFDSM++;
+				//FDSM
+				#pragma omp section
+				for (map<size_t, FDSM*>::iterator it = ptcFDSM.begin(), e = ptcFDSM.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
-			}
 
-			//VRC7
-			if(!ptcVRC7.empty()){
-				itVRC7 = ptcVRC7.begin();
-				while(itVRC7 != ptcVRC7.end()){
-					itVRC7->second->clear_Optimize();
-					itVRC7++;
+				//VRC7
+				#pragma omp section
+				for (map<size_t, VRC7*>::iterator it = ptcVRC7.begin(), e = ptcVRC7.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
-			}
 
-			//N163
-			if(!ptcN163.empty()){
-				itN163 = ptcN163.begin();
-				while(itN163 != ptcN163.end()){
-					itN163->second->clear_Optimize();
-					itN163++;
+				//N163
+				#pragma omp section
+				for (map<size_t, N163*>::iterator it = ptcN163.begin(), e = ptcN163.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
 			}
 		}
@@ -792,17 +763,26 @@ size_t	MusicFile::SetDPCMOffset(size_t iMusSize)
 				size_t	i;
 	unsigned	char	mus_bank = (unsigned char)(iMusSize >> 12);
 
-	if((iMusSize & 0x0FFF) != 0){
-		mus_bank++;
+	try {
+
+		if((iMusSize & 0x0FFF) != 0){
+			mus_bank++;
+		}
+
+		dpcm_code.clear();
+		if(cDPCMinfo != NULL){
+			cDPCMinfo->getDPCMCode(&dpcm_code);
+			i = cDPCMinfo->setDPCMoffset(Header.offsetPCM, mus_bank+3);
+		} else {
+			i = Header.offsetPCM;
+		}
+
+	} catch (int no) {
+		nsc_ErrMsg(no);
+	} catch (const exception& e){
+		nsc_ErrMsg(e);
 	}
 
-	dpcm_code.clear();
-	if(cDPCMinfo != NULL){
-		cDPCMinfo->getDPCMCode(&dpcm_code);
-		i = cDPCMinfo->setDPCMoffset(Header.offsetPCM, mus_bank+3);
-	} else {
-		i = Header.offsetPCM;
-	}
 	return(i - Header.offsetPCM);
 }
 
@@ -813,31 +793,21 @@ size_t	MusicFile::SetDPCMOffset(size_t iMusSize)
 //				無し
 //	●返値
 //				無し
+//	●メモ
+//				Fix_Addressは、各トラックで、並列化する。
 //==============================================================
 void	MusicFile::Fix_Address(void)
 {
-	map<size_t,Sub*	>::iterator	itSub;
-
-	size_t	iBGM	= 0;
-	size_t	iSE		= 0;
-
-
-	while(iBGM < Header.iBGM){
-		ptcBGM[iBGM]->Fix_Address(this);
-		iBGM++;
+	for (int n = 0; n < Header.iBGM; ++n) {
+		ptcBGM[n]->Fix_Address(this);	//この先で並列化[済]
 	}
 
-	while(iSE < Header.iSE){
-		ptcSE[iSE]->Fix_Address(this);
-		iSE++;
+	for (int n = 0; n < Header.iSE; ++n) {
+		ptcSE[n]->Fix_Address(this);	//この先で並列化[済]
 	}
 
-	if(!ptcSub.empty()){
-		itSub = ptcSub.begin();
-		while(itSub != ptcSub.end()){
-			itSub->second->Fix_Address(this);
-			itSub++;
-		}
+	for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
+		it->second->Fix_Address(this);	//この先で並列化[済]
 	}
 }
 
@@ -936,8 +906,6 @@ size_t	MusicFile::read_bin(string* _str, NSF_Header* nsf_hed)
 size_t	MusicFile::make_mus(string* _str, size_t code_size, size_t ptOffset)
 {
 	unsigned	int			i		= 2;
-				size_t		iBGM	= 0;
-				size_t		iSE		= 0;
 	unsigned	short*		pt;
 
 				size_t		_size	= 4 + (Header.iBGM + Header.iSE)*2;
@@ -963,15 +931,14 @@ size_t	MusicFile::make_mus(string* _str, size_t code_size, size_t ptOffset)
 			pt[1]	= 0;
 		}
 
-		while(iBGM < Header.iBGM){
-			pt[i] = (unsigned short)(ptOffset + code_size + _size + ptcBGM[iBGM]->getOffset());
+		for(size_t n=0; n<Header.iBGM; n++){
+			pt[i] = (unsigned short)(ptOffset + code_size + _size + ptcBGM[n]->getOffset());
 			i++;
-			iBGM++;
 		}
-		while(iSE < Header.iSE){
-			pt[i] = (unsigned short)(ptOffset + code_size + _size + ptcSE[iSE]->getOffset());
+
+		for(size_t n=0; n<Header.iSE; n++){
+			pt[i] = (unsigned short)(ptOffset + code_size + _size + ptcSE[n]->getOffset());
 			i++;
-			iSE++;
 		}
 
 	} else {
@@ -982,15 +949,14 @@ size_t	MusicFile::make_mus(string* _str, size_t code_size, size_t ptOffset)
 			pt[1]	= 0;
 		}
 
-		while(iBGM < Header.iBGM){
-			pt[i] = (unsigned short)(ptOffset + _size + ptcBGM[iBGM]->getOffset());
+		for(size_t n=0; n<Header.iBGM; n++){
+			pt[i] = (unsigned short)(ptOffset + _size + ptcBGM[n]->getOffset());
 			i++;
-			iBGM++;
 		}
-		while(iSE < Header.iSE){
-			pt[i] = (unsigned short)(ptOffset + _size + ptcSE[iSE]->getOffset());
+
+		for(size_t n=0; n<Header.iSE; n++){
+			pt[i] = (unsigned short)(ptOffset + _size + ptcSE[n]->getOffset());
 			i++;
-			iSE++;
 		}
 
 	}
@@ -1413,9 +1379,6 @@ void	MusicFile::saveNSFe(string&	strFileName)
 //==============================================================
 void	MusicFile::saveASM(string&	strFileName)
 {
-	size_t	iBGM	= 0;
-	size_t	iSE		= 0;
-
 	try{
 
 		//----------------------
@@ -1433,13 +1396,12 @@ void	MusicFile::saveASM(string&	strFileName)
 						<<endl;
 
 			//Export of Sequence
-			while(iBGM < Header.iBGM){
-				*this	<<	"	.export		"	<<	Header.Label	<<	"BGM"	<<	iBGM	<<	endl;
-				iBGM++;
+			for(size_t n=0; n<Header.iBGM; n++){
+				*this	<<	"	.export		"	<<	Header.Label	<<	"BGM"	<<	n	<<	endl;
 			}
-			while(iSE < Header.iSE){
-				*this	<<	"	.export		"	<<	Header.Label	<<	"SE"	<<	iSE	<<	endl;
-				iSE++;
+
+			for(size_t n=0; n<Header.iSE; n++){
+				*this	<<	"	.export		"	<<	Header.Label	<<	"SE"	<<	n	<<	endl;
 			}
 
 			if(cDPCMinfo != NULL){
@@ -1473,16 +1435,29 @@ void	MusicFile::saveASM(string&	strFileName)
 //==============================================================
 void	MusicFile::Err(const _CHAR msg[])
 {
+	_OMP_SET_LOCK_COUT
 	f_error = true;
-
 	if(cOptionSW->fErr == true){
 		_CERR << _T("[ ERROR ] : ") << msg << endl;
 	} else {
 		_COUT << _T("[ ERROR ] : ") << msg << endl;
 	}
+	_OMP_UNSET_LOCK_COUT
 
-	//異常終了
-	nsc_exit(EXIT_FAILURE);
+	throw EXIT_FAILURE;		//基本的に致命的なエラーなので例外を投げる。
+}
+
+//--------------------------------------------------------------
+void	MusicFile::Err(const _CHAR msg[], size_t no)
+{
+	_OMP_SET_LOCK_COUT
+	f_error = true;
+	if(cOptionSW->fErr == true){
+		_CERR << _T("[ ERROR ] : ") << msg << _T("(") << no << _T(")番が存在しません。") << endl;
+	} else {
+		_COUT << _T("[ ERROR ] : ") << msg << _T("(") << no << _T(")番が存在しません。") << endl;
+	}
+	_OMP_UNSET_LOCK_COUT
 }
 
 //==============================================================
@@ -1495,10 +1470,12 @@ void	MusicFile::Err(const _CHAR msg[])
 //==============================================================
 void	MusicFile::Warning(const _CHAR msg[])
 {
+	_OMP_SET_LOCK_COUT
 	//現在のファイル名と、行数を表示
 	if(cOptionSW->fErr == true){
 		_CERR << _T("[WARNING] : ") << msg << endl;
 	} else {
 		_COUT << _T("[WARNING] : ") << msg << endl;
 	}
+	_OMP_UNSET_LOCK_COUT
 }

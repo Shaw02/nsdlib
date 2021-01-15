@@ -235,19 +235,11 @@ DPCMinfo::~DPCMinfo(void)
 	//⊿PCMは、ここで破棄する。
 
 	//----------------------
-	//Local変数
-	map<string, DPCM*>::iterator	itItem;
-
-	//----------------------
 	//Delete Class
-	if(!ptcDPCM.empty()){
-		itItem = ptcDPCM.begin();
-		while(itItem != ptcDPCM.end()){
-			delete itItem->second;
-			itItem++;
-		}
-		ptcDPCM.clear();
+	for(map<string, DPCM*>::iterator it = ptcDPCM.begin(), e = ptcDPCM.end(); it != e; it++){
+		delete it->second;
 	}
+	ptcDPCM.clear();
 }
 //==============================================================
 //		設定
@@ -431,30 +423,23 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 //==============================================================
 size_t	DPCMinfo::setDPCMoffset(size_t _offset, unsigned char _MusBank)
 {
-	map<string, DPCM*>::iterator	itDPCM;
+
 	DPCM*	_DPCM;
 	size_t	_size;
 
-	size_t	i=0;
-
 	//⊿PCMの配置アドレスを解決。しながらNSF出力用の⊿PCM実体を作成。
 	if(m_id > 0){
-		//DPCM
-		if(!ptcDPCM.empty()){
-			itDPCM = ptcDPCM.begin();
-			while(itDPCM != ptcDPCM.end()){
-				_DPCM = itDPCM->second;
-				_DPCM->SetOffset(_offset);
-				_size	= (_DPCM->getSize() & 0xFFC0) + 0x0040;
-				_offset	+= (unsigned int)_size;
-				itDPCM++;
-			}
+		for(map<string, DPCM*>::iterator it = ptcDPCM.begin(), e = ptcDPCM.end(); it != e; it++){
+			_DPCM = it->second;
+			_DPCM->SetOffset(_offset);
+			_size	= (_DPCM->getSize() & 0xFFC0) + 0x0040;
+			_offset	+= _size;
 		}
 	}
 
 	//ΔPCMinfo構造体の生成
 	if(bank == false){
-		while(i <= max_number){
+		for(size_t i=0; i <= max_number; i++){
 			if(infoDPCM[i].file.empty()){
 				code[i*4 + 0] = 0;
 				code[i*4 + 1] = 0;
@@ -475,10 +460,9 @@ size_t	DPCMinfo::setDPCMoffset(size_t _offset, unsigned char _MusBank)
 					code[i*4 + 3] = infoDPCM[i].size;
 				}
 			}
-			i++;
 		}
 	} else {
-		while(i <= max_number){
+		for(size_t i=0; i <= max_number; i++){
 			if(infoDPCM[i].file.empty()){
 				code[i*6 + 0] = 0;
 				code[i*6 + 1] = 0;
@@ -500,14 +484,11 @@ size_t	DPCMinfo::setDPCMoffset(size_t _offset, unsigned char _MusBank)
 				} else {
 					code[i*6 + 3] = infoDPCM[i].size;
 				}
-
 				code[i*6 + 4] = (unsigned char)((_DPCM->getOffset() - 0xC000) / 0x1000) + _MusBank;
 				code[i*6 + 5] = infoDPCM[i].next;
 			}
-			i++;
 		}
 	}
-
 
 	return(_offset);
 }
@@ -525,23 +506,18 @@ size_t	DPCMinfo::setDPCMoffset(size_t _offset, unsigned char _MusBank)
 //==============================================================
 void	DPCMinfo::getDPCMCode(string* _str)
 {
-	map<string, DPCM*>::iterator	itDPCM;
 	DPCM*	_DPCM;
 	size_t	_size;
 	size_t	psize;
 
 	if(m_id > 0){
 		//DPCM
-		if(!ptcDPCM.empty()){
-			itDPCM = ptcDPCM.begin();
-			while(itDPCM != ptcDPCM.end()){
-				_DPCM = itDPCM->second;
-				_DPCM->getCode(_str);
-				_size	= _DPCM->getSize();
-				psize	= (_size & 0xFFC0) + 0x0040;
-				_str->append(psize - _size,(char)0x00);
-				itDPCM++;
-			}
+		for(map<string, DPCM*>::iterator it = ptcDPCM.begin(), e = ptcDPCM.end(); it != e; it++){
+			_DPCM = it->second;
+			_DPCM->getCode(_str);
+			_size	= _DPCM->getSize();
+			psize	= (_size & 0xFFC0) + 0x0040;
+			_str->append(psize - _size,(char)0x00);
 		}
 	}
 }
@@ -555,20 +531,16 @@ void	DPCMinfo::getDPCMCode(string* _str)
 //==============================================================
 void	DPCMinfo::getAsm(MusicFile* MUS)
 {
-	map<string, DPCM*>::iterator	itDPCM;
-
 	if(m_id > 0){
 		//DPCMinfo
 		*MUS << MUS->Header.Label.c_str() << "DPCMinfo" << ":" << endl;
 		MusicItem::getAsm(MUS);
 
 		//DPCM
-		if((!ptcDPCM.empty()) && (MUS->Header.segmentPCM != "")) {
+		if(MUS->Header.segmentPCM != "") {
 			*MUS <<	"\n\n.segment	"	<<	'"'	<<	MUS->Header.segmentPCM	<<	'"' << endl;
-			itDPCM = ptcDPCM.begin();
-			while(itDPCM != ptcDPCM.end()){
-				itDPCM->second->getAsm(MUS);
-				itDPCM++;
+			for(map<string, DPCM*>::iterator it = ptcDPCM.begin(), e = ptcDPCM.end(); it != e; it++){
+				it->second->getAsm(MUS);
 			}
 			*MUS <<	"\n\n.segment	"	<<	'"'	<<	MUS->Header.segmentSEQ	<<	'"' << endl;
 		}

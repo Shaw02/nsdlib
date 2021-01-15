@@ -48,21 +48,13 @@ SearchPass::~SearchPass(void)
 void		SearchPass::clear()
 {
 	//----------------------
-	//Local変数
-	map		<size_t, string>::iterator	itPass;
-
-	//----------------------
 	//Delete Class
 
 	//検索パスを全部解放する。
-	if(!m_ptcPass.empty()){
-		itPass = m_ptcPass.begin();
-		while(itPass != m_ptcPass.end()){
-			itPass->second.clear();
-			itPass++;
-		}
-		m_ptcPass.clear();
+	for(map<size_t,string>::iterator it=m_ptcPass.begin(), e=m_ptcPass.end(); it!=e; ++it){
+		it->second.clear();
 	}
+	m_ptcPass.clear();
 	m_count	= 0;
 }
 
@@ -77,19 +69,11 @@ void		SearchPass::clear()
 void		SearchPass::debug()
 {
 	//----------------------
-	//Local変数
-	map		<size_t, string>::iterator	itPass;
-
-	//----------------------
 	//Delete Class
 
 	//検索パスの一覧出力
-	if(!m_ptcPass.empty()){
-		itPass = m_ptcPass.begin();
-		while(itPass != m_ptcPass.end()){
-			cout << itPass->second.c_str() << endl;
-			itPass++;
-		}
+	for(map<size_t,string>::iterator it=m_ptcPass.begin(), e=m_ptcPass.end(); it!=e; ++it){
+		cout << it->second.c_str() << endl;
 	}
 }
 

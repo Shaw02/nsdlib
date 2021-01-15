@@ -44,7 +44,7 @@ public:
 				void	clear(void);
 				void	clear_Optimize();
 				size_t	getSize();
-				size_t	getOffset();
+				size_t	getOffset(){return(iOffset);};
 				size_t	SetOffset(size_t _offset);
 
 	unsigned	char	getCode(size_t n);

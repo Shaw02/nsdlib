@@ -139,7 +139,7 @@ public:
 
 				int		TickCount(MusicFile* MUS, NSD_WORK* work);
 				int		TickCount(MusicFile* MUS);
-				void	TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t _no, bool* f_ERR);
+				void	TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t _no);
 				int		GetTickTotal(void){	return(iTickTotal);};
 				int		GetTickLoop(void){	return(iTickLoop);};
 

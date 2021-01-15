@@ -78,7 +78,6 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 	} else {
 
 		//検索パス
-		size_t	i		= 0;
 		size_t	iSize	= _pass->count();
 		string	name;
 		string	workName= string(_strFileName);
@@ -89,7 +88,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 			workName.erase(0, loc);		//ファイル名のみ
 		}
 
-		while(i < iSize){
+		for(size_t i=0; i<iSize; ++i){
 
 #ifdef _WIN32
 			//Windowsの場合は、相対パスも含めて検索する（UNIX系は不可）
@@ -123,10 +122,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 				f_error	= false;
 				break;
 			};
-
-			i++;
-		}
-
+		};
 	};
 
 	if(f_error == true){

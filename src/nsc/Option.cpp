@@ -391,23 +391,19 @@ OPSW::OPSW(int argc, char* argv[]):
 		//◆検索パスの設定
 
 		//MMLのディレクトリを取得
-		iCount	= 0;
 		iResult	= 0;
-		while(iCount < (int)strMMLname.size()){
+		for(iCount=0; iCount<(int)strMMLname.size(); ++iCount){
 			if((strMMLname[iCount] == '\\') || (strMMLname[iCount] == '/')){
 				iResult = iCount;
 			}
-			iCount++;
 		}
 
 		//優先順位１　カレントパス
 		//優先順位２　MMLファイルが存在するパス
 		if(iResult > 0){
 			string	str_mmldir = "";
-			iCount	= 0;
-			while(iCount < iResult){
+			for(iCount=0; iCount<iResult; ++iCount){
 				str_mmldir += strMMLname[iCount];
-				iCount++;
 			}
 			m_pass_code.add(&str_mmldir);
 			m_pass_dmc.add(&str_mmldir);

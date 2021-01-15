@@ -24,7 +24,9 @@
 Sub::Sub(MMLfile* MML, size_t _id, const _CHAR _strName[]/* = "==== [ Sub ]===="*/):
 	TrackSet(MML, _id, true, false, _strName)
 {
-	
+#ifdef _OPENMP
+	omp_init_lock(&lock_TickCount);
+#endif
 }
 
 //==============================================================
@@ -37,7 +39,9 @@ Sub::Sub(MMLfile* MML, size_t _id, const _CHAR _strName[]/* = "==== [ Sub ]===="
 //==============================================================
 Sub::~Sub()
 {
-	
+#ifdef _OPENMP
+	omp_destroy_lock(&lock_TickCount);
+#endif
 }
 
 //==============================================================
@@ -50,7 +54,20 @@ Sub::~Sub()
 //==============================================================
 unsigned	int	Sub::TickCount(MusicFile* MUS, NSD_WORK* work)
 {
-	return(ptcTrack[0]->TickCount(MUS, work));
+	int	_iResult;
+
+#ifdef _OPENMP
+	//他のトラックが呼び出している時に、競合させない。
+	omp_set_lock(&lock_TickCount);
+#endif
+
+	_iResult = ptcTrack[0]->TickCount(MUS, work);
+
+#ifdef _OPENMP
+	omp_unset_lock(&lock_TickCount);
+#endif
+
+	return(_iResult);
 }
 
 //==============================================================

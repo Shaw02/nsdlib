@@ -42,6 +42,18 @@
 	#include	<omp.h>
 #endif
 
+#ifdef _OPENMP
+	#define	_OMP_SET_LOCK_COUT	omp_set_lock(&lock_cout);
+#else
+	#define	_OMP_SET_LOCK_COUT	
+#endif
+
+#ifdef _OPENMP
+	#define	_OMP_UNSET_LOCK_COUT	omp_unset_lock(&lock_cout);
+#else
+	#define	_OMP_UNSET_LOCK_COUT	
+#endif
+
 #include <algorithm>
 #include <cerrno>
 #include <cstdio>
@@ -67,6 +79,7 @@ using namespace std;
 void nsc_exit(int no);		//Å°Å°Å°Å° To Do:	îpé~ó\íË
 void nsc_ErrMsg(int no);
 void nsc_ErrMsg(const exception& e);
+void nsc_ErrMsg(const _CHAR *stErrMsg);
 
 class	MusicHeader;
 class	MusicFile;

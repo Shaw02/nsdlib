@@ -933,10 +933,8 @@ const	static	Command_Info	Command[] = {
 		code[1] = Priority;									//各種フラグ
 
 		//各トラックに終端を書いて、曲データのアドレス情報を作成
-		iTrack = 0;
-		while(iTrack <= maxTrack){
+		for(iTrack=0;iTrack<=maxTrack;++iTrack){
 			ptcTrack[iTrack]->SetEnd(MML);
-			iTrack++;
 		}
 	}
 }
@@ -954,26 +952,6 @@ TrackSet::~TrackSet(void)
 }
 
 //==============================================================
-//		クリア
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-void	TrackSet::clear_Optimize()
-{
-	if(cOptionSW->iDebug & DEBUG_Optimize){
-		_COUT << _T("Optimize Object  : ") << strName;
-		if(f_id == true){
-			_COUT	<< _T("(") << m_id << _T(")");
-		}
-		_COUT << endl;
-	}
-	MusicItem::clear_Optimize();
-}
-
-//==============================================================
 //		コードの取得
 //--------------------------------------------------------------
 //	●引数
@@ -983,31 +961,22 @@ void	TrackSet::clear_Optimize()
 //==============================================================
 void	TrackSet::getAsm(MusicFile* MUS)
 {
-	//----------------------
-	//Local変数
-	int	i = 0;
-	list<	MusicItem*>::iterator	itItem;
 
 	if(fSub == false){
 		*MUS << "	.byte	$" << hex << setw(2) << setfill('0') << (int)(code[0] & 0xFF) << ", $" << (int)(code[1] & 0xFF) << endl;
-		while(i <= maxTrack){
+		for(int i=0; i<=maxTrack; ++i){
 			if(i==0){
 				*MUS << "	.word	$";
 			} else {
 				*MUS << " ,$";
 			}
 			*MUS << hex << setw(4) << setfill('0') << (int)((code[i*2+2] & 0xFF) | ((code[i*2+3] & 0xFF)<<8));
-			i++;
 		}
 		*MUS << dec << endl;
 	}
 
-	if(!ptcItem.empty()){
-		itItem = ptcItem.begin();
-		while(itItem != ptcItem.end()){
-			(*itItem)->getAsm(MUS);
-			itItem++;
-		}
+	for(list<MusicItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it!=e; ++it){
+		(*it)->getAsm(MUS);
 	}
 }
 
@@ -1023,34 +992,31 @@ void	TrackSet::getAsm(MusicFile* MUS)
 //==============================================================
 void	TrackSet::TickCountPrint(MusicFile* MUS, int iStart, int iEnd)
 {
-	int		i		= iStart;
-	int		iTick;
 
-	cout	<< "Track ";
-	while(i < iEnd){
-		i++;
-		cout << "| TR(" << setfill(' ')  << setw(2) << i << ") ";
-	}
-
-	i = iStart;
-	cout << endl <<	"Loop  ";
-	while(i < iEnd){
+	#pragma omp parallel for
+	for(int i=iStart; i<iEnd; ++i){
 		ptcTrack[i]->nsd.init();		//エミュレータ・パラメータ初期化
 		ptcTrack[i]->TickCount(MUS);	//エミュレート
-		iTick = ptcTrack[i]->GetTickLoop();
+	}
+
+	cout	<< "Track ";
+	for(int i=iStart; i<iEnd; ++i){
+		cout << "| TR(" << setfill(' ')  << setw(2) << i+1 << ") ";
+	}
+
+	cout << endl <<	"Loop  ";
+	for(int i=iStart; i<iEnd; ++i){
+		int	iTick = ptcTrack[i]->GetTickLoop();
 		if(iTick == -1){
 			cout << "| no-loop";
 		} else {
 			cout << "|" << setw(8) << setfill(' ') << iTick;
 		}
-		i++;
 	}
 
-	i = iStart;
 	cout << endl <<	"Total ";;
-	while(i < iEnd){
+	for(int i=iStart; i<iEnd; ++i){
 		cout << "|" << setw(8) << setfill(' ') << ptcTrack[i]->GetTickTotal();
-		i++;
 	}
 	cout << endl;
 	
@@ -1093,8 +1059,6 @@ void	TrackSet::TickCount(MusicFile* MUS)
 //==============================================================
 void	TrackSet::Fix_Address(MusicFile* MUS)
 {
-	size_t	i;
-	size_t	n;
 
 	if(fSub == true){
 		//サブルーチンブロックの場合
@@ -1104,22 +1068,25 @@ void	TrackSet::Fix_Address(MusicFile* MUS)
 		}
 	} else {
 		//それ以外の場合
-		i = code.size();
+		size_t	i;
 
 		//各トラックのアドレス情報を作成
-		iTrack = 0;
-		while(iTrack <= maxTrack){
-			ptcTrack[iTrack]->Fix_Address(MUS);
-			n = ptcTrack[iTrack]->getSize();
+		#pragma omp parallel for
+		for(int j=0; j<=maxTrack; j++){
+			ptcTrack[j]->Fix_Address(MUS);
+		}
+
+		i = code.size();
+		for(int j=0; j<=maxTrack; j++){
+			size_t	n = ptcTrack[j]->getSize();
 			if(n==0){
-				code[iTrack *2 + 2]	= 0;
-				code[iTrack *2 + 3]	= 0;
+				code[j *2 + 2]	= 0;
+				code[j *2 + 3]	= 0;
 			} else {
-				code[iTrack *2 + 2]	= (unsigned char)((i   ) & 0xFF);
-				code[iTrack *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
+				code[j *2 + 2]	= (unsigned char)((i   ) & 0xFF);
+				code[j *2 + 3]	= (unsigned char)((i>>8) & 0xFF);
 			}
 			i += n;
-			iTrack++;
 		}
 	}
 }
