@@ -71,7 +71,7 @@ MusicItem::~MusicItem(void)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->iDebug & DEBUG_Delete){
-		_OMP_SET_LOCK_COUT
+		_OMP_SET_LOCK(lock_cout)
 		_COUT << _T("Delete Music Object : ") << strName;
 		if(f_id == true){
 			_COUT << _T("(") << m_id << _T(")");
@@ -80,7 +80,7 @@ MusicItem::~MusicItem(void)
 		_COUT << " (Thread No=" << omp_get_thread_num() <<")";
 		#endif
 		_COUT << endl;
-		_OMP_UNSET_LOCK_COUT
+		_OMP_UNSET_LOCK(lock_cout)
 	}
 }
 
@@ -116,7 +116,7 @@ void	MusicItem::clear_Optimize()
 {
 
 	if(cOptionSW->iDebug & DEBUG_Optimize){
-		_OMP_SET_LOCK_COUT
+		_OMP_SET_LOCK(lock_cout)
 		_COUT << _T("Optimize Object  : ") << strName;
 		if(f_id == true){
 			_COUT	<< _T("(") << m_id << _T(")");
@@ -125,7 +125,7 @@ void	MusicItem::clear_Optimize()
 		_COUT << " (Thread No=" << omp_get_thread_num() <<")";
 		#endif
 		_COUT << endl;
-		_OMP_UNSET_LOCK_COUT
+		_OMP_UNSET_LOCK(lock_cout)
 	}
 
 	if(chkUse() == false){
@@ -133,7 +133,7 @@ void	MusicItem::clear_Optimize()
 		//このオブジェクトごと、ごっそりクリアする。
 		//Debug message　（うざい程出力するので注意。）
 		if(cOptionSW->iDebug & DEBUG_Optimize){
-			_OMP_SET_LOCK_COUT
+			_OMP_SET_LOCK(lock_cout)
 			_COUT << _T("Optimizing : ") << strName;
 			if(f_id == true){
 				_COUT	<< _T("(") << m_id << _T(")");
@@ -142,7 +142,7 @@ void	MusicItem::clear_Optimize()
 			_COUT << " (Thread No=" << omp_get_thread_num() <<")";
 			#endif
 			_COUT << endl;
-			_OMP_UNSET_LOCK_COUT
+			_OMP_UNSET_LOCK(lock_cout)
 		}
 		clear();
 	} else {

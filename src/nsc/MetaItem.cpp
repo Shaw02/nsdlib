@@ -52,9 +52,9 @@ MetaItem::~MetaItem(void)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->iDebug & DEBUG_Meta_Delete){
-		_OMP_SET_LOCK_COUT
+		_OMP_SET_LOCK(lock_cout)
 		_COUT << _T("Delete Meta Object : ") << m_identifier << endl;
-		_OMP_UNSET_LOCK_COUT
+		_OMP_UNSET_LOCK(lock_cout)
 	}
 }
 

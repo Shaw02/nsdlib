@@ -691,19 +691,19 @@ void	MusicFile::TickCount(void)
 		//不要なコマンドの削除
 		if (cOptionSW->flag_OptSeq == true) {		//コマンドの最適化が無効だったら、最適化しない。
 
-			#pragma omp parallel
+			_OMP_PARALLEL
 			{
-				#pragma omp for nowait
+				_OMP_FOR_NOWAIT
 				for (int n = 0; n < Header.iBGM; ++n) {
 					ptcBGM[n]->clear_Optimize();
 				}
 
-				#pragma omp for nowait
+				_OMP_FOR_NOWAIT
 				for (int n = 0; n < Header.iSE; ++n) {
 					ptcSE[n]->clear_Optimize();
 				}
 
-				#pragma omp single
+				_OMP_SINGLE
 				for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
 					it->second->clear_Optimize();
 				}
@@ -714,36 +714,46 @@ void	MusicFile::TickCount(void)
 		//使っていない定義の削除
 		if (cOptionSW->flag_OptObj == true) {		//定義の最適化が無効だったら、最適化しない。
 
-			#pragma omp parallel sections
+			_OMP_PARALLEL_SECTIONS
 			{
 				//エンベロープ
-				#pragma omp section
-				for (map<size_t, Envelop*>::iterator it = ptcEnv.begin(), e = ptcEnv.end(); it != e; ++it) {
-					it->second->clear_Optimize();
+				_OMP_SECTION
+				{
+					for (map<size_t, Envelop*>::iterator it = ptcEnv.begin(), e = ptcEnv.end(); it != e; ++it) {
+						it->second->clear_Optimize();
+					}
 				}
 
 				//FDSC
-				#pragma omp section
-				for (map<size_t, FDSC*>::iterator it = ptcFDSC.begin(), e = ptcFDSC.end(); it != e; ++it) {
-					it->second->clear_Optimize();
+				_OMP_SECTION
+				{
+					for (map<size_t, FDSC*>::iterator it = ptcFDSC.begin(), e = ptcFDSC.end(); it != e; ++it) {
+						it->second->clear_Optimize();
+					}
 				}
 
 				//FDSM
-				#pragma omp section
-				for (map<size_t, FDSM*>::iterator it = ptcFDSM.begin(), e = ptcFDSM.end(); it != e; ++it) {
-					it->second->clear_Optimize();
+				_OMP_SECTION
+				{
+					for (map<size_t, FDSM*>::iterator it = ptcFDSM.begin(), e = ptcFDSM.end(); it != e; ++it) {
+						it->second->clear_Optimize();
+					}
 				}
 
 				//VRC7
-				#pragma omp section
-				for (map<size_t, VRC7*>::iterator it = ptcVRC7.begin(), e = ptcVRC7.end(); it != e; ++it) {
-					it->second->clear_Optimize();
+				_OMP_SECTION
+				{
+					for (map<size_t, VRC7*>::iterator it = ptcVRC7.begin(), e = ptcVRC7.end(); it != e; ++it) {
+						it->second->clear_Optimize();
+					}
 				}
 
 				//N163
-				#pragma omp section
-				for (map<size_t, N163*>::iterator it = ptcN163.begin(), e = ptcN163.end(); it != e; ++it) {
-					it->second->clear_Optimize();
+				_OMP_SECTION
+				{
+					for (map<size_t, N163*>::iterator it = ptcN163.begin(), e = ptcN163.end(); it != e; ++it) {
+						it->second->clear_Optimize();
+					}
 				}
 			}
 		}
@@ -1435,14 +1445,14 @@ void	MusicFile::saveASM(string&	strFileName)
 //==============================================================
 void	MusicFile::Err(const _CHAR msg[])
 {
-	_OMP_SET_LOCK_COUT
+	_OMP_SET_LOCK(lock_cout)
 	f_error = true;
 	if(cOptionSW->fErr == true){
 		_CERR << _T("[ ERROR ] : ") << msg << endl;
 	} else {
 		_COUT << _T("[ ERROR ] : ") << msg << endl;
 	}
-	_OMP_UNSET_LOCK_COUT
+	_OMP_UNSET_LOCK(lock_cout)
 
 	throw EXIT_FAILURE;		//基本的に致命的なエラーなので例外を投げる。
 }
@@ -1450,14 +1460,14 @@ void	MusicFile::Err(const _CHAR msg[])
 //--------------------------------------------------------------
 void	MusicFile::Err(const _CHAR msg[], size_t no)
 {
-	_OMP_SET_LOCK_COUT
+	_OMP_SET_LOCK(lock_cout)
 	f_error = true;
 	if(cOptionSW->fErr == true){
 		_CERR << _T("[ ERROR ] : ") << msg << _T("(") << no << _T(")番が存在しません。") << endl;
 	} else {
 		_COUT << _T("[ ERROR ] : ") << msg << _T("(") << no << _T(")番が存在しません。") << endl;
 	}
-	_OMP_UNSET_LOCK_COUT
+	_OMP_UNSET_LOCK(lock_cout)
 }
 
 //==============================================================
@@ -1470,12 +1480,12 @@ void	MusicFile::Err(const _CHAR msg[], size_t no)
 //==============================================================
 void	MusicFile::Warning(const _CHAR msg[])
 {
-	_OMP_SET_LOCK_COUT
+	_OMP_SET_LOCK(lock_cout)
 	//現在のファイル名と、行数を表示
 	if(cOptionSW->fErr == true){
 		_CERR << _T("[WARNING] : ") << msg << endl;
 	} else {
 		_COUT << _T("[WARNING] : ") << msg << endl;
 	}
-	_OMP_UNSET_LOCK_COUT
+	_OMP_UNSET_LOCK(lock_cout)
 }

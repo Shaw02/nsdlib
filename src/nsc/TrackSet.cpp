@@ -993,7 +993,7 @@ void	TrackSet::getAsm(MusicFile* MUS)
 void	TrackSet::TickCountPrint(MusicFile* MUS, int iStart, int iEnd)
 {
 
-	#pragma omp parallel for
+	_OMP_PARALLEL_FOR
 	for(int i=iStart; i<iEnd; ++i){
 		ptcTrack[i]->nsd.init();		//エミュレータ・パラメータ初期化
 		ptcTrack[i]->TickCount(MUS);	//エミュレート
@@ -1071,7 +1071,7 @@ void	TrackSet::Fix_Address(MusicFile* MUS)
 		size_t	i;
 
 		//各トラックのアドレス情報を作成
-		#pragma omp parallel for
+		_OMP_PARALLEL_FOR
 		for(int j=0; j<=maxTrack; j++){
 			ptcTrack[j]->Fix_Address(MUS);
 		}

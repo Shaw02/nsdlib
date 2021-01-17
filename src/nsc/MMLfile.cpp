@@ -1223,7 +1223,7 @@ int	MMLfile::GetCommandID(const Command_Info _command[], size_t _size)
 //==============================================================
 void	MMLfile::Err(const _CHAR msg[])
 {
-	_OMP_SET_LOCK_COUT
+	_OMP_SET_LOCK(lock_cout)
 	f_error = true;
 
 	//エラー内容を表示
@@ -1236,7 +1236,7 @@ void	MMLfile::Err(const _CHAR msg[])
 		cout << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 		_COUT << msg << endl;
 	}
-	_OMP_UNSET_LOCK_COUT
+	_OMP_UNSET_LOCK(lock_cout)
 
 	//異常終了
 	nsc_exit(EXIT_FAILURE);
@@ -1252,7 +1252,7 @@ void	MMLfile::Err(const _CHAR msg[])
 //==============================================================
 void	MMLfile::Warning(const _CHAR msg[])
 {
-	_OMP_SET_LOCK_COUT
+	_OMP_SET_LOCK(lock_cout)
 	//ワーニング内容を表示
 	if(cOptionSW->fErr == true){
 		//現在のファイル名と、行数を表示
@@ -1263,5 +1263,5 @@ void	MMLfile::Warning(const _CHAR msg[])
 		cout << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << ") : ";
 		_COUT << msg << endl;
 	}
-	_OMP_UNSET_LOCK_COUT
+	_OMP_UNSET_LOCK(lock_cout)
 }

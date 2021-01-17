@@ -44,7 +44,7 @@
 		OPSW*			cOptionSW = NULL;	//どっからでもアクセスする。
 
 #ifdef _OPENMP
-		omp_lock_t		lock_cout;
+		omp_lock_t		lock_cout;			//COUT, CERRの排他制御用
 #endif
 
 //==============================================================
@@ -65,37 +65,37 @@ void nsc_exit(int no)
 //--------------------------------------------------------------
 void nsc_ErrMsg(int no)
 {
-_OMP_SET_LOCK_COUT
+	_OMP_SET_LOCK(lock_cout)
 	if(cOptionSW->fErr == true){
 		cerr << "Error!: " << strerror(no) << endl;
 	} else {
 		cout << "Error!: " << strerror(no) << endl;
 	}
-_OMP_UNSET_LOCK_COUT
+	_OMP_UNSET_LOCK(lock_cout)
 }
 
 //--------------------------------------------------------------
 void nsc_ErrMsg(const exception& e)
 {
-_OMP_SET_LOCK_COUT
+	_OMP_SET_LOCK(lock_cout)
 	if(cOptionSW->fErr == true){
 		cerr << "Error!: " << e.what() << endl;
 	} else {
 		cout << "Error!: " << e.what() << endl;
 	}
-_OMP_UNSET_LOCK_COUT
+	_OMP_UNSET_LOCK(lock_cout)
 }
 
 //--------------------------------------------------------------
 void nsc_ErrMsg(const _CHAR *stErrMsg)
 {
-_OMP_SET_LOCK_COUT
+	_OMP_SET_LOCK(lock_cout)
 	if(cOptionSW->fErr == true){
 		_CERR << _T("Error!: ") << stErrMsg << endl;
 	} else {
 		_COUT << _T("Error!: ") << stErrMsg << endl;
 	}
-_OMP_UNSET_LOCK_COUT
+	_OMP_UNSET_LOCK(lock_cout)
 }
 
 //==============================================================
@@ -112,18 +112,16 @@ int	main(int argc, char* argv[])
 
 	int		iResult	= EXIT_SUCCESS;
 
-#ifdef	_WIN32
+
+#ifdef	_MSC_VER
 		locale::global(std::locale(""));
 #else
-//		setlocale(LC_ALL, "ja_JP.UTF-8");
+//		locale::global(std::locale(""));
+//		 ↑ gccでは、使えないもようなので、Ｃライブラリの方を使う。
 		setlocale(LC_ALL, "");
 #endif
 
-//		locale::global(std::locale(""));	//g++ だと、ランタイム エラーになる。
-
-#ifdef _OPENMP
-		omp_init_lock(&lock_cout);
-#endif
+	_OMP_INIT_LOCK(lock_cout)
 
 	//==================================
 	_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
@@ -143,7 +141,9 @@ int	main(int argc, char* argv[])
 		MMLfile	*cMML = new MMLfile(cOptionSW->strMMLname);
 
 		//MMLファイルの読み込みに失敗したらコンパイルしない。
-		if(cMML->isError() == false){
+		if(cMML->isError() == true){
+			iResult	= EXIT_FAILURE;
+		} else {
 
 			size_t		i;
 			MusicFile* cSND = NULL;
@@ -223,21 +223,19 @@ int	main(int argc, char* argv[])
 
 			//==================================
 			//クラスの削除
+			cout << "delete cSND" << endl; 		//Debug用
 			if (cSND)
-				cout << "delete cSND" << endl; 		//Debug用
 				delete	cSND;
 		}
+		cout << "delete cMML" << endl; 			//Debug用
 		if (cMML)
-			cout << "delete cMML" << endl; 			//Debug用
 			delete	cMML;
 	}
+	cout << "delete cOptionSW" << endl; 		//Debug用
 	if (cOptionSW)
-		cout << "delete cOptionSW" << endl; 		//Debug用
 		delete	cOptionSW;
 
-#ifdef _OPENMP
-		omp_destroy_lock(&lock_cout);
-#endif
+	_OMP_DESTROY_LOCK(lock_cout)
 
 	return(iResult);
 }
