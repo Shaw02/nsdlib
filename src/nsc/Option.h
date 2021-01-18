@@ -16,15 +16,15 @@
 /****************************************************************/
 
 #define	DEBUG_Create		0x01	//0x01:	Phase [1] : Creating Class Object process
-#define DEBUG_Meta_Create	0x02	//0x02:	Phase [4] : Outputing Music File
-#define DEBUG_Macros		0x04	//0x04	  - Debug for Macro, Patch
+#define DEBUG_Meta_Create	0x02	//0x02:	Phase [1] : Outputing Music File
+#define DEBUG_Macros		0x04	//0x04:	Phase [1] : Debug for Macro, Patch
 #define	DEBUG_Optimize		0x08	//0x08:	Phase [2] : Optimizing process
 #define	DEBUG_SetAddress	0x10	//0x10:	Phase [3] : Setting Address
 #define	DEBUG_Meta_Set		0x20	//0x20:	Phase [3] : Setting Address
-#define	DEBUG_Delete		0x40	//0x40:	Phase [5] : Delete Class Object
-#define DEBUG_Meta_Delete	0x80	//0x80:	Phase [5] : Delete Class Object
-
-#define DEBUG_Close_Inc		0x100	//0x100:Phase [5] : Close Include File
+#define	DEBUG_FixAddress	0x40	//0x10:	Phase [3] : Fix Address
+#define	DEBUG_Delete		0x100	//0x40:	Phase [5] : Delete Class Object
+#define DEBUG_Meta_Delete	0x200	//0x80:	Phase [5] : Delete Class Object
+#define DEBUG_Close_Inc		0x400	//0x100:Phase [5] : Close Include File
 
 
 /****************************************************************/

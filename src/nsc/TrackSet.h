@@ -27,10 +27,10 @@ protected:
 
 				int				iTempo;		//テンポ
 
-	map<int,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
+	map<size_t,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
 				MusicTrack*		nowTrack;	//コンパイル中のトラック
-				int				iTrack;		//コンパイル中のトラック番号
-				int				maxTrack;	//トラック番号の最大値
+				size_t			iTrack;		//コンパイル中のトラック番号
+				size_t			maxTrack;	//トラック番号の最大値
 				bool			fSub;		//サブルーチン記述ブロックかどうかのフラグ
 				bool			fSE;		//SEかどうかのフラグ
 				std::streamoff	TrackPt;	//
@@ -43,15 +43,15 @@ public:
 				~TrackSet(void);
 
 		void	TickCount(MusicFile* MUS);
-		void	TickCountPrint(MusicFile* MUS, int iStart, int iEnd);
+		void	TickCountPrint(MusicFile* MUS, size_t iStart, size_t iEnd);
 		void	getAsm(MusicFile* MUS);
 
 		void	Fix_Address(MusicFile* MUS);
 
 		void	TrackChk(MMLfile* MML);
 		void	TrackProc(MMLfile* MML);
-	MusicTrack*	makeTrack(MMLfile* MML, int _track);
-	MusicTrack*	getTrack(MMLfile* MML, int _track);
+	MusicTrack*	makeTrack(MMLfile* MML, size_t _track);
+	MusicTrack*	getTrack(MMLfile* MML, size_t _track);
 
 		void	SetEvent(MusicItem* _item);		//イベントの追加
 

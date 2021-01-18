@@ -783,168 +783,197 @@ void	MusicTrack::TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t 
 void	MusicTrack::Fix_Address(MusicFile* MUS)
 {
 	//----------------------
-	//Local変数
-	size_t	_no;			//参照先コマンドのID番号
-	size_t	_sub_offset;	//参照先コマンドの配置アドレス
-	size_t	_com_offset;	//参照元コマンドの配置アドレス
+	//Local変数	（ループ回数は並列化前に取得する）
+	const	int	sz_vec_ptc_Loop_End			= (const int)vec_ptc_Loop_End.size();
+	const	int	sz_vec_ptc_Repert_A_End		= (const int)vec_ptc_Repert_A_End.size();
+	const	int	sz_vec_ptc_Repert_A_Branch	= (const int)vec_ptc_Repert_A_Branch.size();
+	const	int	sz_vec_ptc_Repert_B_End		= (const int)vec_ptc_Repert_B_End.size();
+	const	int	sz_vec_ptc_SE				= (const int)vec_ptc_SE.size();
+	const	int	sz_vec_ptc_Sub				= (const int)vec_ptc_Sub.size();
+	const	int	sz_vec_ptc_Env				= (const int)vec_ptc_Env.size();
+	const	int	sz_vec_ptc_FDSC				= (const int)vec_ptc_FDSC.size();
+	const	int	sz_vec_ptc_FDSM				= (const int)vec_ptc_FDSM.size();
+	const	int	sz_vec_ptc_OPLL				= (const int)vec_ptc_OPLL.size();
+	const	int	sz_vec_ptc_Wave				= (const int)vec_ptc_Wave.size();
 
-	try{ 
+	if(cOptionSW->iDebug & DEBUG_FixAddress){
+		_COUT << _T("  Object : ") << strName;
+		if(f_id == true){
+			_COUT	<< _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
+	}
+
+	_OMP_PARALLEL
+	{
 		//----------------------
 		//LOOP
-		for(vector<mml_Address*>::iterator it=vec_ptc_Loop_End.begin(), e=vec_ptc_Loop_End.end(); it!=e; ++it){
-			_no			= (*it)->get_id();
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Loop_End; ++i){
+			size_t	_no			= vec_ptc_Loop_End[i]->get_id();
+			size_t	_com_offset	= vec_ptc_Loop_End[i]->getOffset();
+			size_t	_sub_offset;
 			if( ptc_Loop.count(_no) == 0){
 				MUS->Err(_T("L"),_no);
 			} else {
 				_sub_offset = ptc_Loop[_no]->getOffset();
-				_sub_offset += ptc_Loop[_no]->getSize();	//行先は、リピートコマンドの次のコマンド
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset += ptc_Loop[_no]->getSize();	//行先は、次のコマンド
+				vec_ptc_Loop_End[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//Repeat (A)
-		for(vector<mml_Address*>::iterator it=vec_ptc_Repert_A_End.begin(), e=vec_ptc_Repert_A_End.end(); it!=e; ++it){
-			_no			= (*it)->get_id();
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Repert_A_End; ++i){
+			size_t	_no			= vec_ptc_Repert_A_End[i]->get_id();
+			size_t	_com_offset	= vec_ptc_Repert_A_End[i]->getOffset();
+			size_t	_sub_offset;
 			if( ptc_Repert_A.count(_no) == 0){
 				MUS->Err(_T("["),_no);
 			} else {
 				_sub_offset = ptc_Repert_A[_no]->getOffset();
-				_sub_offset += ptc_Repert_A[_no]->getSize();	//行先は、リピートコマンドの次のコマンド
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset += ptc_Repert_A[_no]->getSize();	//行先は、次のコマンド
+				vec_ptc_Repert_A_End[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//Repeat (A) Branch
-		for(vector<mml_Address*>::iterator it=vec_ptc_Repert_A_Branch.begin(), e=vec_ptc_Repert_A_Branch.end(); it!=e; ++it){
-			_no			= (*it)->get_id();
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Repert_A_Branch; ++i){
+			size_t	_no			= vec_ptc_Repert_A_Branch[i]->get_id();
+			size_t	_com_offset	= vec_ptc_Repert_A_Branch[i]->getOffset();
+			size_t	_sub_offset;
 			if( ptc_Repert_A_E.count(_no) == 0){
 				MUS->Err(_T("]"),_no);
 			} else {
 				_sub_offset = ptc_Repert_A_E[_no]->getOffset();
-				_sub_offset += ptc_Repert_A_E[_no]->getSize();	//行先は、リピートコマンドの次のコマンド
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset += ptc_Repert_A_E[_no]->getSize();	//行先は、次のコマンド
+				vec_ptc_Repert_A_Branch[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//Repeat (B)
-		for(vector<mml_Address*>::iterator it=vec_ptc_Repert_B_End.begin(), e=vec_ptc_Repert_B_End.end(); it!=e; ++it){
-			_no			= (*it)->get_id();
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Repert_B_End; ++i){
+			size_t	_no			= vec_ptc_Repert_B_End[i]->get_id();
+			size_t	_com_offset	= vec_ptc_Repert_B_End[i]->getOffset();
+			size_t	_sub_offset;
 			if( ptc_Repert_B.count(_no) == 0){
 				MUS->Err(_T("|:"),_no);
 			} else {
 				_sub_offset = ptc_Repert_B[_no]->getOffset();
-				_sub_offset += ptc_Repert_B[_no]->getSize();	//行先は、リピートコマンドの次のコマンド
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset += ptc_Repert_B[_no]->getSize();	//行先は、リ次のコマンド
+				vec_ptc_Repert_B_End[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//SE
-		for(vector<mml_Address*>::iterator it=vec_ptc_SE.begin(), e=vec_ptc_SE.end(); it!=e; ++it){
-			_no			= (*it)->get_id();		//サブルーチンNo.の取得
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_SE; ++i){
+			size_t	_no			= vec_ptc_SE[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_SE[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcSE.count(_no) == 0){
 				MUS->Err(_T("SE"),_no);
 			} else {
-				_sub_offset = MUS->ptcSE[_no]->getOffset();	//指定サブルーチンが存在するオフセット
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset = MUS->ptcSE[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_SE[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//Surbortine
-		for(vector<mml_Address*>::iterator it=vec_ptc_Sub.begin(), e=vec_ptc_Sub.end(); it!=e; ++it){
-			_no			= (*it)->get_id();		//サブルーチンNo.の取得
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Sub; ++i){
+			size_t	_no			= vec_ptc_Sub[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_Sub[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcSub.count(_no) == 0){
 				MUS->Err(_T("Sub"),_no);
 			} else {
-				_sub_offset = MUS->ptcSub[_no]->getOffset();	//指定サブルーチンが存在するオフセット
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset = MUS->ptcSub[_no]->getOffset();	//指定No.が存在するオフセット
+				vec_ptc_Sub[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//Envelope
-		for(vector<mml_Address*>::iterator it=vec_ptc_Env.begin(), e=vec_ptc_Env.end(); it!=e; ++it){
-			_no			= (*it)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Env; ++i){
+			size_t	_no			= vec_ptc_Env[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_Env[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcEnv.count(_no) == 0){
 				MUS->Err(_T("Envelope"),_no);
 			} else {
-				_sub_offset = MUS->ptcEnv[_no]->getOffset();	//指定エンベロープが存在するオフセット
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset = MUS->ptcEnv[_no]->getOffset();	//指定No.が存在するオフセット
+				vec_ptc_Env[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//FDSC
-		for(vector<mml_Address*>::iterator it=vec_ptc_FDSC.begin(), e=vec_ptc_FDSC.end(); it!=e; ++it){
-			_no			= (*it)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_FDSC; ++i){
+			size_t	_no			= vec_ptc_FDSC[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_FDSC[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcFDSC.count(_no) == 0){
 				MUS->Err(_T("FDSC"),_no);
 			} else {
-				_sub_offset = MUS->ptcFDSC[_no]->getOffset();	//指定エンベロープが存在するオフセット
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset = MUS->ptcFDSC[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_FDSC[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//FDSM
-		for(vector<mml_Address*>::iterator it=vec_ptc_FDSM.begin(), e=vec_ptc_FDSM.end(); it!=e; ++it){
-			_no			= (*it)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_FDSM; ++i){
+			size_t	_no			= vec_ptc_FDSM[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_FDSM[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcFDSM.count(_no) == 0){
 				MUS->Err(_T("FDSM"),_no);
 			} else {
-				_sub_offset = MUS->ptcFDSM[_no]->getOffset();	//指定エンベロープが存在するオフセット
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset = MUS->ptcFDSM[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_FDSM[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//OPLL
-		for(vector<mml_Address*>::iterator it=vec_ptc_OPLL.begin(), e=vec_ptc_OPLL.end(); it!=e; ++it){
-			_no			= (*it)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_OPLL; ++i){
+			size_t	_no			= vec_ptc_OPLL[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_OPLL[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcVRC7.count(_no) == 0){
 				MUS->Err(_T("VRC7"),_no);
 			} else {
-				_sub_offset = MUS->ptcVRC7[_no]->getOffset();	//指定エンベロープが存在するオフセット
-				(*it)->set_Address(_sub_offset - _com_offset - 1);
+				_sub_offset = MUS->ptcVRC7[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_OPLL[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
 		}
 
 		//----------------------
 		//N163
-		for(vector<mml_Address*>::iterator it=vec_ptc_Wave.begin(), e=vec_ptc_Wave.end(); it!=e; ++it){
-			_no			= (*it)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*it)->getOffset();
+		_OMP_FOR		//最後は全スレッドの終了を待つ(nowaitを付けない)
+		for(int i=0; i<sz_vec_ptc_Wave; ++i){
+			size_t	_no			= vec_ptc_Wave[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_Wave[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcN163.count(_no) == 0){
 				MUS->Err(_T("N163"),_no);
 			} else {
-				_sub_offset = MUS->ptcN163[_no]->getOffset();	//指定エンベロープが存在するオフセット
-				(*it)->set_Address(_sub_offset - _com_offset - 2);	//N163は、引数があるので、-2になる。
+				_sub_offset = MUS->ptcN163[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_Wave[i]->set_Address(_sub_offset - _com_offset - 2);	//N163は、引数があるので、-2になる。
 			}
 		}
-
-	}
-	catch (int no) {
-		nsc_ErrMsg(no);
-	}
-	catch (const exception& e) {
-		nsc_ErrMsg(e);
-	}
-	catch (const _CHAR* stErrMsg) {
-		nsc_ErrMsg(stErrMsg);
 	}
 }
 

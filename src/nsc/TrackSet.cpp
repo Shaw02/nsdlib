@@ -964,7 +964,7 @@ void	TrackSet::getAsm(MusicFile* MUS)
 
 	if(fSub == false){
 		*MUS << "	.byte	$" << hex << setw(2) << setfill('0') << (int)(code[0] & 0xFF) << ", $" << (int)(code[1] & 0xFF) << endl;
-		for(int i=0; i<=maxTrack; ++i){
+		for(size_t i=0; i<=maxTrack; ++i){
 			if(i==0){
 				*MUS << "	.word	$";
 			} else {
@@ -984,28 +984,28 @@ void	TrackSet::getAsm(MusicFile* MUS)
 //		カウントしながら、最適化情報収集
 //--------------------------------------------------------------
 //	●引数
-//				MusicFile*	MUS
-//				int			iStart
-//				int			iEnd
+//				MusicFile*	MUS		曲オブジェクト
+//				size_t		iStart	開始トラック
+//				size_t		iEnd	終了トラック
 //	●返値
 //				無し
 //==============================================================
-void	TrackSet::TickCountPrint(MusicFile* MUS, int iStart, int iEnd)
+void	TrackSet::TickCountPrint(MusicFile* MUS, size_t iStart, size_t iEnd)
 {
 
-	_OMP_PARALLEL_FOR
-	for(int i=iStart; i<iEnd; ++i){
+	_OMP_PARALLEL_FOR	//OpenMPのループインデックスはは符号付でないといけない。
+	for(int i=(int)iStart; i<(int)iEnd; ++i){
 		ptcTrack[i]->nsd.init();		//エミュレータ・パラメータ初期化
 		ptcTrack[i]->TickCount(MUS);	//エミュレート
 	}
 
 	cout	<< "Track ";
-	for(int i=iStart; i<iEnd; ++i){
+	for(size_t i=iStart; i<iEnd; ++i){
 		cout << "| TR(" << setfill(' ')  << setw(2) << i+1 << ") ";
 	}
 
 	cout << endl <<	"Loop  ";
-	for(int i=iStart; i<iEnd; ++i){
+	for(size_t i=iStart; i<iEnd; ++i){
 		int	iTick = ptcTrack[i]->GetTickLoop();
 		if(iTick == -1){
 			cout << "| no-loop";
@@ -1015,7 +1015,7 @@ void	TrackSet::TickCountPrint(MusicFile* MUS, int iStart, int iEnd)
 	}
 
 	cout << endl <<	"Total ";;
-	for(int i=iStart; i<iEnd; ++i){
+	for(size_t i=iStart; i<iEnd; ++i){
 		cout << "|" << setw(8) << setfill(' ') << ptcTrack[i]->GetTickTotal();
 	}
 	cout << endl;
@@ -1033,8 +1033,8 @@ void	TrackSet::TickCountPrint(MusicFile* MUS, int iStart, int iEnd)
 void	TrackSet::TickCount(MusicFile* MUS)
 {
 
-	int		j;
-	int		_maxTrack = maxTrack + 1;
+	size_t	j;
+	size_t	_maxTrack = maxTrack + 1;
 
 	iTrack = 0;
 
@@ -1056,9 +1056,18 @@ void	TrackSet::TickCount(MusicFile* MUS)
 //		MusicFile*	MUS		曲データファイル・オブジェクト
 //	●返値
 //				無し
+//	●メモ
+//		ptcTrack[n]->Fix_Address(MUS)の先で、並列化されています。
 //==============================================================
 void	TrackSet::Fix_Address(MusicFile* MUS)
 {
+	if(cOptionSW->iDebug & DEBUG_FixAddress){
+		_COUT << _T("Fix Address Object : ") << strName;
+		if(f_id == true){
+			_COUT	<< _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
+	}
 
 	if(fSub == true){
 		//サブルーチンブロックの場合
@@ -1071,13 +1080,12 @@ void	TrackSet::Fix_Address(MusicFile* MUS)
 		size_t	i;
 
 		//各トラックのアドレス情報を作成
-		_OMP_PARALLEL_FOR
-		for(int j=0; j<=maxTrack; j++){
+		for(size_t j=0; j<=maxTrack; j++){
 			ptcTrack[j]->Fix_Address(MUS);
 		}
 
 		i = code.size();
-		for(int j=0; j<=maxTrack; j++){
+		for(size_t j=0; j<=maxTrack; j++){
 			size_t	n = ptcTrack[j]->getSize();
 			if(n==0){
 				code[j *2 + 2]	= 0;
@@ -1101,7 +1109,7 @@ void	TrackSet::Fix_Address(MusicFile* MUS)
 //==============================================================
 void	TrackSet::TrackChk(MMLfile* MML)
 {
-	int		i = iTrack + 1;
+	size_t	i = iTrack + 1;
 
 	if(MML->GetMacroNest() > 0){
 		MML->Err(_T("マクロ中でトラックの指定はできません。"));
@@ -1142,7 +1150,6 @@ void	TrackSet::TrackChk(MMLfile* MML)
 //==============================================================
 void	TrackSet::TrackProc(MMLfile* MML)
 {
-					int		i;
 	unsigned		char	cData;
 
 	//------------------
@@ -1155,18 +1162,17 @@ void	TrackSet::TrackProc(MMLfile* MML)
 		//続きのトラックがない場合
 
 		//フラグを全てリセット
-		i = 0;
-		while(i <= maxTrack){
-			ptcTrack[i]->SetCompileFlag(false);
-			i++;
+		for(size_t n=0; n<=maxTrack; ++n){
+			ptcTrack[n]->SetCompileFlag(false);
 		}
 		
 		//コンパイルするトラックを列挙
 		do{
-			iTrack = MML->GetInt() - 1;
-			if( (iTrack <= -1) ){
+			int	i = MML->GetInt() - 1;
+			if( (i <= -1) ){
 				MML->Err(_T("トラック番号で指定できる範囲を超えています。"));
 			}
+			iTrack = (size_t)i;
 			nowTrack = getTrack(MML, iTrack);
 			nowTrack->SetCompileFlag(true);
 			cData = MML->GetChar();
@@ -1178,29 +1184,26 @@ void	TrackSet::TrackProc(MMLfile* MML)
 		TrackLine	= MML->GetLine();
 
 		//最初の
-		i = 0;
-		while(i <= maxTrack){
-			if(ptcTrack[i]->GetCompileFlag() == true){
-				iTrack = i;
+		for(size_t n=0; n<=maxTrack; ++n){
+			if(ptcTrack[n]->GetCompileFlag() == true){
+				iTrack = n;
 				nowTrack = getTrack(MML, iTrack);
 				break;
 			}
-			i++;
 		}
-
 	}
-
 }
 
 //==============================================================
 //		トラックの作成
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int	_track		トラック番号
+//		MMLfile*			MML			MMLファイルのオブジェクト
+//					size_t	_track		トラック番号
 //	●返値
 //		MusicTrack*					作ったトラック・オブジェクトのポインタ
 //==============================================================
-MusicTrack*	TrackSet::makeTrack(MMLfile* MML, int _track)
+MusicTrack*	TrackSet::makeTrack(MMLfile* MML, size_t _track)
 {
 	//トラックのオブジェクトを生成。
 	MusicTrack*	newTrack	= new MusicTrack(_track, MML);
@@ -1221,7 +1224,8 @@ MusicTrack*	TrackSet::makeTrack(MMLfile* MML, int _track)
 //		トラック・オブジェクトのポインタを取得
 //--------------------------------------------------------------
 //	●引数
-//		unsigned	int	_track	トラック番号
+//		MMLfile*			MML			MMLファイルのオブジェクト
+//					size_t	_track		トラック番号
 //	●返値
 //		MusicTrack*				トラック・オブジェクトのポインタ
 //	●返値
@@ -1229,9 +1233,9 @@ MusicTrack*	TrackSet::makeTrack(MMLfile* MML, int _track)
 //		無かった場合は新たにトラックを作って、
 //		トラック番号が最大値を超えていたら最大値を更新する。
 //==============================================================
-MusicTrack*	TrackSet::getTrack(MMLfile* MML, int _track)
+MusicTrack*	TrackSet::getTrack(MMLfile* MML, size_t _track)
 {
-			int	i			 = maxTrack;	// i = 今ある、最終トラックの番号
+	size_t		i	= maxTrack;	// i = 今ある、最終トラックの番号
 	MusicTrack*	_getTrack;
 
 	//最終トラック番号が指定値未満だったら、繰り返す。

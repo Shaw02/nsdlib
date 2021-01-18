@@ -773,24 +773,16 @@ size_t	MusicFile::SetDPCMOffset(size_t iMusSize)
 				size_t	i;
 	unsigned	char	mus_bank = (unsigned char)(iMusSize >> 12);
 
-	try {
+	if((iMusSize & 0x0FFF) != 0){
+		mus_bank++;
+	}
 
-		if((iMusSize & 0x0FFF) != 0){
-			mus_bank++;
-		}
-
-		dpcm_code.clear();
-		if(cDPCMinfo != NULL){
-			cDPCMinfo->getDPCMCode(&dpcm_code);
-			i = cDPCMinfo->setDPCMoffset(Header.offsetPCM, mus_bank+3);
-		} else {
-			i = Header.offsetPCM;
-		}
-
-	} catch (int no) {
-		nsc_ErrMsg(no);
-	} catch (const exception& e){
-		nsc_ErrMsg(e);
+	dpcm_code.clear();
+	if(cDPCMinfo != NULL){
+		cDPCMinfo->getDPCMCode(&dpcm_code);
+		i = cDPCMinfo->setDPCMoffset(Header.offsetPCM, mus_bank+3);
+	} else {
+		i = Header.offsetPCM;
 	}
 
 	return(i - Header.offsetPCM);

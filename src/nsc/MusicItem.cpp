@@ -171,13 +171,12 @@ size_t		MusicItem::getSize()
 //		オフセットアドレスの設定
 //--------------------------------------------------------------
 //	●引数
-//		size_t	_offset
+//		size_t	_offset	このオブジェクトのオフセットアドレス
 //	●返値
-//				無し
+//		size_t			次のオブジェクトのオフセットアドレス
 //==============================================================
 size_t	MusicItem::SetOffset(size_t _offset)
 {
-
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->iDebug & DEBUG_SetAddress){
 		_COUT << _T("Object Address [0x") << hex << setw(4) << setfill(_T('0')) << _offset << _T("]: ");
