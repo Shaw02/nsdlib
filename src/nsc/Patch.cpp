@@ -25,7 +25,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //					無し
 //==============================================================
 Patch::Patch(MMLfile* MML, size_t _id):
-	m_id(_id)
+	m_id(_id),
+	f_error(false)
 {
 	//----------------------
 	//Local変数
@@ -497,19 +498,11 @@ const	static	Command_Info	Command[] = {
 Patch::~Patch(void)
 {
 	//----------------------
-	//Local変数
-	map<size_t, patch_scrap*>::iterator	itPatch;
-	
-	//----------------------
 	//Delete Class
-	if(!m_Patch.empty()){
-		itPatch = m_Patch.begin();
-		while(itPatch != m_Patch.end()){
-			delete itPatch->second;
-			itPatch++;
-		}
-		m_Patch.clear();
+	for(map<size_t,patch_scrap*>::iterator it=m_Patch.begin(), e=m_Patch.end(); it!=e; ++it){
+		delete it->second;
 	}
+	m_Patch.clear();
 }
 
 //==============================================================
@@ -523,54 +516,46 @@ Patch::~Patch(void)
 void	Patch::DebugMsg(void)
 {
 	//----------------------
-	//Local変数
-	map<size_t, patch_scrap*>::iterator	itPatch;
-	
-	//----------------------
 	//Delete Class
 	cout	<< "==== [ Patch(" << m_id << ") ] ====" << endl;
 
-	if(!m_Patch.empty()){
-		itPatch = m_Patch.begin();
-		while(itPatch != m_Patch.end()){
-			m_now_Patch = itPatch->second;
+	for(map<size_t,patch_scrap*>::iterator it=m_Patch.begin(), e=m_Patch.end(); it!=e; ++it){
+		m_now_Patch = it->second;
 
-			cout	<<	"  n" << itPatch->first;
-			if(get_fGate_q()){ cout	<<	"  q"	<<	get_iGate_q();	};
-			if(get_fGate_u()){ cout	<<	"  u"	<<	get_iGate_u();	};
-			if(get_fSub()){	cout	<<	"  S"	<<	get_iSub()	<<	","	<<	get_fSub_opt();		};
-			if(get_fKey()){	cout	<<	"  _"	<<	get_iKey();		};
-			if(get_fSweep()){cout	<<	"  s"	<<	(int)get_iSweep();	};
-			if(get_fVoi()){	cout	<<	"  @"	<<	get_iVoi();		};
-			if(get_fEvoi()){cout	<<	" E@"	<<	get_iEvoi();	};
+		cout	<<	"  n" << it->first;
+		if(get_fGate_q()){ cout	<<	"  q"	<<	get_iGate_q();	};
+		if(get_fGate_u()){ cout	<<	"  u"	<<	get_iGate_u();	};
+		if(get_fSub()){	cout	<<	"  S"	<<	get_iSub()	<<	","	<<	get_fSub_opt();		};
+		if(get_fKey()){	cout	<<	"  _"	<<	get_iKey();		};
+		if(get_fSweep()){cout	<<	"  s"	<<	(int)get_iSweep();	};
+		if(get_fVoi()){	cout	<<	"  @"	<<	get_iVoi();		};
+		if(get_fEvoi()){cout	<<	" E@"	<<	get_iEvoi();	};
 
-			if(get_fEvol()){
-				if(get_sw_Evol()){
-					cout	<<	" Ev*";
-				} else {
-					cout	<<	" Ev"	<<	get_iEvol();
-				}
-			};
+		if(get_fEvol()){
+			if(get_sw_Evol()){
+				cout	<<	" Ev*";
+			} else {
+				cout	<<	" Ev"	<<	get_iEvol();
+			}
+		};
 
-			if(get_fEm()){
-				if(get_sw_Em()){
-					cout	<<	" Em*";
-				} else {
-					cout	<<	" Em"	<<	get_iEm();
-				}
-			};
+		if(get_fEm()){
+			if(get_sw_Em()){
+				cout	<<	" Em*";
+			} else {
+				cout	<<	" Em"	<<	get_iEm();
+			}
+		};
 
-			if(get_fEn()){
-				if(get_sw_En()){
-					cout	<<	" En*";
-				} else {
-					cout	<<	" En"	<<	get_iEn();
-				}
-			};
+		if(get_fEn()){
+			if(get_sw_En()){
+				cout	<<	" En*";
+			} else {
+				cout	<<	" En"	<<	get_iEn();
+			}
+		};
 
-			cout	<<	endl;
-			itPatch++;
-		}
+		cout	<<	endl;
 	}
 }
 

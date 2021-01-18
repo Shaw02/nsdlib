@@ -46,15 +46,10 @@ MusicTrack::MusicTrack(size_t _id, MMLfile* MML, const _CHAR _strName[]):
 	cnt_Repert_B(0)
 
 {
-	unsigned	int	i = 0;
-
 	nsd.init();
 	nsd.length = -1;
 
-	while(i < 256){
-		oldNote[i] = -1;
-		i++;
-	}
+	ResetEcho();
 
 	Reset_opt();
 
@@ -111,13 +106,13 @@ MusicTrack::~MusicTrack(void)
 //	●返値
 //			unsigned	int			Tick数
 //==============================================================
-unsigned int	MusicTrack::TickCount(MusicFile* MUS, NSD_WORK* work)
+int	MusicTrack::TickCount(MusicFile* MUS, NSD_WORK* work)
 {
-	unsigned int	itick;
+	int	itick;
 
-	nsd.set(work);				//サブルーチン元から、パラメータを取得
+	nsd = *work;				//サブルーチン元から、パラメータを取得
 	itick = TickCount(MUS);
-	nsd.get(work);				//サブルーチン元へ、パラメータを通知
+	*work = nsd;				//サブルーチン元へ、パラメータを通知
 
 	return(itick);
 }
@@ -128,9 +123,9 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS, NSD_WORK* work)
 //	●引数
 //			MusicFile*	MUS			
 //	●返値
-//			unsigned	int			Tick数
+//						int			Tick数
 //==============================================================
-unsigned int	MusicTrack::TickCount(MusicFile* MUS)
+int	MusicTrack::TickCount(MusicFile* MUS)
 {
 
 	//----------------------
@@ -163,20 +158,19 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 				size_t				_no;
 				int					i;
 				bool				_f;
-				bool				f_ERR		= false;
 
 				int					iTickCount	= 0;
 
-	//Tick 初期化
-	iTickTotal	=	0;		//
-	iTickLoop	=	0;
+	try {
 
-	//----------------------
-	//プリ演奏
+		//Tick 初期化
+		iTickTotal	=	0;		//
+		iTickLoop	=	0;
 
-	//シーケンスデータは存在しているか？
-	if(!ptcItem.empty()){
-		//存在していたら、プリ演奏
+		//----------------------
+		//プリ演奏
+
+		//シーケンスデータをプリ演奏
 		itItem = ptcItem.begin();
 		while(itItem != ptcItem.end()){
 
@@ -219,12 +213,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						_no = adrObj->get_id();
 						if(adrObj->chkUse() == false){
 							if( ptc_Loop.count(_no) == 0){
-								if(cOptionSW->fErr == true){
-									_CERR << endl << _T("L(") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								} else {
-									_COUT << endl << _T("L(") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								}
-								f_ERR = true;
+								MUS->Err(_T("L"),_no);
 							} else {
 								adrObj->setUse();
 								vec_ptc_Loop_End.push_back(adrObj);		//アドレス解決するオブジェクトとして登録
@@ -240,27 +229,26 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 
 					//----------------------------------------------
 					case(nsd_Call):					//0x02
-						_no = adrObj->get_id();
-						if((no_sub != _no) || (sw_sub == false) || (cOptionSW->flag_OptSeq == false) || (((mml_CallSub*)adrObj)->getPatch() == false)){
-							if(((mml_CallSub*)adrObj)->getPatch() == true){
-								no_sub = _no;
-								sw_sub = true;
-							}
-							if( MUS->ptcSub.count(_no) == 0){
-								if(cOptionSW->fErr == true){
-									_CERR << endl << _T("Sub(") << _no << _T(")番が存在しません。");
+						{
+							bool	f_isPatch	= ((mml_CallSub*)adrObj)->isPatch();
+							_no = adrObj->get_id();
+							if((no_sub != _no) || (sw_sub == false) || (cOptionSW->flag_OptSeq == false) || (((mml_CallSub*)adrObj)->isDisableOptimize() == true) || (f_isPatch == false)){
+								if(f_isPatch == true){
+									no_sub = _no;
+									sw_sub = true;
+								}
+								if( MUS->ptcSub.count(_no) == 0){
+									MUS->Err(_T("Sub"),_no);
 								} else {
-									_COUT << endl << _T("Sub(") << _no << _T(")番が存在しません。");
-								}
-								f_ERR = true;
-							} else {
-								iTickCount += MUS->ptcSub[_no]->TickCount(MUS, &nsd);	//サブルーチン先をシミュレート
-								if(adrObj->chkUse() == false){
-									MUS->ptcSub[_no]->setUse();			//使うフラグを立てる
-									adrObj->setUse();
-									vec_ptc_Sub.push_back(adrObj);		//アドレス解決するオブジェクトとして登録
+									iTickCount += MUS->ptcSub[_no]->TickCount(MUS, &nsd);	//サブルーチン先をシミュレート
+									MUS->ptcSub[_no]->setUse();								//サブルーチン先を使うフラグを立てる
+									if(adrObj->chkUse() == false){
+										adrObj->setUse();
+										vec_ptc_Sub.push_back(adrObj);		//アドレス解決するオブジェクトとして登録
+									}
 								}
 							}
+							
 						}
 						break;
 
@@ -269,12 +257,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						_no = adrObj->get_id();
 						if(adrObj->chkUse() == false){
 							if( MUS->ptcSE.count(_no) == 0){
-								if(cOptionSW->fErr == true){
-									_CERR << endl << _T("SE(") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								} else {
-									_COUT << endl << _T("SE(") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								}
-								f_ERR = true;
+								MUS->Err(_T("SE"),_no);
 							} else {
 								adrObj->setUse();
 								vec_ptc_SE.push_back(adrObj);		//アドレス解決するオブジェクトとして登録
@@ -298,12 +281,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						_no = adrObj->get_id();
 						if(adrObj->chkUse() == false){
 							if( ptc_Repert_A_E.count(_no) == 0){
-								if(cOptionSW->fErr == true){
-									_CERR << endl << _T("](") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								} else {
-									_COUT << endl << _T("](") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								}
-								f_ERR = true;
+								MUS->Err(_T("]"),_no);
 							} else {
 								adrObj->setUse();
 								vec_ptc_Repert_A_Branch.push_back(adrObj);	//アドレス解決するオブジェクトとして登録
@@ -319,12 +297,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						_no = adrObj->get_id();
 						if(adrObj->chkUse() == false){
 							if( ptc_Repert_A.count(_no) == 0){
-								if(cOptionSW->fErr == true){
-									_CERR << endl << _T("[(") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								} else {
-									_COUT << endl << _T("[(") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								}
-								f_ERR = true;
+								MUS->Err(_T("["),_no);
 							} else {
 								adrObj->setUse();
 								vec_ptc_Repert_A_End.push_back(adrObj);	//アドレス解決するオブジェクトとして登録
@@ -359,12 +332,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 						_no = adrObj->get_id();
 						if(adrObj->chkUse() == false){
 							if( ptc_Repert_B.count(_no) == 0){
-								if(cOptionSW->fErr == true){
-									_CERR << endl << _T("|:(") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								} else {
-									_COUT << endl << _T("|:(") << _no << _T(")番が存在しません。（※コンパイラのバグによるエラー）");
-								}
-								f_ERR = true;
+								MUS->Err(_T("|:"),_no);
 							} else {
 								adrObj->setUse();
 								vec_ptc_Repert_B_End.push_back(adrObj);	//アドレス解決するオブジェクトとして登録
@@ -443,7 +411,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							//番号が現在と違ったら、最適化しない。
 							if((nsd.env_voice != _no) || (nsd.sw_Evoi == false) || (cOptionSW->flag_OptSeq == false)){
 								nsd.env_voice = _no;
-								TickCount_Envelope(MUS, adrObj, _no, &f_ERR);
+								TickCount_Envelope(MUS, adrObj, _no);
 							}
 						} else {
 							//フラグが現在と違ったら、最適化しない。
@@ -462,7 +430,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							//番号が現在と違ったら、最適化しない。
 							if((nsd.env_volume != _no) || (nsd.sw_Evol == false) || (cOptionSW->flag_OptSeq == false)){
 								nsd.env_volume = _no;
-								TickCount_Envelope(MUS, adrObj, _no, &f_ERR);
+								TickCount_Envelope(MUS, adrObj, _no);
 							}
 						} else {
 							//フラグが現在と違ったら、最適化しない。
@@ -481,7 +449,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							//番号が現在と違ったら、最適化しない。
 							if((nsd.env_frequency != _no) || (nsd.sw_Em == false) || (cOptionSW->flag_OptSeq == false)){
 								nsd.env_frequency = _no;
-								TickCount_Envelope(MUS, adrObj, _no, &f_ERR);
+								TickCount_Envelope(MUS, adrObj, _no);
 							}
 						} else {
 							//フラグが現在と違ったら、最適化しない。
@@ -500,7 +468,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							//番号が現在と違ったら、最適化しない。
 							if((nsd.env_note != _no) || (nsd.sw_En == false) || (cOptionSW->flag_OptSeq == false)){
 								nsd.env_note = _no;
-								TickCount_Envelope(MUS, adrObj, _no, &f_ERR);
+								TickCount_Envelope(MUS, adrObj, _no);
 							}
 						} else {
 							//フラグが現在と違ったら、最適化しない。
@@ -528,12 +496,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							nsd.sw_vrc7_voice = true;
 							if(adrObj->chkUse() == false){
 								if( MUS->ptcVRC7.count(_no) == 0){
-									if(cOptionSW->fErr == true){
-										_CERR << endl << _T("VRC7(") << _no << _T(")番が存在しません。");
-									} else {
-										_COUT << endl << _T("VRC7(") << _no << _T(")番が存在しません。");
-									}
-									f_ERR = true;
+									MUS->Err(_T("VRC7"),_no);
 								} else {
 									MUS->ptcVRC7[_no]->setUse();		//使うフラグを立てる
 									adrObj->setUse();
@@ -551,12 +514,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							nsd.sw_n163_voice = true;
 							if(adrObj->chkUse() == false){
 								if( MUS->ptcN163.count(_no) == 0){
-									if(cOptionSW->fErr == true){
-										_CERR << endl << _T("N163(") << _no << _T(")番が存在しません。");
-									} else {
-										_COUT << endl << _T("N163(") << _no << _T(")番が存在しません。");
-									}
-									f_ERR = true;
+									MUS->Err(_T("N163"),_no);
 								} else {
 									MUS->ptcN163[_no]->setUse();		//使うフラグを立てる
 									adrObj->setUse();
@@ -591,12 +549,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							nsd.sw_fds_career = true;
 							if(adrObj->chkUse() == false){
 								if( MUS->ptcFDSC.count(_no) == 0){
-									if(cOptionSW->fErr == true){
-										_CERR << endl << _T("FDSC(") << _no << _T(")番が存在しません。");
-									} else {
-										_COUT << endl << _T("FDSC(") << _no << _T(")番が存在しません。");
-									}
-									f_ERR = true;
+									MUS->Err(_T("FDSC"),_no);
 								} else {
 									MUS->ptcFDSC[_no]->setUse();		//使うフラグを立てる
 									adrObj->setUse();
@@ -614,12 +567,7 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 							nsd.sw_fds_modlator = true;
 							if(adrObj->chkUse() == false){
 								if( MUS->ptcFDSM.count(_no) == 0){
-									if(cOptionSW->fErr == true){
-										_CERR << endl << _T("FDSM(") << _no << _T(")番が存在しません。");
-									} else {
-										_COUT << endl << _T("FDSM(") << _no << _T(")番が存在しません。");
-									}
-									f_ERR = true;
+									MUS->Err(_T("FDSM"),_no);
 								} else {
 									MUS->ptcFDSM[_no]->setUse();		//使うフラグを立てる
 									adrObj->setUse();
@@ -785,37 +733,36 @@ unsigned int	MusicTrack::TickCount(MusicFile* MUS)
 			}
 			itItem++;
 		}
-	}
 
 	//シミュレートできなかったら
-	if(f_ERR == true){
-		if(cOptionSW->fErr == true){
-			_CERR << endl;
-		} else {
-			_COUT << endl;
-		}
-		nsc_exit(EXIT_FAILURE);
-	}
+	//	if(MUS->isError() == true){
+	//	}
 
-	if(is_loop == false){
-		iTickLoop = -1;
+		if(is_loop == false){
+			iTickLoop = -1;
+		}
+
+	}
+	catch (int no) {
+		nsc_ErrMsg(no);
+	}
+	catch (const exception& e) {
+		nsc_ErrMsg(e);
+	}
+	catch (const _CHAR* stErrMsg) {
+		nsc_ErrMsg(stErrMsg);
 	}
 
 	return(iTickTotal);
 }
 
 //--------------------------------------------------------------
-void	MusicTrack::TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t _no, bool* f_ERR)
+void	MusicTrack::TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t _no)
 {
 	if(adrObj->chkUse() == false){
 		//指定番号の定義があるかチェック
 		if( MUS->ptcEnv.count(_no) == 0){
-			if(cOptionSW->fErr == true){
-				_CERR << endl << _T("Envelope(") << _no << _T(")番が存在しません。");
-			} else {
-				_COUT << endl << _T("Envelope(") << _no << _T(")番が存在しません。");
-			}
-			*f_ERR = true;
+			MUS->Err(_T("Envelope"),_no);
 		} else {
 			MUS->ptcEnv[_no]->setUse();		//使うフラグを立てる
 			adrObj->setUse();
@@ -836,259 +783,198 @@ void	MusicTrack::TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t 
 void	MusicTrack::Fix_Address(MusicFile* MUS)
 {
 	//----------------------
-	//Local変数
-	vector<	mml_Address*	>::iterator	it_Loop_End;			//End of Track with LOOP
-	vector<	mml_Address*	>::iterator	it_Repert_A_End;		//Repert(A) End    poiont
-	vector<	mml_Address*	>::iterator	it_Repert_A_Branch;		//Repert(A) Branch poiont
-	vector<	mml_Address*	>::iterator	it_Repert_B_End;		//Repert(B) End    poiont
+	//Local変数	（ループ回数は並列化前に取得する）
+	const	int	sz_vec_ptc_Loop_End			= (const int)vec_ptc_Loop_End.size();
+	const	int	sz_vec_ptc_Repert_A_End		= (const int)vec_ptc_Repert_A_End.size();
+	const	int	sz_vec_ptc_Repert_A_Branch	= (const int)vec_ptc_Repert_A_Branch.size();
+	const	int	sz_vec_ptc_Repert_B_End		= (const int)vec_ptc_Repert_B_End.size();
+	const	int	sz_vec_ptc_SE				= (const int)vec_ptc_SE.size();
+	const	int	sz_vec_ptc_Sub				= (const int)vec_ptc_Sub.size();
+	const	int	sz_vec_ptc_Env				= (const int)vec_ptc_Env.size();
+	const	int	sz_vec_ptc_FDSC				= (const int)vec_ptc_FDSC.size();
+	const	int	sz_vec_ptc_FDSM				= (const int)vec_ptc_FDSM.size();
+	const	int	sz_vec_ptc_OPLL				= (const int)vec_ptc_OPLL.size();
+	const	int	sz_vec_ptc_Wave				= (const int)vec_ptc_Wave.size();
 
-	vector<	mml_Address*	>::iterator	itSE;
-	vector<	mml_Address*	>::iterator	itSub;
-	vector<	mml_Address*	>::iterator	itEnv;
-	vector<	mml_Address*	>::iterator	itFDSC;
-	vector<	mml_Address*	>::iterator	itFDSM;
-	vector<	mml_Address*	>::iterator	itVRC7;
-	vector<	mml_Address*	>::iterator	itN163;
+	if(cOptionSW->iDebug & DEBUG_FixAddress){
+		_COUT << _T("  Object : ") << strName;
+		if(f_id == true){
+			_COUT	<< _T("(") << m_id << _T(")");
+		}
+		_COUT << endl;
+	}
 
-	size_t	_no;			//参照先コマンドのID番号
-	size_t	_sub_offset;	//参照先コマンドの配置アドレス
-	size_t	_com_offset;	//参照元コマンドの配置アドレス
-
-	//----------------------
-	//LOOP
-	if(!vec_ptc_Loop_End.empty()){
-		it_Loop_End = vec_ptc_Loop_End.begin();
-		while(it_Loop_End != vec_ptc_Loop_End.end()){
-			_no			= (*it_Loop_End)->get_id();
-			_com_offset	= (*it_Loop_End)->getOffset();
+	_OMP_PARALLEL
+	{
+		//----------------------
+		//LOOP
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Loop_End; ++i){
+			size_t	_no			= vec_ptc_Loop_End[i]->get_id();
+			size_t	_com_offset	= vec_ptc_Loop_End[i]->getOffset();
+			size_t	_sub_offset;
 			if( ptc_Loop.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("Lコマンド(") << _no << _T(")番が存在しません（※コンパイラのバグによるエラー）。") << endl;
-				} else {
-					_COUT << _T("Lコマンド(") << _no << _T(")番が存在しません（※コンパイラのバグによるエラー）。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("L"),_no);
+			} else {
+				_sub_offset = ptc_Loop[_no]->getOffset();
+				_sub_offset += ptc_Loop[_no]->getSize();	//行先は、次のコマンド
+				vec_ptc_Loop_End[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = ptc_Loop[_no]->getOffset();
-			_sub_offset += ptc_Loop[_no]->getSize();	//行先は、リピートコマンドの次のコマンド
-			(*it_Loop_End)->set_Address(_sub_offset - _com_offset - 1);
-			it_Loop_End++;
 		}
-	}
 
-	//----------------------
-	//Repeat (A)
-	if(!vec_ptc_Repert_A_End.empty()){
-		it_Repert_A_End = vec_ptc_Repert_A_End.begin();
-		while(it_Repert_A_End != vec_ptc_Repert_A_End.end()){
-			_no			= (*it_Repert_A_End)->get_id();
-			_com_offset	= (*it_Repert_A_End)->getOffset();
+		//----------------------
+		//Repeat (A)
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Repert_A_End; ++i){
+			size_t	_no			= vec_ptc_Repert_A_End[i]->get_id();
+			size_t	_com_offset	= vec_ptc_Repert_A_End[i]->getOffset();
+			size_t	_sub_offset;
 			if( ptc_Repert_A.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("[コマンド(") << _no << _T(")番が存在しません（※コンパイラのバグによるエラー）。") << endl;
-				} else {
-					_COUT << _T("[コマンド(") << _no << _T(")番が存在しません（※コンパイラのバグによるエラー）。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("["),_no);
+			} else {
+				_sub_offset = ptc_Repert_A[_no]->getOffset();
+				_sub_offset += ptc_Repert_A[_no]->getSize();	//行先は、次のコマンド
+				vec_ptc_Repert_A_End[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = ptc_Repert_A[_no]->getOffset();
-			_sub_offset += ptc_Repert_A[_no]->getSize();	//行先は、リピートコマンドの次のコマンド
-			(*it_Repert_A_End)->set_Address(_sub_offset - _com_offset - 1);
-			it_Repert_A_End++;
 		}
-	}
 
-	//----------------------
-	//Repeat (A) Branch
-	if(!vec_ptc_Repert_A_Branch.empty()){
-		it_Repert_A_Branch = vec_ptc_Repert_A_Branch.begin();
-		while(it_Repert_A_Branch != vec_ptc_Repert_A_Branch.end()){
-			_no			= (*it_Repert_A_Branch)->get_id();
-			_com_offset	= (*it_Repert_A_Branch)->getOffset();
+		//----------------------
+		//Repeat (A) Branch
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Repert_A_Branch; ++i){
+			size_t	_no			= vec_ptc_Repert_A_Branch[i]->get_id();
+			size_t	_com_offset	= vec_ptc_Repert_A_Branch[i]->getOffset();
+			size_t	_sub_offset;
 			if( ptc_Repert_A_E.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("]コマンド(") << _no << _T(")番が存在しません（※コンパイラのバグによるエラー）。") << endl;
-				} else {
-					_COUT << _T("]コマンド(") << _no << _T(")番が存在しません（※コンパイラのバグによるエラー）。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("]"),_no);
+			} else {
+				_sub_offset = ptc_Repert_A_E[_no]->getOffset();
+				_sub_offset += ptc_Repert_A_E[_no]->getSize();	//行先は、次のコマンド
+				vec_ptc_Repert_A_Branch[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = ptc_Repert_A_E[_no]->getOffset();
-			_sub_offset += ptc_Repert_A_E[_no]->getSize();	//行先は、リピートコマンドの次のコマンド
-			(*it_Repert_A_Branch)->set_Address(_sub_offset - _com_offset - 1);
-			it_Repert_A_Branch++;
 		}
-	}
 
-	//----------------------
-	//Repeat (B)
-	if(!vec_ptc_Repert_B_End.empty()){
-		it_Repert_B_End = vec_ptc_Repert_B_End.begin();
-		while(it_Repert_B_End != vec_ptc_Repert_B_End.end()){
-			_no			= (*it_Repert_B_End)->get_id();
-			_com_offset	= (*it_Repert_B_End)->getOffset();
+		//----------------------
+		//Repeat (B)
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Repert_B_End; ++i){
+			size_t	_no			= vec_ptc_Repert_B_End[i]->get_id();
+			size_t	_com_offset	= vec_ptc_Repert_B_End[i]->getOffset();
+			size_t	_sub_offset;
 			if( ptc_Repert_B.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("|:コマンド(") << _no << _T(")番が存在しません（※コンパイラのバグによるエラー）。") << endl;
-				} else {
-					_COUT << _T("|:コマンド(") << _no << _T(")番が存在しません（※コンパイラのバグによるエラー）。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("|:"),_no);
+			} else {
+				_sub_offset = ptc_Repert_B[_no]->getOffset();
+				_sub_offset += ptc_Repert_B[_no]->getSize();	//行先は、リ次のコマンド
+				vec_ptc_Repert_B_End[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = ptc_Repert_B[_no]->getOffset();
-			_sub_offset += ptc_Repert_B[_no]->getSize();	//行先は、リピートコマンドの次のコマンド
-			(*it_Repert_B_End)->set_Address(_sub_offset - _com_offset - 1);
-			it_Repert_B_End++;
 		}
-	}
 
-	//----------------------
-	//SE
-	if(!vec_ptc_SE.empty()){
-		itSE = vec_ptc_SE.begin();
-		while(itSE != vec_ptc_SE.end()){
-			_no			= (*itSE)->get_id();		//サブルーチンNo.の取得
-			_com_offset	= (*itSE)->getOffset();
+		//----------------------
+		//SE
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_SE; ++i){
+			size_t	_no			= vec_ptc_SE[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_SE[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcSE.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("SE(") << _no << _T(")番が存在しません。") << endl;
-				} else {
-					_COUT << _T("SE(") << _no << _T(")番が存在しません。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("SE"),_no);
+			} else {
+				_sub_offset = MUS->ptcSE[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_SE[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = MUS->ptcSE[_no]->getOffset();	//指定サブルーチンが存在するオフセット
-			(*itSE)->set_Address(_sub_offset - _com_offset - 1);
-			itSE++;
 		}
-	}
 
-	//----------------------
-	//Surbortine
-	if(!vec_ptc_Sub.empty()){
-		itSub = vec_ptc_Sub.begin();
-		while(itSub != vec_ptc_Sub.end()){
-			_no			= (*itSub)->get_id();		//サブルーチンNo.の取得
-			_com_offset	= (*itSub)->getOffset();
+		//----------------------
+		//Surbortine
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Sub; ++i){
+			size_t	_no			= vec_ptc_Sub[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_Sub[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcSub.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("Sub(") << _no << _T(")番が存在しません。") << endl;
-				} else {
-					_COUT << _T("Sub(") << _no << _T(")番が存在しません。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("Sub"),_no);
+			} else {
+				_sub_offset = MUS->ptcSub[_no]->getOffset();	//指定No.が存在するオフセット
+				vec_ptc_Sub[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = MUS->ptcSub[_no]->getOffset();	//指定サブルーチンが存在するオフセット
-			(*itSub)->set_Address(_sub_offset - _com_offset - 1);
-			itSub++;
 		}
-	}
 
-	//----------------------
-	//Envelope
-	if(!vec_ptc_Env.empty()){
-		itEnv = vec_ptc_Env.begin();
-		while(itEnv != vec_ptc_Env.end()){
-			_no			= (*itEnv)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*itEnv)->getOffset();
+		//----------------------
+		//Envelope
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_Env; ++i){
+			size_t	_no			= vec_ptc_Env[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_Env[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcEnv.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("Envelope(") << _no << _T(")番が存在しません。") << endl;
-				} else {
-					_COUT << _T("Envelope(") << _no << _T(")番が存在しません。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("Envelope"),_no);
+			} else {
+				_sub_offset = MUS->ptcEnv[_no]->getOffset();	//指定No.が存在するオフセット
+				vec_ptc_Env[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = MUS->ptcEnv[_no]->getOffset();	//指定エンベロープが存在するオフセット
-			(*itEnv)->set_Address(_sub_offset - _com_offset - 1);
-			itEnv++;
 		}
-	}
 
-	//----------------------
-	//FDSC
-	if(!vec_ptc_FDSC.empty()){
-		itFDSC = vec_ptc_FDSC.begin();
-		while(itFDSC != vec_ptc_FDSC.end()){
-			_no			= (*itFDSC)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*itFDSC)->getOffset();
+		//----------------------
+		//FDSC
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_FDSC; ++i){
+			size_t	_no			= vec_ptc_FDSC[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_FDSC[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcFDSC.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("FDSC(") << _no << _T(")番が存在しません。") << endl;
-				} else {
-					_COUT << _T("FDSC(") << _no << _T(")番が存在しません。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("FDSC"),_no);
+			} else {
+				_sub_offset = MUS->ptcFDSC[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_FDSC[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = MUS->ptcFDSC[_no]->getOffset();	//指定エンベロープが存在するオフセット
-			(*itFDSC)->set_Address(_sub_offset - _com_offset - 1);
-			itFDSC++;
 		}
-	}
 
-	//----------------------
-	//FDSM
-	if(!vec_ptc_FDSM.empty()){
-		itFDSM = vec_ptc_FDSM.begin();
-		while(itFDSM != vec_ptc_FDSM.end()){
-			_no			= (*itFDSM)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*itFDSM)->getOffset();
+		//----------------------
+		//FDSM
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_FDSM; ++i){
+			size_t	_no			= vec_ptc_FDSM[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_FDSM[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcFDSM.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("FDSM(") << _no << _T(")番が存在しません。") << endl;
-				} else {
-					_COUT << _T("FDSM(") << _no << _T(")番が存在しません。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("FDSM"),_no);
+			} else {
+				_sub_offset = MUS->ptcFDSM[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_FDSM[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = MUS->ptcFDSM[_no]->getOffset();	//指定エンベロープが存在するオフセット
-			(*itFDSM)->set_Address(_sub_offset - _com_offset - 1);
-			itFDSM++;
 		}
-	}
 
-	//----------------------
-	//OPLL
-	if(!vec_ptc_OPLL.empty()){
-		itVRC7 = vec_ptc_OPLL.begin();
-		while(itVRC7 != vec_ptc_OPLL.end()){
-			_no			= (*itVRC7)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*itVRC7)->getOffset();
+		//----------------------
+		//OPLL
+		_OMP_FOR_NOWAIT
+		for(int i=0; i<sz_vec_ptc_OPLL; ++i){
+			size_t	_no			= vec_ptc_OPLL[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_OPLL[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcVRC7.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("VRC7(") << _no << _T(")番が存在しません。") << endl;
-				} else {
-					_COUT << _T("VRC7(") << _no << _T(")番が存在しません。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("VRC7"),_no);
+			} else {
+				_sub_offset = MUS->ptcVRC7[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_OPLL[i]->set_Address(_sub_offset - _com_offset - 1);
 			}
-			_sub_offset = MUS->ptcVRC7[_no]->getOffset();	//指定エンベロープが存在するオフセット
-			(*itVRC7)->set_Address(_sub_offset - _com_offset - 1);
-			itVRC7++;
 		}
-	}
 
-	//----------------------
-	//N163
-	if(!vec_ptc_Wave.empty()){
-		itN163 = vec_ptc_Wave.begin();
-		while(itN163 != vec_ptc_Wave.end()){
-			_no			= (*itN163)->get_id();		//エンベロープNo.の取得
-			_com_offset	= (*itN163)->getOffset();
+		//----------------------
+		//N163
+		_OMP_FOR		//最後は全スレッドの終了を待つ(nowaitを付けない)
+		for(int i=0; i<sz_vec_ptc_Wave; ++i){
+			size_t	_no			= vec_ptc_Wave[i]->get_id();		//No.の取得
+			size_t	_com_offset	= vec_ptc_Wave[i]->getOffset();
+			size_t	_sub_offset;
 			if( MUS->ptcN163.count(_no) == 0){
-				if(cOptionSW->fErr == true){
-					_CERR << _T("N163(") << _no << _T(")番が存在しません。") << endl;
-				} else {
-					_COUT << _T("N163(") << _no << _T(")番が存在しません。") << endl;
-				}
-				nsc_exit(EXIT_FAILURE);
+				MUS->Err(_T("N163"),_no);
+			} else {
+				_sub_offset = MUS->ptcN163[_no]->getOffset();		//指定No.が存在するオフセット
+				vec_ptc_Wave[i]->set_Address(_sub_offset - _com_offset - 2);	//N163は、引数があるので、-2になる。
 			}
-			_sub_offset = MUS->ptcN163[_no]->getOffset();	//指定エンベロープが存在するオフセット
-			(*itN163)->set_Address(_sub_offset - _com_offset - 2);	//N163は、引数があるので、-2になる。
-			itN163++;
 		}
 	}
-
 }
 
 //==============================================================
@@ -1580,46 +1466,32 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 		//リピートの展開
 		{
 			unsigned	int				iRepeatCount = (*it_ct_repeat_c) - 1;
-			unsigned	char			cOpCode;
-			string						sOpCode;
 
 			while(iRepeatCount>0){
 				pt_itMusic	=	(*it_it_repeat_c_s);
 				if(pt_itMusic != *it_it_repeat_c_e){
 					do{
+						unsigned char	cOpCode;
 						pt_itMusic++;
 						cOpCode		=	(*pt_itMusic)->getCode((size_t)0);
-						sOpCode.clear();
-										(*pt_itMusic)->getCode(&sOpCode);
 						switch(cOpCode){
 							//--------------------------
-							//Envelope Object
-							case(nsd_Envelop_Voice):
-							case(nsd_Envelop_Volume):
-							case(nsd_Envelop_Frequency):
-							case(nsd_Envelop_Note):
-								CopyEnvEvent(&sOpCode, pt_itMusic);
-								break;
-							//--------------------------
-							//Address Object 
+							//Call Subroutine 
 							case(nsd_Call):
-								CopySubEvent(&sOpCode, pt_itMusic);
-								break;
-							case(nsd_Call_SE):
-							case(nsc_VRC7):
-							case(nsc_N163):
-							case(nsd_FDS_Career):
-							case(nsd_FDS_Modlator):
-								CopyAddressEvent(&sOpCode, pt_itMusic);
+								{
+									//このクラス特有のメンバー変数があるため、個別にコピーする。
+									mml_CallSub* _event = new mml_CallSub(*(mml_CallSub*)(*pt_itMusic));
+									SetEvent(_event);
+								}
 								break;
 							//--------------------------
 							//Repeat
 							case(nsd_Repeat_A_Start):
-							{
-								mml_repeat* _event = (mml_repeat*)(*pt_itMusic);
-								SetEvent_Repeat_A_Start(_event->get_count());
+								{
+									mml_repeat* _event = (mml_repeat*)(*pt_itMusic);
+									SetEvent_Repeat_A_Start(_event->get_count());
+								}
 								break;
-							}
 							case(nsd_Repeat_A_Branch):
 								SetEvent_Repeat_A_Branch();
 								break;
@@ -1637,8 +1509,7 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 								break;
 							default:
 								{
-									mml_general*	_event	=	new	mml_general(cOpCode);
-									_event->setCode(&sOpCode);
+									MusicEvent* _event = new MusicEvent(*(MusicEvent*)*pt_itMusic);
 									SetEvent(_event);
 								}
 								break;
@@ -1674,41 +1545,6 @@ void	MusicTrack::SetRepeat_C_End(MMLfile* MML)
 		it_repeat_type--;
 		repeat_type.pop_back();
 	}
-}
-
-//--------------------------------------------------------------
-void	MusicTrack::CopyAddressEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
-{
-	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
-	mml_Address*	_event		=	new mml_Address(ptAdrItem->get_id(), (*sOpCode)[0]);
-	_event->setCode(sOpCode);
-	SetEvent(_event);
-}
-
-//--------------------------------------------------------------
-void	MusicTrack::CopySubEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
-{
-	mml_CallSub*	ptAdrItem	=	(mml_CallSub*)(*pt_itMusic);
-	mml_CallSub*	_event		=	new mml_CallSub(ptAdrItem->get_id());
-	_event->setPatch(ptAdrItem->getPatch());
-	_event->setCode(sOpCode);
-	SetEvent(_event);
-}
-
-//--------------------------------------------------------------
-void	MusicTrack::CopyEnvEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic)
-{
-	mml_Address*	ptAdrItem	=	(mml_Address*)(*pt_itMusic);
-	mml_Address*	_event;
-
-	if(ptAdrItem->get_flag() == true){
-		_event		=	new mml_Address(ptAdrItem->get_id(), (*sOpCode)[0]);
-	} else {
-		//Envelop Off
-		_event		=	new mml_Address((*sOpCode)[0]);
-	}
-	_event->setCode(sOpCode);
-	SetEvent(_event);
 }
 
 //==============================================================
@@ -1748,14 +1584,17 @@ void	MusicTrack::SetSubroutine(size_t _no)
 //==============================================================
 //		S	サブルーチン呼び出し（パッチから）
 //--------------------------------------------------------------
-void	MusicTrack::SetSubWithParch(size_t _no,bool _f)
+//	●引数
+//		size_t	_no,			呼出No
+//		bool	_f_Disable_Opt	最適化が無効か？
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::SetSubWithParch(size_t _no,bool _f_Disable_Opt)
 {
 	if(jump_flag==false){
 		mml_CallSub*	_event = new mml_CallSub(_no, _T("Call Subroutine for Patch"));
-		_event->setPatch();
-		if(_f == true){
-			_event->setUse();
-		}
+		_event->setPatch(_f_Disable_Opt);
 		SetEvent(_event);
 	};
 }
@@ -3195,12 +3034,11 @@ void	MusicTrack::SetEchoBuffer(MMLfile* MML,int note)
 //==============================================================
 void	MusicTrack::ResetEcho()
 {
-	unsigned	int	i = 0;
 
-	while(i < 256){
+	for(size_t i=0; i<256; i++){
 		oldNote[i] = -1;
-		i++;
 	}
+
 //	echo_flag	= false;
 	pt_oldNote	= 0;
 }

@@ -59,7 +59,7 @@ private:		//for Metadata
 				
 //ƒƒ“ƒo[ŠÖ”
 public:
-				MusicHeader(string _code);
+				MusicHeader(string& _code);
 				~MusicHeader(void);
 		void	Set_Title(MMLfile* MML);
 		void	Set_Copyright(MMLfile* MML);

@@ -64,7 +64,7 @@ protected:
 					size_t		m_kn;			//処理中のノート番号
 
 		patch_scrap*			m_now_Patch;	//処理中のパッチのポインタ
-
+					bool		f_error;		//エラー発生の有無
 
 //メンバー関数
 public:
@@ -108,4 +108,5 @@ public:
 				bool	get_sw_Em(void){	return(m_now_Patch->sw_Em);};
 				bool	get_sw_En(void){	return(m_now_Patch->sw_En);};
 
+				bool	isError(){return(f_error);};
 };

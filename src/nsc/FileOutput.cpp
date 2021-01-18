@@ -18,7 +18,8 @@
 //	Åúï‘íl
 //				ñ≥Çµ
 //==============================================================
-FileOutput::FileOutput(void)
+FileOutput::FileOutput(void):
+	f_error(false)
 {
 //#ifdef	_WIN32
 	imbue( std::locale::classic() );
@@ -46,8 +47,8 @@ void	FileOutput::fileopen(const char*	strFileName){
 	open(strFileName,ios_base::out | ios_base::binary);
 	if(good()==false){
 		perror(strFileName);
-		nsc_exit(EXIT_FAILURE);
-	};
+		f_error	= true;
+	}
 };
 
 //--------------------------------
@@ -63,4 +64,3 @@ void	FileOutput::StreamPointerAdd(std::streamoff iSize){
 void	FileOutput::StreamPointerMove(std::streamoff iSize){
 	seekp(iSize,ios::beg);
 };
-

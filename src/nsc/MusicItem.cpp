@@ -15,6 +15,10 @@
 /****************************************************************/
 extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 
+#ifdef _OPENMP
+	extern	omp_lock_t		lock_cout;
+#endif
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -27,6 +31,7 @@ MusicItem::MusicItem(const _CHAR _strName[]):
 	strName(_strName),
 	iSize(0),
 	iOffset(0),
+	m_id(0),
 	f_id(false),
 	f_necessary(false)
 {
@@ -66,11 +71,16 @@ MusicItem::~MusicItem(void)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->iDebug & DEBUG_Delete){
+		_OMP_SET_LOCK(lock_cout)
 		_COUT << _T("Delete Music Object : ") << strName;
 		if(f_id == true){
 			_COUT << _T("(") << m_id << _T(")");
 		}
+		#ifdef _OPENMP
+		_COUT << " (Thread No=" << omp_get_thread_num() <<")";
+		#endif
 		_COUT << endl;
+		_OMP_UNSET_LOCK(lock_cout)
 	}
 }
 
@@ -84,9 +94,6 @@ MusicItem::~MusicItem(void)
 //==============================================================
 void	MusicItem::clear(void)
 {
-	//----------------------
-	//Local変数
-	list<	MusicItem*>::iterator	itItem;
 
 	//----------------------
 	//clear
@@ -94,45 +101,55 @@ void	MusicItem::clear(void)
 
 	//----------------------
 	//Delete Class
-	if(!ptcItem.empty()){
-		itItem = ptcItem.begin();
-		while(itItem != ptcItem.end()){
-			delete *itItem;
-			itItem++;
-		}
-		ptcItem.clear();
+	for(list<MusicItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it!=e; ++it){
+		delete *it;
 	}
+	ptcItem.clear();
 
 	iSize = 0;
 }
 
+//==============================================================
+//		最適化時のクリア
+//--------------------------------------------------------------
 void	MusicItem::clear_Optimize()
 {
-	//----------------------
-	//Local変数
-	list<	MusicItem*>::iterator	itItem;
+
+	if(cOptionSW->iDebug & DEBUG_Optimize){
+		_OMP_SET_LOCK(lock_cout)
+		_COUT << _T("Optimize Object  : ") << strName;
+		if(f_id == true){
+			_COUT	<< _T("(") << m_id << _T(")");
+		}
+		#ifdef _OPENMP
+		_COUT << " (Thread No=" << omp_get_thread_num() <<")";
+		#endif
+		_COUT << endl;
+		_OMP_UNSET_LOCK(lock_cout)
+	}
 
 	if(chkUse() == false){
 		//----------------------
 		//このオブジェクトごと、ごっそりクリアする。
 		//Debug message　（うざい程出力するので注意。）
 		if(cOptionSW->iDebug & DEBUG_Optimize){
+			_OMP_SET_LOCK(lock_cout)
 			_COUT << _T("Optimizing : ") << strName;
 			if(f_id == true){
 				_COUT	<< _T("(") << m_id << _T(")");
 			}
+			#ifdef _OPENMP
+			_COUT << " (Thread No=" << omp_get_thread_num() <<")";
+			#endif
 			_COUT << endl;
+			_OMP_UNSET_LOCK(lock_cout)
 		}
 		clear();
 	} else {
 		//----------------------
 		//子オブジェクトを最適化するか評価する。
-		if(!ptcItem.empty()){
-			itItem = ptcItem.begin();
-			while(itItem != ptcItem.end()){
-				(*itItem)->clear_Optimize();
-				itItem++;
-			}
+		for(list<MusicItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it!=e; ++it){
+			(*it)->clear_Optimize();
 		}
 	}
 }
@@ -151,39 +168,20 @@ size_t		MusicItem::getSize()
 }
 
 //==============================================================
-//		コードのオフセットアドレスの取得
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//		unsigned	int	
-//==============================================================
-size_t	MusicItem::getOffset()
-{
-	return(iOffset);
-}
-
-//==============================================================
 //		オフセットアドレスの設定
 //--------------------------------------------------------------
 //	●引数
-//		size_t	_offset
+//		size_t	_offset	このオブジェクトのオフセットアドレス
 //	●返値
-//				無し
+//		size_t			次のオブジェクトのオフセットアドレス
 //==============================================================
 size_t	MusicItem::SetOffset(size_t _offset)
 {
-	//----------------------
-	//Local変数
-	list<	MusicItem*>::iterator	itItem;
-	size_t	i = 0;
-
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->iDebug & DEBUG_SetAddress){
 		_COUT << _T("Object Address [0x") << hex << setw(4) << setfill(_T('0')) << _offset << _T("]: ");
-		while(i < code.size()){
+		for(size_t i=0, e=code.size(); i < e; ++i){
 			_COUT	<<	hex	<<	setw(2)	<<	setfill(_T('0'))	<<	(unsigned int)(code[i] & 0xFF)	<<	_T(" ");
-			i++;
 		}
 		_COUT  << dec	<< _T(": ") << strName;
 		if(f_id == true){
@@ -195,12 +193,8 @@ size_t	MusicItem::SetOffset(size_t _offset)
 	iOffset = _offset;
 	_offset	+= code.size();
 
-	if(!ptcItem.empty()){
-		itItem = ptcItem.begin();
-		while(itItem != ptcItem.end()){
-			_offset = (*itItem)->SetOffset(_offset);
-			itItem++;
-		}
+	for(list<MusicItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it != e; ++it ){
+		_offset = (*it)->SetOffset(_offset);
 	}
 
 	//このオブジェクトのサイズ（最適化後）
@@ -240,18 +234,10 @@ unsigned	char	MusicItem::getCode(size_t n)
 //==============================================================
 void	MusicItem::getCode(string* _str)
 {
-	//----------------------
-	//Local変数
-	list<	MusicItem*>::iterator	itItem;
-
 	_str->append(code);
 
-	if(!ptcItem.empty()){
-		itItem = ptcItem.begin();
-		while(itItem != ptcItem.end()){
-			(*itItem)->getCode(_str);
-			itItem++;
-		}
+	for(list<MusicItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it!=e; ++it){
+		(*it)->getCode(_str);
 	}
 }
 
@@ -280,30 +266,20 @@ void	MusicItem::setCode(string* _str)
 //==============================================================
 void	MusicItem::getAsm(MusicFile* MUS)
 {
-	//----------------------
-	//Local変数
-	size_t	i = 0;
-	list<	MusicItem*>::iterator	itItem;
-
 	if(code.size() > 0){
-		while(i < code.size()){
+		for(size_t i=0; i<code.size(); ++i){
 			if(i==0){
 				*MUS << "	.byte	$";
 			} else {
 				*MUS << " ,$";
 			}
 			*MUS << hex << setw(2) << setfill('0') << (int)(code[i] & 0xFF);
-			i++;
 		}
 		*MUS << dec << endl;
 	}
 
-	if(!ptcItem.empty()){
-		itItem = ptcItem.begin();
-		while(itItem != ptcItem.end()){
-			(*itItem)->getAsm(MUS);
-			itItem++;
-		}
+	for(list<MusicItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it!=e; ++it){
+		(*it)->getAsm(MUS);
 	}
 }
 

@@ -15,6 +15,10 @@
 /****************************************************************/
 extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 
+#ifdef _OPENMP
+	extern	omp_lock_t		lock_cout;
+#endif
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -27,7 +31,6 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 mml_Address::mml_Address(unsigned char _code, const _CHAR _strName[]):
 	MusicEvent(_strName)
 {
-
 	iSize = 3;
 	code.resize(iSize);
 	code[0] = _code;
@@ -97,63 +100,44 @@ mml_Address::~mml_Address(void)
 //==============================================================
 void	mml_Address::set_Address(size_t _addr)
 {
-	switch(iSize){
-		case(0):
-			if(cOptionSW->iDebug & DEBUG_Optimize){
-				_COUT << _T("This Object has cleared : ") << strName;
-				if(f_id == true){
-					_COUT	<< _T("(") << m_id << _T(")");
-				}
-				_COUT << endl;
-			}
-		case(3):
-			code[1] = (unsigned char)((_addr     ) & 0xFF);
-			code[2] = (unsigned char)((_addr >> 8) & 0xFF);
-			break;
-		case(4):
-			code[2] = (unsigned char)((_addr     ) & 0xFF);
-			code[3] = (unsigned char)((_addr >> 8) & 0xFF);
-			break;
-		default:
-			_CERR << _T("mml_Address::set_Address()関数でエラーが発生しました。") << endl;
-			nsc_exit(EXIT_FAILURE);
-			break;
-	}
+	try {
+		switch(iSize){
+			case(0):
+				break;
+			case(3):
+				code[1] = (unsigned char)((_addr     ) & 0xFF);
+				code[2] = (unsigned char)((_addr >> 8) & 0xFF);
+				break;
+			case(4):
+				code[2] = (unsigned char)((_addr     ) & 0xFF);
+				code[3] = (unsigned char)((_addr >> 8) & 0xFF);
+				break;
+			default:
+				throw invalid_argument("mml_Address::set_Address()");
+				break;
+		}
 	
-
-}
-
-//==============================================================
-//		アドレスの取得
-//--------------------------------------------------------------
-//	●引数
-//				無し
-//	●返値
-//				無し
-//==============================================================
-/*
-size_t	mml_Address::get_Address(void)
-{
-	size_t	i;
-
-	switch(iSize){
-		case(3):
-			i = (unsigned char)code[1] + ((unsigned char)code[2]<<8);
-			break;
-		case(4):
-			i = (unsigned char)code[2] + ((unsigned char)code[3]<<8);
-			break;
-		default:
-			_CERR << _T("mml_Address::set_Address()関数でエラーが発生しました。") << endl;
-			nsc_exit(EXIT_FAILURE);
-			break;
+		if(cOptionSW->iDebug & DEBUG_FixAddress){
+			_OMP_SET_LOCK(lock_cout)
+			_COUT << _T("    Fixed: Object Address [0x") << hex << setw(4) << setfill(_T('0')) << iOffset << _T("]: ");
+			for(size_t i=0, e=code.size(); i < e; ++i){
+				_COUT	<<	hex	<<	setw(2)	<<	setfill(_T('0'))	<<	(unsigned int)(code[i] & 0xFF)	<<	_T(" ");
+			}
+			_COUT  << dec	<< _T(": ") << strName;
+			if(f_id == true){
+				_COUT	<< _T("(") << m_id << _T(")");
+			}
+			#ifdef _OPENMP
+			_COUT << " (Thread No=" << omp_get_thread_num() <<")";
+			#endif
+			_COUT << endl;
+			_OMP_UNSET_LOCK(lock_cout)
+		}
 	}
-	if (i & 0x8000){
-		i |= 0xFFFF0000;
+	catch (int no) {
+		nsc_ErrMsg(no);
 	}
-	return(i);
+	catch (const exception& e) {
+		nsc_ErrMsg(e);
+	}
 }
-*/
-
-
-

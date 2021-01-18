@@ -14,7 +14,7 @@
 /*			\‘¢‘Ì’è‹`											*/
 /*																*/
 /****************************************************************/
-struct	NSF_Header{
+typedef struct {
 				char	Name[5];			//00	"NESM",0x1A
 	unsigned	char	Version;			//05
 	unsigned	char	MusicNumber;		//06
@@ -32,7 +32,7 @@ struct	NSF_Header{
 	unsigned	char	External;			//7B
 	unsigned	char	Flags;				//7C
 	unsigned	char	szNSF_Data[3];		//7D-7F
-};
+} NSF_Header;
 
 #define	nsf_flag_IRQ_support 		0x10
 #define	nsf_flag_non_Ret_Init		0x20

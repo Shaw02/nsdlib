@@ -26,9 +26,13 @@ class Sub : public TrackSet
 //メンバー変数
 private:
 
+#ifdef _OPENMP
+		omp_lock_t		lock_TickCount;		//演奏シミュレート時の排他処理用
+#endif
+
 public:
 
-	Sub(MMLfile* MML, size_t _id, const _CHAR _strName[] = _T("Sub"));
+	Sub(MMLfile* MML, size_t _id, const _CHAR _strName[] = _T("================ Sub"));
 	~Sub();
 
 	void				getAsm(MusicFile* MUS);

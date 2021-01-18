@@ -56,11 +56,12 @@ public:
 	size_t	make_bin(NSF_Header* NSF_Hed, string* NSF_Data);
 
 	//保存フェーズ
-	void	saveNSF(const char*	strFileName);
-	void	saveNSFe(const char*	strFileName);
-	void	saveASM(const char*	strFileName);
+	void	saveNSF(string& strFileName);
+	void	saveNSFe(string& strFileName);
+	void	saveASM(string& strFileName);
 
 	void	Err(const _CHAR msg[]);
+	void	Err(const _CHAR msg[], size_t no);
 	void	Warning(const _CHAR msg[]);
 
 };

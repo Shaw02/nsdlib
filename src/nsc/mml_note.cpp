@@ -29,8 +29,7 @@ mml_note::mml_note(int _code, int length, int gatetime, bool slur, const _CHAR _
 				size_t	i = 0;
 
 	if((_code<0) || (_code>15)){
-		_CERR << _T("mml_note::mml_note()関数で、エラーが発生しました。") << endl;
-		nsc_exit(EXIT_FAILURE);
+		throw invalid_argument("mml_note::mml_note()");
 	}
 
 	iSize = 1;

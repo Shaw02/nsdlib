@@ -24,7 +24,8 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //				無し
 //==============================================================
 FileInput::FileInput(void):
-	iLine(1),
+	f_error(false),
+	nowLine(1),
 	readData(0)
 {
 }
@@ -51,10 +52,10 @@ void	FileInput::fileopen(const char*	_strFileName){
 
 	open(_strFileName,ios_base::in | ios_base::binary);
 	if(good()==false){
+		f_error	= true;
 		perror(_strFileName);
-		nsc_exit(EXIT_FAILURE);
-	};
-	strFilename = _strFileName;
+	}
+	strFilename.append(_strFileName);
 };
 
 //--------------------------------
@@ -62,7 +63,7 @@ void	FileInput::fileopen(const char*	_strFileName){
 //--------------------------------
 void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 {
-	bool	success	= false;
+	f_error	= true;
 
 	//先ずは、そのまま
 	errno = 0;	//グローバル変数 errno を０に初期化
@@ -73,11 +74,10 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 	}
 
 	if(good()==true){
-		success = true;
+		f_error	= false;
 	} else {
 
 		//検索パス
-		size_t	i		= 0;
 		size_t	iSize	= _pass->count();
 		string	name;
 		string	workName= string(_strFileName);
@@ -88,7 +88,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 			workName.erase(0, loc);		//ファイル名のみ
 		}
 
-		while(i < iSize){
+		for(size_t i=0; i<iSize; ++i){
 
 #ifdef _WIN32
 			//Windowsの場合は、相対パスも含めて検索する（UNIX系は不可）
@@ -103,7 +103,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 				perror(name.c_str());
 			}
 			if(good()==true){
-				success = true;
+				f_error	= false;
 				break;
 			};
 #endif
@@ -119,21 +119,18 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 				perror(name.c_str());
 			}
 			if(good()==true){
-				success = true;
+				f_error	= false;
 				break;
 			};
-
-			i++;
-		}
-
+		};
 	};
 
-	if(success == false){
-		_CERR << _T("全ての検索パスで、ファイルが見つかりませんでした。") << endl;
+	if(f_error == true){
 		if(cOptionSW->flag_SearchPass == false){
 			perror(_strFileName);
 		}
-		nsc_exit(EXIT_FAILURE);
+	} else {
+		strFilename.append(_strFileName);	
 	}
 }
 
@@ -151,17 +148,21 @@ void	FileInput::StreamPointerMove(std::streamoff iSize){
 	seekg(iSize,ios::beg);
 };
 
+//--------------------------------
+//1Byte戻る
+//--------------------------------
 void	FileInput::Back(void)
 {
 	StreamPointerAdd(-1);
 	if(readData == 0x0A){
-		iLine--;
+		nowLine--;
 	}
 
 	//更新
 	read((char*)&readData, sizeof(unsigned char));
 	StreamPointerAdd(-1);
 }
+
 //--------------------------------
 //1Byte読み込み
 //--------------------------------
@@ -169,11 +170,12 @@ unsigned	char	FileInput::cRead()
 {
 	read((char*)&readData, sizeof(unsigned char));
 	if(readData == 0x0A){
-		iLine++;
+		nowLine++;
 	}
 
 	return(readData);
 };
+
 //--------------------------------
 //サイズ
 //--------------------------------

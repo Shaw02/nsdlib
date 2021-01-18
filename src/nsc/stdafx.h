@@ -16,6 +16,19 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+//---------------------------------------------------------------
+//	Microsoft Visual C++ では _Pragma() が使えない対策
+#ifdef	_MSC_VER
+	//Visual C++だったら
+	#define _PRAGMA(x)	__pragma(x)
+#else
+	//C++11標準の方法
+	#define _PRAGMA(x)	_Pragma(#x)
+#endif
+
+
+//---------------------------------------------------------------
+//Unicode環境
 #ifdef	_UNICODE
 	#define	_CHAR	wchar_t
 	#define _T(x)	L ## x
@@ -30,47 +43,95 @@
 	#define	_CERR	cerr
 #endif
 
+
+//---------------------------------------------------------------
+//パス区切り
 #ifdef	_WIN32
-	#include <locale>
-	#define _PATH_SPLIT	';'	// MS系は ;
+	// MS系は ;
+	#define _PATH_SPLIT	';'
 #else
-	#include <locale.h>
-	#define _PATH_SPLIT	':'	// UNIX系は :
+	// UNIX系は :
+	#define _PATH_SPLIT	':'
 #endif
 
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-//#include <tchar.h>
+//---------------------------------------------------------------
+//OpenMP
+#ifdef _OPENMP
+	#include	<omp.h>
+	#define	_OMP_INIT_LOCK(x)			omp_init_lock(&x);
+	#define	_OMP_SET_LOCK(x)			omp_set_lock(&x);
+	#define	_OMP_UNSET_LOCK(x)			omp_unset_lock(&x);
+	#define	_OMP_DESTROY_LOCK(x)		omp_destroy_lock(&x);
+	#define	_OMP(x)						_PRAGMA(omp x)
+#else
+	#define	_OMP_INIT_LOCK(x)
+	#define	_OMP_SET_LOCK(x)
+	#define	_OMP_UNSET_LOCK(x)
+	#define	_OMP_DESTROY_LOCK(x)
+	#define	_OMP(x)	
+#endif
 
-#include <string>
+#define	_OMP_FOR					_OMP(for)
+#define	_OMP_FOR_NOWAIT				_OMP(for nowait)
+#define	_OMP_SECTIONS				_OMP(sections)
+#define	_OMP_SECTION				_OMP(section)
+#define	_OMP_SINGLE					_OMP(single)
+#define	_OMP_PARALLEL				_OMP(parallel)
+#define	_OMP_PARALLEL_FOR			_OMP(parallel for)
+#define	_OMP_PARALLEL_FOR_NOWAIT	_OMP(parallel for nowait)
+#define	_OMP_PARALLEL_SECTIONS		_OMP(parallel sections)
+
+
+
+//---------------------------------------------------------------
+//標準ライブラリ
+//C
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <clocale>	//gcc用にこっちも入れておく。
+
+//C++
+#include <algorithm>
+#include <exception>
+#include <stdexcept>
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <list>
 #include <map>
+#include <string>
+#include <locale>
 
-#include <iomanip>
 
-/****************************************************************/
-/*			プロトタイプ										*/
-/****************************************************************/
+/***************************************************************/
+/*			プロジェクトの各ヘッダー							*/
+/***************************************************************/
 
-void nsc_exit(int no);
 
 using namespace std;
+
+//プロトタイプ宣言
+void nsc_exit(int no);		//■■■■ To Do:	廃止予定
+void nsc_ErrMsg(int no);
+void nsc_ErrMsg(const exception& e);
+void nsc_ErrMsg(const _CHAR *stErrMsg);
 
 class	MusicHeader;
 class	MusicFile;
 class	MMLfile;
 class	Sub;
 
+//構造体定義
 typedef struct {
 	const char*	str;
 	int			id;
 } Command_Info;
 
+//ヘッダー
 #include "SearchPass.h"			//検索パス
 
 #include "FileInput.h"			//ファイル入力用

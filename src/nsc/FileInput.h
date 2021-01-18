@@ -14,8 +14,9 @@ class FileInput :
 {
 protected:
 //メンバー変数
+		bool	f_error;					//エラー発生の有無
 				string		strFilename;
-	unsigned	int			iLine;		//現在のライン
+				size_t		nowLine;		//現在のライン
 	unsigned	char		readData;
 
 //メンバー関数
@@ -30,7 +31,7 @@ public:
 			string*	GetFilename(void){return(&strFilename);};
 unsigned	char	cRead();
 std::streamoff		GetSize();
-unsigned	int		GetLine(void){return(iLine);};
-			void	SetLine(unsigned int i){iLine = i;};
-
+			size_t	GetLine(void){return(nowLine);};
+			void	SetLine(size_t i){nowLine = i;};
+			bool	isError(){return(f_error);};
 };

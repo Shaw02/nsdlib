@@ -15,6 +15,10 @@
 /****************************************************************/
 extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 
+#ifdef _OPENMP
+	extern	omp_lock_t		lock_cout;
+#endif
+
 //==============================================================
 //		コンストラクタ
 //--------------------------------------------------------------
@@ -48,7 +52,9 @@ MetaItem::~MetaItem(void)
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->iDebug & DEBUG_Meta_Delete){
+		_OMP_SET_LOCK(lock_cout)
 		_COUT << _T("Delete Meta Object : ") << m_identifier << endl;
+		_OMP_UNSET_LOCK(lock_cout)
 	}
 }
 
@@ -62,9 +68,6 @@ MetaItem::~MetaItem(void)
 //==============================================================
 void	MetaItem::clear(void)
 {
-	//----------------------
-	//Local変数
-	list<	MetaItem*>::iterator	itItem;
 
 	//----------------------
 	//clear
@@ -72,14 +75,10 @@ void	MetaItem::clear(void)
 
 	//----------------------
 	//Delete Class
-	if(!ptcItem.empty()){
-		itItem = ptcItem.begin();
-		while(itItem != ptcItem.end()){
-			delete *itItem;
-			itItem++;
-		}
-		ptcItem.clear();
+	for(list<MetaItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it!=e; ++it){
+		delete *it;
 	}
+	ptcItem.clear();
 
 	m_size = 0;
 }
@@ -120,17 +119,12 @@ size_t	MetaItem::getOffset()
 //==============================================================
 size_t	MetaItem::SetOffset(size_t _offset)
 {
-	//----------------------
-	//Local変数
-	list<	MetaItem*>::iterator	itItem;
-	size_t	i = 0;
 
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->iDebug & DEBUG_Meta_Set){
 		_COUT << _T("Object Address [0x") << hex << setw(4) << setfill(_T('0')) << _offset << _T("]: ");
-		while(i < m_data.size()){
+		for(size_t i=0, e=m_data.size(); i<e; ++i){
 			_COUT	<<	hex	<<	setw(2)	<<	setfill(_T('0'))	<<	(unsigned int)(m_data[i] & 0xFF)	<<	_T(" ");
-			i++;
 		}
 		_COUT  << dec	<< _T(": ") << m_identifier << endl;
 	}
@@ -138,12 +132,8 @@ size_t	MetaItem::SetOffset(size_t _offset)
 	m_offset = _offset;
 	_offset	+= m_data.size();
 
-	if(!ptcItem.empty()){
-		itItem = ptcItem.begin();
-		while(itItem != ptcItem.end()){
-			_offset = (*itItem)->SetOffset(_offset);
-			itItem++;
-		}
+	for(list<MetaItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it!=e; ++it){
+		_offset = (*it)->SetOffset(_offset);
 	}
 
 	//このオブジェクトのサイズ（最適化後）
@@ -219,16 +209,11 @@ size_t	MetaItem::getData(string* _str)
 	//----------------------
 	//Local変数
 	size_t	_size0 = _str->size();
-	list<	MetaItem*>::iterator	itItem;
 
 	_str->append(m_data);
 
-	if(!ptcItem.empty()){
-		itItem = ptcItem.begin();
-		while(itItem != ptcItem.end()){
-			(*itItem)->getMetaData(_str);
-			itItem++;
-		}
+	for(list<MetaItem*>::iterator it=ptcItem.begin(), e=ptcItem.end(); it!=e; ++it){
+		(*it)->getMetaData(_str);
 	}
 	m_size = _str->size() - _size0;
 	return(m_size);
@@ -309,7 +294,7 @@ void	MetaItem::append(string* _str)
 //		コードの設定
 //--------------------------------------------------------------
 //	●引数
-//		string*		_str
+//		int	i
 //	●返値
 //				無し
 //==============================================================

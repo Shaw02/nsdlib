@@ -137,11 +137,11 @@ public:
 			MusicTrack(size_t _id, MMLfile* MML, const _CHAR _strName[] = _T("---- [ Music Track ] ----"));
 			~MusicTrack(void);
 
-	unsigned	int		TickCount(MusicFile* MUS, NSD_WORK* work);
-	unsigned	int		TickCount(MusicFile* MUS);
-				void	TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t _no, bool* f_ERR);
-	unsigned	int		GetTickTotal(void){	return(iTickTotal);};
-	unsigned	int		GetTickLoop(void){	return(iTickLoop);};
+				int		TickCount(MusicFile* MUS, NSD_WORK* work);
+				int		TickCount(MusicFile* MUS);
+				void	TickCount_Envelope(MusicFile* MUS, mml_Address* adrObj, size_t _no);
+				int		GetTickTotal(void){	return(iTickTotal);};
+				int		GetTickLoop(void){	return(iTickLoop);};
 
 				void	Fix_Address(MusicFile* MUS);
 				void	SetEvent(MusicItem* _item);		//ƒCƒxƒ“ƒg‚Ì’Ç‰Á
@@ -176,10 +176,6 @@ public:
 
 				void	SetRepeat_C_Start(MMLfile* MML);
 				void	SetRepeat_C_End(MMLfile* MML);
-
-				void	CopyAddressEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
-				void	CopySubEvent(	 string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
-				void	CopyEnvEvent(	 string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 
 				void	SetSE(MMLfile* MML);
 				void	SetSubroutine(size_t _no);

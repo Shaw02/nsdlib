@@ -15,16 +15,24 @@
 /*			定数定義											*/
 /*																*/
 /****************************************************************/
-typedef	struct{
+typedef	struct nsd_dpcm_info{
 				string	file;
 	unsigned	char	ctrl;
 	unsigned	char	DA;
 	unsigned	char	next;
 	unsigned	char	offset;
 	unsigned	char	size;
+	nsd_dpcm_info(){
+		file	= "";
+		ctrl	= 0;
+		DA		= 0;
+		next	= 0;
+		offset	= 0;
+		size	= 0;
+	}
 } nsd_dpcm_info;
 
-typedef struct{
+typedef	struct{
 	char		Control;			/*	I/O 0x4010	*/
 	char		DA;					/*	I/O 0x4011	*/
 	char		Address;			/*	I/O 0x4012	*/
@@ -41,6 +49,7 @@ class DPCMinfo :
 {
 //メンバー変数
 private:
+	bool				f_error;				//エラー発生の有無
 	bool				bank;
 	unsigned	char	max_number;
 	nsd_dpcm_info		infoDPCM[256];
@@ -56,4 +65,5 @@ public:
 				size_t	setDPCMoffset(size_t _offset, unsigned char _MusBank);
 				void	getDPCMCode(string* _str);
 				void	getAsm(MusicFile* MUS);
+				bool	isError(){return(f_error);};
 };

@@ -24,7 +24,7 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //	●返値
 //				無し
 //==============================================================
-MusicHeader::MusicHeader(string _code) :
+MusicHeader::MusicHeader(string& _code) :
 	MetaItem("NSFE"),
 	bank(false),
 	op_code(false),
@@ -81,25 +81,29 @@ MusicHeader::~MusicHeader(void)
 //--------------------------------------------------------------
 void	MusicHeader::Set_Title(MMLfile* MML)
 {
-	title = MML->GetString(true);
+	title.clear();
+	MML->GetString(&title, true);
 }
 
 //--------------------------------------------------------------
 void	MusicHeader::Set_Copyright(MMLfile* MML)
 {
-	copyright = MML->GetString(true);
+	copyright.clear();
+	MML->GetString(&copyright, true);
 }
 
 //--------------------------------------------------------------
 void	MusicHeader::Set_Composer(MMLfile* MML)
 {
-	composer = MML->GetString(true);
+	composer.clear();
+	MML->GetString(&composer, true);
 }
 
 //--------------------------------------------------------------
 void	MusicHeader::Set_Maker(MMLfile* MML)
 {
-	maker = MML->GetString(true);
+	maker.clear();
+	MML->GetString(&maker, true);
 }
 
 //--------------------------------------------------------------
@@ -109,7 +113,7 @@ void	MusicHeader::Text_Append(MMLfile* MML)
 		text.push_back(0x0D);
 		text.push_back(0x0A);
 	}
-	text.append(MML->GetString(true));
+	MML->GetString(&text, true);
 }
 
 
@@ -514,19 +518,22 @@ const	static	Command_Info	Command[] = {
 //==============================================================
 void	MusicHeader::Set_SegmentSEQ(MMLfile* MML)
 {
-	segmentSEQ = MML->GetString(false);
+	segmentSEQ.clear();
+	MML->GetString(&segmentSEQ, false);
 }
 
 //==============================================================
 void	MusicHeader::Set_SegmentPCM(MMLfile* MML)
 {
-	segmentPCM = MML->GetString(false);
+	segmentPCM.clear();
+	MML->GetString(&segmentPCM, false);
 }
 
 //==============================================================
 void	MusicHeader::Set_Label(MMLfile* MML)
 {
-	Label = MML->GetString(false);
+	Label.clear();
+	MML->GetString(&Label, false);
 }
 
 //==============================================================
@@ -552,10 +559,12 @@ void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 void	MusicHeader::Set_RomCode(MMLfile* MML)
 {
 	if(op_code == true){
+		string	_str = "";
 		MML->Warning(_T("オプションスイッチでリンクするコードが指定されているので、#codeコマンドは無視します。"));
-		MML->GetString(false);
+		MML->GetString(&_str, false);
 	} else {
-		romcode = MML->GetString(false);
+		romcode.clear();
+		MML->GetString(&romcode, false);
 	}
 }
 

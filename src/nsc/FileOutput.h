@@ -12,10 +12,16 @@
 class FileOutput :
 	public ofstream
 {
+protected:
+//メンバー変数
+		bool	f_error;					//エラー発生の有無
+
 public:
-		FileOutput(void);
-		~FileOutput(void);
-void	fileopen(const char*	strFileName);
-void	StreamPointerAdd(std::streamoff iSize);
-void	StreamPointerMove(std::streamoff iSize);
+//メンバー関数
+					FileOutput(void);
+					~FileOutput(void);
+			void	fileopen(const char*	strFileName);
+			void	StreamPointerAdd(std::streamoff iSize);
+			void	StreamPointerMove(std::streamoff iSize);
+			bool	isError(){return(f_error);};
 };
