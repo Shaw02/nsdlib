@@ -421,11 +421,7 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
 	while(1){
@@ -438,9 +434,7 @@ const	static	Command_Info	Command[] = {
 			}
 		} else {
 			// } が来る前に、[EOF]が来たらエラー
-			if( MML->eof() ){
-				MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-			}
+			MML->ChkEOF();
 
 			//１つ戻る
 			MML->Back();

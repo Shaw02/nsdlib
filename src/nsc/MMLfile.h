@@ -87,6 +87,9 @@ public:			void	Back(void);						//1文字戻し（全角・半角変換対応）
 private:		char	read_char(void);				//1Byte読み込み
 public:			char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
 				char	GetChar(void);					//1Byte読み込み（with EOF & Commend check）
+				void	ChkBlockStart(void);					//'{'が来るまでポインタを進める
+				void	ChkEOF(void);							//[EOF]チェック
+				bool	GetChar_With_ChkEOF(char* cData);		//1Byte読み込み '}'チェック付き
 				void	GetString(string* _str, bool f_ESC);	//""付 文字列 読み込み
 				int		GetNum(void);					//()付  数値  読み込み
 				int		GetInt(void);					//数値読み込み
