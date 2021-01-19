@@ -106,6 +106,7 @@ public:			char	cRead(void);					//1Byte“Ç‚Ýž‚Ýi‘SŠpE”¼Šp•ÏŠ·‘Î‰žj
 				size_t	GetLine(void){return(nowFile->GetLine());};
 				void	SetLine(size_t i){nowFile->SetLine(i);};
 
+				void	ErrUnknownCmd();
 				void	Err(const _CHAR msg[]);
 				void	Warning(const _CHAR msg[]);
 

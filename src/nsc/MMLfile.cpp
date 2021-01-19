@@ -240,12 +240,12 @@ void	MMLfile::SetMacro(int i_Lv)
 	//マクロ内容の取得
 	cData = GetChar();
 	if(cData != '{'){
-		Err(_T("マクロ定義開始を示す{が見つかりません。"));
+		Err(_T("マクロ定義開始を示す{が見つかりませんでした。"));
 	}
 
 	while(('}' != (cData = GetChar())) || (iKakko != 0)){
 		if(eof()){
-			Err(_T("文字列終了を示す}が見つかりません。"));
+			Err(_T("文字列終了を示す}が見つかりませんでした。"));
 		}
 		if(cData == '{'){
 			iKakko++;
@@ -737,7 +737,7 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 						do{
 							cData = cRead();		//次のバイトを読み込み
 							if(eof()){
-								Err(_T("コメント終端 */ がありません。"));
+								Err(_T("コメント終端 */ が見つかりませんでした。"));
 							}
 						}while(cData != '*');
 						cData = cRead();
@@ -748,7 +748,7 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 
 				//それ以外
 				default:
-					Err(_T("コメントですか？"));
+					Err(_T("'/'が１つしか見つかりませんでした。"));
 					break;
 			}
 
@@ -777,7 +777,7 @@ void	MMLfile::ChkBlockStart(void)
 			continue;
 		} else {
 			//それ以外はエラーにする
-			Err(_T("ブロックの開始を示す{が見つかりません。"));
+			Err(_T("ブロックの開始を示す{が見つかりませんでした。"));
 		}
 	}
 }
@@ -789,7 +789,7 @@ void	MMLfile::ChkEOF(void)
 {
 	// } が来る前に、[EOF]が来たらエラー
 	if(eof()){
-		Err(_T("ブロックの終端を示す`}'がありません。"));
+		Err(_T("ブロックの終端を示す`}'がありませんでした。"));
 	}
 }
 
@@ -830,17 +830,17 @@ void	MMLfile::GetString(string* _str, bool	f_ESC)
 
 	cData = GetChar();
 	if(cData != '"'){
-			Err(_T("文字列開始を示す\"が見つかりません。"));
+			Err(_T("文字列開始を示す\"が見つかりませんでした。"));
 	}
 
 	while('"' != (cData = cRead())){
 		if(eof()){
-			Err(_T("文字列終了を示す\"が見つかりません。"));
+			Err(_T("文字列終了を示す\"が見つかりませんでした。"));
 		}
 		if((f_ESC == true) && (cData == '\\')){
 			cData = GetChar();
 			if(eof()){
-				Err(_T("文字列終了を示す\"が見つかりません。"));
+				Err(_T("文字列終了を示す\"が見つかりませんでした。"));
 			}
 			switch(cData){
 				case('a'):
@@ -918,14 +918,14 @@ int	MMLfile::GetNum(void)
 
 	cData = GetChar();
 	if(cData != '('){
-		Err(_T("数値開始を示す(が見つかりません。"));
+		Err(_T("数値開始を示す(が見つかりませんでした。"));
 	}
 
 	iResult = GetInt();
 
 	cData = GetChar();
 	if(cData != ')'){
-		Err(_T("数値終了を示す)が見つかりません。"));
+		Err(_T("数値終了を示す)が見つかりませんでした。"));
 	}
 
 	return(iResult);
@@ -1261,6 +1261,15 @@ int	MMLfile::GetCommandID(const Command_Info _command[], size_t _size)
 	StreamPointerMove(ptCmdEnd);
 
 	return(iResult);
+}
+
+//==============================================================
+//		エラー処理
+//--------------------------------------------------------------
+void	MMLfile::ErrUnknownCmd()
+{
+	Err(_T("Unknown Command"));
+	cRead();		//ポインタを一つ進める。
 }
 
 //==============================================================

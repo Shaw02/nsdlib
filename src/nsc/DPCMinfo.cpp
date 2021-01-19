@@ -198,7 +198,7 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
@@ -351,25 +351,6 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	} else {
 		infoDPCM[note].next = 0;
 	}
-/*
-	cData = MML->GetChar();
-	if(cData == ','){
-		if(mode != 2){
-			MML->Err(_T("モード2(IRQ)以外のモードでは不要です。"));
-		}
-		next = MML->GetInt();	
-		if((next<-1) || (next>255)){
-			MML->Err(_T("次のノート番号は0～255の範囲で指定して下さい。"));
-		}
-		infoDPCM[note].next = (unsigned char)next;
-	} else {
-		if(mode == 2){
-			MML->Err(_T("モード2(IRQ)の時は必ず次に発音するノート番号を指定してください。"));
-		}
-		MML->Back();
-		infoDPCM[note].next = 0;
-	}
-*/
 
 	//offset
 	cData = MML->GetChar();
@@ -396,7 +377,6 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		MML->Back();
 		infoDPCM[note].size = 0;
 	}
-
 }
 
 //==============================================================

@@ -90,7 +90,7 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}

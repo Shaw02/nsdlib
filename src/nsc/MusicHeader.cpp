@@ -311,7 +311,7 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
@@ -482,7 +482,7 @@ const	static	Command_Info	Command[] = {
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
