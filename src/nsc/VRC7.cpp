@@ -30,7 +30,7 @@ VRC7::VRC7(MMLfile* MML, size_t _id, const _CHAR _strName[]):
 	unsigned	char	_mode	= 0;
 	unsigned	char	_pt		= 0;
 	unsigned	char	_opll[24];
-	unsigned	char	cData;
+				char	cData;
 
 //	定数定義
 enum	Command_ID_mml {
@@ -70,24 +70,13 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
-
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
+	while(MML->GetChar_With_ChkEOF(&cData)){
 
 		//１つ戻る
 		MML->Back();
-
 
 		//各コマンド毎の処理
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
@@ -136,7 +125,7 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}

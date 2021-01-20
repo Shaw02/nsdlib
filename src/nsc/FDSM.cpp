@@ -51,37 +51,26 @@ const	static	Command_Info	Command[] = {
 };
 
 				int		i;
-	unsigned	char	cData;
+				char	cData;
 	unsigned	int		ptFDSM		= 0;
 				string	WAVE;
 
 	//------------------------------
 	//クラスの初期設定
 	WAVE.clear();
+	code.resize(0);
 
 	//------------------------------
 	//コンパイル
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
-
-	code.resize(0);
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
+	while(MML->GetChar_With_ChkEOF(&cData)){
 
 		//１つ戻る
 		MML->Back();
-
 
 		//各コマンド毎の処理
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
@@ -101,7 +90,7 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}

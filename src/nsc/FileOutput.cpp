@@ -46,7 +46,6 @@ void	FileOutput::fileopen(const char*	strFileName){
 	//File open
 	open(strFileName,ios_base::out | ios_base::binary);
 	if(good()==false){
-		perror(strFileName);
 		f_error	= true;
 	}
 };

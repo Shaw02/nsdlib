@@ -29,11 +29,15 @@ DPCM::DPCM(MMLfile* MML, const char* dmcfile, size_t _id, const _CHAR _strName[]
 	MusicItem(_id, _strName),
 	_DPCM_size(0)
 {
-
 	fileopen(dmcfile, &cOptionSW->m_pass_dmc);
 
-	if(f_error == false){
-
+	if(f_error == true){
+		string	errMsg = "\"";
+		errMsg += dmcfile;
+		errMsg += "\" :";
+		errMsg += strerror(errno);
+		MML->Err(errMsg);
+	} else {
 		//----------------------
 		//Local•Ï”
 		size_t	_size	= GetSize();

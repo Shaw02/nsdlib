@@ -29,6 +29,7 @@ class MMLfile	// :
 {
 //メンバー変数
 private:
+				string				nowCommand;			//現在コンパイル中のコマンド
 	vector	<	FileInput*	>		ptcFiles;			//MMLファイル
 				FileInput*			nowFile;			//現在のファイル
 				size_t				iFiles;				//現在のファイルNo.
@@ -44,7 +45,7 @@ private:
 				bool				f_2to1;				//マルチバイト文字を変換した？
 				bool				f_error;			//エラー発生の有無
 public:
-	map		<size_t,	Patch*>	ptcPatch;			//Patch
+	map		<	size_t,	Patch*>		ptcPatch;			//Patch
 
 				size_t				offset_Ei;			//
 				size_t				offset_Ev;			//
@@ -87,6 +88,9 @@ public:			void	Back(void);						//1文字戻し（全角・半角変換対応）
 private:		char	read_char(void);				//1Byte読み込み
 public:			char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
 				char	GetChar(void);					//1Byte読み込み（with EOF & Commend check）
+				void	ChkBlockStart(void);					//'{'が来るまでポインタを進める
+				void	ChkEOF(void);							//[EOF]チェック
+				bool	GetChar_With_ChkEOF(char* cData);		//1Byte読み込み '}'チェック付き
 				void	GetString(string* _str, bool f_ESC);	//""付 文字列 読み込み
 				int		GetNum(void);					//()付  数値  読み込み
 				int		GetInt(void);					//数値読み込み
@@ -103,8 +107,11 @@ public:			char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
 				size_t	GetLine(void){return(nowFile->GetLine());};
 				void	SetLine(size_t i){nowFile->SetLine(i);};
 
+				void	ErrUnknownCmd();
 				void	Err(const _CHAR msg[]);
 				void	Warning(const _CHAR msg[]);
+				void	Err(const string& str);
+				void	Warning(const string& str);
 
 				bool	isError(){return(f_error);};
 };

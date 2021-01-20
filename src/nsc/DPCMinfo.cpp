@@ -122,7 +122,7 @@ const	static	Command_Info	Command[] = {
 
 };
 
-	unsigned	char	cData;
+				char	cData;
 
 	//------------------------------
 	//クラスの初期設定
@@ -133,23 +133,13 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
+	while(MML->GetChar_With_ChkEOF(&cData)){
 
 		//１つ戻る
 		MML->Back();
-
 
 		//各コマンド毎の処理
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
@@ -208,7 +198,7 @@ const	static	Command_Info	Command[] = {
 
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
@@ -296,7 +286,6 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);
 		if(_DPCM->isError() == true){
 			f_error = true;	//読み込みに失敗した場合
-			MML->Err(_T("⊿PCMのファイルが見つかりませんでした。"));
 		}
 		ptcDPCM[infoDPCM[note].file] = _DPCM;
 		m_id++;
@@ -361,25 +350,6 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	} else {
 		infoDPCM[note].next = 0;
 	}
-/*
-	cData = MML->GetChar();
-	if(cData == ','){
-		if(mode != 2){
-			MML->Err(_T("モード2(IRQ)以外のモードでは不要です。"));
-		}
-		next = MML->GetInt();	
-		if((next<-1) || (next>255)){
-			MML->Err(_T("次のノート番号は0～255の範囲で指定して下さい。"));
-		}
-		infoDPCM[note].next = (unsigned char)next;
-	} else {
-		if(mode == 2){
-			MML->Err(_T("モード2(IRQ)の時は必ず次に発音するノート番号を指定してください。"));
-		}
-		MML->Back();
-		infoDPCM[note].next = 0;
-	}
-*/
 
 	//offset
 	cData = MML->GetChar();
@@ -406,7 +376,6 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		MML->Back();
 		infoDPCM[note].size = 0;
 	}
-
 }
 
 //==============================================================

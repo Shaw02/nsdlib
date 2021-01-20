@@ -98,7 +98,7 @@ OPSW::OPSW(int argc, char* argv[]):
 									fTemp = false;
 									break;
 								default :
-									throw argv[iCount];
+									throw string(argv[iCount]);
 									break;
 							}
 							switch(argv[iCount][2]){
@@ -115,7 +115,7 @@ OPSW::OPSW(int argc, char* argv[]):
 									flag_OptSeq = fTemp;
 									break;
 								default :
-									throw argv[iCount];
+									throw string(argv[iCount]);
 									break;
 							}
 							break;
@@ -157,7 +157,7 @@ OPSW::OPSW(int argc, char* argv[]):
 								iNSF_version = 2;
 								break;
 							default :
-								throw argv[iCount];
+								throw string(argv[iCount]);
 								break;
 						}
 						break;
@@ -185,7 +185,7 @@ OPSW::OPSW(int argc, char* argv[]):
 						iResult=sscanf(argv[iCount],"-D%d",&i);
 						iDebug = i;
 						if((iResult==0)||(iResult==EOF)){
-							throw argv[iCount];
+							throw string(argv[iCount]);
 							break;
 						};
 						break;
@@ -309,14 +309,14 @@ OPSW::OPSW(int argc, char* argv[]):
 							};
 							break;
 						default :
-							throw argv[iCount];
+							throw string(argv[iCount]);
 							break;
 						};
 					break;
 					//--------
 					//デフォルト
 					default :
-						throw argv[iCount];
+						throw string(argv[iCount]);
 						break;
 				};
 
@@ -461,13 +461,13 @@ OPSW::OPSW(int argc, char* argv[]):
 			_COUT	<<	_T("オプションが不正です。：") << stErrMsg << endl;
 		}
 		fOptionError = true;	//オプション処理でエラーが発生した。
-	} catch (const char *stErrMsg) {
+	} catch (const string& str) {
 		if(fErr == true){
 			_CERR	<<	_T("オプションが不正です。：");
-			cerr	<<	stErrMsg << endl;
+			cerr	<<	str.c_str() << endl;
 		} else {
 			_COUT	<<	_T("オプションが不正です。：");
-			cout	<<	stErrMsg << endl;
+			cout	<<	str.c_str() << endl;
 		}
 		fOptionError = true;	//オプション処理でエラーが発生した。
 	}

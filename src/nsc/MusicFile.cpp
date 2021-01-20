@@ -567,7 +567,7 @@ const	static	Command_Info	Command[] = {
 				case(id_Null):
 					break;
 				default:
-					MML->Err(_T("unknown command"));
+					MML->ErrUnknownCmd();
 					break;
 			}
 			

@@ -2509,26 +2509,19 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 
 	};
 
-	unsigned	char	cData;
-				char	sign = 0;
+	char	cData;
+	char	sign = 0;
 
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("調号コマンド・ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	// { の検索
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("調号コマンド・ブロックの終端を示す`}'がありません。"));
-		}
+	while(MML->GetChar_With_ChkEOF(&cData)){
 
 		//１つ戻る
 		MML->Back();
 
+		//各コマンド毎の処理
 		switch(MML->GetCommandID(KS_Command, sizeof(KS_Command)/sizeof(Command_Info))){
 			case(ks_c):
 				KeySignature[0] = sign;

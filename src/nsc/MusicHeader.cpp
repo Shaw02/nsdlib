@@ -210,7 +210,7 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 	};
 
 				size_t	i;
-	unsigned	char	cData;
+				char	cData;
 
 	//------------------------------
 	//コンパイル
@@ -222,20 +222,11 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 	setItem(meta_plst);
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
-
+	while(MML->GetChar_With_ChkEOF(&cData)){
+	
 		//１つ戻る
 		MML->Back();
 
@@ -253,7 +244,7 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
@@ -286,7 +277,7 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 	};
 
 				size_t	i;
-	unsigned	char	cData;
+				char	cData;
 
 	//------------------------------
 	//コンパイル
@@ -298,19 +289,10 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 	setItem(meta_psfx);
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
+	while(MML->GetChar_With_ChkEOF(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -329,7 +311,7 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
@@ -443,7 +425,7 @@ const	static	Command_Info	Command[] = {
 	};
 
 				int		i;
-	unsigned	char	cData;
+				char	cData;
 	unsigned	char	id = 0;
 
 	//------------------------------
@@ -457,19 +439,10 @@ const	static	Command_Info	Command[] = {
 	}
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
+	while(MML->GetChar_With_ChkEOF(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -509,7 +482,7 @@ const	static	Command_Info	Command[] = {
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
