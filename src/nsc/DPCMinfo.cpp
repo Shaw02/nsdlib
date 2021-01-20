@@ -286,7 +286,6 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 		_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);
 		if(_DPCM->isError() == true){
 			f_error = true;	//読み込みに失敗した場合
-			MML->Err(_T("⊿PCMのファイルが見つかりませんでした。"));
 		}
 		ptcDPCM[infoDPCM[note].file] = _DPCM;
 		m_id++;

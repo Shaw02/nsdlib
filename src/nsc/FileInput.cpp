@@ -53,7 +53,6 @@ void	FileInput::fileopen(const char*	_strFileName){
 	open(_strFileName,ios_base::in | ios_base::binary);
 	if(good()==false){
 		f_error	= true;
-		perror(_strFileName);
 	}
 	strFilename.append(_strFileName);
 };
@@ -125,11 +124,7 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 		};
 	};
 
-	if(f_error == true){
-		if(cOptionSW->flag_SearchPass == false){
-			perror(_strFileName);
-		}
-	} else {
+	if(f_error == false){
 		strFilename.append(_strFileName);	
 	}
 }

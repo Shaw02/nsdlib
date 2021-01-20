@@ -29,6 +29,7 @@ class MMLfile	// :
 {
 //メンバー変数
 private:
+				string				nowCommand;			//現在コンパイル中のコマンド
 	vector	<	FileInput*	>		ptcFiles;			//MMLファイル
 				FileInput*			nowFile;			//現在のファイル
 				size_t				iFiles;				//現在のファイルNo.
@@ -44,7 +45,7 @@ private:
 				bool				f_2to1;				//マルチバイト文字を変換した？
 				bool				f_error;			//エラー発生の有無
 public:
-	map		<size_t,	Patch*>	ptcPatch;			//Patch
+	map		<	size_t,	Patch*>		ptcPatch;			//Patch
 
 				size_t				offset_Ei;			//
 				size_t				offset_Ev;			//
@@ -109,6 +110,8 @@ public:			char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
 				void	ErrUnknownCmd();
 				void	Err(const _CHAR msg[]);
 				void	Warning(const _CHAR msg[]);
+				void	Err(const string& str);
+				void	Warning(const string& str);
 
 				bool	isError(){return(f_error);};
 };
