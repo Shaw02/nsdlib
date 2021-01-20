@@ -313,7 +313,7 @@ int	Envelop::sweep(MMLfile* MML)
 
 	cData = MML->GetChar();
 	if((cData != ')') && (cData != '}')){
-		MML->Err(_T("パラメータが足りません。"));
+		MML->Err(_T(") が見つかりませんでした。"));
 	}
 
 	//--------------------------

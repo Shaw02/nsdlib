@@ -244,7 +244,7 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
