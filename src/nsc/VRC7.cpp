@@ -70,10 +70,10 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();

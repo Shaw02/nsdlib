@@ -222,10 +222,10 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 	setItem(meta_plst);
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 	
 		//１つ戻る
 		MML->Back();
@@ -289,10 +289,10 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 	setItem(meta_psfx);
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -439,10 +439,10 @@ const	static	Command_Info	Command[] = {
 	}
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();

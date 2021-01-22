@@ -97,10 +97,10 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -291,21 +291,13 @@ int	Envelop::sweep(MMLfile* MML)
 		MML->Err(_T("開始点は-64～127の範囲で指定して下さい。"));
 	}
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("パラメータが足りません。"));
-	}
-
+	MML->Chk_Comma();
 	iEnd = MML->GetInt();
 	if( (iEnd<-64) || (iEnd>127)){
 		MML->Err(_T("終了点は-64～127の範囲で指定して下さい。"));
 	}
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("パラメータが足りません。"));
-	}
-
+	MML->Chk_Comma();
 	iLength = MML->GetInt();
 	if( (iLength<1) || (iLength>255)){
 		MML->Err(_T("長さは1～255の範囲で指定して下さい。"));

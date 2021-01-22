@@ -239,18 +239,11 @@ void	MMLfile::SetMacro(int i_Lv)
 		Err(_T("既にそのマクロ名は存在しています。"));
 	}
 
-
 	//------------------
 	//マクロ内容の取得
-	cData = GetChar();
-	if(cData != '{'){
-		Err(_T("マクロ定義開始を示す{が見つかりませんでした。"));
-	}
+	Chk_LeftCurlyBrace();
 
-	while(('}' != (cData = GetChar())) || (iKakko != 0)){
-		if(eof()){
-			Err(_T("文字列終了を示す}が見つかりませんでした。"));
-		}
+	while((GetChar_With_Chk_RightCurlyBrace(&cData)) || (iKakko != 0)){
 		if(cData == '{'){
 			iKakko++;
 		} else if(cData == '}'){
@@ -740,9 +733,7 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 					do{
 						do{
 							cData = cRead();		//次のバイトを読み込み
-							if(eof()){
-								Err(_T("コメント終端 */ が見つかりませんでした。"));
-							}
+							Chk_EOF();
 						}while(cData != '*');
 						cData = cRead();
 						Back();					//StreamPointerAdd(-1);
@@ -767,9 +758,20 @@ char	MMLfile::GetChar(void)		//1Byteの読み込み
 }
 
 //==============================================================
-//			{があるかチェック
+//			','があるかチェック
 //--------------------------------------------------------------
-void	MMLfile::ChkBlockStart(void)
+void	MMLfile::Chk_Comma(void)
+{
+	char cData = GetChar();
+	if(cData != ','){
+		Err(_T("次のパラメータを示す','が見つかりませんでした。"));
+	}
+}
+
+//==============================================================
+//			'{'があるかチェック
+//--------------------------------------------------------------
+void	MMLfile::Chk_LeftCurlyBrace(void)
 {
 	// { の検索
 	while(1){
@@ -781,7 +783,7 @@ void	MMLfile::ChkBlockStart(void)
 			continue;
 		} else {
 			//それ以外はエラーにする
-			Err(_T("ブロックの開始を示す{が見つかりませんでした。"));
+			Err(_T("ブロックの開始を示す'{'が見つかりませんでした。"));
 		}
 	}
 }
@@ -789,28 +791,28 @@ void	MMLfile::ChkBlockStart(void)
 //==============================================================
 //			[EOF]のチェック
 //--------------------------------------------------------------
-void	MMLfile::ChkEOF(void)
+void	MMLfile::Chk_EOF(void)
 {
 	// } が来る前に、[EOF]が来たらエラー
 	if(eof()){
-		Err(_T("ブロックの終端を示す`}'がありませんでした。"));
+		Err(_T("予期せぬ[EOF]を検出しました。"));
 	}
 }
 
 //==============================================================
-//			[EOF]の前に}があるかチェック
+//			[EOF]の前に'}'があるかチェック
 //--------------------------------------------------------------
 //	●引数
 //			chae	cData*	読み込んだデータを格納するポインタ
 //	●返値
 //			bool			読み込んだデータが`}'であったらfalse
 //==============================================================
-bool	MMLfile::GetChar_With_ChkEOF(char* cData)
+bool	MMLfile::GetChar_With_Chk_RightCurlyBrace(char* cData)
 {
 	//読み込み
 	*cData = GetChar();
 
-	ChkEOF();
+	Chk_EOF();
 
 	//`}'のチェック
 	return(*cData != '}');
@@ -838,14 +840,10 @@ void	MMLfile::GetString(string* _str, bool	f_ESC)
 	}
 
 	while('"' != (cData = cRead())){
-		if(eof()){
-			Err(_T("文字列終了を示す\"が見つかりませんでした。"));
-		}
+		Chk_EOF();
 		if((f_ESC == true) && (cData == '\\')){
 			cData = GetChar();
-			if(eof()){
-				Err(_T("文字列終了を示す\"が見つかりませんでした。"));
-			}
+			Chk_EOF();
 			switch(cData){
 				case('a'):
 					cData = '\a';

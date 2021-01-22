@@ -133,10 +133,10 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -274,11 +274,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	}
 
 	//ファイル名
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("⊿PCM定義のパラメータが足りません。"));
-	}
-
+	MML->Chk_Comma();
 	infoDPCM[note].file.clear();
 	MML->GetString(&infoDPCM[note].file, false);
 	if(ptcDPCM.count(infoDPCM[note].file) == 0){
@@ -294,21 +290,14 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	}
 
 	//再生周波数
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("⊿PCM定義のパラメータが足りません。"));
-	}
+	MML->Chk_Comma();
 	play_frequency = MML->GetInt();
 	if((play_frequency<0) || (play_frequency>15)){
 		MML->Err(_T("⊿PCMの周波数は0～15の範囲で指定して下さい。"));
 	}
 
 	//モード
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("⊿PCM定義のパラメータが足りません。"));
-	}
-
+	MML->Chk_Comma();
 	mode = MML->GetInt();
 	if((mode<0) || (mode>2)){
 		MML->Err(_T("⊿PCMのモードは0～2の範囲で指定して下さい。"));
@@ -333,20 +322,12 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 
 	//次のノート
 	if(mode == 2){
-		cData = MML->GetChar();
-		if(cData == ','){
-			next = MML->GetInt();	
-			if((next<-1) || (next>255)){
-				MML->Err(_T("次のノート番号は0～255の範囲で指定して下さい。"));
-			}
-			infoDPCM[note].next = (unsigned char)next;
-		} else {
-			if(mode == 2){
-				MML->Err(_T("モード2(IRQ)の時は必ず次に発音するノート番号を指定してください。"));
-			}
-			MML->Back();
-			infoDPCM[note].next = 0;
+		MML->Chk_Comma();
+		next = MML->GetInt();	
+		if((next<-1) || (next>255)){
+			MML->Err(_T("次のノート番号は0～255の範囲で指定して下さい。"));
 		}
+		infoDPCM[note].next = (unsigned char)next;
 	} else {
 		infoDPCM[note].next = 0;
 	}

@@ -1862,14 +1862,10 @@ void	MusicTrack::SetVRC7(MMLfile* MML)
 void	MusicTrack::SetN163(MMLfile* MML)
 {
 	unsigned	char	cNum	= (unsigned char)MML->GetInt();		//音色番号
-	unsigned	char	cData	= MML->GetChar();
 				size_t	_no;
 	mml_Address*		_event;
 
-	if(cData != ','){
-		MML->Err(_T("@N コマンドのパラメータが足りません。２つ指定してください。"));
-	}
-
+	MML->Chk_Comma();
 	_no = MML->GetInt();
 	_event	= new mml_Address(_no, (unsigned char)nsc_N163, cNum, _T("n163 wave table"));
 	SetEvent(_event);
@@ -1880,14 +1876,9 @@ void	MusicTrack::SetN163(MMLfile* MML)
 //--------------------------------------------------------------
 void	MusicTrack::SetN163_Load(MMLfile* MML)
 {
-				int		i		= MML->GetInt();
-	unsigned	char	cData	= MML->GetChar();
-				size_t	_no;
-	mml_Address*		_event;
-
-	if(cData != ','){
-		MML->Err(_T("@N コマンドのパラメータが足りません。２つ指定してください。"));
-	}
+			int		i	= MML->GetInt();
+			size_t	_no;
+	mml_Address*	_event;
 
 	if((i<0) || (i>252)){
 		MML->Err(_T("n16xの波形開始点は0～252の範囲で指定してください。"));
@@ -1896,6 +1887,7 @@ void	MusicTrack::SetN163_Load(MMLfile* MML)
 		MML->Err(_T("n16xの波形開始点は4の倍数で指定してください。"));
 	}
 
+	MML->Chk_Comma();
 	_no = MML->GetInt();
 	_event = new mml_Address(_no, (unsigned char)nsc_N163,(unsigned char)(i/4),_T("n163 wave table"));
 	SetEvent(_event);
@@ -2513,10 +2505,10 @@ void	MusicTrack::SetKeySignature(MMLfile*	MML)
 	char	sign = 0;
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -2946,11 +2938,7 @@ void	MusicTrack::SetEcho(MMLfile* MML)
 		MML->Err(_T("ECコマンドの第１パラメータは0～255の範囲で指定してください。"));
 	}
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("EC コマンドのパラメータが足りません。２つ指定してください。"));
-	}
-
+	MML->Chk_Comma();
 	_volume = MML->GetInt();
 	if((_volume<-1) || (_volume>15)){
 		MML->Err(_T("ECコマンドの第２パラメータは-1～15の範囲で指定してください。"));
@@ -3581,12 +3569,10 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 //==============================================================
 void	MusicTrack::SetProtament(MMLfile* MML)
 {
-	unsigned	char	cData;
-
-				int		_Decay;
-				int		_Rate;
-				int		_Depth;
-				int		_Target;
+	int		_Decay;
+	int		_Rate;
+	int		_Depth;
+	int		_Target;
 
 	_Decay = MML->GetInt();
 	if( (_Decay < 0) || (_Decay > 255) ){
@@ -3594,32 +3580,20 @@ void	MusicTrack::SetProtament(MMLfile* MML)
 	}
 	_Decay++;
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("P コマンドのパラメータが足りません。４つ指定してください。"));
-	}
-
+	MML->Chk_Comma();
 	_Rate = MML->GetInt();
 	if( (_Rate < 1) || (_Rate > 256) ){
 		MML->Err(_T("ポルタメントの第2パラメータは1～256の範囲で指定してください。"));
 	}
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("P コマンドのパラメータが足りません。４つ指定してください。"));
-	}
-
+	MML->Chk_Comma();
 	_Depth = MML->GetInt();
 	if( (_Depth < -128) || (_Depth > 127) ){
 		MML->Err(_T("ポルタメントの第3パラメータは-128～127の範囲で指定してください。"));
 	}
 	_Decay++;
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("P コマンドのパラメータが足りません。４つ指定してください。"));
-	}
-
+	MML->Chk_Comma();
 	_Target = MML->GetInt();
 	if( (_Target < -128) || (_Target > 127) ){
 		MML->Err(_T("ポルタメントの第4パラメータは-128～127の範囲で指定してください。"));

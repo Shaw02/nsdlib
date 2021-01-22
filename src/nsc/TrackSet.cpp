@@ -421,7 +421,7 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
 	while(1){
@@ -434,7 +434,7 @@ const	static	Command_Info	Command[] = {
 			}
 		} else {
 			// } が来る前に、[EOF]が来たらエラー
-			MML->ChkEOF();
+			MML->Chk_EOF();
 
 			//１つ戻る
 			MML->Back();
@@ -1392,22 +1392,17 @@ void	TrackSet::TempoDown()
 //==============================================================
 void	TrackSet::Set_Poke(MMLfile* MML)
 {
-	unsigned	int		addr;
-	unsigned	int		data;
-	unsigned	char	cData;
+	int		addr;
+	int		data;
 
 	addr = MML->GetInt();
 	if( (addr < 0x0000) || (addr > 0xFFFF) ){
 		MML->Err(_T("yコマンドのアドレスは$0000～$FFFFの範囲で指定して下さい。"));
 	}
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("yコマンドのパラメータが足りません。２つ指定してください。"));
-	}
-
+	MML->Chk_Comma();
 	data = MML->GetInt();
-	if(data > 255){
+	if((data < 0) || (data > 255)){
 		MML->Err(_T("yコマンドのデータは$00～$FFの範囲で指定して下さい。"));
 	}
 	SetEvent(new mml_poke(addr, (unsigned char)data));
@@ -1463,21 +1458,15 @@ void	TrackSet::Set_FDS_Volume(MMLfile* MML)
 //==============================================================
 void	TrackSet::Set_VRC7_Write(MMLfile* MML)
 {
-	unsigned	char	cData;
-
-				int		_Reg;
-				int		_Dat;
+	int		_Reg;
+	int		_Dat;
 
 	_Reg = MML->GetInt();
 	if( (_Reg < 0) || (_Reg > 0x40) ){
 		MML->Err(_T("VRC7レジスタ操作の第1パラメータは0～63の範囲で指定してください。"));
 	}
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("yV コマンドのパラメータが足りません。２つ指定してください。"));
-	}
-
+	MML->Chk_Comma();
 	_Dat = MML->GetInt();
 	if( (_Dat < 0) || (_Dat > 255) ){
 		MML->Err(_T("VRC7レジスタ操作の第2パラメータは0～255の範囲で指定してください。"));
