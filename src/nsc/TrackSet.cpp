@@ -396,8 +396,8 @@ const	static	Command_Info	Command[] = {
 		{	"｜",	mml_Bar					}
 };
 
-	unsigned	char	cData;
-				int		i;
+	char	cData;
+	int		i;
 
 	//------------------------------
 	//クラスの初期設定
@@ -426,18 +426,15 @@ const	static	Command_Info	Command[] = {
 	// } が来るまで、記述ブロック内をコンパイルする。
 	while(1){
 
-		cData = MML->GetChar();
-		if(cData == '}'){
+		if(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
+			//１つ戻る
+			MML->Back();
+		} else {
+			//'}'を検出した場合
 			TrackChk(MML);
 			if(nowTrack == NULL){
 				break;
 			}
-		} else {
-			// } が来る前に、[EOF]が来たらエラー
-			MML->Chk_EOF();
-
-			//１つ戻る
-			MML->Back();
 		}
 
 		//各コマンド毎の処理
@@ -1144,7 +1141,7 @@ void	TrackSet::TrackChk(MMLfile* MML)
 //==============================================================
 void	TrackSet::TrackProc(MMLfile* MML)
 {
-	unsigned		char	cData;
+	char	cData;
 
 	//------------------
 	//続きのトラックのチェック

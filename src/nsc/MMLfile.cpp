@@ -812,6 +812,8 @@ bool	MMLfile::GetChar_With_Chk_RightCurlyBrace(char* cData)
 	//読み込み
 	*cData = GetChar();
 
+	nowCommand = "{";
+
 	Chk_EOF();
 
 	//`}'のチェック
