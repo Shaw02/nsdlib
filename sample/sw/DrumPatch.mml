@@ -1,5 +1,8 @@
 
-#Title	"Drum Patch Test"
+#Title		"Drum Patch Test"
+#Maker		"MML Typed by S.W."
+
+#Text		"パッチ機能を使うと、ドラムセットが簡単に打ち込めます！！"
 
 #code	"../../bin/nsd.bin"
 

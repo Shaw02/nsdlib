@@ -1,12 +1,12 @@
 #title		"Fugue in G minor (The Little) BWV.578"
 #Composer	"J.S.Bach"
+#Maker		"MML Typed by S.W."
 
-/*
-------------------------------------------------------------
-Ｊ．Ｓ．バッハ　《フーガ》ト短調　BWV 578
+#Text
+"Ｊ．Ｓ．バッハ　《フーガ》ト短調　BWV 578
 編曲 ： Ｓ．Ｗ．
 
-J.S.Bach  "FUGE g moll (The Little)" BWV 578
+J.S.Bach  \"FUGE g moll (The Little)\" BWV 578
 Arranged by S.W.
 
 フーガとは、対位法による音楽形式で、ひとつの主題を複数の声部が模倣しながら
@@ -15,13 +15,7 @@ Arranged by S.W.
 
 今回は、この美しい曲を、あたかも教会で聴いている様な雰囲気を目指しました。
 （うまく、できたかな？）
-
-------------------------------------------------------------
-*/
-
-//	Time = 4:02
-
-
+"
 
 #BGM	1
 
@@ -50,6 +44,9 @@ S(0){	@16	s48	_+36	}
 
 
 BGM(0){
+
+#time	242000	//Time = 4:02
+#fade	0		//Fade = 0:00
 
 	t70
 	NC8	@N0,0	@N16,1
