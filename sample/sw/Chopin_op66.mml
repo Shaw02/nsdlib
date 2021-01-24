@@ -1,12 +1,10 @@
-
 #title		"Fantasie Impromptu, op.66"
 #Composer	"F.Chopin"
 #Copyright	"(C) S.W. 2014"
+#Maker		"MML Typed by S.W."
 
-/*
-time = 4:37
-
-《English》
+#Text
+"《English》
 This piano sound of NSF msuic is made with the patch function of sound driver `Nsd.lib'.
 I sampled the wave-form and the envelope-form of each note range from the piano.
 This music data use the method that change the wave-form and envelope-form with the each note range.
@@ -15,7 +13,6 @@ Actually, I wanted to make a narrowing a little finely piano,
 but waveform memory of n16x is not enough.
 So, I gave up.
 Number of wavefrom, sample length, etc...
-
 
 
 《日本語》
@@ -27,9 +24,8 @@ Nsd.libのパッチ機能を使って、ピアノを再現してみました。
 
 本当は、もうちょっと細かく作り込みたかったのですが、
 n16xの波形メモリが足りなく、断念です。
-n16xにロードする波形の数も、サンプル長にしても・・・。
+n16xにロードする波形の数も、サンプル長にしても・・・。"
 
-*/
 
 #Code		"../../bin/nsd_n163.bin"
 
@@ -157,6 +153,10 @@ Patch(10){
 
 bgm(0)
 {
+
+#time 	277000	// time = 4:37
+#fade	0
+
 	t96
 
 	NC8	@NL0,2	@NL32,3	@NL64,4	@NL96,15	@NL112,16		//n16x への転送はここで済ます。
