@@ -144,7 +144,8 @@ public:
 				int		GetTickLoop(void){	return(iTickLoop);};
 
 				void	Fix_Address(MusicFile* MUS);
-				void	SetEvent(MusicItem* _item);		//イベントの追加
+				void	SetEvent(MusicItem* _item);			//イベントの追加
+				void	SetEvent_front(MusicItem* _item);	//イベントの追加
 
 				//このトラックをコンパイルするかどうか
 				bool	GetCompileFlag(void){return(compile_flag);};

@@ -32,7 +32,8 @@ TrackSet::TrackSet(MMLfile* MML, size_t _id, bool _sub, bool _se, const _CHAR _s
 	author(""),
 	time(-1),
 	fade(-1),
-	iTempo(120)
+	iTempo(120),
+	fJump(false)
 {
 	//----------------------
 	//Local変数
@@ -1298,11 +1299,24 @@ void	TrackSet::Set_Priority(MMLfile* MML)
 //==============================================================
 void	TrackSet::SetJumpDrv(MMLfile* MML)
 {
-	int	i	= MML->GetInt();
+	unsigned	char	cData = MML->GetChar();
+				int		iValue;
 
-	switch(i){
+	if((cData >= '0') && (cData <= '9')){
+		MML->Back();
+		iValue = MML->GetInt();
+	} else {
+		MML->Back();
+		iValue = 0;		//省略した場合は、0にする。
+	}
+
+	switch(iValue){
 		case(0):
 			SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Jump_off, _T("Jump Off")));
+			if(fJump == false){
+				//TR1の先頭に jump を仕込む
+				ptcTrack[0]->SetEvent_front(new mml_general(nsd_SubCommand, (const char)nsd_sub_Jump_on, _T("Jump On (Auto)")));
+			}
 			break;
 		case(1):
 			SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Jump_on, _T("Jump On")));
@@ -1310,6 +1324,7 @@ void	TrackSet::SetJumpDrv(MMLfile* MML)
 		default:
 			MML->Err(_T("jコマンドが指定可能な範囲を超えました。"));
 	}
+	fJump = true;	//j コマンドが出現しました。
 }
 
 //==============================================================
