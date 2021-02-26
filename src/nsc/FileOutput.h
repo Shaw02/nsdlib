@@ -21,7 +21,7 @@ public:
 					FileOutput(void);
 					~FileOutput(void);
 			void	fileopen(const char*	strFileName);
-			void	StreamPointerAdd(std::streamoff iSize);
-			void	StreamPointerMove(std::streamoff iSize);
+			void	StreamPointerAdd(fstream::off_type iSize);
+			void	StreamPointerMove(fstream::pos_type iSize);
 			bool	isError(){return(f_error);};
 };

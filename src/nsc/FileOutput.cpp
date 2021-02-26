@@ -53,13 +53,13 @@ void	FileOutput::fileopen(const char*	strFileName){
 //--------------------------------
 //相対シーク
 //--------------------------------
-void	FileOutput::StreamPointerAdd(std::streamoff iSize){
+void	FileOutput::StreamPointerAdd(fstream::off_type iSize){
 	seekp(iSize,ios::cur);
 };
 
 //--------------------------------
 //絶対シーク
 //--------------------------------
-void	FileOutput::StreamPointerMove(std::streamoff iSize){
-	seekp(iSize,ios::beg);
+void	FileOutput::StreamPointerMove(fstream::pos_type iSize){
+	seekp(iSize);
 };

@@ -800,11 +800,11 @@ size_t	MusicFile::SetDPCMOffset(size_t iMusSize)
 //==============================================================
 void	MusicFile::Fix_Address(void)
 {
-	for (int n = 0; n < Header.iBGM; ++n) {
+	for (size_t n = 0; n < Header.iBGM; ++n) {
 		ptcBGM[n]->Fix_Address(this);	//この先で並列化[済]
 	}
 
-	for (int n = 0; n < Header.iSE; ++n) {
+	for (size_t n = 0; n < Header.iSE; ++n) {
 		ptcSE[n]->Fix_Address(this);	//この先で並列化[済]
 	}
 
@@ -822,11 +822,11 @@ void	MusicFile::Fix_Address(void)
 //	●返値
 //		size_t						読み込んだ.binファイル（NSFヘッダー分を除く）
 //==============================================================
-size_t	MusicFile::read_bin(string* _str, NSF_Header* nsf_hed)
+std::streamsize	MusicFile::read_bin(string* _str, NSF_Header* nsf_hed)
 {
-	size_t		bin_size = 0;		//.binファイルのサイズ
-	size_t		code_size = 0;		//うち、ドライバー（コード）のサイズ
-	FileInput*	_romcode	= new FileInput();	
+	std::streamsize		bin_size	= 0;	//.binファイルのサイズ
+	std::streamsize		code_size	= 0;	//うち、ドライバー（コード）のサイズ
+	FileInput*			_romcode	= new FileInput();	
 
 	//----------------------
 	//ファイルを開く

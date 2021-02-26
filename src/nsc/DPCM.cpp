@@ -40,7 +40,7 @@ DPCM::DPCM(MMLfile* MML, const char* dmcfile, size_t _id, const _CHAR _strName[]
 	} else {
 		//----------------------
 		//Local変数
-		size_t	_size	= GetSize();
+		std::streamsize	_size	= GetSize();
 
 		if(_size > 0x0FF1){
 			MML->Warning(_T("⊿PCMのファイルサイズが大きすぎます。4081Byteにカットします。"));
