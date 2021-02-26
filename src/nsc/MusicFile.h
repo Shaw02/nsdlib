@@ -50,7 +50,7 @@ public:
 
 	void	Fix_Address(void);
 
-	size_t	read_bin(string* _str, NSF_Header* nsf_hed);				//.binを読み込む
+	std::streamsize	read_bin(string* _str, NSF_Header* nsf_hed);		//.binを読み込む
 	size_t	make_mus(string* _str, size_t rom_size, size_t ptOffset);	//バイナリーを作る
 	size_t	make_dpcm(string* _str);
 	size_t	make_bin(NSF_Header* NSF_Hed, string* NSF_Data);
