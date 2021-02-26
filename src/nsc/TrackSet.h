@@ -26,6 +26,7 @@ protected:
 				int				fade;		//フェードアウト時間[msec]
 
 				int				iTempo;		//テンポ
+				bool			fJump;		//j1コマンドがあったか？
 
 	map<size_t,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
 				MusicTrack*		nowTrack;	//コンパイル中のトラック
