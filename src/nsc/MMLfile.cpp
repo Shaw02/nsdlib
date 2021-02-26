@@ -40,6 +40,7 @@ Memo:
 //				無し
 //==============================================================
 MMLfile::MMLfile(string&	strFileName):
+iFiles(0),
 p_macro(0),
 f_macro(false),
 f_2to1(false),
@@ -447,11 +448,11 @@ bool	MMLfile::ChkPatch(size_t _no)
 //	●引数
 //						無し
 //	●返値
-//		std::streamoff	現在のファイルポインタ
+//		fstream::pos_type	現在のファイルポインタ
 //==============================================================
-std::streamoff	MMLfile::tellg(void)
+fstream::pos_type	MMLfile::tellg(void)
 {
-	std::streamoff	i;
+	fstream::pos_type	i;
 
 	if(p_macro > 0){
 		i = nowMacro.line;
@@ -466,11 +467,11 @@ std::streamoff	MMLfile::tellg(void)
 //			現在コンパイル処理中のファイルポインタを絶対的に移動
 //--------------------------------------------------------------
 //	●引数
-//			std::streamoff	iSize	移動値
+//			fstream::pos_type	iSize	移動値
 //	●返値
 //			無し
 //==============================================================
-void	MMLfile::StreamPointerMove(std::streamoff iSize)
+void	MMLfile::StreamPointerMove(fstream::pos_type iSize)
 {
 	if(p_macro > 0){
 		nowMacro.line = iSize;
@@ -516,7 +517,6 @@ void	MMLfile::Back(void)
 	} else {
 		Back_one();
 	}
-
 }
 
 //==============================================================
@@ -1223,7 +1223,7 @@ int		MMLfile::GetLength(int DefaultLength)	//
 //==============================================================
 int	MMLfile::GetCommandID(const Command_Info _command[], size_t _size)
 {
-	std::streamoff	ptCmdEnd	= tellg();
+	fstream::pos_type	ptCmdEnd	= tellg();
 			size_t	i = 0;					//走査用
 			size_t	n = 0;					//ヒット数用
 			int		iResult = -1;

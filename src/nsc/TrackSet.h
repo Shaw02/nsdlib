@@ -26,6 +26,7 @@ protected:
 				int				fade;		//フェードアウト時間[msec]
 
 				int				iTempo;		//テンポ
+				bool			fJump;		//j1コマンドがあったか？
 
 	map<size_t,	MusicTrack*	>	ptcTrack;	//トラック・オブジェクトのポインタ
 				MusicTrack*		nowTrack;	//コンパイル中のトラック
@@ -33,7 +34,7 @@ protected:
 				size_t			maxTrack;	//トラック番号の最大値
 				bool			fSub;		//サブルーチン記述ブロックかどうかのフラグ
 				bool			fSE;		//SEかどうかのフラグ
-				std::streamoff	TrackPt;	//
+		fstream::pos_type		TrackPt;	//
 				size_t			TrackLine;	//
 	unsigned	char			Priority;	//効果音優先順位
 

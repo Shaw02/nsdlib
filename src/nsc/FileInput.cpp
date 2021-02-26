@@ -132,15 +132,15 @@ void	FileInput::fileopen(const char*	_strFileName,SearchPass* _pass)
 //--------------------------------
 //相対シーク
 //--------------------------------
-void	FileInput::StreamPointerAdd(std::streamoff iSize){
+void	FileInput::StreamPointerAdd(fstream::off_type iSize){
 	seekg(iSize,ios::cur);
 };
 
 //--------------------------------
 //絶対シーク
 //--------------------------------
-void	FileInput::StreamPointerMove(std::streamoff iSize){
-	seekg(iSize,ios::beg);
+void	FileInput::StreamPointerMove(fstream::pos_type iSize){
+	seekg(iSize);
 };
 
 //--------------------------------
@@ -174,14 +174,14 @@ unsigned	char	FileInput::cRead()
 //--------------------------------
 //サイズ
 //--------------------------------
-std::streamoff	FileInput::GetSize(){
+std::streamsize	FileInput::GetSize(){
 
-	std::streamoff	iData;
-	std::streamoff	iDataT = tellg();
+	std::streamsize	szData;
+	fstream::pos_type	iDataT = tellg();
 
 	seekg(0		,ios::end);
-	iData = tellg();
-	seekg(iDataT,ios::beg);
+	szData = tellg();
+	seekg(iDataT);
 
-	return(iData);
+	return(szData);
 };

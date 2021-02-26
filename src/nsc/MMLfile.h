@@ -80,8 +80,8 @@ public:
 				void	SetPatch(void);
 				bool	ChkPatch(size_t _no);
 
-		std::streamoff	tellg(void);					//現在のファイルのポインタ取得
-				void	StreamPointerMove(std::streamoff iSize);	//現在のファイルのポインタ移動
+	fstream::pos_type	tellg(void);					//現在のファイルのポインタ取得
+				void	StreamPointerMove(fstream::pos_type iSize);	//現在のファイルのポインタ移動
 private:		void	Back_one(void);					//1文字戻し
 public:			void	Back(void);						//1文字戻し（全角・半角変換対応）
 

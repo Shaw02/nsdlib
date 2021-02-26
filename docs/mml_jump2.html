@@ -27,7 +27,7 @@
 <div class='block'>
 <h3>定義（Define）</h3>
 <code><pre>
-        j<var>n</var>
+        j<span style="color:blue;">(</span><var>n</var><span style="color:blue;">)</span>
 </pre></code>
 </div>
 
@@ -38,7 +38,7 @@
 <h4>n</h4>
 <p>
 <dl>
-<dt>0	</dt><dd>早送りを無効にします。	</dd>
+<dt>0	</dt><dd>早送りを無効にします（省略時のデフォルト）。</dd>
 <dt>1	</dt><dd>早送りを有効にします。	</dd>
 </dl>
 </p>
@@ -49,6 +49,7 @@
 <h3>内容（Contents）</h3>
 <p>
 曲を j1 の地点から、 j0 の地点へ早送りすることが可能になります。<br>
+j1を記述せずに、j、若しくはj0コマンドが曲の途中に書かれた場合、TR1の冒頭にj1を自動で挿入します。<br>
 </p>
 </div>
 
@@ -68,13 +69,13 @@
 <code><pre>
 bgm(0){
 
-    TR1         j1          <span style="color:green;">//ここから、早送りします。</span>
+<span style="color:green;">//  TR1         j1          //ここから、早送りします（冒頭のj1は省略可能です）。</span>
 
     t120
 
     TR1 l4  o5  c1<
     TR2 l4  o4  e1
-    TR3 l4  o3  c1  j0      <span style="color:green;">//ここまで、早送りします。。</span>
+    TR3 l4  o3  c1  j       <span style="color:green;">//ここまで、早送りします。。</span>
 
     TR1     b1	
     TR2     d1	
