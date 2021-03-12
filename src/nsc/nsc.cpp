@@ -41,7 +41,7 @@
 /****************************************************************/
 /*					グローバル									*/
 /****************************************************************/
-		OPSW*			cOptionSW = NULL;	//どっからでもアクセスする。
+		OPSW*			cOptionSW	= NULL;	//どっからでもアクセスする。
 
 #ifdef _OPENMP
 		omp_lock_t		lock_cout;			//COUT, CERRの排他制御用
@@ -65,13 +65,12 @@ void nsc_exit(int no)
 //--------------------------------------------------------------
 void nsc_ErrMsg(int no)
 {
-	_OMP_SET_LOCK(lock_cout)
-	if(cOptionSW->fErr == true){
+	if(no != 0){
+		//何かしらのエラーの場合
+		_OMP_SET_LOCK(lock_cout)
 		cerr << "Error!: " << strerror(no) << endl;
-	} else {
-		cout << "Error!: " << strerror(no) << endl;
+		_OMP_UNSET_LOCK(lock_cout)
 	}
-	_OMP_UNSET_LOCK(lock_cout)
 }
 
 //--------------------------------------------------------------
@@ -87,9 +86,22 @@ void nsc_ErrMsg(const exception& e)
 }
 
 //--------------------------------------------------------------
-void nsc_ErrMsg(const _CHAR *stErrMsg)
+void nsc_ErrMsg(const string& s)
 {
 	_OMP_SET_LOCK(lock_cout)
+	if(cOptionSW->fErr == true){
+		cerr << "Error!: " << s.c_str() << endl;
+	} else {
+		cout << "Error!: " << s.c_str() << endl;
+	}
+	_OMP_UNSET_LOCK(lock_cout)
+}
+
+//--------------------------------------------------------------
+void nsc_ErrMsg(const _CHAR* stErrMsg)
+{
+	_OMP_SET_LOCK(lock_cout)
+
 	if(cOptionSW->fErr == true){
 		_CERR << _T("Error!: ") << stErrMsg << endl;
 	} else {
@@ -109,9 +121,10 @@ void nsc_ErrMsg(const _CHAR *stErrMsg)
 //==============================================================
 int	main(int argc, char* argv[])
 {
-
-	int		iResult	= EXIT_SUCCESS;
-
+	size_t		i;
+	int			iResult	= EXIT_SUCCESS;
+	MMLfile		*cMML	= NULL;
+	MusicFile	*cSND	= NULL;
 
 #ifdef	_MSC_VER
 		locale::global(std::locale(""));
@@ -123,115 +136,100 @@ int	main(int argc, char* argv[])
 
 	_OMP_INIT_LOCK(lock_cout)
 
-	//==================================
-	_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
-				_T("    Version 1.31\n")
-				_T("        Copyright (c) 2012-2021 S.W.\n")	<<	endl;
+	try{
 
-	//==================================
-	//オプションの処理
-	cOptionSW	= new OPSW(argc,argv);
-	if(cOptionSW->isError() == true){
-		iResult	= EXIT_FAILURE;
-	}
-	//オプションでエラーが発生している、若しくはヘルプを表示していたらコンパイルしない。
-	if((iResult	!= EXIT_FAILURE) && (cOptionSW->fHelp == false)){
+		//==================================
+		_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
+					_T("    Version 1.31\n")
+					_T("        Copyright (c) 2012-2021 S.W.\n")	<<	endl;
+
+		//==================================
+		//オプションの処理
+		cOptionSW	= new OPSW(argc,argv);
 
 		//MMLファイルのクラスオブジェクト作成
-		MMLfile	*cMML = new MMLfile(cOptionSW->strMMLname);
-
-		//MMLファイルの読み込みに失敗したらコンパイルしない。
-		if(cMML->isError() == true){
-			iResult	= EXIT_FAILURE;
-		} else {
-
-			size_t		i;
-			MusicFile* cSND = NULL;
-
-			//==================================
-			//MML構文解析しながら、クラスオブジェクトの作成
-			_COUT << _T("------------------------------------------------------------") << endl;
-			_COUT << _T("*Object creating process") << endl;
-
-			//曲データオブジェクトの作成
-			cSND = new MusicFile(cMML, cOptionSW->strCodeName);
-
-			_COUT << endl;
+		cMML	= new MMLfile(cOptionSW->strMMLname);
 
 
+		//==================================
+		//MML構文解析しながら、クラスオブジェクトの作成
+		_COUT << _T("------------------------------------------------------------") << endl;
+		_COUT << _T("*Object creating process") << endl;
 
-			//==================================
-			//Optimize & Tick Count
-			_COUT << _T("------------------------------------------------------------") << endl;
-			_COUT << _T("*Optimize & Tick counting process") << endl;
+		//曲データオブジェクトの作成
+		cSND	= new MusicFile(cMML, cOptionSW->strCodeName);
 
-			cSND->TickCount();
+		_COUT << endl;
 
-			_COUT << endl;
+
+		//==================================
+		//Optimize & Tick Count
+		_COUT << _T("------------------------------------------------------------") << endl;
+		_COUT << _T("*Optimize & Tick counting process") << endl;
+
+		cSND->TickCount();
+
+		_COUT << endl;
 
 
 
-			//==================================
-			//アドレスの解決
-			if((cSND->isError() == true) || (cMML->isError() == true)){
-				//エラーが発生していたら保存しない。
-				iResult = EXIT_FAILURE;
+		//==================================
+		//アドレスの解決
+		_COUT << _T("------------------------------------------------------------") << endl;
+		_COUT << _T("*Address settlement process") << endl;
 
-			} else {
-				_COUT << _T("------------------------------------------------------------") << endl;
-				_COUT << _T("*Address settlement process") << endl;
+		//アドレスの計算 ＆ サイズの出力
+		i = cSND->SetOffset(0);
+		cout << "  Music Size = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
 
-				//アドレスの計算 ＆ サイズの出力
-				i = cSND->SetOffset(0);
-				cout << "  Music Size = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
+		i = cSND->SetDPCMOffset(i);
+		cout << "  DPCM Size  = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
 
-				i = cSND->SetDPCMOffset(i);
-				cout << "  DPCM Size  = " << setfill(' ')  << setw(5) << i << " [Byte]" << endl;
+		//アドレスを引数にもつオペコードのアドレス解決
+		cSND->Fix_Address();
 
-				//アドレスを引数にもつオペコードのアドレス解決
-				cSND->Fix_Address();
-
-				_COUT << endl;
-			}
+		_COUT << endl;
 
 
 
-			//==================================
-			//保存
-			//NSF
-			if((cSND->isError() == true) || (cMML->isError() == true)){
-				//エラーが発生していたら保存しない。
-				iResult = EXIT_FAILURE;
-
-			} else {
-				if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
-					cSND->saveNSF(cOptionSW->strNSFname);
-				}
-
-				//NSFe
-				if(cOptionSW->saveNSFe == true){
-					cSND->saveNSFe(cOptionSW->strNSFename);
-				}
-
-				//Assembly
-				if(cOptionSW->saveASM == true){
-					cSND->saveASM(cOptionSW->strASMname);
-				}
-
-				_COUT << endl;
-			}
-
-			//==================================
-			//クラスの削除
-			cout << "delete cSND" << endl; 		//Debug用
-			if (cSND)
-				delete	cSND;
+		//==================================
+		//保存
+		//NSF
+		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveNSFe == false)&&(cOptionSW->saveASM == false))){
+			cSND->saveNSF(cOptionSW->strNSFname);
 		}
-		cout << "delete cMML" << endl; 			//Debug用
-		if (cMML)
-			delete	cMML;
+
+		//NSFe
+		if(cOptionSW->saveNSFe == true){
+			cSND->saveNSFe(cOptionSW->strNSFename);
+		}
+
+		//Assembly
+		if(cOptionSW->saveASM == true){
+			cSND->saveASM(cOptionSW->strASMname);
+		}
+
+		_COUT << endl;
+
+	} catch (int no) {
+		iResult	= no;	//整数が来たときは表示しない。
+	} catch (const exception& e){
+		iResult	= EXIT_FAILURE;
+		nsc_ErrMsg(e);
+	} catch (const _CHAR* stErrMsg) {
+		iResult	= EXIT_FAILURE;
+		nsc_ErrMsg(stErrMsg);
+	} catch (const string& str) {
+		iResult	= EXIT_FAILURE;
+		nsc_ErrMsg(str);
 	}
-	cout << "delete cOptionSW" << endl; 		//Debug用
+
+	//==================================
+	//クラスの削除
+	if (cSND)
+		delete	cSND;
+	if (cMML)
+		delete	cMML;
 	if (cOptionSW)
 		delete	cOptionSW;
 

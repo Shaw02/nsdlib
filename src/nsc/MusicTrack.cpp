@@ -743,14 +743,8 @@ int	MusicTrack::TickCount(MusicFile* MUS)
 		}
 
 	}
-	catch (int no) {
-		nsc_ErrMsg(no);
-	}
 	catch (const exception& e) {
 		nsc_ErrMsg(e);
-	}
-	catch (const _CHAR* stErrMsg) {
-		nsc_ErrMsg(stErrMsg);
 	}
 
 	return(iTickTotal);

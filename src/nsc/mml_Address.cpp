@@ -97,6 +97,8 @@ mml_Address::~mml_Address(void)
 //		unsigned	int		_addr	アドレス
 //	●返値
 //				無し
+//	●メモ
+//		この関数は並列に呼び出されます。
 //==============================================================
 void	mml_Address::set_Address(size_t _addr)
 {
@@ -133,9 +135,6 @@ void	mml_Address::set_Address(size_t _addr)
 			_COUT << endl;
 			_OMP_UNSET_LOCK(lock_cout)
 		}
-	}
-	catch (int no) {
-		nsc_ErrMsg(no);
 	}
 	catch (const exception& e) {
 		nsc_ErrMsg(e);

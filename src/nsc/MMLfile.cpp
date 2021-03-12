@@ -69,17 +69,14 @@ priority(0)
 		f_error = nowFile->isError();
 		if(f_error == true){
 			throw ios_base::failure(strFileName + ": " + strerror(errno));
-		} else {
-			ptcFiles.push_back(nowFile);
-			iFiles = 0;
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
-		f_error = true;	//エラーが発生した。
-	} catch (const exception& e){
-		nsc_ErrMsg(e);
-		f_error = true;	//エラーが発生した。
+		ptcFiles.push_back(nowFile);
+		iFiles = 0;
+
+	} catch (...) {
+		f_error = true;		//
+		throw;				//全部リスローする
 	}
 }
 

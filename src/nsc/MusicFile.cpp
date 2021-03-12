@@ -591,15 +591,9 @@ const	static	Command_Info	Command[] = {
 			};
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
-		f_error = true;
-	} catch (const exception& e){
-		nsc_ErrMsg(e);
-		f_error = true;
-	} catch (const _CHAR *stErrMsg) {
-		nsc_ErrMsg(stErrMsg);
-		f_error = true;
+	} catch (...) {
+		f_error = true;		//
+		throw;				//全部リスローする
 	}
 }
 
@@ -627,6 +621,14 @@ MusicFile::~MusicFile(void)
 //==============================================================
 void	MusicFile::TickCount(void)
 {
+	//==============================
+	//Metadata
+
+	Header.Set_text();	//text
+	Header.Set_auth();	//auth
+	Header.Set_NEND();	//NEND
+
+
 	//==============================
 	//Tick Count & 最適化のための情報収集
 	//（ここは並列化しないで、順番に処理する事）
@@ -671,89 +673,81 @@ void	MusicFile::TickCount(void)
 		}
 	}
 
-
-	//==============================
-	//Metadata
-
-	Header.Set_text();	//text
-	Header.Set_auth();	//auth
-	Header.Set_NEND();	//NEND
-
+	//エラーが発生していたら最適化はしない。
+	if (f_error == true) {
+		throw _T("最適化に失敗しました。");		
+	}
 
 	//==============================
 	//最適化
 	//（カウントした後は、並列化して良い）
 
-	//エラーが発生していたら最適化はしない。
-	if (f_error == false) {
+	//----------------------
+	//不要なコマンドの削除
+	if (cOptionSW->flag_OptSeq == true) {		//コマンドの最適化が無効だったら、最適化しない。
 
-		//----------------------
-		//不要なコマンドの削除
-		if (cOptionSW->flag_OptSeq == true) {		//コマンドの最適化が無効だったら、最適化しない。
+		_OMP_PARALLEL
+		{
+			_OMP_FOR_NOWAIT
+			for (int n = 0; n < Header.iBGM; ++n) {
+				ptcBGM[n]->clear_Optimize();
+			}
 
-			_OMP_PARALLEL
+			_OMP_FOR_NOWAIT
+			for (int n = 0; n < Header.iSE; ++n) {
+				ptcSE[n]->clear_Optimize();
+			}
+
+			_OMP_SINGLE
+			for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
+				it->second->clear_Optimize();
+			}
+		}
+	}
+
+	//----------------------
+	//使っていない定義の削除
+	if (cOptionSW->flag_OptObj == true) {		//定義の最適化が無効だったら、最適化しない。
+
+		_OMP_PARALLEL_SECTIONS
+		{
+			//エンベロープ
+			_OMP_SECTION
 			{
-				_OMP_FOR_NOWAIT
-				for (int n = 0; n < Header.iBGM; ++n) {
-					ptcBGM[n]->clear_Optimize();
-				}
-
-				_OMP_FOR_NOWAIT
-				for (int n = 0; n < Header.iSE; ++n) {
-					ptcSE[n]->clear_Optimize();
-				}
-
-				_OMP_SINGLE
-				for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
+				for (map<size_t, Envelop*>::iterator it = ptcEnv.begin(), e = ptcEnv.end(); it != e; ++it) {
 					it->second->clear_Optimize();
 				}
 			}
-		}
 
-		//----------------------
-		//使っていない定義の削除
-		if (cOptionSW->flag_OptObj == true) {		//定義の最適化が無効だったら、最適化しない。
-
-			_OMP_PARALLEL_SECTIONS
+			//FDSC
+			_OMP_SECTION
 			{
-				//エンベロープ
-				_OMP_SECTION
-				{
-					for (map<size_t, Envelop*>::iterator it = ptcEnv.begin(), e = ptcEnv.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
+				for (map<size_t, FDSC*>::iterator it = ptcFDSC.begin(), e = ptcFDSC.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
+			}
 
-				//FDSC
-				_OMP_SECTION
-				{
-					for (map<size_t, FDSC*>::iterator it = ptcFDSC.begin(), e = ptcFDSC.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
+			//FDSM
+			_OMP_SECTION
+			{
+				for (map<size_t, FDSM*>::iterator it = ptcFDSM.begin(), e = ptcFDSM.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
+			}
 
-				//FDSM
-				_OMP_SECTION
-				{
-					for (map<size_t, FDSM*>::iterator it = ptcFDSM.begin(), e = ptcFDSM.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
+			//VRC7
+			_OMP_SECTION
+			{
+				for (map<size_t, VRC7*>::iterator it = ptcVRC7.begin(), e = ptcVRC7.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
+			}
 
-				//VRC7
-				_OMP_SECTION
-				{
-					for (map<size_t, VRC7*>::iterator it = ptcVRC7.begin(), e = ptcVRC7.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
-				}
-
-				//N163
-				_OMP_SECTION
-				{
-					for (map<size_t, N163*>::iterator it = ptcN163.begin(), e = ptcN163.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
+			//N163
+			_OMP_SECTION
+			{
+				for (map<size_t, N163*>::iterator it = ptcN163.begin(), e = ptcN163.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
 			}
 		}
@@ -810,6 +804,10 @@ void	MusicFile::Fix_Address(void)
 
 	for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
 		it->second->Fix_Address(this);	//この先で並列化[済]
+	}
+
+	if (f_error == true) {
+		throw _T("アドレス解決に失敗しました。");	
 	}
 }
 
