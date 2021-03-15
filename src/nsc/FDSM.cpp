@@ -77,10 +77,7 @@ const	static	Command_Info	Command[] = {
 
 			case(FDSM_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>7)){
-					MML->Err(_T("FDSMの波形パターンは0～7の範囲で指定して下さい。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("FDSMの波形パターン"),0,7);
 				WAVE.append((char)1, (char)i & 0x07);
 				ptFDSM++;
 				break;

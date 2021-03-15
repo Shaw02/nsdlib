@@ -115,7 +115,7 @@ void	mml_Address::set_Address(size_t _addr)
 				code[3] = (unsigned char)((_addr >> 8) & 0xFF);
 				break;
 			default:
-				throw invalid_argument("mml_Address::set_Address()");
+				throw out_of_range("mml_Address::set_Address()");
 				break;
 		}
 	

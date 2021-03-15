@@ -169,14 +169,10 @@ void	MusicHeader::Set_NEND()
 //--------------------------------------------------------------
 void	MusicHeader::Ser_VRC7(MMLfile* MML)
 {
-	int	_vrc7	= MML->GetInt();
+	int	_vrc7	= MML->GetInt_With_Chk_Range(_T("#VRC7コマンド"),0,1);
 
 	if(meta_VRC7 != NULL){
 		MML->Warning(_T("#VRC7が重複しています。"));
-	}
-
-	if((_vrc7 < 0)||(_vrc7 > 1)){
-		MML->Err(_T("#VRC7は、0か1で指定してください。"));
 	}
 
 	meta_VRC7 = new Meta_VRC7((char)_vrc7);
@@ -234,10 +230,7 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
 			case(plst_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>=iBGM)){
-					MML->Err(_T("#plstは0 <= n < #BGMコマンドで指定した数の範囲で指定して下さい。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("#plstコマンド"),0,(int)iBGM-1);
 				meta_plst->push_back((char)(i & 0xFF));
 				break;
 			case(plst_Commma):
@@ -301,10 +294,7 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 		switch(MML->GetCommandID(Command, sizeof(Command)/sizeof(Command_Info))){
 			case(psfx_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>=iSE)){
-					MML->Err(_T("#psfxは0 <= n < #SEコマンドで指定した数の範囲で指定して下さい。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("#psfxコマンド"),0,(int)iSE-1);
 				meta_psfx->push_back((char)((i+iBGM) & 0xFF));
 				break;
 			case(psfx_Commma):
@@ -475,7 +465,7 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(mixe_Num):
 				MML->Back();
-				i = MML->GetInt();
+				i = MML->GetInt_With_Chk_Range(_T("#mixeコマンド"),-32768,32767);
 				meta_mixe->append(id, i, MML);
 				break;
 			case(mixe_Commma):
@@ -512,14 +502,11 @@ void	MusicHeader::Set_Label(MMLfile* MML)
 //==============================================================
 void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 {
-	offsetPCM = MML->GetInt();
+	offsetPCM = MML->GetInt_With_Chk_Range(_T("#offsetPCMコマンド"),0xC000,0x10000);
 
 	if(bank==true){
 		MML->Warning(_T("#Bank指定時は、#offsetPCMは無効です。"));
 	} else {
-		if((offsetPCM < 0xC000) || (offsetPCM > 0x10000)){
-			MML->Err(_T("$C000 ～ $10000（⊿PCM未使用）の範囲で指定して下さい。"));
-		}
 		if((offsetPCM & 0x003F) != 0){
 			MML->Warning(_T("⊿PCMの配置アドレスは64（$40）Byteでアライメントします。"));
 			offsetPCM &= 0xFFC0;
@@ -544,34 +531,19 @@ void	MusicHeader::Set_RomCode(MMLfile* MML)
 //==============================================================
 void	MusicHeader::Set_Number_BGM(MMLfile* MML)
 {
-	size_t	_n = MML->GetInt();
-
-	if((_n > 255) || (_n < 0)){
-		MML->Err(_T("#BGMは0～255の範囲で指定してください。"));
-	}
-	iBGM = _n;
+	iBGM = MML->GetInt_With_Chk_Range(_T("#BGMコマンド"),0,255);
 }
 
 //==============================================================
 void	MusicHeader::Set_Number_SE(MMLfile* MML)
 {
-	size_t	_n = MML->GetInt();
-
-	if((_n > 255) || (_n < 0)){
-		MML->Err(_T("#SEは0～255の範囲で指定してください。"));
-	}
-	iSE = _n;
+	iSE = MML->GetInt_With_Chk_Range(_T("#SEコマンド"),0,255);
 }
 
 //==============================================================
 void	MusicHeader::Set_External(MMLfile* MML)
 {
-	int	_n = MML->GetInt();
-
-	if((_n > 0x3F) || (_n < 0)){
-		MML->Err(_T("#Externalは$00～#3Fの範囲で指定してください。"));
-	}
-	iExternal = _n;
+	iExternal = MML->GetInt_With_Chk_Range(_T("#Externalコマンド"),0,0x3F);
 }
 
 //==============================================================

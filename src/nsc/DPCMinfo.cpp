@@ -193,7 +193,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(DPCM_Note):
-				setNote(MML, MML->GetInt());
+				setNote(MML, MML->GetInt_With_Chk_Range(_T("ノート番号"), 0,255));
 				break;
 
 			//unknown command
@@ -236,13 +236,14 @@ DPCMinfo::~DPCMinfo(void)
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
-//			int	key		キー番号（0:C / 1:Cis / ...）
+//			int		key		キー番号（0:C / 1:Cis / ...）
 //	●返値
 //				無し
 //==============================================================
 void	DPCMinfo::setKey(MMLfile* MML, int key)
 {
-	setNote(MML, ((MML->GetInt()-1) * 12) + key);
+	int octave = MML->GetInt_With_Chk_Range(_T("オクターブ"), 1,12);
+	setNote(MML, ((octave - 1) * 12) + key);
 }
 
 //==============================================================
@@ -250,7 +251,6 @@ void	DPCMinfo::setKey(MMLfile* MML, int key)
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*		MML		MMLファイルのオブジェクト
-//				int		note	ノート番号
 //	●返値
 //				無し
 //==============================================================
@@ -264,10 +264,6 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 				int		start_offset;
 				int		size_offset;
 	DPCM*		_DPCM;
-
-	if((note<0) || (note>255)){
-		MML->Err(_T("音階の範囲を超えています。"));
-	}
 
 	if(max_number < note){
 		max_number = (unsigned char)note;
@@ -291,17 +287,11 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 
 	//再生周波数
 	MML->Chk_Comma();
-	play_frequency = MML->GetInt();
-	if((play_frequency<0) || (play_frequency>15)){
-		MML->Err(_T("⊿PCMの周波数は0～15の範囲で指定して下さい。"));
-	}
+	play_frequency = MML->GetInt_With_Chk_Range(_T("⊿PCMの周波数"),0,15);
 
 	//モード
 	MML->Chk_Comma();
-	mode = MML->GetInt();
-	if((mode<0) || (mode>2)){
-		MML->Err(_T("⊿PCMのモードは0～2の範囲で指定して下さい。"));
-	}
+	mode = MML->GetInt_With_Chk_Range(_T("⊿PCMのモード"),0,2);
 	if((mode==2) && (bank==false)){
 		MML->Err(_T("⊿PCMのモード2(IRQ)は、#Bankコマンドの指定が必要です。"));
 	}
@@ -310,10 +300,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	//初期値
 	cData = MML->GetChar();
 	if(cData == ','){
-		start_volume = MML->GetInt();	
-		if((start_volume<-1) || (start_volume>127)){
-			MML->Err(_T("⊿PCMの初期値は-1～127の範囲で指定して下さい。"));
-		}
+		start_volume = MML->GetInt_With_Chk_Range(_T("⊿PCMの初期値"),-1,127);
 		infoDPCM[note].DA = (unsigned char)start_volume;
 	} else {
 		MML->Back();
@@ -323,10 +310,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	//次のノート
 	if(mode == 2){
 		MML->Chk_Comma();
-		next = MML->GetInt();	
-		if((next<-1) || (next>255)){
-			MML->Err(_T("次のノート番号は0～255の範囲で指定して下さい。"));
-		}
+		next = MML->GetInt_With_Chk_Range(_T("⊿PCMの次のノート番号"),-1,255);
 		infoDPCM[note].next = (unsigned char)next;
 	} else {
 		infoDPCM[note].next = 0;
@@ -335,10 +319,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	//offset
 	cData = MML->GetChar();
 	if(cData == ','){
-		start_offset = MML->GetInt();	
-		if((start_offset<0) || (start_offset>255)){
-			MML->Err(_T("⊿PCMの発音開始オフセットは0～255の範囲で指定して下さい。"));
-		}
+		start_offset = MML->GetInt_With_Chk_Range(_T("⊿PCMの発音開始オフセット"),0,255);
 		infoDPCM[note].offset = (unsigned char)start_offset;
 	} else {
 		MML->Back();
@@ -348,10 +329,7 @@ void	DPCMinfo::setNote(MMLfile* MML, int note)
 	//size
 	cData = MML->GetChar();
 	if(cData == ','){
-		size_offset = MML->GetInt();	
-		if((size_offset<0) || (size_offset>255)){
-			MML->Err(_T("⊿PCMの発音サイズは0～255の範囲で指定して下さい。"));
-		}
+		size_offset = MML->GetInt_With_Chk_Range(_T("⊿PCMの発音サイズ"),0,255);
 		infoDPCM[note].size = (unsigned char)size_offset;
 	} else {
 		MML->Back();

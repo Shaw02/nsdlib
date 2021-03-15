@@ -77,10 +77,7 @@ const	static	Command_Info	Command[] = {
 
 			case(N163_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>15)){
-					MML->Err(_T("n163の波形パターンは0～15の範囲で指定して下さい。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("n163の波形パターン"),0,15);
 				WAVE.append((char)1, (char)i & 0x0F);
 				ptN163++;
 				break;

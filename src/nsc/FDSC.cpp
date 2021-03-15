@@ -77,10 +77,7 @@ const	static	Command_Info	Command[] = {
 
 			case(FDSC_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>63)){
-					MML->Err(_T("FDSCの波形パターンは0～63の範囲で指定して下さい。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("FDSCの波形パターン"),0,63);
 				WAVE.append((char)1, (char)i & 0x3F);
 				ptFDSC++;
 				break;

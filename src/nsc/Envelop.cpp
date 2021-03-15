@@ -110,11 +110,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Env_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<-64) || (i>127)){
-					MML->Err(_T("エンベロープは-64～127の範囲で指定して下さい。"));
-				}
-
+				i = MML->GetInt_With_Chk_Range(_T("エンベロープの値"),-64,127);
 				if(iValue == i){
 					iLength++;		//同じだったら、ランレングス圧縮する
 				} else {
@@ -138,11 +134,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(Env_Hold):
-				i = MML->GetInt();
-				if( (i<0) || (i>255)){
-					MML->Err(_T("維持時間は0～255の範囲で指定して下さい。"));
-				}
-			//	setHold(i + iLength);	//今までの時間を加算する。
+				i = MML->GetInt_With_Chk_Range(_T("エンベロープの維持時間"),0,255);
 				iLength += i+1;			//ランレングスに加算する。
 				break;
 
@@ -286,22 +278,13 @@ int	Envelop::sweep(MMLfile* MML)
 	//●MML読み込み
 
 	//
-	iStart = MML->GetInt();
-	if( (iStart<-64) || (iStart>127)){
-		MML->Err(_T("開始点は-64～127の範囲で指定して下さい。"));
-	}
+	iStart = MML->GetInt_With_Chk_Range(_T("開始値"),-64,127);
 
 	MML->Chk_Comma();
-	iEnd = MML->GetInt();
-	if( (iEnd<-64) || (iEnd>127)){
-		MML->Err(_T("終了点は-64～127の範囲で指定して下さい。"));
-	}
+	iEnd = MML->GetInt_With_Chk_Range(_T("終了値"),-64,127);
 
 	MML->Chk_Comma();
-	iLength = MML->GetInt();
-	if( (iLength<1) || (iLength>255)){
-		MML->Err(_T("長さは1～255の範囲で指定して下さい。"));
-	}
+	iLength = MML->GetInt_With_Chk_Range(_T("長さ"),1,255);
 
 	cData = MML->GetChar();
 	if((cData != ')') && (cData != '}')){

@@ -341,22 +341,13 @@ const	static	Command_Info	Command[] = {
 					MML->q_reverse = true;			//これは、MMLファイルの属性。
 					break;
 				case(id_releaseVolume):
-					MML->iReleaseVolume	=  MML->GetInt();
-					if((MML->iReleaseVolume<0) || (MML->iReleaseVolume>15)){
-						MML->Err(_T("#ReleaseVolumeコマンドは、0～15の範囲で指定してください。"));
-					}
+					MML->iReleaseVolume	= MML->GetInt_With_Chk_Range(_T("#ReleaseVolumeコマンド"),0,15);
 					break;
 				case(id_repeatMode):
-					MML->iRepeatMode	=  MML->GetInt();
-					if((MML->iRepeatMode<0) || (MML->iRepeatMode>2)){
-						MML->Err(_T("#RepeatModeコマンドは、0～2の範囲で指定してください。"));
-					}
+					MML->iRepeatMode = MML->GetInt_With_Chk_Range(_T("#RepeatModeコマンド"),0,2);
 					break;
 				case(id_TieMode):
-					MML->iTieMode	=  MML->GetInt();
-					if((MML->iTieMode<0) || (MML->iTieMode>1)){
-						MML->Err(_T("#TieModeコマンドは、0～1の範囲で指定してください。"));
-					}
+					MML->iTieMode = MML->GetInt_With_Chk_Range(_T("#TieModeコマンド"),0,1);
 					break;
 				case(id_offset_Ei):
 					MML->offset_Ei = MML->GetInt();
@@ -371,27 +362,16 @@ const	static	Command_Info	Command[] = {
 					MML->offset_Em = MML->GetInt();
 					break;
 				case(id_Priority):
-					i = MML->GetInt();
-					if((i<0) || (i>3)){
-						MML->Err(_T("#priorityコマンドは、0～3の範囲で指定してください。"));
-					} else {
-						MML->priority = (unsigned char)i;
-					}
+					MML->priority = (unsigned char)MML->GetInt_With_Chk_Range(_T("#priorityコマンド"),0,3);
 					break;
 				case(id_QMax):
 					MML->QMax = MML->GetInt();
 					break;
 				case(id_rest):
-					MML->rest = MML->GetInt();
-					if((MML->rest<0) || (MML->rest>3)){
-						MML->Err(_T("#Restコマンドは、0～3の範囲で指定してください。"));
-					}
+					MML->rest = MML->GetInt_With_Chk_Range(_T("#Restコマンド"),0,3);
 					break;
 				case(id_wait):
-					MML->wait = MML->GetInt();
-					if((MML->rest<0) || (MML->rest>3)){
-						MML->Err(_T("#Waitコマンドは、0～3の範囲で指定してください。"));
-					}
+					MML->wait = MML->GetInt_With_Chk_Range(_T("#Waitコマンド"),0,3);
 					break;
 				case(id_Macro):
 					MML->SetMacro(0);

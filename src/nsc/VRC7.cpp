@@ -102,11 +102,7 @@ const	static	Command_Info	Command[] = {
 					MML->Err(_T("先ずは@, @Rコマンドを記述して下さい。"));
 				}
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>255) ){
-					MML->Err(_T("0～255の範囲で指定して下さい。"));
-				}
-
+				i = MML->GetInt_With_Chk_Range(_T("パラメータ"),0,255);
 				if(_mode == 0){
 					if(_pt >= 24){
 						MML->Err(_T("VRC7(パラメータベース)の引数が24個を超えました。"));

@@ -30,17 +30,21 @@
 //---------------------------------------------------------------
 //Unicodeä¬ã´
 #ifdef	_UNICODE
-	#define	_CHAR	wchar_t
-	#define _T(x)	L ## x
-	#define _EOF	WEOF
-	#define	_COUT	wcout
-	#define	_CERR	wcerr
+	#define	_CHAR		wchar_t
+	#define _T(x)		L ## x
+	#define _EOF		WEOF
+	#define	_STRING		wstring
+	#define	_SSTREAM	wstringstream
+	#define	_COUT		wcout
+	#define	_CERR		wcerr
 #else
-	#define	_CHAR	char
-	#define _T(x)	x
-	#define _EOF	EOF
-	#define	_COUT	cout
-	#define	_CERR	cerr
+	#define	_CHAR		char
+	#define _T(x)		x
+	#define _EOF		EOF
+	#define	_STRING		string
+	#define	_SSTREAM	stringstream
+	#define	_COUT		cout
+	#define	_CERR		cerr
 #endif
 
 
@@ -90,6 +94,7 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
+#include <cwchar>
 #include <cstring>
 #include <clocale>	//gccópÇ…Ç±Ç¡ÇøÇ‡ì¸ÇÍÇƒÇ®Ç≠ÅB
 
@@ -100,6 +105,7 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <list>
 #include <map>

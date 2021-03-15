@@ -261,10 +261,7 @@ const	static	Command_Info	Command[] = {
 				if(m_now_Patch->fVoi == true){
 					MML->Err(_T("音色の２重定義です。"));
 				}
-				i = MML->GetInt();
-				if( (i<0) || (i>255) ){
-					MML->Err(_T("音色は0～255の範囲で指定してください。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("音色"),0,255);
 				m_now_Patch->iVoi		= i;
 				m_now_Patch->fVoi		= true;
 				m_now_Patch->sw_Evoi	= false;
@@ -341,7 +338,7 @@ const	static	Command_Info	Command[] = {
 				if(m_now_Patch->fGate_q == true){
 					MML->Err(_T("qコマンドの２重定義です。"));
 				}
-				m_now_Patch->iGate_q	= MML->GetInt();
+				m_now_Patch->iGate_q	= MML->GetInt_With_Chk_Range(_T("ゲートクオンタイズ(q)"),0,255);
 				m_now_Patch->fGate_q	= true;
 				break;
 
@@ -364,7 +361,7 @@ const	static	Command_Info	Command[] = {
 				if(m_now_Patch->fKey == true){
 					MML->Err(_T("移調の２重定義です。"));
 				}
-				m_now_Patch->iKey		= MML->GetInt();
+				m_now_Patch->iKey		= MML->GetInt_With_Chk_Range(_T("移調"),-128,127);
 				m_now_Patch->fKey		= true;
 				break;
 
@@ -379,19 +376,13 @@ const	static	Command_Info	Command[] = {
 					iSpeed	= MML->GetInt();
 					cData	= MML->GetChar();
 					if(cData != ','){
-						if( (iSpeed < 0) || (iSpeed > 255) ){
-							MML->Err(_T("sコマンドは0～255の範囲で指定してください。"));
-						}
+						MML->Chk_Range(_T("sコマンド"),0,255,iSpeed);
 						MML->Back();
 						c = (unsigned char)iSpeed;
 					} else {
-						if( (iSpeed < 0) || (iSpeed > 15) ){
-							MML->Err(_T("sコマンドの第1パラメータは0～15の範囲で指定してください。"));
-						}
+						MML->Chk_Range(_T("sコマンドの第1パラメータ"),0,15,iSpeed);
 						iDepth = MML->GetInt();
-						if( (iDepth < 0) || (iDepth > 15) ){
-							MML->Err(_T("sコマンドの第2パラメータは0～15の範囲で指定してください。"));
-						}
+						MML->Chk_Range(_T("sコマンドの第2パラメータ"),0,15,iDepth);
 						c = (unsigned char)(((iSpeed & 0x0F) << 4) | (iDepth & 0x0F));
 					}
 					m_now_Patch->iSweep		= c;
@@ -406,10 +397,7 @@ const	static	Command_Info	Command[] = {
 				if(m_now_Patch->fEvoi == true){
 					MML->Err(_T("E@コマンドが既に指定されています。"));
 				}
-				i = MML->GetInt();
-				if((i<0) || (i>252)){
-					MML->Err(_T("n16xの波形開始点は0～252の範囲で指定してください。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("n16xの波形開始点"),0,252);
 				if((i % 4) != 0){
 					MML->Err(_T("n16xの波形開始点は4の倍数で指定してください。"));
 				}
@@ -421,10 +409,7 @@ const	static	Command_Info	Command[] = {
 					if(m_now_Patch->fSweep == true){
 						MML->Err(_T("sコマンドが既に指定されています。"));
 					}
-					i = MML->GetInt();
-					if((i<4) || (i>256)){
-						MML->Err(_T("n16xのサンプル長は4～256の範囲で指定してください。"));
-					}
+					i = MML->GetInt_With_Chk_Range(_T("n16xのサンプル長"),4,256);
 					if((i % 4) != 0){
 						MML->Err(_T("n16xのサンプル長は4の倍数で指定してください。"));
 					}
@@ -444,7 +429,7 @@ const	static	Command_Info	Command[] = {
 
 				cData = MML->GetChar();
 				if(cData == ','){	//最適化無効フラグ
-					i = MML->GetInt();
+					i = MML->GetInt_With_Chk_Range(_T("サブルーチンの最適化フラグ"),0,1);
 					switch(i){
 						case(0):
 							m_now_Patch->fSub_opt=false;
@@ -453,7 +438,7 @@ const	static	Command_Info	Command[] = {
 							m_now_Patch->fSub_opt=true;
 							break;
 						default:
-							MML->Err(_T("サブルーチンの最適化フラグは0～1の範囲で指定してください。"));
+							throw out_of_range("Patch::Patch()");
 							break;
 					}
 				} else {

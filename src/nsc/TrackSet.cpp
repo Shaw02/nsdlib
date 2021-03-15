@@ -398,7 +398,6 @@ const	static	Command_Info	Command[] = {
 };
 
 	char	cData;
-	int		i;
 
 	//------------------------------
 	//クラスの初期設定
@@ -843,15 +842,11 @@ const	static	Command_Info	Command[] = {
 				break;
 	
 			case(mml_Transpose):
-				i = MML->GetInt();
-				if( (i < -128) || (i > 127) ){
-					MML->Err(_T("移調は-127～128の範囲で指定してください。"));
-				}
-				nowTrack->SetTranspose(i);
+				nowTrack->SetTranspose(MML->GetInt_With_Chk_Range(_T("移調"), -128, 127));
 				break;
 
 			case(mml_Transpose_Relative):
-				nowTrack->SetTranspose_Relative(MML->GetInt());
+				nowTrack->SetTranspose_Relative(MML->GetInt_With_Chk_Range(_T("相対移調"), -128, 127));
 				break;
 
 			case(mml_KeyShift):
@@ -1237,7 +1232,7 @@ MusicTrack*	TrackSet::getTrack(MMLfile* MML, size_t _track)
 		if(ptcTrack.count(i) == 0){
 			_getTrack	= makeTrack(MML, i);
 		} else {
-			throw invalid_argument("TrackSet::getTrack()");
+			throw out_of_range("TrackSet::getTrack()");
 		}
 	}
 	maxTrack = i;	//トラックの最大値を記憶。
@@ -1271,17 +1266,13 @@ void	TrackSet::SetEvent(MusicItem* _item)
 //==============================================================
 void	TrackSet::Set_Priority(MMLfile* MML)
 {
-	int	i = MML->GetInt();
+	int	i = MML->GetInt_With_Chk_Range(_T("効果音の優先度"), 0, 3);
 
 	//se?
 	if(fSE == false){
 		MML->Warning(_T("SEブロック以外では優先度指定はできません。無視します。"));
 	} else {
-		if( (i <= 3) && (i >=0) ){
-			Priority = (char)i;
-		} else {
-			MML->Err(_T("効果音の優先度は、は0～3の範囲で指定して下さい。"));
-		}
+		Priority = (char)i;
 	}
 
 }
@@ -1301,7 +1292,7 @@ void	TrackSet::SetJumpDrv(MMLfile* MML)
 
 	if((cData >= '0') && (cData <= '9')){
 		MML->Back();
-		iValue = MML->GetInt();
+		iValue = MML->GetInt_With_Chk_Range(_T("jコマンド"), 0, 1);
 	} else {
 		MML->Back();
 		iValue = 0;		//省略した場合は、0にする。
@@ -1319,7 +1310,7 @@ void	TrackSet::SetJumpDrv(MMLfile* MML)
 			SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Jump_on, _T("Jump On")));
 			break;
 		default:
-			MML->Err(_T("jコマンドが指定可能な範囲を超えました。"));
+			throw	out_of_range("TrackSet::SetJumpDrv()");
 	}
 	fJump = true;	//j コマンドが出現しました。
 }
@@ -1335,12 +1326,14 @@ void	TrackSet::SetJumpDrv(MMLfile* MML)
 void	TrackSet::SetTempo(MMLfile* MML)
 {
 	int	iValue	= MML->GetInt();
+	_SSTREAM	ErrMsg;
 
 	iTempo = ((iValue * MML->timebase) / 24);
-	
-	if((iTempo<0) || (iTempo>255)){
-		MML->Err(_T("テンポが指定可能な範囲を超えました。"));
-	}
+
+	ErrMsg << _T("Tempo(") << iValue << _T(")×Timebase(") << MML->timebase << _T(")÷24＝") << iTempo << _T("|内部テンポの値");
+
+	MML->Chk_Range(ErrMsg.str().c_str(), 0, 255, iTempo);
+
 	SetEvent(new mml_general(nsd_Tempo, (unsigned char)iTempo, _T("Tempo")));
 }
 
@@ -1407,16 +1400,11 @@ void	TrackSet::Set_Poke(MMLfile* MML)
 	int		addr;
 	int		data;
 
-	addr = MML->GetInt();
-	if( (addr < 0x0000) || (addr > 0xFFFF) ){
-		MML->Err(_T("yコマンドのアドレスは$0000～$FFFFの範囲で指定して下さい。"));
-	}
+	addr = MML->GetInt_With_Chk_Range(_T("yコマンドのアドレス"), 0x0000, 0xFFFF);
 
 	MML->Chk_Comma();
-	data = MML->GetInt();
-	if((data < 0) || (data > 255)){
-		MML->Err(_T("yコマンドのデータは$00～$FFの範囲で指定して下さい。"));
-	}
+	data = MML->GetInt_With_Chk_Range(_T("yコマンドのデータ"), 0, 255);
+
 	SetEvent(new mml_poke(addr, (unsigned char)data));
 }
 
@@ -1430,15 +1418,12 @@ void	TrackSet::Set_Poke(MMLfile* MML)
 //==============================================================
 void	TrackSet::Set_FDS_Frequency(MMLfile* MML)
 {
-	int	i = MML->GetInt();
+	int	i = MML->GetInt_With_Chk_Range(_T("FDSのキャリア周波数"), 0, 0x0FFF);
 
-	if( (i <= 0x0FFF) && (i >=0) ){
-		unsigned	char	c0 = (unsigned char)( i       & 0xFF);
-		unsigned	char	c1 = (unsigned char)((i >> 8) & 0xFF);
-		SetEvent(new mml_general(nsd_FDS_Frequency,c0,c1,_T("FDS career frequency")));
-	} else {
-		MML->Err(_T("FDSのキャリア周波数は0～4095の範囲で指定して下さい。"));
-	}
+	unsigned	char	c0 = (unsigned char)( i       & 0xFF);
+	unsigned	char	c1 = (unsigned char)((i >> 8) & 0xFF);
+	SetEvent(new mml_general(nsd_FDS_Frequency,c0,c1,_T("FDS career frequency")));
+
 }
 
 //==============================================================
@@ -1451,13 +1436,9 @@ void	TrackSet::Set_FDS_Frequency(MMLfile* MML)
 //==============================================================
 void	TrackSet::Set_FDS_Volume(MMLfile* MML)
 {
-	int		i = MML->GetInt();
+	int		i = MML->GetInt_With_Chk_Range(_T("FDSのマスター音量"), 0, 3);
 
-	if((i<=3 ) && (i>=0)){
-		SetEvent(new mml_general(nsd_FDS_Volume,(unsigned char)i,_T("FDS Master volume")));
-	} else {
-		MML->Err(_T("FDSのマスター音量は0～3の範囲で指定して下さい。"));
-	}
+	SetEvent(new mml_general(nsd_FDS_Volume,(unsigned char)i,_T("FDS Master volume")));
 }
 
 //==============================================================
@@ -1473,16 +1454,10 @@ void	TrackSet::Set_VRC7_Write(MMLfile* MML)
 	int		_Reg;
 	int		_Dat;
 
-	_Reg = MML->GetInt();
-	if( (_Reg < 0) || (_Reg > 0x40) ){
-		MML->Err(_T("VRC7レジスタ操作の第1パラメータは0～63の範囲で指定してください。"));
-	}
+	_Reg = MML->GetInt_With_Chk_Range(_T("VRC7レジスタ操作の第1パラメータ"), 0, 0x40);
 
 	MML->Chk_Comma();
-	_Dat = MML->GetInt();
-	if( (_Dat < 0) || (_Dat > 255) ){
-		MML->Err(_T("VRC7レジスタ操作の第2パラメータは0～255の範囲で指定してください。"));
-	}
+	_Dat = MML->GetInt_With_Chk_Range(_T("VRC7レジスタ操作の第2パラメータ"), 0, 0xFF);
 
 	SetEvent(new mml_general(nsc_VRC7_reg,(unsigned char)_Reg,(unsigned char)_Dat, _T("VRC7 Register Write")));
 }
@@ -1497,14 +1472,9 @@ void	TrackSet::Set_VRC7_Write(MMLfile* MML)
 //==============================================================
 void	TrackSet::Set_N163_Channel(MMLfile* MML)
 {
-	int	i = MML->GetInt();
+	int	i = MML->GetInt_With_Chk_Range(_T("n163のチャンネル数"), 1, 8);
 
-	if( (i <= 8) && (i >=1) ){
-		SetEvent(new mml_general(nsc_N163_Channel,(unsigned char)(i-1),_T("n163 channel")));
-	} else {
-		MML->Err(_T("n163のチャンネル数は1～8の範囲で指定してください。"));
-	}
-
+	SetEvent(new mml_general(nsc_N163_Channel,(unsigned char)(i-1),_T("n163 channel")));
 }
 
 //==============================================================
@@ -1517,13 +1487,9 @@ void	TrackSet::Set_N163_Channel(MMLfile* MML)
 //==============================================================
 void	TrackSet::Set_FME7_Frequency(MMLfile* MML)
 {
-	int	i = MML->GetInt();
+	int	i = MML->GetInt_With_Chk_Range(_T("SUNSOFT 5bのハードウェアエンベロープ周波数"), 0, 0xFFFF);
 
-	if( (i <= 0xFFFF) && (i >=0) ){
-		unsigned	char	c0 = (unsigned char)( i       & 0xFF);
-		unsigned	char	c1 = (unsigned char)((i >> 8) & 0xFF);
-		SetEvent(new mml_general(nsc_FME7_frequency,c0,c1,_T("FME7 envelop frequency")));
-	} else {
-		MML->Err(_T("SUNSOFT 5bのハードウェアエンベロープ周波数は0～65535の範囲で指定して下さい。"));
-	}
+	unsigned	char	c0 = (unsigned char)( i       & 0xFF);
+	unsigned	char	c1 = (unsigned char)((i >> 8) & 0xFF);
+	SetEvent(new mml_general(nsc_FME7_frequency,c0,c1,_T("FME7 envelop frequency")));
 }
