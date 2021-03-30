@@ -382,7 +382,7 @@ const	static	Command_Info	Command[] = {
 				//MML
 				case(id_DPCM):
 					if(cDPCMinfo != NULL){
-						MML->Err(_T("DPCMブロックは１つまでです。"));
+						MML->Err(_T("既に、DPCMが定義されています。"));
 					}
 					cDPCMinfo = new DPCMinfo(MML, Header.bank);
 					if(cDPCMinfo->isError() == true){
@@ -397,7 +397,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcFDSC.count(i) != 0){
-							MML->Err(_T("FDSC()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、FDSC(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_fdsc = new FDSC(MML, i);
 						ptcItem.push_back(_fdsc);
@@ -410,7 +412,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcFDSM.count(i) != 0){
-							MML->Err(_T("FDSM()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、FDSM(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_fdsm = new FDSM(MML, i);
 						ptcItem.push_back(_fdsm);
@@ -423,7 +427,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcVRC7.count(i) != 0){
-							MML->Err(_T("VRC7()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、VRC7(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_vrc7 = new VRC7(MML, i);
 						ptcItem.push_back(_vrc7);
@@ -436,7 +442,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcN163.count(i) != 0){
-							MML->Err(_T("N163()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、N163(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_n163 = new N163(MML, i);
 						ptcItem.push_back(_n163);
@@ -449,7 +457,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcEnv.count(i) != 0){
-							MML->Err(_T("Envelope()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、Envelope(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_env = new Envelop(MML, i);
 						ptcItem.push_back(_env);
@@ -463,7 +473,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum() + MML->offset_Em;
 						//重複チェック
 						if(ptcEnv.count(i) != 0){
-							MML->Err(_T("ビブラート()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、ビブラート(") << (i - MML->offset_Em) << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_env = new Envelop(MML, i);
 						ptcItem.push_back(_env);
@@ -476,7 +488,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcSub.count(i) != 0){
-							MML->Err(_T("Sub()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、Sub(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						//範囲チェック
 						_sub = new Sub(MML, i);
@@ -488,13 +502,13 @@ const	static	Command_Info	Command[] = {
 					{
 						BGM*	_bgm;
 						i = MML->GetNum();
+						//範囲チェック
+						MML->Chk_Range(_T("BGM()"), 0, Header.iBGM-1, i);
 						//重複チェック
 						if(ptcBGM.count(i) != 0){
-							MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
-						}
-						//範囲チェック
-						if((Header.iBGM <= i) || (i<0)){
-							MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、BGM(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_bgm = new BGM(MML, i);
 						ptcItem.push_back(_bgm);
@@ -518,13 +532,13 @@ const	static	Command_Info	Command[] = {
 					{
 						SE*	_se;
 						i = MML->GetNum();
+						//範囲チェック
+						MML->Chk_Range(_T("SE()"), 0, Header.iSE-1, i);
 						//重複チェック
 						if(ptcSE.count(i) != 0){
-							MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
-						}
-						//範囲チェック
-						if((Header.iSE <= i) || (i<0)){
-							MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、SE(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_se = new SE(MML, i);
 						ptcItem.push_back(_se);
@@ -561,13 +575,17 @@ const	static	Command_Info	Command[] = {
 
 		for(size_t n=0, e=Header.iBGM; n<e; ++n){
 			if(ptcBGM.count(n) == 0){
-				MML->Err(_T("BGMデータが足りません。"));
+				_SSTREAM errMsg;
+				errMsg << _T("BGM(") << n << _T(")番が存在しません。");
+				MML->Err(errMsg.str().c_str());
 			};
 		}
 
 		for(size_t n=0, e=Header.iSE; n<e; ++n){
 			if(ptcSE.count(n) == 0){
-				MML->Err(_T("SE データが足りません。"));
+				_SSTREAM errMsg;
+				errMsg << _T("SE(") << n << _T(")番が存在しません。");
+				MML->Err(errMsg.str().c_str());
 			};
 		}
 

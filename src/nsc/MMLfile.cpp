@@ -234,7 +234,10 @@ void	MMLfile::SetMacro(int i_Lv)
 	//------------------
 	//マクロ名の重複チェック
 	if(ptcMac.count(macro_name) != 0){
-		Err(_T("既にそのマクロ名は存在しています。"));
+		string	errMsg = "The same macro name \"";
+		errMsg += macro_name + "\" has already using.";
+		Err(_T("既に、そのマクロ名は存在しています。"));
+		Err(errMsg);
 	}
 
 	//------------------
@@ -410,7 +413,10 @@ void	MMLfile::SetPatch(void)
 
 	//重複チェック
 	if(ptcPatch.count(i) != 0){
-		Err(_T("Patch()ブロックで同じ番号が指定されました。"));
+		_SSTREAM	errMsg;
+		errMsg << _T("既に、Patch(") << i << _T(")は定義されています。");
+		Err(errMsg.str().c_str());
+		delete	ptcPatch[i];
 	}
 
 	ptcPatch[i] =  new Patch(this, i);

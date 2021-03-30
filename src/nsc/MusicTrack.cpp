@@ -1610,7 +1610,10 @@ void	MusicTrack::SetPatch(MMLfile* MML)
 	i_Patch	= MML->GetInt();
 
 	if(MML->ChkPatch(i_Patch) == false){
-		MML->Err(_T("存在しないパッチです。"));
+		_SSTREAM errMsg;
+		errMsg << _T("Patch(") << i_Patch << _T(")番が定義されていません。");
+		MML->Err(errMsg.str().c_str());
+		f_Patch = false;
 	}
 }
 
@@ -3215,7 +3218,7 @@ void	MusicTrack::SetRest(MMLfile*	MML, int mode)
 						_code = 0x0C;
 						break;
 					default:
-						MML->Err(_T("MusicTrack::SetRest()関数内で、#waitコマンドのmodeの値が未知の値です。"));
+						throw out_of_range("Unknown mode value with #wait command in function MusicTrack::SetRest()");
 						break;
 				}
 			} else {
@@ -3241,7 +3244,7 @@ void	MusicTrack::SetRest(MMLfile*	MML, int mode)
 								_code = 0x0C;
 								break;
 							default:
-								MML->Err(_T("MusicTrack::SetRest()関数内で、#restコマンドのmodeの値が未知の値です。"));
+								throw out_of_range("Unknown mode value with #rest command in function MusicTrack::SetRest()");
 								break;
 						}
 						break;
