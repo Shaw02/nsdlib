@@ -461,7 +461,7 @@ void	DPCMinfo::getAsm(MusicFile* MUS)
 {
 	if(m_id > 0){
 		//DPCMinfo
-		*MUS << MUS->Header.Label.c_str() << "DPCMinfo" << ":" << endl;
+		*MUS << MUS->Header.Label << "DPCMinfo" << ":" << endl;
 		MusicItem::getAsm(MUS);
 
 		//DPCM

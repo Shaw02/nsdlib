@@ -90,6 +90,6 @@ DPCM::~DPCM(void)
 //==============================================================
 void	DPCM::getAsm(MusicFile* MUS)
 {
-	*MUS << ".align	$40\n" << MUS->Header.Label.c_str() << "DPCM" << m_id << ":" << endl;
+	*MUS << ".align	$40\n" << MUS->Header.Label << "DPCM" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }

@@ -49,6 +49,6 @@ BGM::~BGM(void)
 //==============================================================
 void	BGM::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "BGM" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "BGM" << m_id << ":" << endl;
 	TrackSet::getAsm(MUS);
 }

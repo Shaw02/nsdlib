@@ -73,7 +73,7 @@ void		SearchPass::debug()
 
 	//ŒŸõƒpƒX‚Ìˆê——o—Í
 	for(map<size_t,string>::iterator it=m_ptcPass.begin(), e=m_ptcPass.end(); it!=e; ++it){
-		cout << it->second.c_str() << endl;
+		cout << it->second << endl;
 	}
 }
 

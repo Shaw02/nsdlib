@@ -448,19 +448,19 @@ OPSW::OPSW(int argc, char* argv[]):
 
 	} catch (const _CHAR* stErrMsg) {
 		if(fErr == true){
-			_CERR	<<	_T("不正なオプション：");
-			_CERR	<<	stErrMsg << endl;
+			_CERR	<<	_T("不正なオプション：") <<	stErrMsg << endl;
 		} else {
-			_COUT	<<	_T("不正なオプション：");
-			_COUT	<<	stErrMsg << endl;
+			_COUT	<<	_T("不正なオプション：") <<	stErrMsg << endl;
 		}
 		fOptionError = true;	//オプション処理でエラーが発生した。
 		throw EXIT_FAILURE;		//リスローする
 	} catch (const string& str) {
 		if(fErr == true){
-			_CERR	<<	_T("不正なオプション：") << str.c_str() << endl;
+			_CERR	<<	_T("不正なオプション：");
+			cerr	<< str << endl;
 		} else {
-			_COUT	<<	_T("不正なオプション：") << str.c_str() << endl;
+			_COUT	<<	_T("不正なオプション：");
+			cout	<< str << endl;
 		}
 		fOptionError = true;	//オプション処理でエラーが発生した。
 		throw EXIT_FAILURE;		//リスローする

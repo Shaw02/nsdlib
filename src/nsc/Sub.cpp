@@ -70,6 +70,6 @@ unsigned	int	Sub::TickCount(MusicFile* MUS, NSD_WORK* work)
 //==============================================================
 void	Sub::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "SUB" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "SUB" << m_id << ":" << endl;
 	TrackSet::getAsm(MUS);
 }

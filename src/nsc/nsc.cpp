@@ -90,9 +90,9 @@ void nsc_ErrMsg(const string& s)
 {
 	_OMP_SET_LOCK(lock_cout)
 	if(cOptionSW->fErr == true){
-		cerr << "Error!: " << s.c_str() << endl;
+		cerr << "Error!: " << s << endl;
 	} else {
-		cout << "Error!: " << s.c_str() << endl;
+		cout << "Error!: " << s << endl;
 	}
 	_OMP_UNSET_LOCK(lock_cout)
 }

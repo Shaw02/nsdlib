@@ -129,6 +129,6 @@ FDSM::~FDSM(void)
 //==============================================================
 void	FDSM::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "FDSM" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "FDSM" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }

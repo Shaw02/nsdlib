@@ -50,6 +50,6 @@ SE::~SE()
 //==============================================================
 void	SE::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "SE" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "SE" << m_id << ":" << endl;
 	TrackSet::getAsm(MUS);
 }

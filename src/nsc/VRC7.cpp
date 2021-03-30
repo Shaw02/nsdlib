@@ -174,6 +174,6 @@ VRC7::~VRC7(void)
 //==============================================================
 void	VRC7::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "VRC7" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "VRC7" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }

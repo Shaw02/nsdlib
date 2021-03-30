@@ -131,6 +131,6 @@ N163::~N163(void)
 //==============================================================
 void	N163::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "N163" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "N163" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }

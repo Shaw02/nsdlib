@@ -98,7 +98,7 @@ MMLfile::~MMLfile(void)
 	for(vector<FileInput*>::iterator it=ptcFiles.begin(), e=ptcFiles.end(); it!=e; ++it){
 		if(cOptionSW->iDebug & DEBUG_Close_Inc){
 			_COUT << _T("Close file :");
-			cout << (*it)->GetFilename()->c_str() << endl;
+			cout << *((*it)->GetFilename()) << endl;
 		}
 		(*it)->close();
 		delete *it;
@@ -1333,11 +1333,11 @@ void	MMLfile::Err(const _CHAR msg[])
 	//エラー内容を表示
 	if(cOptionSW->fErr == true){
 		//現在のファイル名と、行数を表示
-		cerr << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : ";
+		cerr << "[ ERROR ] " << *(nowFile->GetFilename()) << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : ";
 		_CERR << msg << endl;
 	} else {
 		//現在のファイル名と、行数を表示
-		cout << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : ";
+		cout << "[ ERROR ] " << *(nowFile->GetFilename()) << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : ";
 		_COUT << msg << endl;
 	}
 	_OMP_UNSET_LOCK(lock_cout)
@@ -1355,10 +1355,10 @@ void	MMLfile::Err(const string& str)
 	//エラー内容を表示
 	if(cOptionSW->fErr == true){
 		//現在のファイル名と、行数を表示
-		cerr << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : " << str.c_str() << endl;
+		cerr << "[ ERROR ] " << *(nowFile->GetFilename()) << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : " << str << endl;
 	} else {
 		//現在のファイル名と、行数を表示
-		cout << "[ ERROR ] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : " << str.c_str() << endl;
+		cout << "[ ERROR ] " << *(nowFile->GetFilename()) << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : " << str << endl;
 	}
 	_OMP_UNSET_LOCK(lock_cout)
 
@@ -1380,11 +1380,11 @@ void	MMLfile::Warning(const _CHAR msg[])
 	//ワーニング内容を表示
 	if(cOptionSW->fErr == true){
 		//現在のファイル名と、行数を表示
-		cerr << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : ";
+		cerr << "[WARNING] " << *(nowFile->GetFilename()) << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : ";
 		_CERR << msg << endl;
 	} else {
 		//現在のファイル名と、行数を表示
-		cout << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : ";
+		cout << "[WARNING] " << *(nowFile->GetFilename()) << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : ";
 		_COUT << msg << endl;
 	}
 	_OMP_UNSET_LOCK(lock_cout)
@@ -1397,10 +1397,10 @@ void	MMLfile::Warning(const string& str)
 	//ワーニング内容を表示
 	if(cOptionSW->fErr == true){
 		//現在のファイル名と、行数を表示
-		cerr << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : " << str.c_str() << endl;
+		cerr << "[WARNING] " << *(nowFile->GetFilename()) << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : " << str << endl;
 	} else {
 		//現在のファイル名と、行数を表示
-		cout << "[WARNING] " << nowFile->GetFilename()->c_str() << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : " << str.c_str() << endl;
+		cout << "[WARNING] " << *(nowFile->GetFilename()) << " (Line = " << nowFile->GetLine() << "): " << nowCommand << " : " << str << endl;
 	}
 	_OMP_UNSET_LOCK(lock_cout)
 }

@@ -191,7 +191,7 @@ const	static	Command_Info	Command[] = {
 	}
 
 	if(code.size() > 256){
-		MML->Err(_T("エンベロープの定義長が255Byteを越えました。"));
+		MML->Err(_T("エンベロープの定義長が256Byteを越えました。"));
 	}
 
 	iSize = code.size();
@@ -333,6 +333,6 @@ int	Envelop::sweep(MMLfile* MML)
 //==============================================================
 void	Envelop::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "Envelope" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "Envelope" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }
