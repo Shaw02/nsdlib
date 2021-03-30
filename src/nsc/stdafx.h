@@ -124,8 +124,8 @@ using namespace std;
 void nsc_exit(int no);		//Å°Å°Å°Å° To Do:	îpé~ó\íË
 void nsc_ErrMsg(int no);
 void nsc_ErrMsg(const exception& e);
-void nsc_ErrMsg(const string& str);
-void nsc_ErrMsg(const _CHAR* stErrMsg);
+void nsc_ErrMsg(const string& errMsg);
+void nsc_ErrMsg(const _CHAR* errMsg);
 
 class	MusicHeader;
 class	MusicFile;

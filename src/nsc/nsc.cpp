@@ -86,26 +86,26 @@ void nsc_ErrMsg(const exception& e)
 }
 
 //--------------------------------------------------------------
-void nsc_ErrMsg(const string& s)
+void nsc_ErrMsg(const string& errMsg)
 {
 	_OMP_SET_LOCK(lock_cout)
 	if(cOptionSW->fErr == true){
-		cerr << "Error!: " << s << endl;
+		cerr << "Error!: " << errMsg << endl;
 	} else {
-		cout << "Error!: " << s << endl;
+		cout << "Error!: " << errMsg << endl;
 	}
 	_OMP_UNSET_LOCK(lock_cout)
 }
 
 //--------------------------------------------------------------
-void nsc_ErrMsg(const _CHAR* stErrMsg)
+void nsc_ErrMsg(const _CHAR* errMsg)
 {
 	_OMP_SET_LOCK(lock_cout)
 
 	if(cOptionSW->fErr == true){
-		_CERR << _T("Error!: ") << stErrMsg << endl;
+		_CERR << _T("Error!: ") << errMsg << endl;
 	} else {
-		_COUT << _T("Error!: ") << stErrMsg << endl;
+		_COUT << _T("Error!: ") << errMsg << endl;
 	}
 	_OMP_UNSET_LOCK(lock_cout)
 }
@@ -216,9 +216,9 @@ int	main(int argc, char* argv[])
 	} catch (const exception& e){
 		iResult	= EXIT_FAILURE;
 		nsc_ErrMsg(e);
-	} catch (const _CHAR* stErrMsg) {
+	} catch (const _CHAR* errMsg) {
 		iResult	= EXIT_FAILURE;
-		nsc_ErrMsg(stErrMsg);
+		nsc_ErrMsg(errMsg);
 	} catch (const string& str) {
 		iResult	= EXIT_FAILURE;
 		nsc_ErrMsg(str);

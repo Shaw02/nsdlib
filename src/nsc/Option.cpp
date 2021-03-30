@@ -446,21 +446,21 @@ OPSW::OPSW(int argc, char* argv[]):
 		m_pass_inc.debug();
 	*/
 
-	} catch (const _CHAR* stErrMsg) {
+	} catch (const _CHAR* errMsg) {
 		if(fErr == true){
-			_CERR	<<	_T("不正なオプション：") <<	stErrMsg << endl;
+			_CERR	<<	_T("不正なオプション：") << errMsg << endl;
 		} else {
-			_COUT	<<	_T("不正なオプション：") <<	stErrMsg << endl;
+			_COUT	<<	_T("不正なオプション：") << errMsg << endl;
 		}
 		fOptionError = true;	//オプション処理でエラーが発生した。
 		throw EXIT_FAILURE;		//リスローする
-	} catch (const string& str) {
+	} catch (const string& errMsg) {
 		if(fErr == true){
 			_CERR	<<	_T("不正なオプション：");
-			cerr	<< str << endl;
+			cerr	<< errMsg << endl;
 		} else {
 			_COUT	<<	_T("不正なオプション：");
-			cout	<< str << endl;
+			cout	<< errMsg << endl;
 		}
 		fOptionError = true;	//オプション処理でエラーが発生した。
 		throw EXIT_FAILURE;		//リスローする
