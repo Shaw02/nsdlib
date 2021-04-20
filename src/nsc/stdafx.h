@@ -138,6 +138,8 @@ typedef struct {
 	int			id;
 } Command_Info;
 
+#include "mml_error.h"			//MML構文エラー
+
 //ヘッダー
 #include "SearchPass.h"			//検索パス
 

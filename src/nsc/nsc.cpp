@@ -79,8 +79,10 @@ void nsc_ErrMsg(const exception& e)
 	_OMP_SET_LOCK(lock_cout)
 	if(cOptionSW->fErr == true){
 		cerr << "Error!: " << e.what() << endl;
+		cerr << "  Type: " << typeid( e ).name( ) << endl;
 	} else {
 		cout << "Error!: " << e.what() << endl;
+		cout << "  Type: " << typeid( e ).name( ) << endl;
 	}
 	_OMP_UNSET_LOCK(lock_cout)
 }

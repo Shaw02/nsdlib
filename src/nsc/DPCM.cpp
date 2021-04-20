@@ -29,42 +29,42 @@ DPCM::DPCM(MMLfile* MML, const char* dmcfile, size_t _id, const _CHAR _strName[]
 	MusicItem(_id, _strName),
 	_DPCM_size(0)
 {
-	fileopen(dmcfile, &cOptionSW->m_pass_dmc);
+	try{
+		fileopen(dmcfile, &cOptionSW->m_pass_dmc);
 
-	if(f_error == true){
-		string	errMsg = "\"";
-		errMsg += dmcfile;
-		errMsg += "\" :";
-		errMsg += strerror(errno);
-		MML->Err(errMsg);
-	} else {
-		//----------------------
-		//Local変数
-		std::streamsize	_size	= GetSize();
-
-		if(_size > 0x0FF1){
-			MML->Warning(_T("⊿PCMのファイルサイズが大きすぎます。4081Byteにカットします。"));
-			iSize = 0x0FF1;
-			_size = 0x0FF1;
+		if(f_error == true){
+			throw mml_ios_failure(*MML, dmcfile, errno);
 		} else {
-			if((_size & 0x000F) != 0x01){
-				iSize = (_size & 0x0FF0) + 0x0011;
+			//----------------------
+			//Local変数
+			std::streamsize	_size	= GetSize();
+
+			if(_size > 0x0FF1){
+				MML->Warning(_T("⊿PCMのファイルサイズが大きすぎます。4081Byteにカットします。"));
+				iSize = 0x0FF1;
+				_size = 0x0FF1;
 			} else {
-				iSize = _size;
+				if((_size & 0x000F) != 0x01){
+					iSize = (_size & 0x0FF0) + 0x0011;
+				} else {
+					iSize = _size;
+				}
 			}
+			_DPCM_size = (unsigned char)(iSize >> 4);
+
+			code.resize(iSize);
+
+			//⊿PCM実体を転送
+			read((char*)code.c_str(), _size);
+
+			//Padding
+			for(size_t i = _size; i<iSize; i++){
+				code[i] = (unsigned char)0xAA;
+			}
+			close();
 		}
-		_DPCM_size = (unsigned char)(iSize >> 4);
-
-		code.resize(iSize);
-
-		//⊿PCM実体を転送
-		read((char*)code.c_str(), _size);
-
-		//Padding
-		for(size_t i = _size; i<iSize; i++){
-			code[i] = (unsigned char)0xAA;
-		}
-		close();
+	} catch (mml_ios_failure& e) {
+		e.out_what();
 	}
 }
 

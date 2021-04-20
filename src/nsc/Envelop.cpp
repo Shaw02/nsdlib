@@ -191,7 +191,7 @@ const	static	Command_Info	Command[] = {
 	}
 
 	if(code.size() > 256){
-		MML->Err(_T("エンベロープの定義長が256Byteを越えました。"));
+		MML->Warning(_T("エンベロープの定義長が256Byteを越えました。"));
 	}
 
 	iSize = code.size();
@@ -257,7 +257,7 @@ void	Envelop::setHold(int length)
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
 //	●返値
-//				無し
+//		int					
 //==============================================================
 int	Envelop::sweep(MMLfile* MML)
 {
@@ -274,52 +274,58 @@ int	Envelop::sweep(MMLfile* MML)
 	int		i=0;
 	int		temp;
 
-	//--------------------------
-	//●MML読み込み
+	try{
+		//--------------------------
+		//●MML読み込み
 
-	//
-	iStart = MML->GetInt_With_Chk_Range(_T("開始値"),-64,127);
+		//
+		iStart = MML->GetInt_With_Chk_Range(_T("開始値"),-64,127);
 
-	MML->Chk_Comma();
-	iEnd = MML->GetInt_With_Chk_Range(_T("終了値"),-64,127);
+		MML->Chk_Comma();
+		iEnd = MML->GetInt_With_Chk_Range(_T("終了値"),-64,127);
 
-	MML->Chk_Comma();
-	iLength = MML->GetInt_With_Chk_Range(_T("長さ"),1,255);
+		MML->Chk_Comma();
+		iLength = MML->GetInt_With_Chk_Range(_T("長さ"),1,255);
 
-	cData = MML->GetChar();
-	if((cData != ')') && (cData != '}')){
-		MML->Err(_T(") が見つかりませんでした。"));
-	}
-
-	//--------------------------
-	//●テーブル作成
-
-	iDelta = iEnd - iStart;
-
-	while(i<iLength){
-		temp = iStart + (iDelta * i) / iLength;
-		if(i == 0){
-			now = temp;
-			cnt	= 0;
-		} else if (temp != now){
-			code.append((char)1, (char)now & 0x7F);
-			ptEnvelop++;
-			if(cnt>=1){
-				setHold(cnt-1);
-			}
-			now = temp;
-			cnt	= 0;
-		} else {
-			cnt++;
+		cData = MML->GetChar();
+		if((cData != ')') && (cData != '}')){
+			MML->Err(_T(") が見つかりませんでした。"));
+			MML->Back();
 		}
-		i++;
+
+		//--------------------------
+		//●テーブル作成
+
+		iDelta = iEnd - iStart;
+
+		while(i<iLength){
+			temp = iStart + (iDelta * i) / iLength;
+			if(i == 0){
+				now = temp;
+				cnt	= 0;
+			} else if (temp != now){
+				code.append((char)1, (char)now & 0x7F);
+				ptEnvelop++;
+				if(cnt>=1){
+					setHold(cnt-1);
+				}
+				now = temp;
+				cnt	= 0;
+			} else {
+				cnt++;
+			}
+			i++;
+		}
+
+		code.append((char)1, (char)now & 0x7F);
+		ptEnvelop++;
+		if(cnt>=1){
+			setHold(cnt-1);
+		}
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
 	}
 
-	code.append((char)1, (char)now & 0x7F);
-	ptEnvelop++;
-	if(cnt>=1){
-		setHold(cnt-1);
-	}
 	return(now);
 }
 

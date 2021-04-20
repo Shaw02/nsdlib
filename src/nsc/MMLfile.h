@@ -109,12 +109,14 @@ public:			char	cRead(void);					//1Byte“Ç‚Ýž‚Ýi‘SŠpE”¼Šp•ÏŠ·‘Î‰žj
 				size_t	GetLine(void){return(nowFile->GetLine());};
 				void	SetLine(size_t i){nowFile->SetLine(i);};
 
+				void	Chk_Range(const _CHAR msg[], int min, int max, int value);
 				void	ErrUnknownCmd();
+				void	GetLocation(stringstream* _loc);
 				void	Err(const _CHAR msg[]);
 				void	Warning(const _CHAR msg[]);
-				void	Err(const string& str);
-				void	Warning(const string& str);
-				void	Chk_Range(const _CHAR msg[], int min, int max, int value);
+				void	Err(const string& msg);
+				void	Warning(const string& msg);
 
+				void	SetError(){f_error = true;};
 				bool	isError(){return(f_error);};
 };

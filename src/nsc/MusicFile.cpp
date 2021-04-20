@@ -589,9 +589,16 @@ const	static	Command_Info	Command[] = {
 			};
 		}
 
-	} catch (...) {
-		f_error = true;		//
-		throw;				//全部リスローする
+	} catch (mml_error& e){
+		f_error = true;
+		e.out_what();
+	} catch (mml_ios_failure& e){
+		f_error = true;
+		e.out_what();
+	}
+
+	if((f_error == true) || (MML->isError())){
+		throw _T("MMLの構文解析を失敗しました。");
 	}
 }
 
@@ -673,7 +680,7 @@ void	MusicFile::TickCount(void)
 
 	//エラーが発生していたら最適化はしない。
 	if (f_error == true) {
-		throw _T("最適化に失敗しました。");		
+		throw _T("最適化を失敗しました。");		
 	}
 
 	//==============================
@@ -1018,7 +1025,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 	code_size = read_bin(NSF_Data, NSF_Hed);
 	if(isError() == true){
 		//BINファイルの読み込みに失敗していたら終了する
-			throw ios_base::failure(Header.romcode + ": " + strerror(errno));
+		throw ios_failure(Header.romcode, errno);
 
 	} else {
 
@@ -1042,7 +1049,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			//------------------------------
 			//Bank 非対応bin
 			if(Header.bank == true){
-				Err(_T("指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。"));
+				throw mml_error(_T("指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。"));
 			}
 
 			//サイズの上限
@@ -1059,7 +1066,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			//------------------------------
 			//Bank対応bin？
 			if(Header.bank == false){
-				Err(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
+				throw mml_error(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
 			}
 			if(cOptionSW->iNSF_version >=2){
 				NSF_Hed->Flags |= nsf_flag_IRQ_support;
@@ -1090,7 +1097,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 
 		//サイズチェック
 		if(mus_size > iSizeLimit){
-			Err(_T("コード・シーケンスのサイズが許容値を越えました。"));
+			throw mml_error(_T("コード・シーケンスのサイズが許容値を越えました。"));
 		}
 
 		//----------------------
@@ -1130,14 +1137,14 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			_COUT << _T(" / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
 
 			if(	(Header.offsetPCM + pcm_size) > 0x10000	){
-				Err(_T("⊿PCMのサイズが許容値を越えました。"));
+				throw mml_error(_T("⊿PCMのサイズが許容値を越えました。"));
 			}
 		} else {
 			_COUT << endl;
 			i = mus_bank + pcm_bank + code_bank;
 
 			if(i > 255){
-				Err(_T("バンク数の合計が255を越えました。"));
+				throw mml_error(_T("バンク数の合計が255を越えました。"));
 			}
 		}
 
@@ -1259,7 +1266,7 @@ void	MusicFile::saveNSF(string&	strFileName)
 		//Open File
 		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw ios_base::failure(strFileName + ": " + strerror(errno));
+			throw ios_failure(strFileName, errno);
 		} else {
 			//----------------------
 			//Write File
@@ -1274,9 +1281,9 @@ void	MusicFile::saveNSF(string&	strFileName)
 			close();
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
-	} catch (const exception& e) {
+	} catch (mml_error& e){
+		e.out_what();
+	} catch (ios_failure& e) {
 		nsc_ErrMsg(e);
 	}
 
@@ -1343,7 +1350,7 @@ void	MusicFile::saveNSFe(string&	strFileName)
 		//Open File
 		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw ios_base::failure(strFileName + ": " + strerror(errno));
+			throw ios_failure(strFileName, errno);
 		} else {
 			//----------------------
 			//Write File
@@ -1355,9 +1362,9 @@ void	MusicFile::saveNSFe(string&	strFileName)
 			close();
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
-	} catch (const exception& e) {
+	} catch (mml_error& e){
+		e.out_what();
+	} catch (ios_failure& e) {
 		nsc_ErrMsg(e);
 	}
 
@@ -1383,7 +1390,7 @@ void	MusicFile::saveASM(string&	strFileName)
 		//File open
 		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw ios_base::failure(strFileName + ": " + strerror(errno));
+			throw ios_failure(strFileName, errno);
 		} else {
 
 			//Header
@@ -1416,9 +1423,9 @@ void	MusicFile::saveASM(string&	strFileName)
 			close();
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
-	} catch (const exception& e) {
+	} catch (mml_error& e){
+		e.out_what();
+	} catch (ios_failure& e) {
 		nsc_ErrMsg(e);
 	}
 }
@@ -1431,6 +1438,7 @@ void	MusicFile::saveASM(string&	strFileName)
 //	●返値
 //				無し
 //==============================================================
+/*
 void	MusicFile::Err(const _CHAR msg[])
 {
 	_OMP_SET_LOCK(lock_cout)
@@ -1444,6 +1452,7 @@ void	MusicFile::Err(const _CHAR msg[])
 
 	throw EXIT_FAILURE;		//基本的に致命的なエラーなので例外を投げる。
 }
+*/
 
 //--------------------------------------------------------------
 void	MusicFile::Err(const _CHAR msg[], size_t no)

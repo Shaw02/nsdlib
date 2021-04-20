@@ -448,7 +448,7 @@ OPSW::OPSW(int argc, char* argv[]):
 
 	} catch (const _CHAR* errMsg) {
 		if(fErr == true){
-			_CERR	<<	_T("不正なオプション：") << errMsg << endl;
+			_CERR	<<	_T("不正なオプション：") <<	errMsg << endl;
 		} else {
 			_COUT	<<	_T("不正なオプション：") << errMsg << endl;
 		}

@@ -1855,14 +1855,19 @@ void	MusicTrack::SetVRC7(MMLfile* MML)
 //==============================================================
 void	MusicTrack::SetN163(MMLfile* MML)
 {
-	unsigned	char	cNum	= (unsigned char)MML->GetInt_With_Chk_Range(_T("n16xの波形開始アドレス"),0,63);		//音色番号
-				size_t	_no;
-	mml_Address*		_event;
+	try{
+		unsigned	char	cNum	= (unsigned char)MML->GetInt_With_Chk_Range(_T("n16xの波形開始アドレス"),0,63);		//音色番号
+					size_t	_no;
+		mml_Address*		_event;
 
-	MML->Chk_Comma();
-	_no = MML->GetInt();
-	_event	= new mml_Address(_no, (unsigned char)nsc_N163, cNum, _T("n163 wave table"));
-	SetEvent(_event);
+		MML->Chk_Comma();
+		_no = MML->GetInt();
+		_event	= new mml_Address(_no, (unsigned char)nsc_N163, cNum, _T("n163 wave table"));
+		SetEvent(_event);
+
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
+	}
 }
 
 //--------------------------------------------------------------
@@ -1870,18 +1875,23 @@ void	MusicTrack::SetN163(MMLfile* MML)
 //--------------------------------------------------------------
 void	MusicTrack::SetN163_Load(MMLfile* MML)
 {
-			int		i	= MML->GetInt_With_Chk_Range(_T("n16xの波形開始点"),0,252);
-			size_t	_no;
-	mml_Address*	_event;
+	try{
+				int		i	= MML->GetInt_With_Chk_Range(_T("n16xの波形開始点"),0,252);
+				size_t	_no;
+		mml_Address*	_event;
 
-	if((i % 4) != 0){
-		MML->Err(_T("n16xの波形開始点は4の倍数で指定してください。"));
+		if((i % 4) != 0){
+			MML->Err(_T("n16xの波形開始点は4の倍数で指定してください。"));
+		}
+
+		MML->Chk_Comma();
+		_no = MML->GetInt();
+		_event = new mml_Address(_no, (unsigned char)nsc_N163,(unsigned char)(i/4),_T("n163 wave table"));
+		SetEvent(_event);
+
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
 	}
-
-	MML->Chk_Comma();
-	_no = MML->GetInt();
-	_event = new mml_Address(_no, (unsigned char)nsc_N163,(unsigned char)(i/4),_T("n163 wave table"));
-	SetEvent(_event);
 }
 
 //==============================================================
@@ -2895,33 +2905,38 @@ void	MusicTrack::SetEcho(void)
 //==============================================================
 void	MusicTrack::SetEcho(MMLfile* MML)
 {
-	unsigned	char	cData;
-				int		_value;
-				int		_volume;
+	try{
+		unsigned	char	cData;
+					int		_value;
+					int		_volume;
 
-	//ここで音量を戻す。
-	EchoVolRet();
+		//ここで音量を戻す。
+		EchoVolRet();
 
-	_value = MML->GetInt_With_Chk_Range(_T("ECコマンドの第１パラメータ"),0,255);
+		_value = MML->GetInt_With_Chk_Range(_T("ECコマンドの第１パラメータ"),0,255);
 
-	MML->Chk_Comma();
-	_volume = MML->GetInt_With_Chk_Range(_T("ECコマンドの第２パラメータ"),-1,15);
+		MML->Chk_Comma();
+		_volume = MML->GetInt_With_Chk_Range(_T("ECコマンドの第２パラメータ"),-1,15);
 
-	echo_flag = true;
-	echo_value	= (unsigned char)_value;
-	if(_volume == -1){
-		echo_slur = true;
-	} else {
-		echo_slur = false;
-		echo_volume	= (unsigned char)_volume;
-	}
+		echo_flag = true;
+		echo_value	= (unsigned char)_value;
+		if(_volume == -1){
+			echo_slur = true;
+		} else {
+			echo_slur = false;
+			echo_volume	= (unsigned char)_volume;
+		}
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Back();
-		echo_length = -1;
-	} else {
-		echo_length	= MML->GetLength(nsd.length);
+		cData = MML->GetChar();
+		if(cData != ','){
+			MML->Back();
+			echo_length = -1;
+		} else {
+			echo_length	= MML->GetLength(nsd.length);
+		}
+
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
 	}
 }
 
@@ -3530,26 +3545,31 @@ void	MusicTrack::SetProtament(MMLfile* MML, unsigned char iTempo)
 //==============================================================
 void	MusicTrack::SetProtament(MMLfile* MML)
 {
-	int		_Decay;
-	int		_Rate;
-	int		_Depth;
-	int		_Target;
+	try{
+		int		_Decay;
+		int		_Rate;
+		int		_Depth;
+		int		_Target;
 
-	_Decay = MML->GetInt_With_Chk_Range(_T("ポルタメントの第1パラメータ"),0,255);
-	_Decay++;
+		_Decay = MML->GetInt_With_Chk_Range(_T("ポルタメントの第1パラメータ"),0,255);
+		_Decay++;
 
-	MML->Chk_Comma();
-	_Rate = MML->GetInt_With_Chk_Range(_T("ポルタメントの第2パラメータ"),1,256);
+		MML->Chk_Comma();
+		_Rate = MML->GetInt_With_Chk_Range(_T("ポルタメントの第2パラメータ"),1,256);
 
-	MML->Chk_Comma();
-	_Depth = MML->GetInt_With_Chk_Range(_T("ポルタメントの第3パラメータ"),-128,127);
-//	_Decay++;
+		MML->Chk_Comma();
+		_Depth = MML->GetInt_With_Chk_Range(_T("ポルタメントの第3パラメータ"),-128,127);
+	//	_Decay++;
 
-	MML->Chk_Comma();
-	_Target = MML->GetInt_With_Chk_Range(_T("ポルタメントの第4パラメータ"),-128,127);
+		MML->Chk_Comma();
+		_Target = MML->GetInt_With_Chk_Range(_T("ポルタメントの第4パラメータ"),-128,127);
 
-	if(jump_flag == false){
-        SetEvent(new mml_general(nsd_Portamento, (unsigned char)_Decay, (unsigned char)_Rate, (unsigned char)_Depth, (unsigned char)_Target, _T("Portamento")));
+		if(jump_flag == false){
+			SetEvent(new mml_general(nsd_Portamento, (unsigned char)_Decay, (unsigned char)_Rate, (unsigned char)_Depth, (unsigned char)_Target, _T("Portamento")));
+		}
+
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
 	}
 }
 

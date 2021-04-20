@@ -134,6 +134,9 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\mml_error.cpp">
+			</File>
+			<File
 				RelativePath=".\nsc.cpp">
 			</File>
 			<File
@@ -395,6 +398,9 @@
 			</File>
 			<File
 				RelativePath=".\mml_CallSub.h">
+			</File>
+			<File
+				RelativePath=".\mml_error.h">
 			</File>
 			<File
 				RelativePath=".\mml_general.h">
