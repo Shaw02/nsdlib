@@ -1096,34 +1096,38 @@ void	TrackSet::Fix_Address(MusicFile* MUS)
 //==============================================================
 void	TrackSet::TrackChk(MMLfile* MML)
 {
-	size_t	i = iTrack + 1;
+	try{
+		size_t	i = iTrack + 1;
 
-	if(MML->GetMacroNest() > 0){
-		MML->Err(_T("マクロ中でトラックの指定はできません。"));
-	}
-
-	//------------------
-	//続きのトラックのチェック
-//	i		= iTrack + 1;
-	iTrack	= 0;
-	while(i <= maxTrack){
-		if(ptcTrack[i]->GetCompileFlag() == true){
-			iTrack = i;
-			break;
+		if(MML->GetMacroNest() > 0){
+			throw mml_error(*MML, _T("マクロ中でトラックの指定はできません。"));
 		}
-		i++;
-	}
 
-	if(iTrack != 0){
 		//------------------
-		//続きのトラックがある場合
+		//続きのトラックのチェック
+	//	i		= iTrack + 1;
+		iTrack	= 0;
+		while(i <= maxTrack){
+			if(ptcTrack[i]->GetCompileFlag() == true){
+				iTrack = i;
+				break;
+			}
+			i++;
+		}
 
-		//ポインタと行番号を復帰
-		MML->StreamPointerMove(TrackPt);
-		MML->SetLine(TrackLine);
-		nowTrack = getTrack(MML, iTrack);
-	} else {
-		nowTrack = NULL;
+		if(iTrack != 0){
+			//------------------
+			//続きのトラックがある場合
+
+			//ポインタと行番号を復帰
+			MML->StreamPointerMove(TrackPt);
+			MML->SetLine(TrackLine);
+			nowTrack = getTrack(MML, iTrack);
+		} else {
+			nowTrack = NULL;
+		}
+	} catch (mml_error& e) {
+		e.out_what();
 	}
 }
 
@@ -1158,10 +1162,11 @@ void	TrackSet::TrackProc(MMLfile* MML)
 			int	i = MML->GetInt() - 1;
 			if( (i <= -1) ){
 				MML->Err(_T("トラック番号で指定できる範囲を超えています。"));
+			} else {
+				iTrack = (size_t)i;
+				nowTrack = getTrack(MML, iTrack);
+				nowTrack->SetCompileFlag(true);
 			}
-			iTrack = (size_t)i;
-			nowTrack = getTrack(MML, iTrack);
-			nowTrack->SetCompileFlag(true);
 			cData = MML->GetChar();
 		} while(cData == ',');
 		MML->Back();
@@ -1397,15 +1402,20 @@ void	TrackSet::TempoDown()
 //==============================================================
 void	TrackSet::Set_Poke(MMLfile* MML)
 {
-	int		addr;
-	int		data;
+	try{
+		int		addr;
+		int		data;
 
-	addr = MML->GetInt_With_Chk_Range(_T("yコマンドのアドレス"), 0x0000, 0xFFFF);
+		addr = MML->GetInt_With_Chk_Range(_T("yコマンドのアドレス"), 0x0000, 0xFFFF);
 
-	MML->Chk_Comma();
-	data = MML->GetInt_With_Chk_Range(_T("yコマンドのデータ"), 0, 255);
+		MML->Chk_Comma();
+		data = MML->GetInt_With_Chk_Range(_T("yコマンドのデータ"), 0, 255);
 
-	SetEvent(new mml_poke(addr, (unsigned char)data));
+		SetEvent(new mml_poke(addr, (unsigned char)data));
+
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
+	}
 }
 
 //==============================================================
@@ -1451,15 +1461,20 @@ void	TrackSet::Set_FDS_Volume(MMLfile* MML)
 //==============================================================
 void	TrackSet::Set_VRC7_Write(MMLfile* MML)
 {
-	int		_Reg;
-	int		_Dat;
+	try{
+		int		_Reg;
+		int		_Dat;
 
-	_Reg = MML->GetInt_With_Chk_Range(_T("VRC7レジスタ操作の第1パラメータ"), 0, 0x40);
+		_Reg = MML->GetInt_With_Chk_Range(_T("VRC7レジスタ操作の第1パラメータ"), 0, 0x40);
 
-	MML->Chk_Comma();
-	_Dat = MML->GetInt_With_Chk_Range(_T("VRC7レジスタ操作の第2パラメータ"), 0, 0xFF);
+		MML->Chk_Comma();
+		_Dat = MML->GetInt_With_Chk_Range(_T("VRC7レジスタ操作の第2パラメータ"), 0, 0xFF);
 
-	SetEvent(new mml_general(nsc_VRC7_reg,(unsigned char)_Reg,(unsigned char)_Dat, _T("VRC7 Register Write")));
+		SetEvent(new mml_general(nsc_VRC7_reg,(unsigned char)_Reg,(unsigned char)_Dat, _T("VRC7 Register Write")));
+
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
+	}
 }
 
 //==============================================================

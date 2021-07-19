@@ -256,84 +256,89 @@ void	DPCMinfo::setKey(MMLfile* MML, int key)
 //==============================================================
 void	DPCMinfo::setNote(MMLfile* MML, int note)
 {
-	unsigned	char	cData;
-				int		play_frequency;
-				int		mode			= 0;
-				int		start_volume	= 0x40;
-				int		next;
-				int		start_offset;
-				int		size_offset;
-	DPCM*		_DPCM;
+	try{
+		unsigned	char	cData;
+					int		play_frequency;
+					int		mode			= 0;
+					int		start_volume	= 0x40;
+					int		next;
+					int		start_offset;
+					int		size_offset;
+		DPCM*		_DPCM;
 
-	if(max_number < note){
-		max_number = (unsigned char)note;
-	}
-
-	//ファイル名
-	MML->Chk_Comma();
-	infoDPCM[note].file.clear();
-	MML->GetString(&infoDPCM[note].file, false);
-	if(ptcDPCM.count(infoDPCM[note].file) == 0){
-		//新しいファイルだったら、DPCMオブジェクトを生成する。
-		_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);
-		if(_DPCM->isError() == true){
-			f_error = true;	//読み込みに失敗した場合
+		if(max_number < note){
+			max_number = (unsigned char)note;
 		}
-		ptcDPCM[infoDPCM[note].file] = _DPCM;
-		m_id++;
-	} else {
-		_DPCM = ptcDPCM[infoDPCM[note].file];
-	}
 
-	//再生周波数
-	MML->Chk_Comma();
-	play_frequency = MML->GetInt_With_Chk_Range(_T("⊿PCMの周波数"),0,15);
-
-	//モード
-	MML->Chk_Comma();
-	mode = MML->GetInt_With_Chk_Range(_T("⊿PCMのモード"),0,2);
-	if((mode==2) && (bank==false)){
-		MML->Err(_T("⊿PCMのモード2(IRQ)は、#Bankコマンドの指定が必要です。"));
-	}
-	infoDPCM[note].ctrl = (unsigned char)(mode<<6) + (unsigned char)play_frequency;
-
-	//初期値
-	cData = MML->GetChar();
-	if(cData == ','){
-		start_volume = MML->GetInt_With_Chk_Range(_T("⊿PCMの初期値"),-1,127);
-		infoDPCM[note].DA = (unsigned char)start_volume;
-	} else {
-		MML->Back();
-		infoDPCM[note].DA = 0;
-	}
-
-	//次のノート
-	if(mode == 2){
+		//ファイル名
 		MML->Chk_Comma();
-		next = MML->GetInt_With_Chk_Range(_T("⊿PCMの次のノート番号"),-1,255);
-		infoDPCM[note].next = (unsigned char)next;
-	} else {
-		infoDPCM[note].next = 0;
-	}
+		infoDPCM[note].file.clear();
+		MML->GetString(&infoDPCM[note].file, false);
+		if(ptcDPCM.count(infoDPCM[note].file) == 0){
+			//新しいファイルだったら、DPCMオブジェクトを生成する。
+			_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);
+			if(_DPCM->isError() == true){
+				f_error = true;	//読み込みに失敗した場合
+			}
+			ptcDPCM[infoDPCM[note].file] = _DPCM;
+			m_id++;
+		} else {
+			_DPCM = ptcDPCM[infoDPCM[note].file];
+		}
 
-	//offset
-	cData = MML->GetChar();
-	if(cData == ','){
-		start_offset = MML->GetInt_With_Chk_Range(_T("⊿PCMの発音開始オフセット"),0,255);
-		infoDPCM[note].offset = (unsigned char)start_offset;
-	} else {
-		MML->Back();
-		infoDPCM[note].offset = 0;
-	}
+		//再生周波数
+		MML->Chk_Comma();
+		play_frequency = MML->GetInt_With_Chk_Range(_T("⊿PCMの周波数"),0,15);
 
-	//size
-	cData = MML->GetChar();
-	if(cData == ','){
-		size_offset = MML->GetInt_With_Chk_Range(_T("⊿PCMの発音サイズ"),0,255);
-		infoDPCM[note].size = (unsigned char)size_offset;
-	} else {
-		MML->Back();
-		infoDPCM[note].size = 0;
+		//モード
+		MML->Chk_Comma();
+		mode = MML->GetInt_With_Chk_Range(_T("⊿PCMのモード"),0,2);
+		if((mode==2) && (bank==false)){
+			MML->Err(_T("⊿PCMのモード2(IRQ)は、#Bankコマンドの指定が必要です。"));
+		}
+		infoDPCM[note].ctrl = (unsigned char)(mode<<6) + (unsigned char)play_frequency;
+
+		//初期値
+		cData = MML->GetChar();
+		if(cData == ','){
+			start_volume = MML->GetInt_With_Chk_Range(_T("⊿PCMの初期値"),-1,127);
+			infoDPCM[note].DA = (unsigned char)start_volume;
+		} else {
+			MML->Back();
+			infoDPCM[note].DA = 0;
+		}
+
+		//次のノート
+		if(mode == 2){
+			MML->Chk_Comma();
+			next = MML->GetInt_With_Chk_Range(_T("⊿PCMの次のノート番号"),-1,255);
+			infoDPCM[note].next = (unsigned char)next;
+		} else {
+			infoDPCM[note].next = 0;
+		}
+
+		//offset
+		cData = MML->GetChar();
+		if(cData == ','){
+			start_offset = MML->GetInt_With_Chk_Range(_T("⊿PCMの発音開始オフセット"),0,255);
+			infoDPCM[note].offset = (unsigned char)start_offset;
+		} else {
+			MML->Back();
+			infoDPCM[note].offset = 0;
+		}
+
+		//size
+		cData = MML->GetChar();
+		if(cData == ','){
+			size_offset = MML->GetInt_With_Chk_Range(_T("⊿PCMの発音サイズ"),0,255);
+			infoDPCM[note].size = (unsigned char)size_offset;
+		} else {
+			MML->Back();
+			infoDPCM[note].size = 0;
+		}
+
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
 	}
 }
 

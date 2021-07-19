@@ -562,37 +562,36 @@ void	Patch::setN(MMLfile* MML, int note)
 
 	if((note<0) || (note>255)){
 		MML->Err(_T("音階の範囲を超えています。"));
-	}
-
-	//パッチの設定
-	m_kn = note;
-
-	if(m_Patch.count(m_kn) != 0){
-		//既存パッチのロード
-		m_now_Patch =	m_Patch[m_kn];
 	} else {
-		//パッチの新規作成
-		m_now_Patch			= new	patch_scrap;
-		m_Patch[m_kn]		= m_now_Patch;
+		//パッチの設定
+		m_kn = note;
 
-		m_now_Patch->fVoi	= false;
-		m_now_Patch->fEvoi	= false;
-		m_now_Patch->fEvol	= false;
-		m_now_Patch->fEm	= false;
-		m_now_Patch->fEn	= false;
-		m_now_Patch->fKey	= false;
-		m_now_Patch->fSweep	= false;
-		m_now_Patch->fSub	= false;
-		m_now_Patch->fSub_opt= false;
-		m_now_Patch->fGate_q = false;
-		m_now_Patch->fGate_u = false;
+		if(m_Patch.count(m_kn) != 0){
+			//既存パッチのロード
+			m_now_Patch =	m_Patch[m_kn];
+		} else {
+			//パッチの新規作成
+			m_now_Patch			= new	patch_scrap;
+			m_Patch[m_kn]		= m_now_Patch;
 
-		m_now_Patch->sw_Evoi= false;
-		m_now_Patch->sw_Evol= false;
-		m_now_Patch->sw_Em	= false;
-		m_now_Patch->sw_En	= false;
+			m_now_Patch->fVoi	= false;
+			m_now_Patch->fEvoi	= false;
+			m_now_Patch->fEvol	= false;
+			m_now_Patch->fEm	= false;
+			m_now_Patch->fEn	= false;
+			m_now_Patch->fKey	= false;
+			m_now_Patch->fSweep	= false;
+			m_now_Patch->fSub	= false;
+			m_now_Patch->fSub_opt= false;
+			m_now_Patch->fGate_q = false;
+			m_now_Patch->fGate_u = false;
+
+			m_now_Patch->sw_Evoi= false;
+			m_now_Patch->sw_Evol= false;
+			m_now_Patch->sw_Em	= false;
+			m_now_Patch->sw_En	= false;
+		}
 	}
-
 }
 
 //==============================================================

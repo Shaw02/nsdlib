@@ -91,11 +91,8 @@ const	static	Command_Info	Command[] = {
 				break;
 		}
 	}
-	if(ptFDSM < 32){
-		MML->Err(_T("波形パターンは32個の数字を記述してください。32個に満たないです。"));
-	}
-	if(ptFDSM > 32){
-		MML->Err(_T("波形パターンは32個の数字を記述してください。32個を超えています。"));
+	if(ptFDSM != 32){
+		MML->Err(_T("FDSMの波形パターン定義が64個ではありません。"));
 	}
 	i = 0;
 	while(ptFDSM>0){

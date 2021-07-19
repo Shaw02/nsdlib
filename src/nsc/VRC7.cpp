@@ -106,13 +106,15 @@ const	static	Command_Info	Command[] = {
 				if(_mode == 0){
 					if(_pt >= 24){
 						MML->Err(_T("VRC7(パラメータベース)の引数が24個を超えました。"));
+					} else {
+						_opll[_pt] = (unsigned char)i;
 					}
-					_opll[_pt] = (unsigned char)i;
 				} else {
 					if(_pt >= 8){
 						MML->Err(_T("VRC7(レジスタベース)の引数が8個を超えました。"));
+					} else {
+						code[_pt] = (unsigned char)i;
 					}
-					code[_pt] = (unsigned char)i;
 				}
 				_pt++;
 				break;
