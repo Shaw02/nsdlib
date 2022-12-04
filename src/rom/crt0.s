@@ -179,6 +179,12 @@ DRV_Version2:	.byte	1
 	lda	$FFFD
 	sta	$0105
 
+	;NSF2—p‚Ìİ’è
+	lda	#<_irq_main
+	sta	$FFFE
+	lda	#>_irq_main
+	sta	$FFFF
+
 	;Bank change (CODE)
 	lda	#$00
 	sta	$5FFA
