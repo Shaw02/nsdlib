@@ -52,6 +52,14 @@
 Loop:
 ;	jsr	_nsd_stop	
 
+.ifdef	MASK
+	lda	__chflag,x
+	and	#$80			;Channnel Mask状態の保持
+.else
+	lda	#$00			;Release Mode = 0
+.endif
+	sta	__chflag,x
+
 	jsr	_nsd_snd_keyoff		;[6]
 
 	lda	#$00			;[2]
