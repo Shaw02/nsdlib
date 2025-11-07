@@ -500,9 +500,10 @@ void	DPCMinfo::getDPCMCode(string* _str)
 //==============================================================
 void	DPCMinfo::getAsm(MusicFile* MUS)
 {
+	//DPCMinfo	‹ó‚Å‚àƒ‰ƒxƒ‹‚Ío—Í‚·‚éB
+	*MUS << MUS->Header.Label.c_str() << "DPCMinfo" << ":" << endl;
+
 	if(m_id > 0){
-		//DPCMinfo
-		*MUS << MUS->Header.Label.c_str() << "DPCMinfo" << ":" << endl;
 		MusicItem::getAsm(MUS);
 
 		//DPCM
