@@ -34,6 +34,7 @@ MusicTrack::MusicTrack(size_t _id, MMLfile* MML, const _CHAR _strName[]):
 	echo_flag(false),
 	echo_length(-1),
 	pt_oldNote(0),
+	_old_note(NULL),
 	f_Patch(false),
 	is_loop(false),				//ループ
 	is_repeat_a_s(false),		//リピートＡ
@@ -3300,10 +3301,18 @@ void	MusicTrack::SetRest(MMLfile*	MML, int mode)
 //==============================================================
 void	MusicTrack::SetTai(MMLfile* MML)
 {
-	if(jump_flag==false){
-		_old_note->SetTai();
-	}
-	SetRest(MML,2);
+    if (jump_flag==false)
+    {
+        if (_old_note == NULL)
+        {
+            MML->Err(_T("音符の値は不明です。")); // Musical note value unknown.
+        }
+        else
+        {
+            _old_note->SetTai();
+        }                
+    }
+    SetRest(MML, 2);
 }
 
 //==============================================================
