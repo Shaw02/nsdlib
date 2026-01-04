@@ -90,11 +90,16 @@ Each directory is explained in detail in the manual.
 - 📘 **Main Manual**  
   https://shaw02.github.io/nsdlib/
 
-- 🎮 **Game Integration / Short MML (NSC)**  
-  https://shaw02.github.io/nsdlib/nsc_asm.html
+- 🎼 **MML Compiler (nsc.exe) Usage**  
+  https://shaw02.github.io/nsdlib/usage_nsc.html  
+  *Command-line usage and conversion options*
 
-- 🎵 **NSF / Music Production Notes**  
-  https://shaw02.github.io/nsdlib/
+- 🎮 **Sound Driver / Library Usage & API Reference**  
+  https://shaw02.github.io/nsdlib/usage_nsd.html  
+  *Driver initialization, per-frame calls, and function reference*
+
+- 🧠 **GitHub Wiki (Notes & Design)**  
+  https://github.com/Shaw02/nsdlib/wiki
 
 ---
 
