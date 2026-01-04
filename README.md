@@ -123,5 +123,5 @@ See [LICENSE.md](LICENSE.md) for details.
 
 ## ✍ Author
 
-S.W.
+S.W.  
 NES sound driver & MML compiler / homebrew & chiptune development
