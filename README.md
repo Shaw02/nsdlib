@@ -68,7 +68,7 @@ https://shaw02.github.io/nsdlib/nsc_asm.html
     nsdlib/
     ├── bin/        ; binary for NSF (NES Sound Format)
     ├── lib/        ; library for cc65 & ca65
-    ├── inc/        ; include files for cc65 & ca65
+    ├── include/    ; include files for cc65 & ca65
     ├── src/        ; sound driver & MML compiler source
     ├── sample/     ; sample NES programs and music data
     ├── docs/       ; documents
@@ -123,5 +123,5 @@ See [LICENSE.md](LICENSE.md) for details.
 
 ## ✍ Author
 
-Shaw  
+S.W.
 NES sound driver & MML compiler / homebrew & chiptune development
