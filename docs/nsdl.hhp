@@ -14,6 +14,7 @@ Title=NES Sound Driver Library
 
 
 [FILES]
+API_Reference.html
 diagram.html
 faq.html
 format_music.html
@@ -126,6 +127,54 @@ tutorial_envelope.html
 tutorial_music.html
 tutorial_start.html
 tutorial_track.html
+help.css
+block.png
+chode3_Aeolian.png
+chode3_HarmonicMinor.png
+chode3_Ionian.png
+chode3_MerodicMinor.png
+chode4_Aeolian.png
+chode4_HarmonicMinor.png
+chode4_Ionian.png
+chode4_MerodicMinor.png
+kaeru.png
+Scale.png
+Scale_01.png
+Scale_02.png
+Scale_03.png
+Scale_04.png
+Scale_05.png
+Scale_06.png
+Scale_07.png
+Scale_08.png
+Scale_09.png
+Scale_10.png
+Scale_11.png
+Scale_12.png
+Scale_Aeolian.png
+Scale_Dorian_s11.png
+Scale_Dorius.png
+Scale_Gypsy.png
+Scale_HarmonicMajor.png
+Scale_HarmonicMinor.png
+Scale_HungarianMajor.png
+Scale_HungarianMinor.png
+Scale_Ionian.png
+Scale_Locrian.png
+Scale_Lydius.png
+Scale_MajorBlues.png
+Scale_MelodicMinor.png
+Scale_MinorBlues.png
+Scale_Mixolydius.png
+Scale_NeapolitanMajor.png
+Scale_NeapolitanMinor.png
+Scale_Phrygius.png
+Scale_SpanishGypsy.png
+tutorial_envelope.png
+tutorial_start_0.png
+tutorial_start_1.png
+tutorial_start_bin.png
+tutorial_vibrato.png
 
 [INFOTYPES]
 

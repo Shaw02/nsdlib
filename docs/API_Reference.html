@@ -1,0 +1,329 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" type="text/css" href="help.css">
+<TITLE>API Reference</TITLE>
+</HEAD>
+
+<BODY>
+
+<!-- header start -->
+<div id="header">
+  <h1>NSD.Lib – NES Sound Driver &amp; MML Compiler</h1>
+  <a href="index.html">トップ</a>＼
+</div>
+<!-- header end -->
+
+<!-- contents start -->
+<div id="contents">
+
+<h2>API Reference</h2>
+
+<p class="lead">
+本ページでは、NSD.Lib サウンドドライバの API 仕様をまとめて説明します。<br>
+関数仕様、内部データ構造、制御モデルを把握するためのリファレンスページです。
+</p>
+
+<p class="lead-en">
+This page provides the API reference for the NSD.Lib sound driver.
+</p>
+
+<h3>設計ポリシー／Design Policy</h3>
+
+<p>
+NSD.Lib は、NES 実機開発における一般的なフレーム駆動モデルを前提として設計されています。
+</p>
+
+<p>
+サウンドドライバは自律的に再生処理を進めることはせず、
+<strong>ゲーム側から 1 フレームごとに明示的に更新 API を呼び出す</strong>
+ことで再生状態が進行します。
+</p>
+
+<p>
+これにより、NMI 割り込み内での PPU 更新処理との共存や、
+メモリバンク切り替えを伴う構成にも柔軟に対応できます。
+</p>
+
+<p>
+再生時の CPU 負荷やデータサイズの最適化は、
+主に付属の MML コンパイラ側で行う設計となっており、
+コンパイル時に不要なコマンドの削減や再生シミュレーションを通じた最適化が行われます。
+</p>
+
+<p>
+API は、NES の限られた CPU 資源・メモリ空間を前提に、
+挙動が明確で制御しやすい構成を重視しています。
+</p>
+
+
+<h3>ラベルとセグメント名／Name of Label &amp; Segment</h3>
+
+<h4>ライブラリ本体が使うラベル名</h4>
+
+<p>
+NSD.Lib が提供する API 関数および関連シンボルは、
+<strong><code>_nsd_</code></strong> プレフィックス
+（アセンブリ言語レベルでの内部シンボル名）を使用しています。<br>
+C 言語から参照する場合は、先頭の <code>_</code> を除いた
+<code>nsd_</code> で参照できます。
+</p>
+
+<p>
+これは、他のライブラリやユーザーコードとのシンボル衝突を避けるための設計です。
+</p>
+
+<p>
+C 言語から呼び出す API 関数、ならびにアセンブリ言語レベルで参照される
+ラベルについても、同一の命名規則が適用されています。
+</p>
+
+
+<h4>ライブラリ本体が使用するセグメント</h4>
+
+<p>
+本ライブラリは、以下のセグメントを使用します。<br>
+リンカーのコンフィグファイルで、必ず本セグメント領域を定義してください。<br>
+※ C 言語からコンパイルされるアセンブリ言語ソースで用いられる
+セグメント名に合わせています。
+</p>
+
+<table>
+<tr>
+  <th>セグメント名</th>
+  <th>内容</th>
+</tr>
+<tr>
+  <td>CODE</td>
+  <td>サウンドドライバのプログラム本体です。</td>
+</tr>
+<tr>
+  <td>RODATA</td>
+  <td>
+    固定データ領域です。<br>
+    音程テーブルやオペコード毎のジャンプテーブル等が含まれます。
+  </td>
+</tr>
+<tr>
+  <td>BSS</td>
+  <td>制御用ワークエリア（非ゼロページ）です。</td>
+</tr>
+<tr>
+  <td>ZEROPAGE</td>
+  <td>
+    制御用ワークエリア（ゼロページ）です。<br>
+    ※ リンカーの <code>-t nes</code> オプションでは
+    本ドライバが必要とする Zeropage 容量を確保できません。
+  </td>
+</tr>
+</table>
+
+
+<h4>曲データのラベル・セグメント名</h4>
+
+<p>
+付属の MML コンパイラを用いて楽曲制作を行う場合、
+MML ソース内で、曲データを配置するセグメントや使用するラベル名を
+指定することが可能です。<br>
+これにより、1 つのプロジェクト内で、
+複数の MML から生成したオブジェクトをリンクできます。
+</p>
+
+<p>
+付属の MML コンパイラが出力するアセンブリ言語ソースは、
+ソースを編集することなく、そのままアセンブル・リンク可能です。<br>
+詳細は <a href="nsc_asm.html">nsc.exe が出力するアセンブリ言語ソースについて</a>
+を参照してください。
+</p>
+
+<p>
+以下は C 言語での使用を想定した説明ですが、
+アセンブリ言語からの利用方法も基本的な考え方は同じです。
+</p>
+
+
+<h4>C 言語でアプリケーションを開発する場合の注意</h4>
+
+<p>
+本サウンドドライバは、6502 の Zeropage 領域
+（0x0000～0x00FF）を一定量使用します。<br>
+使用量は、有効にする拡張音源の種類によって異なります。
+</p>
+
+<p>
+そのため、リンカー用の config ファイルを別途作成し、
+<code>-t none</code> オプションでビルドしてください。
+</p>
+
+<p>
+<code>-t nes</code> オプションでは、
+C 言語ランタイムが使用する分のみ Zeropage が定義されており、
+本ドライバ用の領域を確保できないため、ビルドに失敗します。
+</p>
+
+
+<h4>cc65 付属 NES 用ライブラリ「nes.lib」を使用する場合の注意</h4>
+
+<p>
+cc65 付属の NES 用ライブラリ <code>nes.lib</code> には、
+config ファイルのセグメント定義とは無関係に、
+Zeropage を絶対アドレスでアクセスするコードが含まれています。
+</p>
+
+<p>
+そのため、config ファイルの設定次第では、
+NSD.Lib が使用する Zeropage 領域と競合する可能性があります。
+</p>
+
+<p>
+リンカー用 config ファイルを作成する際は、
+cc65 付属のドキュメント、
+<code>nes.inc</code> および <code>nes.lib</code> のソースを
+十分に確認してください。
+</p>
+
+
+<h3>関数呼出規約／Calling Convention</h3>
+
+<p>
+NSD.Lib の API 関数は、すべて
+<strong><code>__fastcall__</code></strong> 呼び出し規約で実装されています。
+</p>
+
+<p>
+レジスタの保存・破壊規則、および引数の受け渡し方法は、
+cc65 が定義する fastcall 規約に従います。
+</p>
+
+<p class="note">
+※ 呼び出し規約の詳細は cc65 の公式ドキュメントを参照してください。
+</p>
+
+
+<h3>Driver Update Model</h3>
+
+<p>
+NSD.Lib のサウンドドライバは、
+自律的に再生処理を進める方式ではありません。
+</p>
+
+<p>
+ゲーム側から <strong>1 フレームごとに API を呼び出す</strong>ことで、
+BGM や効果音の再生状態が更新されます。
+</p>
+
+<p>
+通常は <code>nsd_main()</code> を使用しますが、
+BGM と SE を異なるメモリバンクに配置する構成に対応するため、
+個別更新用の関数も用意されています。
+</p>
+
+
+<h3>関数一覧／Function List</h3>
+
+<table class="api-table">
+<thead>
+<tr>
+  <th>Function</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+  <td><a href="func_nsd_init.html">nsd_init(<var>void</var>)</a></td>
+  <td>サウンドドライバを初期化します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_set_dpcm.html">nsd_set_dpcm(<var>nsd_dpcm* dpcm</var>)</a></td>
+  <td>DPCM サンプル情報をドライバに設定します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_main.html">nsd_main(<var>void</var>)</a></td>
+  <td>BGM と SE をまとめて更新するメイン処理（同一メモリバンク構成向け）。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_main_bgm.html">nsd_main_bgm(<var>void</var>)</a></td>
+  <td>BGM 再生処理のみを更新します（BGM と SE が別メモリバンクに配置されている場合）。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_main_se.html">nsd_main_se(<var>void</var>)</a></td>
+  <td>効果音（SE）再生処理のみを更新します（BGM と SE が別メモリバンクに配置されている場合）。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_play_bgm.html">nsd_play_bgm(<var>void *bgm</var>)</a></td>
+  <td>指定した BGM データの再生を開始します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_stop_bgm.html">nsd_stop_bgm(<var>void</var>)</a></td>
+  <td>再生中の BGM を停止します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_pause_bgm.html">nsd_pause_bgm(<var>void</var>)</a></td>
+  <td>再生中の BGM を一時停止します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_resume_bgm.html">nsd_resume_bgm(<var>void</var>)</a></td>
+  <td>一時停止中の BGM を再開します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_play_se.html">nsd_play_se(<var>void *se</var>)</a></td>
+  <td>指定した効果音データを再生します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_stop_se.html">nsd_stop_se(<var>void</var>)</a></td>
+  <td>再生中の効果音を停止します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_save.html">nsd_save(<var>void *buff</var>)</a></td>
+  <td>サウンドドライバの内部状態をバッファへ保存します。</td>
+</tr>
+
+<tr>
+  <td><a href="func_nsd_load.html">nsd_load(<var>void *buff</var>)</a></td>
+  <td>保存されたサウンドドライバの状態を復元します。</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3>データ／Data Reference</h3>
+
+<p>
+NSD.Lib が使用する内部データ構造や制御用変数については、
+以下のページで解説しています。
+</p>
+
+<ul>
+  <li><a href="variable.html">内部制御変数リファレンス</a></li>
+  <li><a href="format_music.html">BGM / SE データフォーマット</a></li>
+</ul>
+
+
+<h3>関連情報／Related Documents</h3>
+
+<ul>
+  <li><a href="usage_nsd.html">サウンドドライバの使い方</a></li>
+  <li><a href="diagram.html">サウンドドライバ構成図</a></li>
+</ul>
+
+</div>
+<!-- contents end -->
+
+</BODY>
+</HTML>
