@@ -19,6 +19,8 @@
 	.import		_nsd_snd_sweep
 	.import		_nsd_snd_voice
 	.import		_nsd_play_se
+	.import		_nsd_mul
+
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
@@ -641,30 +643,96 @@ Chk_GateTime:
 	bcc	@L
 
 	jsr	nsd_load_sequence
+
+	;---------------
+	cpx	#nsd::TR_BGM3
+.ifndef	SE
+	bne	@L00
+.else
+	beq	@L04
+	cpx	#nsd::TR_SE_Tri
+	bne	@L00
+.endif
+@L04:	cmp	#0
+	bne	@L05
+	lda	__Length_ctr,x
+@L05:	tax
+	lda	__master_volume
+	bne	@L01
+	ldx	__channel
+@L09:	rts
+@L01:
+	cmp	#$0F
+	bne	@L02
+	txa
+	jmp	@L03
+@L02:
+	dex
+	jsr	_nsd_mul
 	cmp	#0
-	beq	GateSet
+	beq	@L09
+@L03:	ldx	__channel
+	;---------------
+
+@L00:
+	cmp	#0
+	beq	@GateSet
 	sta	__tmp
 	lda	__Length_ctr,x
 	sub	__tmp			; a = __Length_ctr - __Gate;
-	bcs	GateSet			; if(a < 0){
+	bcs	@GateSet			; if(a < 0){
 	lda	#$0			;    a = 0x0; //no gate
-	beq	GateSet			; }	// relative jump because "0"
+	beq	@GateSet			; }	// relative jump because "0"
 @L:
 	lda	__gate_u,x		;if (__gate_u,x == 0) then @q
+
+	;---------------
+	cpx	#nsd::TR_BGM3
+.ifndef	SE
+	bne	@L10
+.else
+	beq	@L14
+	cpx	#nsd::TR_SE_Tri
+	bne	@L10
+.endif
+@L14:	cmp	#0
+	bne	@L05
+	lda	__Length_ctr,x
+@L15:	tax
+	lda	__master_volume
+	bne	@L11
+	ldx	__channel
+@L19:	rts
+@L11:
+	cmp	#$0F
+	bne	@L12
+	txa
+	jmp	@L13
+@L12:
+	dex
+	jsr	_nsd_mul
+	cmp	#0
+	beq	@L19
+@L13:	ldx	__channel
+	;---------------
+@L10:
+	cmp	#$0
 	beq	@q			;
 	lda	__Length_ctr,x
 	sub	__gate_u,x		; a = __Length_ctr - __gate_u,x	(gate timing)
 	bcc	@q			; if (a < 0) then @q
 	cmp	__gate_q,x		;
-	bcs	GateSet			; if( a < __gate_q){
+	bcs	@GateSet			; if( a < __gate_q){
 @q:	lda	__gate_q,x		;    a = __gate_q;
 	cmp	__Length_ctr,x		; }
-	bcc	GateSet
+	bcc	@GateSet
 	lda	#0
-GateSet:
+@GateSet:
 	sta	__Gate,x
 
-Calc_Note_Number:
+
+
+@Calc_Note_Number:
 	tya
 	and	#$0F
 	cmp	#12

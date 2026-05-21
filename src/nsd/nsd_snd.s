@@ -127,6 +127,7 @@
 
 	lda	#$0F			; 
 	sta	APU_CHANCTRL		; Sound/Vertical Clock Signal Register (R)
+	sta	__master_volume
 
 	lda	#$10
 	sta	APU_MODCTRL		; Delta Modulation Control Register (W)
