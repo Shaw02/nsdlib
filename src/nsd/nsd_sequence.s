@@ -612,51 +612,6 @@ op70:	;Ser release volume
 	jmp	Sequence
 
 ;=======================================================================
-;	void	TriGateMasterQuantize
-;-----------------------------------------------------------------------
-;<<Contents>>
-;	Triangle channel has no hardware volume control.
-;	Quantize gate timing with master volume.
-;<<Input>>
-;	A = gate value (0 means use length)
-;	X = channel index
-;<<Output>>
-;	A = quantized gate value, 
-;	X = restored as current channel
-;	Carry clear = continue, Carry set = early return (no gate)
-;=======================================================================
-TriGateMasterQuantize:
-	cmp	#0			; if (a = 0 ){
-	bne	@TQ0			; 	a = __Length_ctr,x
-	lda	__Length_ctr,x		; }
-
-@TQ0:	tax				; x = a (gate value)
-	lda	__master_volume		; a = master volume
-	cmp	#6			; master volume 6 ˆÈ‰º‚Í–Â‚ç‚³‚È‚¢
-	bcs	@TQ1
-	ldx	__channel		; Master Volume = 0
-	lda	#0
-	beq	@TQ4
-
-@TQ1:	cmp	#$0F
-	bne	@TQ2
-	txa				; Master Volume = 15
-	ldx	__channel
-	clc
-	rts
-
-@TQ2:	dex				; Master Volume = 1 ~ 14
-	jsr	_nsd_mul
-	ldx	__channel
-	cmp	#0
-	bne	@TQ3
-@TQ4:	sta	__trans_one,x		;0 reset
-	sec
-	rts
-
-@TQ3:	clc
-	rts
-;=======================================================================
 ;		Note
 ;=======================================================================
 
@@ -715,16 +670,16 @@ Chk_GateTime:
 @Gate_Command:				;-----------------------
 	lda	__gate_u,x		; gate command
 	cpx	#nsd::TR_BGM3
-	beq	@L01
+	beq	@L11
 	cpx	#nsd::TR_BGM5
 .ifndef	SE
 	bne	@L10
 .else
-	beq	@L01
+	beq	@L11
 	cpx	#nsd::TR_SE_Tri
-	beq	@L01
+	beq	@L11
 	cpx	#nsd::TR_SE_Dpcm
-	bne	@L00
+	bne	@L10
 .endif
 @L11:	jsr	TriGateMasterQuantize
 	bcs	@Rest0
@@ -781,6 +736,52 @@ Chk_GateTime:
 	lda	#0
 	sta	__trans_one,x	;0 reset
 	_NSD_keyon
+	rts
+
+;=======================================================================
+;	void	TriGateMasterQuantize
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Triangle channel has no hardware volume control.
+;	Quantize gate timing with master volume.
+;<<Input>>
+;	A = gate value (0 means use length)
+;	X = channel index
+;<<Output>>
+;	A = quantized gate value, 
+;	X = restored as current channel
+;	Carry clear = continue, Carry set = early return (no gate)
+;=======================================================================
+TriGateMasterQuantize:
+	cmp	#0			; if (a = 0 ){
+	bne	@TQ0			; 	a = __Length_ctr,x
+	lda	__Length_ctr,x		; }
+
+@TQ0:	tax				; x = a (gate value)
+	lda	__master_volume		; a = master volume
+	cmp	#6			; master volume 6 ˆÈ‰º‚Í–Â‚ç‚³‚È‚¢
+	bcs	@TQ1
+	ldx	__channel		; Master Volume = 0
+	lda	#0
+	beq	@TQ4
+
+@TQ1:	cmp	#$0F
+	bne	@TQ2			; Master Volume = 15
+	txa
+	ldx	__channel
+	clc
+	rts
+
+@TQ2:	dex				; Master Volume = 1 ~ 14
+	jsr	_nsd_mul
+	ldx	__channel
+	cmp	#0
+	bne	@TQ3
+@TQ4:	sta	__trans_one,x		;0 reset
+	sec
+	rts
+
+@TQ3:	clc
 	rts
 
 ;=======================================================================
