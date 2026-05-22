@@ -79,6 +79,14 @@ void	__fastcall__	nsd_set_dpcm(const nsd_dpcm* dpcm);
 
 
 /*----------------------------------------------
+	Summary :	Set the Master Volume
+	Arguments :	Master Volume
+	Return :	None
+----------------------------------------------*/
+void	__fastcall__	nsd_set_master_volume(char master_volume);
+
+
+/*----------------------------------------------
 	Summary :	Play the BGM
 	Arguments :	Pointer of the BGM data.
 	Return :	None

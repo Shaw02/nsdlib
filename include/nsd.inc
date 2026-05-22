@@ -75,6 +75,17 @@
 
 
 ;-----------------------------------------------
+;	void	__fastcall__	_nsd_set_master_volume(char master_volume);
+;-----------------------------------------------
+;	Summary :		Set the Master Volume
+;	Arguments :	A	Master Volume
+;	Return :		None
+;	Modifies :		A
+;-----------------------------------------------
+	.import		_nsd_set_master_volume
+
+
+;-----------------------------------------------
 ;	void	__fastcall__	nsd_play_bgm(void* ptr);
 ;-----------------------------------------------
 ;	Summary :		Play the BGM
