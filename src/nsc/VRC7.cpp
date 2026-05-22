@@ -70,10 +70,10 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -102,21 +102,19 @@ const	static	Command_Info	Command[] = {
 					MML->Err(_T("先ずは@, @Rコマンドを記述して下さい。"));
 				}
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>255) ){
-					MML->Err(_T("0～255の範囲で指定して下さい。"));
-				}
-
+				i = MML->GetInt_With_Chk_Range(_T("パラメータ"),0,255);
 				if(_mode == 0){
 					if(_pt >= 24){
 						MML->Err(_T("VRC7(パラメータベース)の引数が24個を超えました。"));
+					} else {
+						_opll[_pt] = (unsigned char)i;
 					}
-					_opll[_pt] = (unsigned char)i;
 				} else {
 					if(_pt >= 8){
 						MML->Err(_T("VRC7(レジスタベース)の引数が8個を超えました。"));
+					} else {
+						code[_pt] = (unsigned char)i;
 					}
-					code[_pt] = (unsigned char)i;
 				}
 				_pt++;
 				break;
@@ -178,6 +176,6 @@ VRC7::~VRC7(void)
 //==============================================================
 void	VRC7::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "VRC7" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "VRC7" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }

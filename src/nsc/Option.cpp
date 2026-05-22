@@ -446,30 +446,27 @@ OPSW::OPSW(int argc, char* argv[]):
 		m_pass_inc.debug();
 	*/
 
-	} catch (int no) {
-		if (no != EXIT_SUCCESS){
-			nsc_ErrMsg(no);
-		}
-		fOptionError = true;	//オプション処理でエラーが発生した。
-	} catch (const exception& e){
-		nsc_ErrMsg(e);
-		fOptionError = true;	//オプション処理でエラーが発生した。
-	} catch (const _CHAR *stErrMsg) {
+	} catch (const _CHAR* errMsg) {
 		if(fErr == true){
-			_CERR	<<	_T("オプションが不正です。：") << stErrMsg << endl;
+			_CERR	<<	_T("不正なオプション：") <<	errMsg << endl;
 		} else {
-			_COUT	<<	_T("オプションが不正です。：") << stErrMsg << endl;
+			_COUT	<<	_T("不正なオプション：") << errMsg << endl;
 		}
 		fOptionError = true;	//オプション処理でエラーが発生した。
-	} catch (const string& str) {
+		throw EXIT_FAILURE;		//リスローする
+	} catch (const string& errMsg) {
 		if(fErr == true){
-			_CERR	<<	_T("オプションが不正です。：");
-			cerr	<<	str.c_str() << endl;
+			_CERR	<<	_T("不正なオプション：");
+			cerr	<< errMsg << endl;
 		} else {
-			_COUT	<<	_T("オプションが不正です。：");
-			cout	<<	str.c_str() << endl;
+			_COUT	<<	_T("不正なオプション：");
+			cout	<< errMsg << endl;
 		}
 		fOptionError = true;	//オプション処理でエラーが発生した。
+		throw EXIT_FAILURE;		//リスローする
+	} catch (...) {
+		fOptionError = true;	//オプション処理でエラーが発生した。
+		throw;					//リスローする
 	}
 };
 

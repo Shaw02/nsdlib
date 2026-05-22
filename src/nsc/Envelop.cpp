@@ -97,10 +97,10 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -110,11 +110,7 @@ const	static	Command_Info	Command[] = {
 
 			case(Env_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<-64) || (i>127)){
-					MML->Err(_T("エンベロープは-64～127の範囲で指定して下さい。"));
-				}
-
+				i = MML->GetInt_With_Chk_Range(_T("エンベロープの値"),-64,127);
 				if(iValue == i){
 					iLength++;		//同じだったら、ランレングス圧縮する
 				} else {
@@ -138,11 +134,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(Env_Hold):
-				i = MML->GetInt();
-				if( (i<0) || (i>255)){
-					MML->Err(_T("維持時間は0～255の範囲で指定して下さい。"));
-				}
-			//	setHold(i + iLength);	//今までの時間を加算する。
+				i = MML->GetInt_With_Chk_Range(_T("エンベロープの維持時間"),0,255);
 				iLength += i+1;			//ランレングスに加算する。
 				break;
 
@@ -199,7 +191,7 @@ const	static	Command_Info	Command[] = {
 	}
 
 	if(code.size() > 256){
-		MML->Err(_T("エンベロープの定義長が255Byteを越えました。"));
+		MML->Warning(_T("エンベロープの定義長が256Byteを越えました。"));
 	}
 
 	iSize = code.size();
@@ -265,7 +257,7 @@ void	Envelop::setHold(int length)
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
 //	●返値
-//				無し
+//		int					
 //==============================================================
 int	Envelop::sweep(MMLfile* MML)
 {
@@ -282,69 +274,58 @@ int	Envelop::sweep(MMLfile* MML)
 	int		i=0;
 	int		temp;
 
-	//--------------------------
-	//●MML読み込み
+	try{
+		//--------------------------
+		//●MML読み込み
 
-	//
-	iStart = MML->GetInt();
-	if( (iStart<-64) || (iStart>127)){
-		MML->Err(_T("開始点は-64～127の範囲で指定して下さい。"));
-	}
+		//
+		iStart = MML->GetInt_With_Chk_Range(_T("開始値"),-64,127);
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("パラメータが足りません。"));
-	}
+		MML->Chk_Comma();
+		iEnd = MML->GetInt_With_Chk_Range(_T("終了値"),-64,127);
 
-	iEnd = MML->GetInt();
-	if( (iEnd<-64) || (iEnd>127)){
-		MML->Err(_T("終了点は-64～127の範囲で指定して下さい。"));
-	}
+		MML->Chk_Comma();
+		iLength = MML->GetInt_With_Chk_Range(_T("長さ"),1,255);
 
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("パラメータが足りません。"));
-	}
-
-	iLength = MML->GetInt();
-	if( (iLength<1) || (iLength>255)){
-		MML->Err(_T("長さは1～255の範囲で指定して下さい。"));
-	}
-
-	cData = MML->GetChar();
-	if((cData != ')') && (cData != '}')){
-		MML->Err(_T(") が見つかりませんでした。"));
-	}
-
-	//--------------------------
-	//●テーブル作成
-
-	iDelta = iEnd - iStart;
-
-	while(i<iLength){
-		temp = iStart + (iDelta * i) / iLength;
-		if(i == 0){
-			now = temp;
-			cnt	= 0;
-		} else if (temp != now){
-			code.append((char)1, (char)now & 0x7F);
-			ptEnvelop++;
-			if(cnt>=1){
-				setHold(cnt-1);
-			}
-			now = temp;
-			cnt	= 0;
-		} else {
-			cnt++;
+		cData = MML->GetChar();
+		if((cData != ')') && (cData != '}')){
+			MML->Err(_T(") が見つかりませんでした。"));
+			MML->Back();
 		}
-		i++;
+
+		//--------------------------
+		//●テーブル作成
+
+		iDelta = iEnd - iStart;
+
+		while(i<iLength){
+			temp = iStart + (iDelta * i) / iLength;
+			if(i == 0){
+				now = temp;
+				cnt	= 0;
+			} else if (temp != now){
+				code.append((char)1, (char)now & 0x7F);
+				ptEnvelop++;
+				if(cnt>=1){
+					setHold(cnt-1);
+				}
+				now = temp;
+				cnt	= 0;
+			} else {
+				cnt++;
+			}
+			i++;
+		}
+
+		code.append((char)1, (char)now & 0x7F);
+		ptEnvelop++;
+		if(cnt>=1){
+			setHold(cnt-1);
+		}
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
 	}
 
-	code.append((char)1, (char)now & 0x7F);
-	ptEnvelop++;
-	if(cnt>=1){
-		setHold(cnt-1);
-	}
 	return(now);
 }
 
@@ -358,6 +339,6 @@ int	Envelop::sweep(MMLfile* MML)
 //==============================================================
 void	Envelop::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "Envelope" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "Envelope" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }

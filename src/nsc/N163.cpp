@@ -64,10 +64,10 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -77,10 +77,7 @@ const	static	Command_Info	Command[] = {
 
 			case(N163_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>15)){
-					MML->Err(_T("n163の波形パターンは0～15の範囲で指定して下さい。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("n163の波形パターン"),0,15);
 				WAVE.append((char)1, (char)i & 0x0F);
 				ptN163++;
 				break;
@@ -134,6 +131,6 @@ N163::~N163(void)
 //==============================================================
 void	N163::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "N163" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "N163" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }

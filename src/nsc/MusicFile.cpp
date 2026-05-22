@@ -341,22 +341,13 @@ const	static	Command_Info	Command[] = {
 					MML->q_reverse = true;			//これは、MMLファイルの属性。
 					break;
 				case(id_releaseVolume):
-					MML->iReleaseVolume	=  MML->GetInt();
-					if((MML->iReleaseVolume<0) || (MML->iReleaseVolume>15)){
-						MML->Err(_T("#ReleaseVolumeコマンドは、0～15の範囲で指定してください。"));
-					}
+					MML->iReleaseVolume	= MML->GetInt_With_Chk_Range(_T("#ReleaseVolumeコマンド"),0,15);
 					break;
 				case(id_repeatMode):
-					MML->iRepeatMode	=  MML->GetInt();
-					if((MML->iRepeatMode<0) || (MML->iRepeatMode>2)){
-						MML->Err(_T("#RepeatModeコマンドは、0～2の範囲で指定してください。"));
-					}
+					MML->iRepeatMode = MML->GetInt_With_Chk_Range(_T("#RepeatModeコマンド"),0,2);
 					break;
 				case(id_TieMode):
-					MML->iTieMode	=  MML->GetInt();
-					if((MML->iTieMode<0) || (MML->iTieMode>1)){
-						MML->Err(_T("#TieModeコマンドは、0～1の範囲で指定してください。"));
-					}
+					MML->iTieMode = MML->GetInt_With_Chk_Range(_T("#TieModeコマンド"),0,1);
 					break;
 				case(id_offset_Ei):
 					MML->offset_Ei = MML->GetInt();
@@ -371,27 +362,16 @@ const	static	Command_Info	Command[] = {
 					MML->offset_Em = MML->GetInt();
 					break;
 				case(id_Priority):
-					i = MML->GetInt();
-					if((i<0) || (i>3)){
-						MML->Err(_T("#priorityコマンドは、0～3の範囲で指定してください。"));
-					} else {
-						MML->priority = (unsigned char)i;
-					}
+					MML->priority = (unsigned char)MML->GetInt_With_Chk_Range(_T("#priorityコマンド"),0,3);
 					break;
 				case(id_QMax):
 					MML->QMax = MML->GetInt();
 					break;
 				case(id_rest):
-					MML->rest = MML->GetInt();
-					if((MML->rest<0) || (MML->rest>3)){
-						MML->Err(_T("#Restコマンドは、0～3の範囲で指定してください。"));
-					}
+					MML->rest = MML->GetInt_With_Chk_Range(_T("#Restコマンド"),0,3);
 					break;
 				case(id_wait):
-					MML->wait = MML->GetInt();
-					if((MML->rest<0) || (MML->rest>3)){
-						MML->Err(_T("#Waitコマンドは、0～3の範囲で指定してください。"));
-					}
+					MML->wait = MML->GetInt_With_Chk_Range(_T("#Waitコマンド"),0,3);
 					break;
 				case(id_Macro):
 					MML->SetMacro(0);
@@ -402,7 +382,7 @@ const	static	Command_Info	Command[] = {
 				//MML
 				case(id_DPCM):
 					if(cDPCMinfo != NULL){
-						MML->Err(_T("DPCMブロックは１つまでです。"));
+						MML->Err(_T("既に、DPCMが定義されています。"));
 					}
 					cDPCMinfo = new DPCMinfo(MML, Header.bank);
 					if(cDPCMinfo->isError() == true){
@@ -417,7 +397,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcFDSC.count(i) != 0){
-							MML->Err(_T("FDSC()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、FDSC(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_fdsc = new FDSC(MML, i);
 						ptcItem.push_back(_fdsc);
@@ -430,7 +412,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcFDSM.count(i) != 0){
-							MML->Err(_T("FDSM()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、FDSM(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_fdsm = new FDSM(MML, i);
 						ptcItem.push_back(_fdsm);
@@ -443,7 +427,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcVRC7.count(i) != 0){
-							MML->Err(_T("VRC7()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、VRC7(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_vrc7 = new VRC7(MML, i);
 						ptcItem.push_back(_vrc7);
@@ -456,7 +442,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcN163.count(i) != 0){
-							MML->Err(_T("N163()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、N163(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_n163 = new N163(MML, i);
 						ptcItem.push_back(_n163);
@@ -469,7 +457,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcEnv.count(i) != 0){
-							MML->Err(_T("Envelope()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、Envelope(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_env = new Envelop(MML, i);
 						ptcItem.push_back(_env);
@@ -483,7 +473,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum() + MML->offset_Em;
 						//重複チェック
 						if(ptcEnv.count(i) != 0){
-							MML->Err(_T("ビブラート()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、ビブラート(") << (i - MML->offset_Em) << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_env = new Envelop(MML, i);
 						ptcItem.push_back(_env);
@@ -496,7 +488,9 @@ const	static	Command_Info	Command[] = {
 						i = MML->GetNum();
 						//重複チェック
 						if(ptcSub.count(i) != 0){
-							MML->Err(_T("Sub()ブロックで同じ番号が指定されました。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、Sub(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						//範囲チェック
 						_sub = new Sub(MML, i);
@@ -508,13 +502,13 @@ const	static	Command_Info	Command[] = {
 					{
 						BGM*	_bgm;
 						i = MML->GetNum();
+						//範囲チェック
+						MML->Chk_Range(_T("BGM()"), 0, Header.iBGM-1, i);
 						//重複チェック
 						if(ptcBGM.count(i) != 0){
-							MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
-						}
-						//範囲チェック
-						if((Header.iBGM <= i) || (i<0)){
-							MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、BGM(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_bgm = new BGM(MML, i);
 						ptcItem.push_back(_bgm);
@@ -538,13 +532,13 @@ const	static	Command_Info	Command[] = {
 					{
 						SE*	_se;
 						i = MML->GetNum();
+						//範囲チェック
+						MML->Chk_Range(_T("SE()"), 0, Header.iSE-1, i);
 						//重複チェック
 						if(ptcSE.count(i) != 0){
-							MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
-						}
-						//範囲チェック
-						if((Header.iSE <= i) || (i<0)){
-							MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
+							_SSTREAM	errMsg;
+							errMsg << _T("既に、SE(") << i << _T(")は定義されています。");
+							MML->Err(errMsg.str().c_str());
 						}
 						_se = new SE(MML, i);
 						ptcItem.push_back(_se);
@@ -581,25 +575,30 @@ const	static	Command_Info	Command[] = {
 
 		for(size_t n=0, e=Header.iBGM; n<e; ++n){
 			if(ptcBGM.count(n) == 0){
-				MML->Err(_T("BGMデータが足りません。"));
+				_SSTREAM errMsg;
+				errMsg << _T("BGM(") << n << _T(")番が存在しません。");
+				MML->Err(errMsg.str().c_str());
 			};
 		}
 
 		for(size_t n=0, e=Header.iSE; n<e; ++n){
 			if(ptcSE.count(n) == 0){
-				MML->Err(_T("SE データが足りません。"));
+				_SSTREAM errMsg;
+				errMsg << _T("SE(") << n << _T(")番が存在しません。");
+				MML->Err(errMsg.str().c_str());
 			};
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
+	} catch (mml_error& e){
 		f_error = true;
-	} catch (const exception& e){
-		nsc_ErrMsg(e);
+		e.out_what();
+	} catch (mml_ios_failure& e){
 		f_error = true;
-	} catch (const _CHAR *stErrMsg) {
-		nsc_ErrMsg(stErrMsg);
-		f_error = true;
+		e.out_what();
+	}
+
+	if((f_error == true) || (MML->isError())){
+		throw _T("MMLの構文解析を失敗しました。");
 	}
 }
 
@@ -627,6 +626,14 @@ MusicFile::~MusicFile(void)
 //==============================================================
 void	MusicFile::TickCount(void)
 {
+	//==============================
+	//Metadata
+
+	Header.Set_text();	//text
+	Header.Set_auth();	//auth
+	Header.Set_NEND();	//NEND
+
+
 	//==============================
 	//Tick Count & 最適化のための情報収集
 	//（ここは並列化しないで、順番に処理する事）
@@ -671,89 +678,81 @@ void	MusicFile::TickCount(void)
 		}
 	}
 
-
-	//==============================
-	//Metadata
-
-	Header.Set_text();	//text
-	Header.Set_auth();	//auth
-	Header.Set_NEND();	//NEND
-
+	//エラーが発生していたら最適化はしない。
+	if (f_error == true) {
+		throw _T("最適化を失敗しました。");		
+	}
 
 	//==============================
 	//最適化
 	//（カウントした後は、並列化して良い）
 
-	//エラーが発生していたら最適化はしない。
-	if (f_error == false) {
+	//----------------------
+	//不要なコマンドの削除
+	if (cOptionSW->flag_OptSeq == true) {		//コマンドの最適化が無効だったら、最適化しない。
 
-		//----------------------
-		//不要なコマンドの削除
-		if (cOptionSW->flag_OptSeq == true) {		//コマンドの最適化が無効だったら、最適化しない。
+		_OMP_PARALLEL
+		{
+			_OMP_FOR_NOWAIT
+			for (int n = 0; n < Header.iBGM; ++n) {
+				ptcBGM[n]->clear_Optimize();
+			}
 
-			_OMP_PARALLEL
+			_OMP_FOR_NOWAIT
+			for (int n = 0; n < Header.iSE; ++n) {
+				ptcSE[n]->clear_Optimize();
+			}
+
+			_OMP_SINGLE
+			for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
+				it->second->clear_Optimize();
+			}
+		}
+	}
+
+	//----------------------
+	//使っていない定義の削除
+	if (cOptionSW->flag_OptObj == true) {		//定義の最適化が無効だったら、最適化しない。
+
+		_OMP_PARALLEL_SECTIONS
+		{
+			//エンベロープ
+			_OMP_SECTION
 			{
-				_OMP_FOR_NOWAIT
-				for (int n = 0; n < Header.iBGM; ++n) {
-					ptcBGM[n]->clear_Optimize();
-				}
-
-				_OMP_FOR_NOWAIT
-				for (int n = 0; n < Header.iSE; ++n) {
-					ptcSE[n]->clear_Optimize();
-				}
-
-				_OMP_SINGLE
-				for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
+				for (map<size_t, Envelop*>::iterator it = ptcEnv.begin(), e = ptcEnv.end(); it != e; ++it) {
 					it->second->clear_Optimize();
 				}
 			}
-		}
 
-		//----------------------
-		//使っていない定義の削除
-		if (cOptionSW->flag_OptObj == true) {		//定義の最適化が無効だったら、最適化しない。
-
-			_OMP_PARALLEL_SECTIONS
+			//FDSC
+			_OMP_SECTION
 			{
-				//エンベロープ
-				_OMP_SECTION
-				{
-					for (map<size_t, Envelop*>::iterator it = ptcEnv.begin(), e = ptcEnv.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
+				for (map<size_t, FDSC*>::iterator it = ptcFDSC.begin(), e = ptcFDSC.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
+			}
 
-				//FDSC
-				_OMP_SECTION
-				{
-					for (map<size_t, FDSC*>::iterator it = ptcFDSC.begin(), e = ptcFDSC.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
+			//FDSM
+			_OMP_SECTION
+			{
+				for (map<size_t, FDSM*>::iterator it = ptcFDSM.begin(), e = ptcFDSM.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
+			}
 
-				//FDSM
-				_OMP_SECTION
-				{
-					for (map<size_t, FDSM*>::iterator it = ptcFDSM.begin(), e = ptcFDSM.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
+			//VRC7
+			_OMP_SECTION
+			{
+				for (map<size_t, VRC7*>::iterator it = ptcVRC7.begin(), e = ptcVRC7.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
+			}
 
-				//VRC7
-				_OMP_SECTION
-				{
-					for (map<size_t, VRC7*>::iterator it = ptcVRC7.begin(), e = ptcVRC7.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
-				}
-
-				//N163
-				_OMP_SECTION
-				{
-					for (map<size_t, N163*>::iterator it = ptcN163.begin(), e = ptcN163.end(); it != e; ++it) {
-						it->second->clear_Optimize();
-					}
+			//N163
+			_OMP_SECTION
+			{
+				for (map<size_t, N163*>::iterator it = ptcN163.begin(), e = ptcN163.end(); it != e; ++it) {
+					it->second->clear_Optimize();
 				}
 			}
 		}
@@ -810,6 +809,10 @@ void	MusicFile::Fix_Address(void)
 
 	for (map<size_t, Sub*>::iterator it = ptcSub.begin(), e = ptcSub.end(); it != e; ++it) {
 		it->second->Fix_Address(this);	//この先で並列化[済]
+	}
+
+	if (f_error == true) {
+		throw _T("アドレス解決に失敗しました。");	
 	}
 }
 
@@ -1022,7 +1025,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 	code_size = read_bin(NSF_Data, NSF_Hed);
 	if(isError() == true){
 		//BINファイルの読み込みに失敗していたら終了する
-			throw ios_base::failure(Header.romcode + ": " + strerror(errno));
+		throw ios_failure(Header.romcode, errno);
 
 	} else {
 
@@ -1046,7 +1049,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			//------------------------------
 			//Bank 非対応bin
 			if(Header.bank == true){
-				Err(_T("指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。"));
+				throw mml_error(_T("指定の.binファイルは、⊿PCMのバンクに対応していません。\n⊿PCMのバンクに対応した.binファイルを指定してください。"));
 			}
 
 			//サイズの上限
@@ -1063,7 +1066,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			//------------------------------
 			//Bank対応bin？
 			if(Header.bank == false){
-				Err(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
+				throw mml_error(_T("指定の.binファイルは、⊿PCMのバンクに対応しています。\n#Bankコマンドを指定してください。"));
 			}
 			if(cOptionSW->iNSF_version >=2){
 				NSF_Hed->Flags |= nsf_flag_IRQ_support;
@@ -1094,7 +1097,7 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 
 		//サイズチェック
 		if(mus_size > iSizeLimit){
-			Err(_T("コード・シーケンスのサイズが許容値を越えました。"));
+			throw mml_error(_T("コード・シーケンスのサイズが許容値を越えました。"));
 		}
 
 		//----------------------
@@ -1134,14 +1137,14 @@ size_t	MusicFile::make_bin(NSF_Header* NSF_Hed, string* NSF_Data)
 			_COUT << _T(" / ") << 0x10000 - Header.offsetPCM << _T(" [Byte]") << endl;
 
 			if(	(Header.offsetPCM + pcm_size) > 0x10000	){
-				Err(_T("⊿PCMのサイズが許容値を越えました。"));
+				throw mml_error(_T("⊿PCMのサイズが許容値を越えました。"));
 			}
 		} else {
 			_COUT << endl;
 			i = mus_bank + pcm_bank + code_bank;
 
 			if(i > 255){
-				Err(_T("バンク数の合計が255を越えました。"));
+				throw mml_error(_T("バンク数の合計が255を越えました。"));
 			}
 		}
 
@@ -1263,7 +1266,7 @@ void	MusicFile::saveNSF(string&	strFileName)
 		//Open File
 		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw ios_base::failure(strFileName + ": " + strerror(errno));
+			throw ios_failure(strFileName, errno);
 		} else {
 			//----------------------
 			//Write File
@@ -1278,9 +1281,9 @@ void	MusicFile::saveNSF(string&	strFileName)
 			close();
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
-	} catch (const exception& e) {
+	} catch (mml_error& e){
+		e.out_what();
+	} catch (ios_failure& e) {
 		nsc_ErrMsg(e);
 	}
 
@@ -1347,7 +1350,7 @@ void	MusicFile::saveNSFe(string&	strFileName)
 		//Open File
 		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw ios_base::failure(strFileName + ": " + strerror(errno));
+			throw ios_failure(strFileName, errno);
 		} else {
 			//----------------------
 			//Write File
@@ -1359,9 +1362,9 @@ void	MusicFile::saveNSFe(string&	strFileName)
 			close();
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
-	} catch (const exception& e) {
+	} catch (mml_error& e){
+		e.out_what();
+	} catch (ios_failure& e) {
 		nsc_ErrMsg(e);
 	}
 
@@ -1387,7 +1390,7 @@ void	MusicFile::saveASM(string&	strFileName)
 		//File open
 		fileopen(strFileName.c_str());
 		if(isError() == true){
-			throw ios_base::failure(strFileName + ": " + strerror(errno));
+			throw ios_failure(strFileName, errno);
 		} else {
 
 			//Header
@@ -1420,9 +1423,9 @@ void	MusicFile::saveASM(string&	strFileName)
 			close();
 		}
 
-	} catch (int no) {
-		nsc_ErrMsg(no);
-	} catch (const exception& e) {
+	} catch (mml_error& e){
+		e.out_what();
+	} catch (ios_failure& e) {
 		nsc_ErrMsg(e);
 	}
 }
@@ -1435,6 +1438,7 @@ void	MusicFile::saveASM(string&	strFileName)
 //	●返値
 //				無し
 //==============================================================
+/*
 void	MusicFile::Err(const _CHAR msg[])
 {
 	_OMP_SET_LOCK(lock_cout)
@@ -1448,6 +1452,7 @@ void	MusicFile::Err(const _CHAR msg[])
 
 	throw EXIT_FAILURE;		//基本的に致命的なエラーなので例外を投げる。
 }
+*/
 
 //--------------------------------------------------------------
 void	MusicFile::Err(const _CHAR msg[], size_t no)

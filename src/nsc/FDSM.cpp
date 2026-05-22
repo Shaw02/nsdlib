@@ -64,10 +64,10 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -77,10 +77,7 @@ const	static	Command_Info	Command[] = {
 
 			case(FDSM_Num):
 				MML->Back();
-				i = MML->GetInt();
-				if( (i<0) || (i>7)){
-					MML->Err(_T("FDSMの波形パターンは0～7の範囲で指定して下さい。"));
-				}
+				i = MML->GetInt_With_Chk_Range(_T("FDSMの波形パターン"),0,7);
 				WAVE.append((char)1, (char)i & 0x07);
 				ptFDSM++;
 				break;
@@ -94,11 +91,8 @@ const	static	Command_Info	Command[] = {
 				break;
 		}
 	}
-	if(ptFDSM < 32){
-		MML->Err(_T("波形パターンは32個の数字を記述してください。32個に満たないです。"));
-	}
-	if(ptFDSM > 32){
-		MML->Err(_T("波形パターンは32個の数字を記述してください。32個を超えています。"));
+	if(ptFDSM != 32){
+		MML->Err(_T("FDSMの波形パターン定義が64個ではありません。"));
 	}
 	i = 0;
 	while(ptFDSM>0){
@@ -132,6 +126,6 @@ FDSM::~FDSM(void)
 //==============================================================
 void	FDSM::getAsm(MusicFile* MUS)
 {
-	*MUS << MUS->Header.Label.c_str() << "FDSM" << m_id << ":" << endl;
+	*MUS << MUS->Header.Label << "FDSM" << m_id << ":" << endl;
 	MusicItem::getAsm(MUS);
 }

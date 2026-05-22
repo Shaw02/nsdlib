@@ -87,12 +87,14 @@ public:			void	Back(void);						//1文字戻し（全角・半角変換対応）
 
 private:		char	read_char(void);				//1Byte読み込み
 public:			char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
+				bool	GetChar_With_Chk_RightCurlyBrace(char* cData);		//1Byte読み込み '}'チェック付き
 				char	GetChar(void);					//1Byte読み込み（with EOF & Commend check）
-				void	ChkBlockStart(void);					//'{'が来るまでポインタを進める
-				void	ChkEOF(void);							//[EOF]チェック
-				bool	GetChar_With_ChkEOF(char* cData);		//1Byte読み込み '}'チェック付き
+				void	Chk_Comma(void);				//`,'のチェック
+				void	Chk_LeftCurlyBrace(void);		//'{'が来るまでポインタを進める
+				void	Chk_EOF(void);					//[EOF]チェック
 				void	GetString(string* _str, bool f_ESC);	//""付 文字列 読み込み
 				int		GetNum(void);					//()付  数値  読み込み
+				int		GetInt_With_Chk_Range(const _CHAR msg[], int min, int max);	//数値読み込み
 				int		GetInt(void);					//数値読み込み
 				bool	chkSigh(void);					//符号チェック
 				int		GetHex(void);					//16進数読み込み
@@ -107,11 +109,14 @@ public:			char	cRead(void);					//1Byte読み込み（全角・半角変換対応）
 				size_t	GetLine(void){return(nowFile->GetLine());};
 				void	SetLine(size_t i){nowFile->SetLine(i);};
 
+				void	Chk_Range(const _CHAR msg[], int min, int max, int value);
 				void	ErrUnknownCmd();
+				void	GetLocation(stringstream* _loc);
 				void	Err(const _CHAR msg[]);
 				void	Warning(const _CHAR msg[]);
-				void	Err(const string& str);
-				void	Warning(const string& str);
+				void	Err(const string& msg);
+				void	Warning(const string& msg);
 
+				void	SetError(){f_error = true;};
 				bool	isError(){return(f_error);};
 };

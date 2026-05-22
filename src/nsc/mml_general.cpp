@@ -40,11 +40,7 @@ mml_general::mml_general(unsigned char _code, const _CHAR _strName[]):
 mml_general::mml_general(unsigned char _code, MMLfile* MML, const _CHAR _strName[]):
 	MusicEvent(_strName)
 {
-	int		_data = MML->GetInt();
-
-	if( (_data<-128) || (_data>255) ){
-		MML->Err(_T("パラメータの値が範囲を越えました。"));
-	}
+	int		_data = MML->GetInt_With_Chk_Range(_T("パラメータ"),-128,255);
 
 	iSize = 2;
 	code.resize(iSize);

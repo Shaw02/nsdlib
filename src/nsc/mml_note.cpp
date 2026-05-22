@@ -29,7 +29,7 @@ mml_note::mml_note(int _code, int length, int gatetime, bool slur, const _CHAR _
 				size_t	i = 0;
 
 	if((_code<0) || (_code>15)){
-		throw invalid_argument("mml_note::mml_note()");
+		throw out_of_range("mml_note::mml_note()");
 	}
 
 	iSize = 1;

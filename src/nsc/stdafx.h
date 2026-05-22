@@ -30,17 +30,21 @@
 //---------------------------------------------------------------
 //Unicode環境
 #ifdef	_UNICODE
-	#define	_CHAR	wchar_t
-	#define _T(x)	L ## x
-	#define _EOF	WEOF
-	#define	_COUT	wcout
-	#define	_CERR	wcerr
+	#define	_CHAR		wchar_t
+	#define _T(x)		L ## x
+	#define _EOF		WEOF
+	#define	_STRING		wstring
+	#define	_SSTREAM	wstringstream
+	#define	_COUT		wcout
+	#define	_CERR		wcerr
 #else
-	#define	_CHAR	char
-	#define _T(x)	x
-	#define _EOF	EOF
-	#define	_COUT	cout
-	#define	_CERR	cerr
+	#define	_CHAR		char
+	#define _T(x)		x
+	#define _EOF		EOF
+	#define	_STRING		string
+	#define	_SSTREAM	stringstream
+	#define	_COUT		cout
+	#define	_CERR		cerr
 #endif
 
 
@@ -90,6 +94,7 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
+#include <cwchar>
 #include <cstring>
 #include <clocale>	//gcc用にこっちも入れておく。
 
@@ -100,6 +105,7 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <list>
 #include <map>
@@ -118,7 +124,8 @@ using namespace std;
 void nsc_exit(int no);		//■■■■ To Do:	廃止予定
 void nsc_ErrMsg(int no);
 void nsc_ErrMsg(const exception& e);
-void nsc_ErrMsg(const _CHAR *stErrMsg);
+void nsc_ErrMsg(const string& errMsg);
+void nsc_ErrMsg(const _CHAR* errMsg);
 
 class	MusicHeader;
 class	MusicFile;
@@ -130,6 +137,8 @@ typedef struct {
 	const char*	str;
 	int			id;
 } Command_Info;
+
+#include "mml_error.h"			//MML構文エラー
 
 //ヘッダー
 #include "SearchPass.h"			//検索パス

@@ -133,10 +133,10 @@ const	static	Command_Info	Command[] = {
 	//コンパイル
 
 	// { の検索
-	MML->ChkBlockStart();
+	MML->Chk_LeftCurlyBrace();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while(MML->GetChar_With_ChkEOF(&cData)){
+	while(MML->GetChar_With_Chk_RightCurlyBrace(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -193,7 +193,7 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(DPCM_Note):
-				setNote(MML, MML->GetInt());
+				setNote(MML, MML->GetInt_With_Chk_Range(_T("ノート番号"), 0,255));
 				break;
 
 			//unknown command
@@ -236,13 +236,14 @@ DPCMinfo::~DPCMinfo(void)
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*	MML		MMLファイルのオブジェクト
-//			int	key		キー番号（0:C / 1:Cis / ...）
+//			int		key		キー番号（0:C / 1:Cis / ...）
 //	●返値
 //				無し
 //==============================================================
 void	DPCMinfo::setKey(MMLfile* MML, int key)
 {
-	setNote(MML, ((MML->GetInt()-1) * 12) + key);
+	int octave = MML->GetInt_With_Chk_Range(_T("オクターブ"), 1,12);
+	setNote(MML, ((octave - 1) * 12) + key);
 }
 
 //==============================================================
@@ -250,131 +251,94 @@ void	DPCMinfo::setKey(MMLfile* MML, int key)
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*		MML		MMLファイルのオブジェクト
-//				int		note	ノート番号
 //	●返値
 //				無し
 //==============================================================
 void	DPCMinfo::setNote(MMLfile* MML, int note)
 {
-	unsigned	char	cData;
-				int		play_frequency;
-				int		mode			= 0;
-				int		start_volume	= 0x40;
-				int		next;
-				int		start_offset;
-				int		size_offset;
-	DPCM*		_DPCM;
+	try{
+		unsigned	char	cData;
+					int		play_frequency;
+					int		mode			= 0;
+					int		start_volume	= 0x40;
+					int		next;
+					int		start_offset;
+					int		size_offset;
+		DPCM*		_DPCM;
 
-	if((note<0) || (note>255)){
-		MML->Err(_T("音階の範囲を超えています。"));
-	}
-
-	if(max_number < note){
-		max_number = (unsigned char)note;
-	}
-
-	//ファイル名
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("⊿PCM定義のパラメータが足りません。"));
-	}
-
-	infoDPCM[note].file.clear();
-	MML->GetString(&infoDPCM[note].file, false);
-	if(ptcDPCM.count(infoDPCM[note].file) == 0){
-		//新しいファイルだったら、DPCMオブジェクトを生成する。
-		_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);
-		if(_DPCM->isError() == true){
-			f_error = true;	//読み込みに失敗した場合
+		if(max_number < note){
+			max_number = (unsigned char)note;
 		}
-		ptcDPCM[infoDPCM[note].file] = _DPCM;
-		m_id++;
-	} else {
-		_DPCM = ptcDPCM[infoDPCM[note].file];
-	}
 
-	//再生周波数
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("⊿PCM定義のパラメータが足りません。"));
-	}
-	play_frequency = MML->GetInt();
-	if((play_frequency<0) || (play_frequency>15)){
-		MML->Err(_T("⊿PCMの周波数は0～15の範囲で指定して下さい。"));
-	}
-
-	//モード
-	cData = MML->GetChar();
-	if(cData != ','){
-		MML->Err(_T("⊿PCM定義のパラメータが足りません。"));
-	}
-
-	mode = MML->GetInt();
-	if((mode<0) || (mode>2)){
-		MML->Err(_T("⊿PCMのモードは0～2の範囲で指定して下さい。"));
-	}
-	if((mode==2) && (bank==false)){
-		MML->Err(_T("⊿PCMのモード2(IRQ)は、#Bankコマンドの指定が必要です。"));
-	}
-	infoDPCM[note].ctrl = (unsigned char)(mode<<6) + (unsigned char)play_frequency;
-
-	//初期値
-	cData = MML->GetChar();
-	if(cData == ','){
-		start_volume = MML->GetInt();	
-		if((start_volume<-1) || (start_volume>127)){
-			MML->Err(_T("⊿PCMの初期値は-1～127の範囲で指定して下さい。"));
+		//ファイル名
+		MML->Chk_Comma();
+		infoDPCM[note].file.clear();
+		MML->GetString(&infoDPCM[note].file, false);
+		if(ptcDPCM.count(infoDPCM[note].file) == 0){
+			//新しいファイルだったら、DPCMオブジェクトを生成する。
+			_DPCM = new DPCM(MML, infoDPCM[note].file.c_str(), m_id);
+			if(_DPCM->isError() == true){
+				f_error = true;	//読み込みに失敗した場合
+			}
+			ptcDPCM[infoDPCM[note].file] = _DPCM;
+			m_id++;
+		} else {
+			_DPCM = ptcDPCM[infoDPCM[note].file];
 		}
-		infoDPCM[note].DA = (unsigned char)start_volume;
-	} else {
-		MML->Back();
-		infoDPCM[note].DA = 0;
-	}
 
-	//次のノート
-	if(mode == 2){
+		//再生周波数
+		MML->Chk_Comma();
+		play_frequency = MML->GetInt_With_Chk_Range(_T("⊿PCMの周波数"),0,15);
+
+		//モード
+		MML->Chk_Comma();
+		mode = MML->GetInt_With_Chk_Range(_T("⊿PCMのモード"),0,2);
+		if((mode==2) && (bank==false)){
+			MML->Err(_T("⊿PCMのモード2(IRQ)は、#Bankコマンドの指定が必要です。"));
+		}
+		infoDPCM[note].ctrl = (unsigned char)(mode<<6) + (unsigned char)play_frequency;
+
+		//初期値
 		cData = MML->GetChar();
 		if(cData == ','){
-			next = MML->GetInt();	
-			if((next<-1) || (next>255)){
-				MML->Err(_T("次のノート番号は0～255の範囲で指定して下さい。"));
-			}
+			start_volume = MML->GetInt_With_Chk_Range(_T("⊿PCMの初期値"),-1,127);
+			infoDPCM[note].DA = (unsigned char)start_volume;
+		} else {
+			MML->Back();
+			infoDPCM[note].DA = 0;
+		}
+
+		//次のノート
+		if(mode == 2){
+			MML->Chk_Comma();
+			next = MML->GetInt_With_Chk_Range(_T("⊿PCMの次のノート番号"),-1,255);
 			infoDPCM[note].next = (unsigned char)next;
 		} else {
-			if(mode == 2){
-				MML->Err(_T("モード2(IRQ)の時は必ず次に発音するノート番号を指定してください。"));
-			}
-			MML->Back();
 			infoDPCM[note].next = 0;
 		}
-	} else {
-		infoDPCM[note].next = 0;
-	}
 
-	//offset
-	cData = MML->GetChar();
-	if(cData == ','){
-		start_offset = MML->GetInt();	
-		if((start_offset<0) || (start_offset>255)){
-			MML->Err(_T("⊿PCMの発音開始オフセットは0～255の範囲で指定して下さい。"));
+		//offset
+		cData = MML->GetChar();
+		if(cData == ','){
+			start_offset = MML->GetInt_With_Chk_Range(_T("⊿PCMの発音開始オフセット"),0,255);
+			infoDPCM[note].offset = (unsigned char)start_offset;
+		} else {
+			MML->Back();
+			infoDPCM[note].offset = 0;
 		}
-		infoDPCM[note].offset = (unsigned char)start_offset;
-	} else {
-		MML->Back();
-		infoDPCM[note].offset = 0;
-	}
 
-	//size
-	cData = MML->GetChar();
-	if(cData == ','){
-		size_offset = MML->GetInt();	
-		if((size_offset<0) || (size_offset>255)){
-			MML->Err(_T("⊿PCMの発音サイズは0～255の範囲で指定して下さい。"));
+		//size
+		cData = MML->GetChar();
+		if(cData == ','){
+			size_offset = MML->GetInt_With_Chk_Range(_T("⊿PCMの発音サイズ"),0,255);
+			infoDPCM[note].size = (unsigned char)size_offset;
+		} else {
+			MML->Back();
+			infoDPCM[note].size = 0;
 		}
-		infoDPCM[note].size = (unsigned char)size_offset;
-	} else {
-		MML->Back();
-		infoDPCM[note].size = 0;
+
+	} catch (mml_lack_parameter& e) {
+		e.out_what();
 	}
 }
 
@@ -501,7 +465,7 @@ void	DPCMinfo::getDPCMCode(string* _str)
 void	DPCMinfo::getAsm(MusicFile* MUS)
 {
 	//DPCMinfo	空でもラベルは出力する。
-	*MUS << MUS->Header.Label.c_str() << "DPCMinfo" << ":" << endl;
+	*MUS << MUS->Header.Label << "DPCMinfo" << ":" << endl;
 
 	if(m_id > 0){
 		MusicItem::getAsm(MUS);

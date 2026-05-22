@@ -193,6 +193,9 @@
     <ClInclude Include="..\nsc\Meta_tlbl.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\nsc\mml_error.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\nsc\nsc.cpp">
@@ -338,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="..\nsc\Meta_tlbl.cpp">
       <Filter>ソース ファイル\Music\Meta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nsc\mml_error.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
