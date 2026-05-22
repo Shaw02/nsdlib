@@ -453,6 +453,11 @@
 		<param name="Local" value="func_nsd_set_dpcm.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="nsd_set_master_volume()">
+		<param name="Name" value="nsd_set_master_volume()">
+		<param name="Local" value="func_nsd_set_master_volume.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="nsd_stop_bgm()">
 		<param name="Name" value="nsd_stop_bgm()">
 		<param name="Local" value="func_nsd_stop_bgm.html">

@@ -403,6 +403,7 @@ PSG_Envelope_Form	= $0D
 .Endstruct
 
 .Struct		NSD_work
+	MasterVolume	.byte					;master volume
 	Flag		.tag	NSD_Flag	nsd::Track	;flag
 .ifdef	HFX4
 	LengthCnt	.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
@@ -505,6 +506,7 @@ PSG_Envelope_Form	= $0D
 .define	__Gate		nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::gate
 .endif
 
+.define __master_volume	nsd_work + NSD_work::MasterVolume
 .define	__chflag	nsd_work + NSD_work::Flag + NSD_Flag::flag
 .define	__gatemode	nsd_work + NSD_work::Flag + NSD_Flag::gatemode
 .define	__tai		nsd_work + NSD_work::Length + NSD_length::tai

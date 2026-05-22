@@ -328,7 +328,7 @@ Mode1:	;-----------------------
 	lsr	a
 @EX:	lsr	a
 	lsr	a
-	jmp	_nsd_snd_volume
+	jmp	SetMasterVolume
 
 Exit:	rts
 
@@ -404,10 +404,10 @@ Volume:
 	lda	__env_volume + 1,x
 .ifdef	DPCMBank
 	ora	__env_volume,x
-	beq	@No_Envelop
+	beq	No_Envelop
 	lda	__env_volume + 1,x
 .else
-	beq	@No_Envelop
+	beq	No_Envelop
 .endif
 
 @Envelop:
@@ -415,22 +415,29 @@ Volume:
 	ENV	__env_volume, __env_vol_ptr, __env_vol_now, __Envelop_V, 0
 
 	cpx	#nsd::TR_BGM3		;
-	beq	@S			;ch3 はリニアカウンタなので、v コマンド値との乗算はしない。
+	beq	SetVolume		;ch3 はリニアカウンタなので、v コマンド値との乗算はしない。
 .ifdef	SE
 	cpx	#nsd::TR_SE_Tri
-	beq	@S
+	beq	SetVolume
 .endif
 	sta	__tmp
 	lda	__volume,x
 	ldx	__tmp
 	jsr	_nsd_mul
+SetMasterVolume:
+	ldx	__master_volume
+	cpx	#$0F			;default master volume is unity gain
+	beq	@SkipMasterMul
+	jsr	_nsd_mul
+@SkipMasterMul:
 	ldx	__channel
-@S:	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
+SetVolume:
+	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
 
 
 	;-----------------------
 	;Envelope 無効時の処理
-@No_Envelop:
+No_Envelop:
 	cpx	#nsd::TR_BGM3
 	beq	Exit2
 .ifdef	SE
@@ -485,7 +492,7 @@ Mode3:	;-----------------------
 	shl	a, 2
 @FDSV:
 .endif
-	jmp	_nsd_snd_volume
+	jmp	SetMasterVolume
 
 Exit2:	rts
 

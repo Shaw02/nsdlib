@@ -19,6 +19,8 @@
 	.import		_nsd_snd_sweep
 	.import		_nsd_snd_voice
 	.import		_nsd_play_se
+	.import		_nsd_mul
+
 	.import		nsd_work
 	.importzp	nsd_work_zp
 
@@ -610,6 +612,51 @@ op70:	;Ser release volume
 	jmp	Sequence
 
 ;=======================================================================
+;	void	TriGateMasterQuantize
+;-----------------------------------------------------------------------
+;<<Contents>>
+;	Triangle channel has no hardware volume control.
+;	Quantize gate timing with master volume.
+;<<Input>>
+;	A = gate value (0 means use length)
+;	X = channel index
+;<<Output>>
+;	A = quantized gate value, 
+;	X = restored as current channel
+;	Carry clear = continue, Carry set = early return (no gate)
+;=======================================================================
+TriGateMasterQuantize:
+	cmp	#0			; if (a = 0 ){
+	bne	@TQ0			; 	a = __Length_ctr,x
+	lda	__Length_ctr,x		; }
+
+@TQ0:	tax				; x = a (gate value)
+	lda	__master_volume		; a = master volume
+	cmp	#6			; master volume 6 ˆÈ‰º‚Í–Â‚ç‚³‚È‚¢
+	bcs	@TQ1
+	ldx	__channel		; Master Volume = 0
+	lda	#0
+	beq	@TQ4
+
+@TQ1:	cmp	#$0F
+	bne	@TQ2
+	txa				; Master Volume = 15
+	ldx	__channel
+	clc
+	rts
+
+@TQ2:	dex				; Master Volume = 1 ~ 14
+	jsr	_nsd_mul
+	ldx	__channel
+	cmp	#0
+	bne	@TQ3
+@TQ4:	sta	__trans_one,x		;0 reset
+	sec
+	rts
+
+@TQ3:	clc
+	rts
+;=======================================================================
 ;		Note
 ;=======================================================================
 
@@ -638,42 +685,76 @@ Chk_Length:
 	;bit 4 check (Gate Time)
 Chk_GateTime:
 	asl	__tmp
-	bcc	@L
+	bcc	@Gate_Command
 
-	jsr	nsd_load_sequence
-	cmp	#0
-	beq	GateSet
+@Gate_in_Note:				;-----------------------
+	jsr	nsd_load_sequence	; Gate in note command
+	cpx	#nsd::TR_BGM3
+	beq	@L01
+	cpx	#nsd::TR_BGM5
+.ifndef	SE
+	bne	@L00
+.else
+	beq	@L01
+	cpx	#nsd::TR_SE_Tri
+	beq	@L01
+	cpx	#nsd::TR_SE_Dpcm
+	bne	@L00
+.endif
+@L01:	jsr	TriGateMasterQuantize
+	bcs	@Rest0
+@L00:	cmp	#0
+	beq	@GateSet
 	sta	__tmp
 	lda	__Length_ctr,x
 	sub	__tmp			; a = __Length_ctr - __Gate;
-	bcs	GateSet			; if(a < 0){
+	bcs	@GateSet		; if(a < 0){
 	lda	#$0			;    a = 0x0; //no gate
-	beq	GateSet			; }	// relative jump because "0"
-@L:
-	lda	__gate_u,x		;if (__gate_u,x == 0) then @q
+	beq	@GateSet		; }	// relative jump because "0"
+
+@Gate_Command:				;-----------------------
+	lda	__gate_u,x		; gate command
+	cpx	#nsd::TR_BGM3
+	beq	@L01
+	cpx	#nsd::TR_BGM5
+.ifndef	SE
+	bne	@L10
+.else
+	beq	@L01
+	cpx	#nsd::TR_SE_Tri
+	beq	@L01
+	cpx	#nsd::TR_SE_Dpcm
+	bne	@L00
+.endif
+@L11:	jsr	TriGateMasterQuantize
+	bcs	@Rest0
+@L10:	cmp	#$0			; if (__gate_u,x == 0) then @q
 	beq	@q			;
+	sta	__tmp
 	lda	__Length_ctr,x
-	sub	__gate_u,x		; a = __Length_ctr - __gate_u,x	(gate timing)
+	sub	__tmp			; a = __Length_ctr - __gate_u,x	(gate timing)
 	bcc	@q			; if (a < 0) then @q
 	cmp	__gate_q,x		;
-	bcs	GateSet			; if( a < __gate_q){
+	bcs	@GateSet			; if( a < __gate_q){
 @q:	lda	__gate_q,x		;    a = __gate_q;
 	cmp	__Length_ctr,x		; }
-	bcc	GateSet
+	bcc	@GateSet
 	lda	#0
-GateSet:
+@GateSet:
 	sta	__Gate,x
 
-Calc_Note_Number:
+	;-------
+	;bit 0-3 check (Note or Rest)
+@Calc_Note_Number:
 	tya
 	and	#$0F
 	cmp	#12
-	bcc	NoteSet
+	bcc	@NoteSet
 	beq	@Exit
 
 	;0x0D-0x0F	[Rest mode 0-2]
 @Rest:	sbc	#$0D	;cy ‚Í `H'
-	sta	__tmp
+@Rest0:	sta	__tmp
 	lda	__tai,x
 	and	#$02
 	bne	@Exit		;If tai then exit
@@ -692,7 +773,7 @@ Calc_Note_Number:
 	rts
 
 	;0x00-0x0B	[Note]
-NoteSet:
+@NoteSet:
 	add	__octave,x
 	add	__trans,x
 	add	__trans_one,x
