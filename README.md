@@ -1,45 +1,127 @@
-# NES Sound Driver & Library (NSD.Lib)
+# NSD.Lib – NES Sound Driver & Library
 
-This is a sound driver for the Nintendo Entertainment System (NES) and other compatible machines.
-You can use it to play Background Music (BGM) and Sound Effects (SE) in your game projects and demos.
+**NSD.Lib** is a sound driver and music library for the Nintendo Entertainment System (NES / Famicom).  
+It supports both **NES game development** and **chip­tune / NSF music production**.
 
-## Features
+👉 **Full documentation (Japanese):**  
+https://shaw02.github.io/nsdlib/
 
-- This sound driver was developed with CPU load and code size in mind. The sequence data is optimized to take up as little ROM space as possible.
-- The library functions can be called from both Assembly and C.
-  - See cc65's [\_\_fastcall\_\_](https://github.com/cc65/wiki/wiki/Parameter-passing-and-calling-conventions#The_fastcall_calling_convention) calling convention.
-- A MML Compiler, written in C++, converts MML files into sequence data the driver can use. It can output in assembly language as well as the [NSF music format](http://www.vgmpf.com/Wiki/index.php?title=NSF).
-- This driver has various effects and commands to allow for ample musical expressiveness.
+---
 
-## Basic Syntax
+## ✨ Features
 
-- General MML commands are supported
+- NES APU sound driver (2A03)
+- Supports **NSF (NES Sound Format)**
+- Short MML–style music description optimized for NES
+- MML compiler (**nsc.exe**) supporting multiple output formats
+- Designed for both **game embedding** and **standalone music**
+- Suitable for real hardware and emulators
+- Compact and cycle-conscious implementation
+- Compatible with **cc65 / ca65** toolchains
 
-  - [Tempo (t)](http://shaw.la.coocan.jp/nsdl/doc/mml_tempo.html)
-  - [Notes (abcdefg)](http://shaw.la.coocan.jp/nsdl/doc/mml_note.html)
-  - [Rest (r)](http://shaw.la.coocan.jp/nsdl/doc/mml_rest.html)
-  - [Tie (^)](http://shaw.la.coocan.jp/nsdl/doc/mml_tie.html)
-  - [Volume (v)](http://shaw.la.coocan.jp/nsdl/doc/mml_volume.html)
-  - [Note Length (l)](http://shaw.la.coocan.jp/nsdl/doc/mml_length.html) (based on ticks, not video frames)
-  - [Octave (o)](http://shaw.la.coocan.jp/nsdl/doc/mml_octave.html)
-  - [Quantize (q)](http://shaw.la.coocan.jp/nsdl/doc/mml_gate.html)
-  - [Loop (L)](http://shaw.la.coocan.jp/nsdl/doc/mml_loop.html)
-  - [Repeat ( [,])](http://shaw.la.coocan.jp/nsdl/doc/mml_repeatA.html)
-  - etc.
+---
 
-- [Volume Envelope](http://shaw.la.coocan.jp/nsdl/doc/mml_envelop.html)
-- [Portamento](http://shaw.la.coocan.jp/nsdl/doc/mml_portamento.html)
-- [Subroutines](http://shaw.la.coocan.jp/nsdl/doc/mml_sub.html)
+## 🚀 Quick Start
 
-For further documentation, explore the site all of these links lead to.
+This README intentionally stays short.
 
-## Application Manual
+For **setup, build instructions, driver integration, and detailed explanations**,  
+please refer to the official manual:
 
-- [Application Manual (Japanese)](https://shaw02.github.io/nsdlib/)
-- [Wiki Home](https://github.com/Shaw02/nsdlib/wiki)
-  - [Developers Guide](https://github.com/Shaw02/nsdlib/wiki/DevelopersGuide)
+📘 **NSD.Lib Manual**  
+https://shaw02.github.io/nsdlib/
 
-## License
+Typical workflows:
 
-This project is licensed under the BSD 2-clause "Simplified" license - see the [LICENSE.md](LICENSE.md) file for details.  
-Copyright &copy; 2012, S.W. All rights reserved.
+### 🎮 Game Development
+
+1. Write music using **Short MML**
+2. Convert MML to ca65 assembly using `nsc.exe`
+3. Assemble and link with your NES game
+4. Call the sound driver each frame from the game loop
+
+### 🎵 Chiptune / NSF Music
+
+1. Write music using **MML**
+2. Convert MML directly into an **NSF file** using `nsc.exe`
+3. Play the NSF on emulators, players, or real hardware
+
+---
+
+## 🎼 MML Compiler (nsc.exe)
+
+The MML compiler supports the following conversions:
+
+- **MML → ca65 assembly source**  
+  For embedding music into NES game programs
+
+- **MML → NSF (NES Sound Format)**  
+  For standalone music and chiptune distribution
+
+➡️ **Short MML format and compiler reference:**  
+https://shaw02.github.io/nsdlib/nsc_asm.html
+
+---
+
+## 📁 Repository Structure
+
+    nsdlib/
+    ├── bin/        ; binary for NSF (NES Sound Format)
+    ├── lib/        ; library for cc65 & ca65
+    ├── include/    ; include files for cc65 & ca65
+    ├── src/        ; sound driver & MML compiler source
+    ├── sample/     ; sample NES programs and music data
+    ├── docs/       ; documents
+
+Each directory is explained in detail in the manual.
+
+---
+
+## 🧰 Requirements
+
+- NES toolchain (**cc65 / ca65**)
+- NES emulator, NSF player, or real hardware
+- Basic knowledge of NES programming or chiptune composition
+
+---
+
+## 📚 Documentation
+
+- 📘 **Main Manual**  
+  https://shaw02.github.io/nsdlib/
+
+- 🎼 **MML Compiler (nsc.exe) Usage**  
+  https://shaw02.github.io/nsdlib/usage_nsc.html  
+  *Command-line usage and conversion options*
+
+- 🎮 **Sound Driver / Library Usage & API Reference**  
+  https://shaw02.github.io/nsdlib/usage_nsd.html  
+  *Driver initialization, per-frame calls, and function reference*
+
+- 🧠 **GitHub Wiki (Notes & Design)**  
+  https://github.com/Shaw02/nsdlib/wiki
+
+---
+
+## ❤️ Contributing
+
+Issues and pull requests are welcome.
+
+When reporting bugs, please include:
+- Emulator, NSF player, or hardware used
+- Minimal reproduction steps
+- MML or source code, if applicable
+
+---
+
+## 📄 License
+
+This project is released under the **BSD 2-Clause License**.  
+See [LICENSE.md](LICENSE.md) for details.
+
+---
+
+## ✍ Author
+
+S.W.  
+NES sound driver & MML compiler / homebrew & chiptune development

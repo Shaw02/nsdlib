@@ -1,15 +1,13 @@
 [OPTIONS]
 Auto Index=Yes
-Binary Index=Yes
 Compatibility=1.1 or later
 Compiled file=nsdl.chm
 Contents file=nsdl.hhc
 Default topic=index.html
-Display compile notes=Yes
 Display compile progress=Yes
 Full-text search=Yes
 Index file=nsdl.hhk
-Language=0x411 “ú–{Œê
+Language=0x411 “ú–{Œê (“ú–{)
 Title=NES Sound Driver Library
 
 
@@ -126,6 +124,7 @@ tutorial_envelope.html
 tutorial_music.html
 tutorial_start.html
 tutorial_track.html
+func_nsd_set_master_volume.html
 
 [INFOTYPES]
 

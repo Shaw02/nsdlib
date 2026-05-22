@@ -25,6 +25,7 @@ FILES =		nsd_init.s		\
 		nsd_stop_bgm.s		\
 		nsd_pause_bgm.s		\
 		nsd_resume_bgm.s	\
+		nsd_set_master_volume.s	\
 		nsd_save.s		\
 		nsd_load.s		\
 		nsd_play_se.s		\
