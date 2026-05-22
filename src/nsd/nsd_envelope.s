@@ -426,7 +426,10 @@ Volume:
 	jsr	_nsd_mul
 SetMasterVolume:
 	ldx	__master_volume
+	cpx	#$0F			;default master volume is unity gain
+	beq	@SkipMasterMul
 	jsr	_nsd_mul
+@SkipMasterMul:
 	ldx	__channel
 SetVolume:
 	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
