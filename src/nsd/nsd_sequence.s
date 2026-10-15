@@ -759,29 +759,30 @@ TriGateMasterQuantize:
 
 @TQ0:	tax				; x = a (gate value)
 	lda	__master_volume		; a = master volume
-	cmp	#6			; master volume 6 ˆÈ‰º‚Í–Â‚ç‚³‚È‚¢
-	bcs	@TQ1
-	ldx	__channel		; Master Volume = 0
-	lda	#0
-	beq	@TQ4
+	cmp	#$0F
+	beq	@TQ_Full
+	cmp	#$06
+	bcc	@TQ_Mute
 
-@TQ1:	cmp	#$0F
-	bne	@TQ2			; Master Volume = 15
-	txa
+@TQ_CalcMasterVolume:
+	dex				; Master Volume = 6 ~ 14
+	jsr	_nsd_mul
+	cmp	#0
+	bne	@TQ_End
+
+@TQ_Mute:				; Master Volume = 0 ~ 5
+	lda	#0			; –³‰¹‚É‚·‚é
+	ldx	__channel		; 
+	sta	__trans_one,x		; 0 reset
+	sec				; ‘ŠúƒŠƒ^[ƒ“
+	rts
+
+@TQ_Full:				; Master Volume = 15
+	txa				; a = x (gate value)
+
+@TQ_End:
 	ldx	__channel
 	clc
-	rts
-
-@TQ2:	dex				; Master Volume = 1 ~ 14
-	jsr	_nsd_mul
-	ldx	__channel
-	cmp	#0
-	bne	@TQ3
-@TQ4:	sta	__trans_one,x		;0 reset
-	sec
-	rts
-
-@TQ3:	clc
 	rts
 
 ;=======================================================================
